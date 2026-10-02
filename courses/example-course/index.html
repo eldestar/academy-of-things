@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
 <title>Course</title>
+<script>
+/* Apply the saved theme before first paint. One key for every course; keep in sync with THEME_KEY in app.js. */
+try {
+  var t = localStorage.getItem('academy-of-things:theme');
+  if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+} catch (e) {}
+</script>
 <link rel="stylesheet" href="../../engine/style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 </head>
@@ -16,6 +24,7 @@
     <div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-fill" style="width:0%"></div></div>
     <div id="progress-label" class="progress-label"></div>
     <nav aria-label="Lessons"><ul class="lesson-list" id="lesson-list"></ul></nav>
+    <div class="sidebar-foot"><div id="theme-switcher"></div></div>
   </aside>
   <main>
     <article id="lesson-content"></article>

@@ -86,7 +86,8 @@ Optional. Omit the file and the lesson simply has no quiz.
 | `questions[].explanation` | yes in practice | Revealed after checking answers, for right and wrong alike. This is where the teaching actually happens — write it even when the answer looks obvious. |
 
 Passing a quiz marks the lesson complete. A lesson with no quiz is marked
-complete when you click through it.
+complete as soon as it is opened. The reader must answer every question
+before checking; after checking, a failed attempt can be retried.
 
 ## State
 

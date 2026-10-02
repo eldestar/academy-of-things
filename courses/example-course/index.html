@@ -10,11 +10,12 @@
 <body>
 <div class="layout">
   <aside class="sidebar">
-    <h1 id="course-title">Loading…</h1>
+    <a class="home" href="../../">&larr; All courses</a>
+    <p class="course-title" id="course-title">Loading…</p>
     <div class="subtitle" id="course-subtitle"></div>
     <div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-fill" style="width:0%"></div></div>
-    <div id="progress-label" style="font-size:12px;color:var(--muted);margin-bottom:16px;"></div>
-    <ul class="lesson-list" id="lesson-list"></ul>
+    <div id="progress-label" class="progress-label"></div>
+    <nav aria-label="Lessons"><ul class="lesson-list" id="lesson-list"></ul></nav>
   </aside>
   <main>
     <article id="lesson-content"></article>

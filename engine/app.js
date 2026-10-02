@@ -109,13 +109,13 @@ function normalizeLevels(manifest) {
     manifest.levels = [];
     return;
   }
-  manifest.levels = Array.isArray(raw) ? raw.filter((l) => typeof l === 'string' && LEVEL_RE.test(l)) : [];
+  manifest.levels = Array.isArray(raw) ? [...new Set(raw.filter((l) => typeof l === 'string' && LEVEL_RE.test(l)))] : [];
   if (!Array.isArray(raw) || manifest.levels.length !== raw.length) {
     console.warn('manifest.json: ignored invalid "levels" entries (use lowercase letters, digits and hyphens)');
   }
 }
 
-// ?level= wins, then storage, then the first declared level.
+// ?level= wins (and is saved), then storage, then the first declared level.
 // Anything the manifest does not declare is ignored.
 function resolveLevel(manifest, search) {
   const levels = manifest.levels;
@@ -133,8 +133,9 @@ function resolveLevel(manifest, search) {
 // `variant` says which one answered; `path` is the last path tried.
 async function fetchVariant(lessonId, base, ext, lvl) {
   if (lvl) {
-    const res = await fetch(`./lessons/${lessonId}/${base}.${lvl}.${ext}`);
-    if (res.ok) return { res, variant: true, path: `lessons/${lessonId}/${base}.${lvl}.${ext}` };
+    const variantPath = `lessons/${lessonId}/${base}.${lvl}.${ext}`;
+    const res = await fetch(`./${variantPath}`);
+    if (res.ok) return { res, variant: true, path: variantPath };
   }
   const path = `lessons/${lessonId}/${base}.${ext}`;
   return { res: await fetch(`./${path}`), variant: false, path };
@@ -153,7 +154,7 @@ function currentLessonId(manifest) {
 
 const STATUS_TEXT = { stub: 'coming next', done: 'completed', current: 'in progress', todo: 'not started' };
 
-function renderSidebar(manifest, currentLessonId, progress) {
+function renderSidebar(manifest, activeId, progress) {
   const list = document.getElementById('lesson-list');
   list.innerHTML = '';
   const isDone = (l) => !!(progress[l.id] && progress[l.id].completed);
@@ -162,7 +163,7 @@ function renderSidebar(manifest, currentLessonId, progress) {
     const li = document.createElement('li');
     const a = document.createElement('a');
     a.href = `?lesson=${lesson.id}`;
-    const current = lesson.id === currentLessonId;
+    const current = lesson.id === activeId;
     // precedence: stub, then done, then current (open and unfinished), then todo
     let state = 'todo';
     if (lesson.stub) state = 'stub';
@@ -379,15 +380,17 @@ async function renderLesson(manifest, lessonId) {
 
   let md;
   let usedVariant = false;
+  let mdPath = `lessons/${lesson.id}/lesson.md`;
   try {
-    const { res: mdRes, variant } = await fetchVariant(lesson.id, 'lesson', 'md', level);
+    const { res: mdRes, variant, path } = await fetchVariant(lesson.id, 'lesson', 'md', level);
+    mdPath = path;
     if (!mdRes.ok) throw new Error(`HTTP ${mdRes.status}`);
     md = await mdRes.text();
     usedVariant = variant;
   } catch (e) {
     if (token !== renderToken) return;
     article.innerHTML = `<h1>${esc(lesson.title)}</h1>`;
-    showProblem(article, `Could not load lessons/${lesson.id}/lesson.md (${e.message}). Check that the folder name matches the id in manifest.json.`);
+    showProblem(article, `Could not load ${mdPath} (${e.message}). Check that the folder name matches the id in manifest.json.`);
     return;
   }
   if (token !== renderToken) return;
@@ -455,6 +458,12 @@ async function initCourse() {
 
   normalizeLevels(manifest);
   level = resolveLevel(manifest, location.search);
+  // ?level= only seeds the saved level; drop it so the URL never disagrees with the page after a switch
+  const seeded = new URL(location.href);
+  if (seeded.searchParams.has('level')) {
+    seeded.searchParams.delete('level');
+    history.replaceState(null, '', seeded);
+  }
   initLevelSwitcher(manifest, async (value) => {
     level = value;
     storageSet(levelKey(manifest.slug), value);

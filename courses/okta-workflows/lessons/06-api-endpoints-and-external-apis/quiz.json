@@ -1,0 +1,61 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "4 of 5 correct to pass.",
+  "questions": [
+    {
+      "stem": "A webhook sender gives up after 10 seconds. Your API-endpoint flow does 30 seconds of work before it responds. What is the recommended fix?",
+      "options": [
+        "Raise the endpoint's timeout setting to 60 seconds",
+        "Close the connection first, then hand the work to a helper with Call Flow Async",
+        "Add retries to the sender's card",
+        "Move the work into a table and poll it"
+      ],
+      "correct_index": 1,
+      "explanation": "Okta's guidance is to structure API-endpoint flows asynchronously: release the HTTP connection immediately with the Close card, then do the work in a helper started with Call Flow Async. The 60-second synchronous limit is a ceiling, not a setting, and the sender's own timeout is what matters here."
+    },
+    {
+      "stem": "Which is the trade-off of using the HTTP Close card early in a flow?",
+      "options": [
+        "It makes the flow asynchronous, so it can no longer run in low-latency mode",
+        "It disables the flow's security settings",
+        "It stops the flow from calling helper flows",
+        "It limits the flow to 10 steps"
+      ],
+      "correct_index": 0,
+      "explanation": "The docs list the Close card among the features that trigger asynchronous execution, which removes the flow from low-latency mode. Close early for receivers that just need to acknowledge; avoid it for hooks that must answer inside three seconds."
+    },
+    {
+      "stem": "You need to call an XML service whose request headers depend on runtime values. Which card type fits?",
+      "options": [
+        "Get, because it parses XML automatically",
+        "Post, because header values are always dynamic there",
+        "A Compose card, because it builds headers",
+        "Raw Request, because it allows programmatically built headers and full control of request and response"
+      ],
+      "correct_index": 3,
+      "explanation": "Header field names are fixed at design time on the other API Connector cards. Raw Request gives full control over request and response, which is why it is the card for XML services and dynamic headers."
+    },
+    {
+      "stem": "A downstream API returns 503 for a few seconds during its deploys. You configure retries on the API Connector card. What happens on a 503?",
+      "options": [
+        "It retries up to the configured count",
+        "No automatic retry; only 429 retries, so wrap the call in If Error and retry yourself",
+        "It retries only if the wait is set above one minute",
+        "It is treated as a 429 automatically"
+      ],
+      "correct_index": 1,
+      "explanation": "Card-level retries cover only HTTP 429. Other errors, including 5xx, halt or follow your error option. Build the retry yourself with If Error, or fix the cause with lower concurrency or a longer-lived queue."
+    },
+    {
+      "stem": "An engineer pastes a vendor API key into a Compose card in an exported flow, thinking the export strips secrets. What is wrong?",
+      "options": [
+        "Export strips connection information and table data, not literals typed into cards, so the key travels with the file",
+        "Export strips every value that looks like a key",
+        "The key is encrypted by the export",
+        "The key is replaced with a placeholder on import"
+      ],
+      "correct_index": 0,
+      "explanation": "Only connections and table data are removed on export. A string typed into a card is part of the flow definition and will be in the file, in git and in the target org. Store credentials in the connection, which is rebuilt in each environment."
+    }
+  ]
+}

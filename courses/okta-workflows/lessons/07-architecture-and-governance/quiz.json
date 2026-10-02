@@ -1,0 +1,61 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "4 of 5 correct to pass.",
+  "questions": [
+    {
+      "stem": "A flow handles an Okta event hook. It sometimes processes the same user twice and occasionally out of order. What should the design assume?",
+      "options": [
+        "At-least-once delivery with no ordering guarantee: dedupe on event ID and order by timestamp",
+        "Exactly-once, in order; the duplicates are a Workflows bug",
+        "Ordering is guaranteed within a single user, so ignore it",
+        "Duplicates happen only after a 4xx response"
+      ],
+      "correct_index": 0,
+      "explanation": "Okta documents event hook delivery as at least once with no ordering guarantee, and recommends the published timestamp for ordering and the event ID for duplicate detection. Handlers must be idempotent."
+    },
+    {
+      "stem": "You export a production folder and import it into a new org. After import, the flows run but every action fails authorisation. What is missing?",
+      "options": [
+        "The flows must be exported with their execution history",
+        "Connections, which export strips and must be recreated or assigned in the target org",
+        "Table data, which must be imported separately",
+        "Folder depth must be reduced to three levels"
+      ],
+      "correct_index": 1,
+      "explanation": "Export removes all connection information and table data. Imported flows keep their structure but have no authorised connections, so every card that talks to an app fails until you reconnect it. Tables come across empty with their schema."
+    },
+    {
+      "stem": "When is a Group Rule the better choice than a flow?",
+      "options": [
+        "When membership can be derived declaratively from user attributes, with no external systems or branching",
+        "When the rule needs to call an external API",
+        "When it must wait seven days then act",
+        "When it must change token claims in flight"
+      ],
+      "correct_index": 0,
+      "explanation": "Group Rules are the built-in declarative tool: a condition and a fixed result, with nothing to monitor. External calls, waiting and branching are Workflows territory, and changing a transaction in flight needs an inline hook."
+    },
+    {
+      "stem": "A shared helper flow used by twelve parents is edited to fix one parent's bug. What is the main risk?",
+      "options": [
+        "Helpers cannot be edited once they have run",
+        "The twelve parents are disabled automatically",
+        "The change takes effect for all twelve parents at once, so it needs treating like shared code",
+        "Only the calling parent sees the new behaviour"
+      ],
+      "correct_index": 2,
+      "explanation": "Helpers are referenced, not copied. Editing one changes behaviour for every caller. Export before changing, announce the change, and test every parent, because all of them are affected at once."
+    },
+    {
+      "stem": "With Folder Access Control enabled, you import a folder whose flows use org-level connections. What must you do before importing?",
+      "options": [
+        "Disable Folder Access Control for the org",
+        "Add those org-level connections to the destination folder first",
+        "Convert all connections to folder-level connections",
+        "Nothing; connections are recreated automatically"
+      ],
+      "correct_index": 1,
+      "explanation": "Okta's guidance is to add the flow's org-level connections to the destination folder before importing. Flows with folder-level connections cannot be imported into a different folder. Connections are never recreated automatically."
+    }
+  ]
+}

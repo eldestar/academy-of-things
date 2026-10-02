@@ -1,0 +1,61 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "4 of 5 correct to pass.",
+  "questions": [
+    {
+      "stem": "A downstream API occasionally returns 504 Gateway Timeout. You set the card's retry count to 3. In production the flow still halts on the first 504. Why?",
+      "options": [
+        "The retry count is capped at 1 for server errors",
+        "Retries only apply inside helper flows",
+        "Automatic retry applies only to HTTP 429; 504 must be handled with If Error or your own retry logic",
+        "The retry wait defaults to 5 minutes, so the flow is still waiting"
+      ],
+      "correct_index": 2,
+      "explanation": "Per the Workflows documentation, only 429 Too Many Requests triggers the card's automatic retry. 400-series errors and 500, 503 and 504 do not. To retry a 504 you wrap the call in If Error and loop or re-call a helper yourself."
+    },
+    {
+      "stem": "Inside the Try section of an If Error card you map a value from a card into a card placed after the If Error container, and Workflows will not let you. Why?",
+      "options": [
+        "A step inside Try may not have run, so there may be no value; use the container's Outputs instead",
+        "Mapping across containers needs a table",
+        "Cards after a container can only use constants",
+        "If Error cards cannot have cards after them"
+      ],
+      "correct_index": 0,
+      "explanation": "The engine refuses to bind to a value that might not exist. The If Error card has an Outputs section for exactly this: set the output in the Try section and in the If Error section, and downstream cards map from those outputs."
+    },
+    {
+      "stem": "A flow has an If Error block whose error section is empty. A card in Try fails. What happens?",
+      "options": [
+        "The flow halts and reports the error",
+        "The flow runs the central error helper by default",
+        "The flow retries the card once",
+        "The flow continues as though nothing failed, and the failure is not recorded as an error"
+      ],
+      "correct_index": 3,
+      "explanation": "If Error catches the failure; what it does next is up to you. An empty handler swallows the error, so the flow carries on and no failed execution shows up. Always report or record, or the problem will surface only when someone notices missing data."
+    },
+    {
+      "stem": "Which fields of the If Error error object let you jump straight to the failed run from an alert?",
+      "options": [
+        "message and code",
+        "flo and execution",
+        "method and message",
+        "code and method"
+      ],
+      "correct_index": 1,
+      "explanation": "The error object contains message, code, method (the failing step), flo (the flow ID) and execution (the execution ID). Flow ID plus execution ID identify one specific run in Execution History. Message and code explain what went wrong; they do not locate the run."
+    },
+    {
+      "stem": "A For Each over 4,000 users calls a card configured to retry 5 times, waiting 5 minutes between tries, on a rate-limited API. What is the likely outcome during a busy period?",
+      "options": [
+        "The flow halts after the first retry",
+        "429 errors never occur inside list loops",
+        "Many items hit 429 and each waits and retries independently, producing a large backlog of waiting executions",
+        "Retries are shared across the loop so only 5 retries happen in total"
+      ],
+      "correct_index": 2,
+      "explanation": "Retry settings are configured on the card, so each item's run of that card can wait and retry on its own. Across thousands of items that adds up to a long tail of waiting runs. Lowering the list card's concurrency, so fewer requests are in flight at once, attacks the cause better than adding retries."
+    }
+  ]
+}

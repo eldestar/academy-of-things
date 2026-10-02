@@ -39,8 +39,11 @@ lessons/01-x/
   Falling back is decided by a non-OK response, the same way a missing
   `quiz.json` is treated today.
 - A lesson whose body fell back to `lesson.md` shows one line under the title:
-  "Same content at every level." Stub lessons and courses without `levels`
-  never show it. A quiz-only fallback shows nothing.
+  "No <level> version of this lesson; showing the standard text." The engine
+  cannot know whether other levels differ without probing them, so the note
+  states only what is true for the level being read. For a lesson that has
+  only `lesson.md` it reads the same at every level. Stub lessons and courses
+  without `levels` never show it. A quiz-only fallback shows nothing.
 - Progress stays per lesson, not per level. Completing a lesson at any level
   marks it complete.
 
@@ -90,7 +93,7 @@ lives in memory for the page.
 
 ## UI
 
-Shared helper `segmented(container, name, options, value, onChange)` renders a
+Shared helper `segmented(container, name, label, options, value, onChange)` renders a
 control from real radio inputs inside labels, so keyboard and screen-reader
 behaviour is native. Used for the level switcher and the theme control.
 
@@ -115,8 +118,8 @@ behaviour is native. Used for the level switcher and the theme control.
 
 | File | Change |
 | --- | --- |
-| `engine/app.js` | Level and theme resolution, fallback fetch, `segmented()`, sidebar and quiz markup, "same content" note. |
-| `engine/course.html` | Head script for theme; sidebar containers for switcher, note slot and theme control. |
+| `engine/app.js` | Level and theme resolution, fallback fetch, `segmented()`, sidebar and quiz markup, the "no <level> version" note inserted after the lesson h1. |
+| `engine/course.html` | Head script for theme; sidebar containers for the level switcher and theme control. |
 | `engine/style.css` | Token block with light/dark, component restyle. Everything else reuses existing selectors. |
 
 After the engine copy changes, `engine/course.html` is re-copied verbatim to
@@ -146,8 +149,8 @@ No test framework is added. Run `python3 serve.py <free port>` (not 8000,
 which oMLX owns; never kill unknown PIDs), then in a browser:
 
 1. `example-course`: switch every level, click every lesson, take every quiz,
-   including pass and fail paths. Confirm the "same content" note on lesson 2
-   and its absence on lesson 1 at levels that have a variant.
+   including pass and fail paths. Confirm the "No <level> version" note on lesson 2
+   at every level, and on lesson 1 at intermediate only.
 2. Reload and open with `?level=advanced` and with an invalid level; confirm
    persistence and the ignore rule.
 3. Theme: System, Light, Dark; reload with each; confirm no flash and that the

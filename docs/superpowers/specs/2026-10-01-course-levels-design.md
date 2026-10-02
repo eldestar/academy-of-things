@@ -132,7 +132,7 @@ with no `levels`.
 
 - `courses/example-course`: add `levels`, `lesson.beginner.md` and
   `lesson.advanced.md` for lesson 1, and `quiz.advanced.json` for lesson 1.
-  Lesson 2 stays single-version to exercise the "same content" note. Content is
+  Lesson 2 stays single-version to exercise the "No <level> version" note. Content is
   about the course format itself, so every claim is checkable in this repo.
 - `FORMAT.md`: document `levels`, variant files, fallback, state keys, theme.
 - `scripts/new-course.sh`: optional levels flag that writes `levels` and

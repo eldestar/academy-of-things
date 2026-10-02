@@ -113,9 +113,9 @@ article blockquote {
 .mark { font-size: 12px; font-weight: 600; white-space: nowrap; }
 .option.correct .mark { color: var(--good-text); }
 .option.incorrect .mark { color: var(--bad-text); }
-.options .option.correct { border-color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent); }
-.options .option.incorrect { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, transparent); }
-.explanation { margin-top: 10px; font-size: 13px; color: var(--muted); display: none; }
+.options .option.correct { border-color: var(--good); background: var(--good-bg); box-shadow: inset 3px 0 0 var(--good); }
+.options .option.incorrect { border-color: var(--bad); background: var(--bad-bg); box-shadow: inset 3px 0 0 var(--bad); }
+.explanation { margin-top: 10px; padding: 8px 12px; border-radius: 6px; background: var(--bg); font-size: 13px; color: var(--muted); display: none; }
 .explanation.show { display: block; }
 .quiz-result { margin-top: 20px; padding: 16px 20px; border-radius: 8px; background: var(--panel); border: 1px solid var(--border); }
 .quiz-result.pass { border-color: var(--good); }

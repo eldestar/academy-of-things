@@ -1,0 +1,61 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "4 of 5 correct to pass.",
+  "questions": [
+    {
+      "stem": "An inline-hook flow meets its 3-second budget in testing but times out in production after you add a table lookup. What is the most likely explanation?",
+      "options": [
+        "Tables have a 3-second read limit",
+        "Inline hooks cannot read tables by design",
+        "The table feature runs apart from the core runtime and the extra latency, or the flow leaving low-latency mode, pushes it past the budget",
+        "Production has a lower table row limit than testing"
+      ],
+      "correct_index": 2,
+      "explanation": "The docs call out that tables run separately from the core runtime, and flows that use table operations can fall out of low-latency mode. A lookup that is quick in a quiet test org can cost much more under load. Keep latency-critical flows to the core path or cache what they need in the request."
+    },
+    {
+      "stem": "Which of these would take a hook-triggered flow OUT of low-latency mode?",
+      "options": [
+        "A Wait For card that pauses the flow",
+        "Starting from an Okta connector event card",
+        "Using a Compose card",
+        "Reading a flow input"
+      ],
+      "correct_index": 0,
+      "explanation": "Explicit pauses (Wait For, Wait Until, Pause) remove a flow from low-latency mode, as do runs over 60 seconds, streaming or other asynchronous features, rate-limit errors and certain heavy function cards. Starting from an Okta event card is one of the ways a flow qualifies in the first place."
+    },
+    {
+      "stem": "You need to keep a record of every execution's outcome for a year. Where does Workflows help you?",
+      "options": [
+        "Execution History keeps one year by default",
+        "A table can hold an unlimited number of rows",
+        "Exporting a flow exports its execution history",
+        "Nowhere directly: Execution History keeps 30 days, so you must write what you need elsewhere, such as an external store"
+      ],
+      "correct_index": 3,
+      "explanation": "History is a rolling 30-day window. A table is capped at 500,000 rows and 16 KB per cell, and export strips table data, so tables are a poor long-term archive. If you must retain outcomes, send them to a system built for it."
+    },
+    {
+      "stem": "A For Each over a large list reads the same table row on every iteration. What is the best change?",
+      "options": [
+        "Increase the row limit on the table",
+        "Read the row once before the loop and pass the value into the helper",
+        "Add a second table with the same row",
+        "Move the table read into a Call Flow Async inside the loop"
+      ],
+      "correct_index": 1,
+      "explanation": "Table requests are one of the resources Workflows throttles, and the loop multiplies them by the list size. Reading once and passing the value removes the repeated work. Adding tables or more async calls increases load instead of reducing it."
+    },
+    {
+      "stem": "A pilot has been built on a Starter-tier org. Which limit will you meet first as you add more automation?",
+      "options": [
+        "The 2 million step limit",
+        "The 30-day maximum pause",
+        "Active flows, which are capped at 5 on Starter",
+        "The 27 MB folder export size"
+      ],
+      "correct_index": 2,
+      "explanation": "The documented active-flow cap on Starter and trial orgs is 5, far lower than the technical limits. A pilot hits it the moment the third or fourth useful flow plus its parents need to be on. Check the licence tier before promising scope."
+    }
+  ]
+}

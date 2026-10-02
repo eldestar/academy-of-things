@@ -1,0 +1,61 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "4 of 5 correct to pass.",
+  "questions": [
+    {
+      "stem": "A flow that has run for months starts failing on an Okta \"Add User to Group\" action with a permissions error. Nothing in the flow changed. What is the most likely cause?",
+      "options": [
+        "The flow exceeded its 30-day execution history",
+        "The group was renamed",
+        "The Okta connection's scopes or the authorising account's role changed, and the connection needs reauthorising",
+        "The Workflows Console session expired"
+      ],
+      "correct_index": 2,
+      "explanation": "The Okta connection carries OAuth scopes and acts as a specific account. If scopes were customised, Okta added a scope the card needs, or the account lost super admin, actions fail with authorisation errors until the connection is reauthorised. The flow itself gives no hint of this."
+    },
+    {
+      "stem": "You want a flow to fire only when a user is added to the \"contractors\" group. Where does that filter go?",
+      "options": [
+        "In a Continue If (or similar branching) card immediately after the event card",
+        "On the event card itself, as a group selector you assume exists",
+        "In the flow's folder settings",
+        "In the Slack card's recipient field"
+      ],
+      "correct_index": 0,
+      "explanation": "Do not rely on the event card to select the group. Inspect the group name output yourself and stop early with a branching card. Filtering first keeps executions cheap and the history readable."
+    },
+    {
+      "stem": "After switching a flow on, you add a test user to the group and see no execution for several seconds. Which is NOT a plausible explanation?",
+      "options": [
+        "The flow is actually still off",
+        "The Okta connection is unauthorised",
+        "Event delivery is asynchronous and the execution has not arrived yet",
+        "Execution History has reached its 30-day retention and stopped recording"
+      ],
+      "correct_index": 3,
+      "explanation": "Retention is a rolling window: old executions drop off, new ones are always recorded. The other three are the standard causes of a silent flow. Check the toggle, check the connection, then wait a little longer before assuming a bug."
+    },
+    {
+      "stem": "In Execution History the Compose card's output reads \"User undefined was added to contractors\". What went wrong?",
+      "options": [
+        "Execution History truncates long values",
+        "The mapping into the Compose card points at an empty or wrong event output field",
+        "The user had no login attribute in Okta",
+        "The Slack connection lacks the correct scope"
+      ],
+      "correct_index": 1,
+      "explanation": "History shows exactly what each card received. \"undefined\" in a composed string means the mapped source field was empty for that run, almost always because the wrong output was dragged in. Open the event card's outputs in the same execution to see which fields actually carried data."
+    },
+    {
+      "stem": "Why does Okta recommend authorising the Okta connection with a dedicated service account rather than your own admin login?",
+      "options": [
+        "Service accounts get higher rate limits",
+        "Service accounts do not need scopes",
+        "Actions through the connection are attributed to the authorising account, so your name would appear on every automated change",
+        "Personal accounts cannot hold super admin"
+      ],
+      "correct_index": 2,
+      "explanation": "The connection is the identity the flow acts as. With a dedicated account, System Log clearly separates human changes from automation, and the connection does not break when an individual admin leaves or loses their role. Rate limits and scopes are unaffected."
+    }
+  ]
+}

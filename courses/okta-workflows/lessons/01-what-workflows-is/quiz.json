@@ -1,0 +1,61 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "4 of 5 correct to pass.",
+  "questions": [
+    {
+      "stem": "A colleague wants every user whose department attribute equals \"Finance\" to be added to a group. They have started building a Workflows flow. What should you tell them?",
+      "options": [
+        "Use a scheduled flow that scans all users nightly",
+        "Use an Event Hook so the logic runs outside Okta",
+        "Use a Group Rule instead; it is declarative, faster and has nothing to monitor",
+        "Continue in Workflows, because attribute-based membership needs a flow"
+      ],
+      "correct_index": 2,
+      "explanation": "Attribute-based group membership is exactly what Group Rules are for. A flow would re-implement a built-in feature, cost an active-flow slot, and give you an execution history to babysit. Workflows earns its place when you need multiple steps, external systems, waiting or retries."
+    },
+    {
+      "stem": "A helper flow in your folder shows no on/off toggle and nothing in its Execution History. Which statement is true?",
+      "options": [
+        "Helper flows only run when another flow calls them; it simply has not been called yet",
+        "It is broken and must be re-imported",
+        "Execution History is not kept for helper flows",
+        "Helper flows run on a schedule and this one has not fired"
+      ],
+      "correct_index": 0,
+      "explanation": "A helper flow has no trigger of its own. It is inactive until a parent flow invokes it with Call Flow, Call Flow Async, or a list card such as For Each. Once it has run, its executions appear in its own Execution History, which is where you debug failures inside loops."
+    },
+    {
+      "stem": "A flow needs to pause a token-minting transaction and inject a claim based on an external lookup. Which mechanism is the fit, and what is the main constraint?",
+      "options": [
+        "A Workflows event card; the constraint is active-flow tiers",
+        "A Group Rule; the constraint is that it cannot call external systems",
+        "An Event Hook; the constraint is the 400,000 events per day limit",
+        "An Inline Hook; the constraint is that Okta waits only about three seconds for a response"
+      ],
+      "correct_index": 3,
+      "explanation": "Only Inline Hooks are synchronous: Okta pauses the transaction and waits for your answer. The documented timeout is three seconds, so any external lookup must be fast or pre-cached. Event Hooks and Workflows event cards are asynchronous and cannot modify the transaction."
+    },
+    {
+      "stem": "Where does the data that moves from an Okta \"User Created\" event card into a Slack \"Send Message\" card come from?",
+      "options": [
+        "The flow's table, which caches event payloads",
+        "Mapping: dragging the event card's output fields onto the action card's input fields",
+        "A JSON expression typed into the Slack card",
+        "A variable you declare at the top of the flow"
+      ],
+      "correct_index": 1,
+      "explanation": "Workflows has no variables in the programming sense. Every card exposes outputs, and you map an output onto a later card's input by drag and drop. Tables are for state between executions, not for passing data within one."
+    },
+    {
+      "stem": "An auditor asks what identity performed the deactivations your flows carried out last month. What determines the answer?",
+      "options": [
+        "A built-in \"Okta Workflows\" system actor, always",
+        "The admin who clicked Run on the flow",
+        "The account used to authorise the Okta connection the flow uses",
+        "The owner of the folder the flow lives in"
+      ],
+      "correct_index": 2,
+      "explanation": "The Okta connection is authorised by a real account, and actions through that connection are attributed to it. That is why Okta recommends a dedicated service account with super admin rights for the connection, rather than whichever admin happened to set it up."
+    }
+  ]
+}

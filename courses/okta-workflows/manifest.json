@@ -1,0 +1,16 @@
+{
+  "slug": "okta-workflows",
+  "title": "Okta Workflows",
+  "subtitle": "From first flow to platform design: building, hardening and governing Workflows in an Okta org",
+  "lessons": [
+    { "id": "01-what-workflows-is", "title": "1. What Workflows is for" },
+    { "id": "02-first-flow", "title": "2. Your first flow, tested properly" },
+    { "id": "03-helper-flows-and-lists", "title": "3. Helper flows and lists" },
+    { "id": "04-error-handling", "title": "4. Error handling that survives 2am" },
+    { "id": "05-tables-limits-performance", "title": "5. Tables, limits and performance" },
+    { "id": "06-api-endpoints-and-external-apis", "title": "6. API endpoints and external APIs" },
+    { "id": "07-architecture-and-governance", "title": "7. Architecture and governance" },
+    { "id": "08-connector-builder", "title": "8. Connector Builder", "stub": true,
+      "outline": "## Coming next\n\nBuilding a custom connector when the API Connector cards are not enough.\n\n- When a custom connector beats a Raw Request helper flow\n- The `_authping` and `httpHelper` flows that Okta's Connector Builder docs describe\n- OAuth 2.0 Authorization Code vs Client Credentials in Connector Builder\n- Testing a connector before it is deployed to a folder\n\nNot written yet because the Connector Builder docs were not verified when this course was built." }
+  ]
+}

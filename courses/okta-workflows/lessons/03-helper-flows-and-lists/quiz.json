@@ -1,0 +1,61 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "4 of 5 correct to pass.",
+  "questions": [
+    {
+      "stem": "You fan out work with Call Flow Async. One helper run fails on a malformed record. What does the parent flow's Execution History show?",
+      "options": [
+        "Nothing is recorded anywhere for async helpers",
+        "The parent retries the helper automatically three times",
+        "The parent continues normally; the failure appears only in the helper flow's own history",
+        "The parent is marked failed at the Call Flow Async card"
+      ],
+      "correct_index": 2,
+      "explanation": "Call Flow Async starts the helper and moves on without waiting, so it cannot learn of the helper's failure. The failed run is recorded in the helper's Execution History. If you need to know, the helper must report its own failures, which is the subject of the next lesson."
+    },
+    {
+      "stem": "A nightly flow runs Find Users, then For Each over the result to update an attribute. It begins failing intermittently on large orgs with memory-related errors. Which change addresses the cause?",
+      "options": [
+        "Enable Stream Matching Records on the Find Users card so records are processed as they page in",
+        "Replace For Each with Map",
+        "Turn the flow off and on again to reset its memory",
+        "Increase the concurrency field on For Each"
+      ],
+      "correct_index": 0,
+      "explanation": "Without streaming, the whole user list is held in the flow's memory, which is capped at 100 MB. Streaming pages through results and starts a helper per record with low memory use. Concurrency changes speed, not memory held by the list, and Map builds yet another list in memory."
+    },
+    {
+      "stem": "Which statement about Map and For Each is correct?",
+      "options": [
+        "Both return the helper's outputs as separate lists",
+        "For Each returns a list; Map returns nothing",
+        "Map can only be used with streaming cards",
+        "Map returns a list with the same number of items as the input; For Each returns no output"
+      ],
+      "correct_index": 3,
+      "explanation": "Map transforms: one output item per input item, always. For Each exists for side effects and returns no output values. If you need to know which items succeeded, have the helper write to a table or report separately, or use Map and return a status."
+    },
+    {
+      "stem": "A helper flow that updates a downstream system in parallel keeps hitting that system's write conflicts. What should you change first?",
+      "options": [
+        "Pass the entire user object to the helper so it has more context",
+        "Set the concurrency on the list card to 1 so items are processed in sequence",
+        "Add a second Call Flow Async inside the helper",
+        "Raise the helper recursion limit"
+      ],
+      "correct_index": 1,
+      "explanation": "The concurrency field controls how many items run in parallel. A value of 1 forces sequential processing when order matters or the target cannot take parallel writes. Passing more data or adding more async calls makes contention worse, and the recursion limit is unrelated."
+    },
+    {
+      "stem": "You must turn a list of text values like \"42\" into numbers before doing arithmetic on them in a parent flow, but the numeric function you feed it rejects the list. What is the correct approach?",
+      "options": [
+        "Lists convert automatically; reconnect the cards",
+        "Wrap the Sum card in an If Error card",
+        "Use Map with a helper that converts each item, or convert per item inside the helper that For Each calls",
+        "Mix text and numbers in one list so Workflows infers the type"
+      ],
+      "correct_index": 2,
+      "explanation": "Lists of one type do not auto-convert to another the way single values do, and mixed-type lists make this worse. Converting each item in a helper, typically via Map, is the documented route. Error handling would only hide the type problem."
+    }
+  ]
+}

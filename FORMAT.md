@@ -118,6 +118,8 @@ Give every lesson that has a `quiz.<level>.json` a plain `quiz.json` too.
 Without it the other levels have no quiz, and a lesson with no quiz is marked
 complete as soon as it opens.
 
+A `quiz.<level>.json` that is not valid JSON shows an error naming the file and does not fall back to `quiz.json`; that lesson cannot be completed at that level until the file is fixed.
+
 When the lesson body fell back to `lesson.md`, the engine shows one line under
 the title: `No <level> version of this lesson; showing the standard text.` A
 lesson that only ever has `lesson.md` reads that way at every level, which is
@@ -144,7 +146,7 @@ same course on the same machine share the same state.
 | Key | Holds |
 | --- | --- |
 | `academy-of-things:<slug>:progress` | Completed lessons for one course. |
-| `academy-of-things:<slug>:level` | The selected level for one course. `?level=<level>` seeds it once and is then removed from the URL; values the manifest does not declare are ignored. |
+| `academy-of-things:<slug>:level` | The selected level for one course. `?level=<level>` seeds it once and is then removed from the URL; values the manifest does not declare are ignored. A stored value the manifest no longer declares falls back to the first level. |
 | `academy-of-things:theme` | `light` or `dark`. Absent means follow the system. One key for every course. |
 
 ## Constraints worth knowing

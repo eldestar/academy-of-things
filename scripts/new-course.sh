@@ -4,6 +4,7 @@
 # --levels adds beginner/intermediate/advanced levels. lesson.md is the
 # fallback and the intermediate text; edit the lesson.beginner.md and
 # lesson.advanced.md it creates, or delete them to show lesson.md there.
+# A leftover placeholder is shown to readers as that level's lesson.
 set -euo pipefail
 
 LEVELS=0; ARGS=()
@@ -81,4 +82,5 @@ echo "Created courses/$SLUG"
 echo "Run:  python3 serve.py   then open http://localhost:8000/courses/$SLUG/"
 if [ "$LEVELS" = 1 ]; then
   echo "Levels: lesson.md is the fallback and the intermediate text."
+  echo "Write or delete lesson.beginner.md and lesson.advanced.md: a leftover placeholder is shown to readers as that level's lesson."
 fi

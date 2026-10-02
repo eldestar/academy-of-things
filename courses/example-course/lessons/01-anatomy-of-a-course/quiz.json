@@ -1,0 +1,50 @@
+{
+  "pass_threshold_pct": 75,
+  "passing_note": "3 of 4 correct to pass.",
+  "questions": [
+    {
+      "stem": "What has to match between manifest.json and the files on disk?",
+      "options": [
+        "The lesson title and the first heading in lesson.md",
+        "The lesson id and the folder name under lessons/",
+        "The course slug and the folder name under courses/",
+        "Nothing — the engine discovers lessons by scanning the folder"
+      ],
+      "correct_index": 1,
+      "explanation": "The engine fetches lessons/<id>/lesson.md, so the id is the folder name. The course folder name is conventionally the slug but nothing enforces it, and the engine never scans the directory — it only reads what the manifest lists."
+    },
+    {
+      "stem": "Why must a course be served from the repo root rather than from inside the course folder?",
+      "options": [
+        "Because manifest.json uses absolute paths",
+        "Because index.html references ../../engine/, which a server rooted in the course folder will not serve",
+        "Because localStorage is scoped to the root path",
+        "Because marked.js has to be loaded before the manifest"
+      ],
+      "correct_index": 1,
+      "explanation": "Simple static servers refuse to serve files above their root. The course shell loads ../../engine/style.css and ../../engine/app.js, so the root has to be the repo. scripts/package-course.sh exists precisely to vendor the engine in when you need a course to stand alone."
+    },
+    {
+      "stem": "A lesson is outlined but not written. What is the correct thing to do?",
+      "options": [
+        "Leave it out of the manifest until it is written",
+        "Write a short placeholder paragraph so the course looks complete",
+        "Mark it \"stub\": true with an outline describing what it will cover",
+        "Set its quiz pass_threshold_pct to 0 so it can be skipped"
+      ],
+      "correct_index": 2,
+      "explanation": "A stub renders its outline, greys out in the sidebar, and is excluded from the progress denominator. Leaving it out of the manifest hides the roadmap from the reader; a placeholder paragraph is filler, which is the specific failure this format is designed to prevent."
+    },
+    {
+      "stem": "You rename a course's slug from \"okta-basics\" to \"identity-basics\" after a dozen people have worked through it. What happens?",
+      "options": [
+        "Nothing — progress is keyed on the folder name",
+        "Their progress resets, because saved progress is namespaced by slug",
+        "The engine migrates their progress automatically",
+        "The course fails to load until they clear site data"
+      ],
+      "correct_index": 1,
+      "explanation": "Progress is stored under academy-of-things:<slug>:progress in each browser's localStorage. Change the slug and the engine looks up a key that does not exist, so every lesson shows incomplete. Pick a slug you can live with."
+    }
+  ]
+}

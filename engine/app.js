@@ -43,6 +43,58 @@ function esc(s) {
   return d.innerHTML;
 }
 
+// One theme choice for every course, so it is deliberately not namespaced by
+// slug. The inline script in course.html reads the same key before first paint.
+const THEME_KEY = 'academy-of-things:theme';
+
+function storageGet(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    return null;
+  }
+}
+
+function storageSet(key, value) {
+  try {
+    if (value == null) localStorage.removeItem(key);
+    else localStorage.setItem(key, value);
+  } catch (e) {
+    // storage blocked (private mode, quota): the choice just won't persist
+  }
+}
+
+// Radio group styled as a segmented control; native radios give keyboard and
+// screen-reader behaviour for free. Option values double as visible labels.
+function segmented(container, name, label, options, value, onChange) {
+  container.innerHTML = '';
+  container.classList.add('segmented');
+  container.setAttribute('role', 'radiogroup');
+  container.setAttribute('aria-label', label);
+  options.forEach((opt) => {
+    const lab = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = name;
+    input.value = opt;
+    input.checked = opt === value;
+    input.addEventListener('change', () => onChange(opt));
+    const text = document.createElement('span');
+    text.textContent = opt;
+    lab.append(input, text);
+    container.appendChild(lab);
+  });
+}
+
+function initThemeSwitcher() {
+  const current = document.documentElement.dataset.theme || 'system';
+  segmented(document.getElementById('theme-switcher'), 'theme', 'Theme', ['system', 'light', 'dark'], current, (theme) => {
+    if (theme === 'system') delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = theme;
+    storageSet(THEME_KEY, theme === 'system' ? null : theme);
+  });
+}
+
 function renderSidebar(manifest, currentLessonId, progress) {
   const list = document.getElementById('lesson-list');
   list.innerHTML = '';
@@ -321,6 +373,7 @@ function renderNav(manifest, lesson) {
 }
 
 async function initCourse() {
+  initThemeSwitcher();
   const manifest = await loadManifest();
   document.getElementById('course-title').textContent = manifest.title;
   document.getElementById('course-subtitle').textContent = manifest.subtitle || '';

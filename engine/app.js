@@ -95,6 +95,62 @@ function initThemeSwitcher() {
   });
 }
 
+const LEVEL_RE = /^[a-z0-9-]+$/;
+let level = null; // selected level slug, or null when the course declares none
+
+function levelKey(courseSlug) {
+  return `academy-of-things:${courseSlug}:level`;
+}
+
+// Keep only well-formed slugs: the level ends up in a fetched file name.
+function normalizeLevels(manifest) {
+  const raw = manifest.levels;
+  if (raw === undefined) {
+    manifest.levels = [];
+    return;
+  }
+  manifest.levels = Array.isArray(raw) ? raw.filter((l) => typeof l === 'string' && LEVEL_RE.test(l)) : [];
+  if (!Array.isArray(raw) || manifest.levels.length !== raw.length) {
+    console.warn('manifest.json: ignored invalid "levels" entries (use lowercase letters, digits and hyphens)');
+  }
+}
+
+// ?level= wins, then storage, then the first declared level.
+// Anything the manifest does not declare is ignored.
+function resolveLevel(manifest, search) {
+  const levels = manifest.levels;
+  if (!levels.length) return null;
+  const fromUrl = new URLSearchParams(search).get('level');
+  if (levels.includes(fromUrl)) {
+    storageSet(levelKey(manifest.slug), fromUrl);
+    return fromUrl;
+  }
+  const stored = storageGet(levelKey(manifest.slug));
+  return levels.includes(stored) ? stored : levels[0];
+}
+
+// Try lesson.<level>.md (or quiz.<level>.json) first, then the plain file.
+// `variant` says which one answered; `path` is the last path tried.
+async function fetchVariant(lessonId, base, ext, lvl) {
+  if (lvl) {
+    const res = await fetch(`./lessons/${lessonId}/${base}.${lvl}.${ext}`);
+    if (res.ok) return { res, variant: true, path: `lessons/${lessonId}/${base}.${lvl}.${ext}` };
+  }
+  const path = `lessons/${lessonId}/${base}.${ext}`;
+  return { res: await fetch(`./${path}`), variant: false, path };
+}
+
+function initLevelSwitcher(manifest, onChange) {
+  if (!manifest.levels.length) return;
+  const el = document.getElementById('level-switcher');
+  el.hidden = false;
+  segmented(el, 'level', 'Reading level', manifest.levels, level, onChange);
+}
+
+function currentLessonId(manifest) {
+  return new URLSearchParams(location.search).get('lesson') || manifest.lessons[0].id;
+}
+
 const STATUS_TEXT = { stub: 'coming next', done: 'completed', current: 'in progress', todo: 'not started' };
 
 function renderSidebar(manifest, currentLessonId, progress) {
@@ -322,10 +378,12 @@ async function renderLesson(manifest, lessonId) {
   }
 
   let md;
+  let usedVariant = false;
   try {
-    const mdRes = await fetch(`./lessons/${lesson.id}/lesson.md`);
+    const { res: mdRes, variant } = await fetchVariant(lesson.id, 'lesson', 'md', level);
     if (!mdRes.ok) throw new Error(`HTTP ${mdRes.status}`);
     md = await mdRes.text();
+    usedVariant = variant;
   } catch (e) {
     if (token !== renderToken) return;
     article.innerHTML = `<h1>${esc(lesson.title)}</h1>`;
@@ -334,15 +392,23 @@ async function renderLesson(manifest, lessonId) {
   }
   if (token !== renderToken) return;
   article.innerHTML = marked.parse(md);
+  if (level && !usedVariant) {
+    const note = document.createElement('p');
+    note.className = 'level-note';
+    note.textContent = `No ${level} version of this lesson; showing the standard text.`;
+    const h1 = article.querySelector('h1');
+    if (h1) h1.after(note);
+    else article.prepend(note);
+  }
 
   let quiz = null;
   try {
-    const quizRes = await fetch(`./lessons/${lesson.id}/quiz.json`);
+    const { res: quizRes, path: quizPath } = await fetchVariant(lesson.id, 'quiz', 'json', level);
     if (quizRes.ok) {
       try {
         quiz = await quizRes.json();
       } catch (e) {
-        if (token === renderToken) showProblem(quizContainer, `lessons/${lesson.id}/quiz.json is not valid JSON (${e.message}), so this lesson has no quiz.`);
+        if (token === renderToken) showProblem(quizContainer, `${quizPath} is not valid JSON (${e.message}), so this lesson has no quiz.`);
         return;
       }
     }
@@ -387,13 +453,18 @@ async function initCourse() {
   document.getElementById('course-title').textContent = manifest.title;
   document.getElementById('course-subtitle').textContent = manifest.subtitle || '';
 
-  const params = new URLSearchParams(location.search);
-  const lessonId = params.get('lesson') || manifest.lessons[0].id;
-  await renderLesson(manifest, lessonId);
+  normalizeLevels(manifest);
+  level = resolveLevel(manifest, location.search);
+  initLevelSwitcher(manifest, async (value) => {
+    level = value;
+    storageSet(levelKey(manifest.slug), value);
+    await renderLesson(manifest, currentLessonId(manifest));
+  });
+
+  await renderLesson(manifest, currentLessonId(manifest));
 
   window.addEventListener('popstate', async () => {
-    const p = new URLSearchParams(location.search);
-    await renderLesson(manifest, p.get('lesson') || manifest.lessons[0].id);
+    await renderLesson(manifest, currentLessonId(manifest));
   });
 
   async function go(e) {

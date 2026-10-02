@@ -87,6 +87,7 @@ main { padding: 40px 56px; max-width: 820px; min-width: 0; }
 article h1 { font-size: 28px; margin-top: 0; }
 article h2 { font-size: 20px; margin-top: 32px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
 article h3 { font-size: 16px; margin-top: 24px; }
+.level-note { margin: 0 0 20px; font-size: 13px; color: var(--muted); }
 article p, article li { color: var(--body); }
 article code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
 article table { border-collapse: collapse; display: block; overflow-x: auto; margin: 16px 0; }

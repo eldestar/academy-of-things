@@ -62,7 +62,9 @@ no templating — what you write is what renders.
 
 ## quiz.json
 
-Optional. Omit the file and the lesson simply has no quiz.
+Optional. Omit the file and the lesson simply has no quiz. The engine reads
+"missing" as a 404 from the server; any other failure to load the file shows a
+message and the lesson is not marked complete.
 
 ```json
 {
@@ -129,9 +131,11 @@ Progress is per lesson, not per level: passing a lesson's quiz at any level
 marks it complete everywhere. Switching level re-renders the open lesson and
 discards any quiz answers not yet checked.
 
-A missing level file is detected from a non-OK response, so the server has to
+A missing level file is detected from a 404 response, so the server has to
 return a real 404 for it (`serve.py` does). A host that answers every unknown
-path with 200 and an HTML page will break the fallback.
+path with 200 and an HTML page will break the fallback, and one that answers
+with another error status (a 403 for missing files, say) shows a load error
+instead of falling back.
 
 Each lesson open at a level asks for the level file first, so the browser's
 developer console shows one failed-request (404) line per missing variant. That

@@ -1,0 +1,45 @@
+{
+  "pass_threshold_pct": 75,
+  "passing_note": "3 of 4 correct to pass.",
+  "questions": [
+    {
+      "stem": "Given options [\"Service Provider\", \"Identity Provider\", \"Principal\"] and the correct answer \"Identity Provider\", what is correct_index?",
+      "options": ["0", "1", "2", "3"],
+      "correct_index": 1,
+      "explanation": "Zero-based: \"Service Provider\" is 0, \"Identity Provider\" is 1. Getting this wrong marks readers incorrect for the right answer, and nothing in the format will warn you — it is worth re-reading every quiz.json once before shipping it."
+    },
+    {
+      "stem": "Which explanation is doing its job?",
+      "options": [
+        "\"Correct — Okta is the Identity Provider.\"",
+        "\"Okta authenticates the user and issues the signed assertion vouching for their identity — that's the Identity Provider role.\"",
+        "\"See the lesson above for details.\"",
+        "\"This is a common exam question.\""
+      ],
+      "correct_index": 1,
+      "explanation": "Explanations show for right and wrong answers alike, and are read most carefully by people who just got the question wrong. Restating the answer, deferring to the lesson body, or commenting on the question all waste that moment. Give the mechanism."
+    },
+    {
+      "stem": "Why does a question like \"What is a SAML assertion?\" make a weak quiz item?",
+      "options": [
+        "It is too long to render well on mobile",
+        "It can be answered by string-matching the lesson text, so it tests reading rather than understanding",
+        "Definitions belong in quizzes but not in lessons",
+        "The engine cannot score definition questions"
+      ],
+      "correct_index": 1,
+      "explanation": "Retrieval only helps when it requires reconstructing something. A definition lifted straight from the paragraph above is recognised, not recalled, and it is gone by the next day. Ask what breaks, and why."
+    },
+    {
+      "stem": "You include a joke option (\"A pizza\") among the distractors. What is the actual cost?",
+      "options": [
+        "None — it lightens the tone",
+        "It makes the question effectively three options instead of four, weakening what the quiz measures",
+        "The engine will fail to score the question",
+        "It breaks the pass_threshold_pct calculation"
+      ],
+      "correct_index": 1,
+      "explanation": "Every implausible distractor is one the reader eliminates for free. Enough of them and the question is answerable without knowing anything. Good distractors come from real confusions — adjacent concepts, or what used to be true in an older version."
+    }
+  ]
+}

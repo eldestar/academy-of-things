@@ -46,6 +46,15 @@ A stub with an honest outline tells the reader what is coming and tells the
 author what to write next. Filler just wastes the reader's time and makes
 them trust the rest of the course less.
 
+## Levels are optional
+
+This course declares `"levels"` in its manifest, which is why the sidebar has
+a Beginner, Intermediate and Advanced switch. A lesson can ship
+`lesson.<level>.md` for any level; where it does not, the engine falls back to
+`lesson.md`. This lesson has a beginner and an advanced version, so
+intermediate reads this file. Lesson 2 has only `lesson.md`, so it reads the
+same at every level.
+
 ## What the engine does not do
 
 No accounts, no server-side state, no completion reporting, no grading you

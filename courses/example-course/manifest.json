@@ -2,6 +2,7 @@
   "slug": "example-course",
   "title": "Example Course",
   "subtitle": "A working course that teaches the course format by being one",
+  "levels": ["beginner", "intermediate", "advanced"],
   "lessons": [
     { "id": "01-anatomy-of-a-course", "title": "1. Anatomy of a Course" },
     { "id": "02-writing-quizzes", "title": "2. Writing Quizzes That Teach" },

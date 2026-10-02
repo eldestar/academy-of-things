@@ -1,0 +1,50 @@
+{
+  "pass_threshold_pct": 75,
+  "passing_note": "3 of 4 correct to pass.",
+  "questions": [
+    {
+      "stem": "A lesson folder contains lesson.md and no quiz.json. What happens when a reader opens the lesson?",
+      "options": [
+        "An empty quiz renders and can never be passed",
+        "The lesson is marked complete as soon as it opens",
+        "The lesson refuses to render until a quiz exists",
+        "The lesson is marked complete once the reader scrolls to the end"
+      ],
+      "correct_index": 1,
+      "explanation": "A missing quiz.json simply means no quiz, and a lesson with no quiz counts as complete on open. The engine does not track scrolling, and nothing requires a quiz to exist."
+    },
+    {
+      "stem": "A manifest entry has \"stub\": true and its lessons/<id>/ folder does not exist. What does the reader see?",
+      "options": [
+        "A could-not-load error naming the missing lesson.md",
+        "An empty page, because the fetch for lesson.md fails",
+        "A 404 page from the server",
+        "The outline text from the manifest, rendered as Markdown"
+      ],
+      "correct_index": 3,
+      "explanation": "Stubs return before any fetch. The engine renders the manifest's outline in place of lesson.md, so a stub needs no folder. That is also why a stub cannot have a quiz."
+    },
+    {
+      "stem": "quiz.json is present but contains a trailing comma, so it is invalid JSON. What does the reader see?",
+      "options": [
+        "No quiz, plus a message naming the file and the parse error; the lesson text still renders",
+        "No quiz and no message of any kind",
+        "The whole lesson fails to load",
+        "A quiz with zero questions that passes immediately"
+      ],
+      "correct_index": 0,
+      "explanation": "The engine reports a parse failure on the page instead of swallowing it, and keeps the lesson body. A missing quiz.json is silent because that is a normal state; a present but broken one is an authoring bug worth surfacing."
+    },
+    {
+      "stem": "A reader passes this lesson's quiz at Advanced, then switches to Beginner. What does the sidebar show for the lesson?",
+      "options": [
+        "Not started, because progress is tracked separately per level",
+        "In progress until they also pass the Beginner quiz",
+        "Done, because progress is stored per lesson, not per level",
+        "Done only at Advanced; the check disappears at other levels"
+      ],
+      "correct_index": 2,
+      "explanation": "Progress is keyed on lesson id alone. Levels change which text and quiz a reader sees, not what counts as finished, so a pass at any level completes the lesson for all of them."
+    }
+  ]
+}

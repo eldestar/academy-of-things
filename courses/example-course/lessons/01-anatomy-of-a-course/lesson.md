@@ -36,8 +36,9 @@ resets the progress bar for everyone who has used the course.
 ## Stubs are first-class
 
 Lesson 3 of this course is a stub. Look at the sidebar: it is greyed out, and
-the progress bar says "0/2" rather than "0/3" — unwritten lessons are
-excluded from the denominator rather than counted as incomplete work.
+the progress label says "0 of 2 complete" rather than "0 of 3" — unwritten
+lessons are excluded from the denominator rather than counted as incomplete
+work.
 
 This matters more than it looks. The alternative, when a generator runs out
 of real material, is filler: three paragraphs restating the lesson title.

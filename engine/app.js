@@ -95,43 +95,51 @@ function initThemeSwitcher() {
   });
 }
 
+const STATUS_TEXT = { stub: 'coming next', done: 'completed', current: 'in progress', todo: 'not started' };
+
 function renderSidebar(manifest, currentLessonId, progress) {
   const list = document.getElementById('lesson-list');
   list.innerHTML = '';
+  const isDone = (l) => !!(progress[l.id] && progress[l.id].completed);
+
   manifest.lessons.forEach((lesson) => {
     const li = document.createElement('li');
     const a = document.createElement('a');
     a.href = `?lesson=${lesson.id}`;
-    const label = document.createElement('span');
-    label.textContent = lesson.title;
-    a.appendChild(label);
-    if (lesson.id === currentLessonId) {
+    const current = lesson.id === currentLessonId;
+    let state = 'todo';
+    if (lesson.stub) state = 'stub';
+    else if (isDone(lesson)) state = 'done';
+    else if (current) state = 'current';
+    a.classList.add('is-' + state);
+    if (current) {
       a.classList.add('active');
       a.setAttribute('aria-current', 'page');
     }
-    if (lesson.stub) a.classList.add('locked');
 
-    const badge = document.createElement('span');
-    badge.classList.add('badge');
-    if (lesson.stub) {
-      badge.classList.add('stub');
-      badge.textContent = 'coming next';
-    } else if (progress[lesson.id] && progress[lesson.id].completed) {
-      badge.classList.add('done');
-      badge.textContent = 'done';
-    } else {
-      badge.textContent = 'start';
-    }
-    a.appendChild(badge);
+    const icon = document.createElement('span');
+    icon.className = 'status';
+    icon.setAttribute('aria-hidden', 'true');
+    const title = document.createElement('span');
+    title.textContent = lesson.title;
+    const status = document.createElement('span');
+    status.className = 'sr-only';
+    status.textContent = ` (${STATUS_TEXT[state]})`;
+    a.append(icon, title, status);
     li.appendChild(a);
     list.appendChild(li);
   });
 
-  const done = manifest.lessons.filter((l) => !l.stub && progress[l.id] && progress[l.id].completed).length;
-  const total = manifest.lessons.filter((l) => !l.stub).length;
-  const pct = total ? Math.round((done / total) * 100) : 0;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-label').textContent = `${done}/${total} lessons complete (${pct}%)`;
+  const written = manifest.lessons.filter((l) => !l.stub);
+  const done = written.filter(isDone).length;
+  const segments = document.getElementById('progress-segments');
+  segments.innerHTML = '';
+  written.forEach((l) => {
+    const s = document.createElement('span');
+    if (isDone(l)) s.className = 'done';
+    segments.appendChild(s);
+  });
+  document.getElementById('progress-label').textContent = `${done} of ${written.length} complete`;
 }
 
 function renderQuiz(container, quiz, onPass) {

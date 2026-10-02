@@ -18,6 +18,8 @@ If the request comes with source material to convert (a transcript, a doc, notes
 ## Before building anything
 
 1. **Ask who the reader is and what level they are at**, unless it is already clear. A course for someone who has run the technology for five years is a different course from an introduction, and guessing wrong wastes the whole thing. Also confirm scope and rough lesson count — 4 to 8 is the useful range; more than that should be two courses.
+
+   Also decide whether the course needs levels. Add them only when the audience genuinely spans levels and you can write the lessons at more than one depth. A single-level course is simpler and often better. If levels are wanted, scaffold with `--levels` and write `lesson.md` as the standard text (the intermediate one when using the default levels).
 2. **Research the subject properly** before writing lesson content. Use web search and fetch for anything factual, current, or technical. Never write a lesson from stale knowledge on a fast-moving topic — tool versions, current best practices, provider names, pricing.
 3. **Reconcile what you fetched.** When two pages disagree (a limit quoted two ways, a default that differs by page), do not pick one silently. State both in the lesson, or say the figure should be confirmed in the reader's own environment. Record the date the facts were checked in the first lesson, because limits and tier numbers rot.
 4. **Plan the lesson sequence before writing files.** Each lesson teaches one coherent chunk, builds on the previous one, and ends with something the learner can point to as evidence of understanding.
@@ -45,6 +47,14 @@ courses/<slug>/
       quiz.json
 ```
 
+With levels:
+
+```bash
+./scripts/new-course.sh --levels <slug> "<Title>" "<Subtitle>"
+```
+
+That adds `"levels": ["beginner", "intermediate", "advanced"]` to the manifest and creates `lesson.beginner.md` and `lesson.advanced.md` placeholders beside `lesson.md`. Write each one or delete it: a leftover placeholder is served to readers as that level's lesson.
+
 **The engine is shared, not copied.** `index.html` references `../../engine/`, and there is exactly one copy of `app.js` and `style.css` in `engine/`. Do not copy engine files into a course folder — that was the old layout and it caused drift. If a course needs to stand alone for distribution, `./scripts/package-course.sh <slug>` vendors the engine into a zip; that is the only place duplication is correct.
 
 ### manifest.json
@@ -66,6 +76,7 @@ courses/<slug>/
 - `slug` matches the folder name under `courses/`, and namespaces saved progress in `localStorage`. Pick one you can live with — changing it later resets every reader's progress.
 - Lesson `id` values must exactly match their subfolder names under `lessons/`.
 - A lesson not yet fully written gets `"stub": true` plus an `outline`. The engine renders it honestly as unwritten, greys it in the sidebar, and excludes it from the progress denominator. Never mark a lesson non-stub unless `lesson.md` exists and is complete, and never write thin filler to avoid the stub label.
+- `levels` (optional) is an array of level slugs, lowercase letters, digits and hyphens. The first is the default. Leave it out for a single-level course.
 
 ### lessons/&lt;id&gt;/lesson.md
 
@@ -104,7 +115,17 @@ Plain Markdown, rendered via marked.js.
 - Favour scenario questions ("a user reports X, what is the likely cause") over definition recall. If a question can be answered by string-matching the lesson text, rewrite it.
 - Distractors must be plausible to someone who half-understands the material. No joke options — each implausible distractor is one the reader eliminates for free.
 - Every question needs a real `explanation` giving the mechanism. Explanations render for right and wrong answers alike and are the highest-attention moment in the course. Never write "Correct!".
-- Validate the JSON and every `correct_index` before calling a lesson done. A broken `quiz.json` fails silently — no quiz renders and no error shows.
+- An invalid `quiz.json` renders no quiz and shows an error naming the file; a valid file with no `questions` renders nothing at all. Validate the JSON and every `correct_index` before calling a lesson done.
+
+### Level variants
+
+- `lesson.<level>.md` and `quiz.<level>.json` replace `lesson.md` and `quiz.json` at that level. A missing variant falls back to the plain file, independently for text and quiz.
+- Give every lesson that has a `quiz.<level>.json` a plain `quiz.json` too. Without it the other levels have no quiz, and a lesson with no quiz is marked complete as soon as it opens.
+- `?level=<level>` in the URL only seeds the reader's saved choice once and is then removed; levels the manifest does not declare are ignored.
+- Same facts, different depth. A beginner version defines terms and slows down; an advanced version covers mechanism and failure modes. Never let a level file contradict `lesson.md`.
+- Do not copy `lesson.md` into every level file. A lesson with only `lesson.md` is valid; the reader sees a one-line note that no version exists for their level.
+- Progress is per lesson. Passing at any level completes the lesson, so keep pass thresholds comparable across a lesson's quizzes.
+- Stubs ignore levels.
 
 ## Build order
 
@@ -117,6 +138,7 @@ Plain Markdown, rendered via marked.js.
    - If port 8000 is already taken, use another: `python3 serve.py 8137`. A 404 on `/engine/app.js` means you are talking to some other server, not this repo. Check what owns the port with `lsof -nP -iTCP:8000 -sTCP:LISTEN` and `ps -o command -p <pid>`. Never kill a process you did not start.
    - Check the quizzes against your intent, not against `correct_index`: for each question, find the option whose text you meant to be right, click it, and confirm the engine scores it correct. That catches an answer key and a reshuffled option list drifting apart.
    - Clear the test progress afterwards (`localStorage.removeItem('academy-of-things:<slug>:progress')`) so the first real reader does not see lessons already marked complete.
+   - With levels, switch through every level on every lesson and take each quiz variant. Confirm the `No <level> version of this lesson` note appears only where a variant is genuinely absent. Confirm no placeholder text ("Replace this with the ...") remains in any level file.
 
 ## What NOT to do
 

@@ -21,14 +21,20 @@ cp "$ROOT/engine/app.js" "$ROOT/engine/style.css" "$OUT/"
 cp "$ROOT/serve.py" "$OUT/"
 
 # standalone: engine sits beside the course, not two levels up
-sed 's#\.\./\.\./engine/#./#g' "$ROOT/engine/course.html" > "$OUT/index.html"
+# (and drop the "All courses" link: there is no course list to go back to)
+sed -e 's#\.\./\.\./engine/#./#g' -e '/class="home"/d' "$ROOT/engine/course.html" > "$OUT/index.html"
 
-# serve.py expects courses/<slug>/; in a standalone bundle the course is root
+# serve.py expects courses/<slug>/ and serves a course list at "/"; in a
+# standalone bundle the course is the root, so serve index.html there instead
 python3 - "$OUT/serve.py" <<'PY'
 import sys, pathlib
 p = pathlib.Path(sys.argv[1])
-p.write_text(p.read_text().replace('ROOT.glob("courses/*/manifest.json")',
-                                   'ROOT.glob("manifest.json")'))
+t = p.read_text()
+for old, new in [('ROOT.glob("courses/*/manifest.json")', 'ROOT.glob("manifest.json")'),
+                 ('self.path in ("/", "/index.html")', 'False')]:
+    assert old in t, old
+    t = t.replace(old, new)
+p.write_text(t)
 PY
 
 cat > "$OUT/README.md" <<MD

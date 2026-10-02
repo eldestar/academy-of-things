@@ -2,10 +2,11 @@
   "slug": "example-course",
   "title": "Example Course",
   "subtitle": "A working course that teaches the course format by being one",
+  "levels": ["beginner", "intermediate", "advanced"],
   "lessons": [
     { "id": "01-anatomy-of-a-course", "title": "1. Anatomy of a Course" },
     { "id": "02-writing-quizzes", "title": "2. Writing Quizzes That Teach" },
     { "id": "03-distribution", "title": "3. Packaging and Sharing", "stub": true,
-      "outline": "## Coming next\n\nThis lesson is deliberately left unwritten, so you can see what a stub looks like in the sidebar and in the progress bar.\n\nIt would cover:\n\n- `scripts/package-course.sh` and what ends up in the zip\n- Dropping a downloaded course into `courses/`\n- Why progress is keyed on `slug`, and what happens when two courses collide\n\nMark a lesson `\"stub\": true` in `manifest.json` and give it an `outline` like this one. It will not count against the progress bar." }
+      "outline": "## Coming next\n\nThis lesson is deliberately left unwritten, so you can see what a stub looks like in the sidebar and in the progress count.\n\nIt would cover:\n\n- `scripts/package-course.sh` and what ends up in the zip\n- Dropping a downloaded course into `courses/`\n- Why progress is keyed on `slug`, and what happens when two courses collide\n\nMark a lesson `\"stub\": true` in `manifest.json` and give it an `outline` like this one. It will not count against the progress count." }
   ]
 }

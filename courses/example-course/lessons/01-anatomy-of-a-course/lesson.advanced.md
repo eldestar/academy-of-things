@@ -36,7 +36,9 @@ so a stub needs no folder at all.
 
 - A missing `lesson.md` shows the title and a message naming the path that
   failed to load.
-- A missing `quiz.json` means no quiz. That is normal and silent.
+- A missing `quiz.json` (a 404) means no quiz. That is normal and silent.
+  Any other failure to load it shows a message and the lesson is not marked
+  complete.
 - A `quiz.json` that exists but is not valid JSON shows a message naming the
   file and the parse error. The lesson text still renders, but the lesson
   cannot be completed until the file is fixed.

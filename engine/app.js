@@ -43,7 +43,12 @@ function esc(s) {
 // slug. The inline script in course.html reads the same key before first paint.
 const THEME_KEY = 'academy-of-things:theme';
 
+// Whatever localStorage refuses (private mode, quota) is kept here instead, so
+// choices and progress still work for the life of the page; they just won't persist.
+const memoryStorage = new Map();
+
 function storageGet(key) {
+  if (memoryStorage.has(key)) return memoryStorage.get(key);
   try {
     return localStorage.getItem(key);
   } catch (e) {
@@ -55,8 +60,9 @@ function storageSet(key, value) {
   try {
     if (value == null) localStorage.removeItem(key);
     else localStorage.setItem(key, value);
+    memoryStorage.delete(key);
   } catch (e) {
-    // storage blocked (private mode, quota): the choice just won't persist
+    memoryStorage.set(key, value);
   }
 }
 
@@ -126,12 +132,13 @@ function resolveLevel(manifest, search) {
 }
 
 // Try lesson.<level>.md (or quiz.<level>.json) first, then the plain file.
-// `variant` says which one answered; `path` is the last path tried.
+// Only a 404 means the variant does not exist; any other answer, errors
+// included, is final. `variant` says which file answered; `path` is that file.
 async function fetchVariant(lessonId, base, ext, lvl) {
   if (lvl) {
     const variantPath = `lessons/${lessonId}/${base}.${lvl}.${ext}`;
     const res = await fetch(`./${variantPath}`);
-    if (res.ok) return { res, variant: true, path: variantPath };
+    if (res.status !== 404) return { res, variant: true, path: variantPath };
   }
   const path = `lessons/${lessonId}/${base}.${ext}`;
   return { res: await fetch(`./${path}`), variant: false, path };
@@ -240,7 +247,6 @@ function renderQuiz(container, quiz, onPass) {
       text.textContent = opt;
       const mark = document.createElement('span');
       mark.className = 'mark';
-      mark.setAttribute('aria-hidden', 'true');
       label.append(input, text, mark);
       optsDiv.appendChild(label);
     });
@@ -341,6 +347,7 @@ function renderQuiz(container, quiz, onPass) {
     setLocked(false);
     retryBtn.hidden = true;
     checkBtn.hidden = false;
+    wrap.querySelector('input').focus({ preventScroll: true }); // the focused retry button just got hidden
     qDivs[0].scrollIntoView({ block: 'start' });
   });
 
@@ -411,9 +418,14 @@ async function renderLesson(manifest, lessonId) {
         if (token === renderToken) showProblem(quizContainer, `${quizPath} is not valid JSON (${e.message}), so this lesson has no quiz.`);
         return;
       }
+    } else if (quizRes.status !== 404) {
+      // a missing quiz is a 404; any other failure must not pass for a reading-only lesson
+      if (token === renderToken) showProblem(quizContainer, `Could not load ${quizPath} (HTTP ${quizRes.status}), so the quiz did not load and the lesson is not marked complete.`);
+      return;
     }
   } catch (e) {
-    // network failure on an optional file: treat as no quiz
+    if (token === renderToken) showProblem(quizContainer, `Could not load this lesson's quiz (${e.message}), so it is not marked complete. Reload to try again.`);
+    return;
   }
   if (token !== renderToken) return;
 

@@ -18,6 +18,8 @@ There is no test framework and none is added (repo rule: "Done means served"). A
 
 Server: port **8137** (not 8000; oMLX owns it; never kill a process you did not start). Start it with `Bash` `run_in_background` and stop it with `TaskStop` at the end. Browser: the built-in browser tools (`mcp__Claude_Browser__*`). Clear test state between checks with `localStorage.clear()` in the page.
 
+Browser cache: `serve.py` sends only `Last-Modified`, so the browser can serve a stale `app.js` or `style.css` after an edit. Before each check, reload with a cache bust (for example `await Promise.all(['app.js','style.css'].map(f => fetch('/engine/'+f, {cache: 'reload'})))` then `location.reload()`), and confirm the change is live.
+
 Commit rule for every task: `git add` the listed files, run `gitleaks protect --staged`, then commit with the trailer line shown. Never commit if gitleaks reports a finding.
 
 ## File structure
@@ -414,7 +416,7 @@ Take one screenshot in each theme and look at them: text readable, sidebar/panel
 - [ ] **Step 8: No color literals outside the token block**
 
 ```bash
-awk '/^:root \{/{t=1} t&&/^\}/{t=0; next} !t' engine/style.css | grep -nE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(|\b(white|black|red|green|blue|gray|grey)\b' || echo "clean: no literals outside token block"
+awk '/^:root \{/{t=1} t&&/^\}/{t=0; next} !t' engine/style.css | grep -nE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(|(^|[^-a-z])(white|black|red|green|blue|gray|grey)([^-a-z]|$)' || echo "clean: no literals outside token block"
 grep -nE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' engine/app.js engine/course.html || echo "clean: none in app.js or course.html"
 ```
 
@@ -1569,7 +1571,7 @@ Run on the committed state. Nothing here should require a code change; if it doe
 
 ```bash
 for c in courses/*/; do diff -q engine/course.html "${c}index.html" && echo "match: $c"; done
-awk '/^:root \{/{t=1} t&&/^\}/{t=0; next} !t' engine/style.css | grep -nE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(|\b(white|black|red|green|blue|gray|grey)\b' || echo "clean: no literals outside token block"
+awk '/^:root \{/{t=1} t&&/^\}/{t=0; next} !t' engine/style.css | grep -nE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(|(^|[^-a-z])(white|black|red|green|blue|gray|grey)([^-a-z]|$)' || echo "clean: no literals outside token block"
 grep -nE '#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(' engine/app.js engine/course.html || echo "clean: none in app.js or course.html"
 ls -la .claude/skills/ && git status --short
 ```

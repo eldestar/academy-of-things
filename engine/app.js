@@ -107,6 +107,7 @@ function renderSidebar(manifest, currentLessonId, progress) {
     const a = document.createElement('a');
     a.href = `?lesson=${lesson.id}`;
     const current = lesson.id === currentLessonId;
+    // precedence: stub, then done, then current (open and unfinished), then todo
     let state = 'todo';
     if (lesson.stub) state = 'stub';
     else if (isDone(lesson)) state = 'done';

@@ -31,7 +31,7 @@ Don't edit it per course; if you need a change, change the engine.
 
 The `lessons` array sets the order. The `id` must match the folder name. The
 `slug` namespaces your saved progress in `localStorage`, so changing it later
-resets the progress bar for everyone who has used the course.
+resets the saved progress for everyone who has used the course.
 
 ## Stubs are first-class
 

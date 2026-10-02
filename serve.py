@@ -9,6 +9,7 @@ rooted at the repo, not inside a course folder. Opening a course over
 file:// will not work either -- the engine fetches manifest.json and lesson
 files, which browsers block on file://.
 """
+import html
 import http.server
 import json
 import pathlib
@@ -48,8 +49,8 @@ def landing_page():
     rows = []
     for slug, title, subtitle, written, total in course_rows():
         rows.append(
-            f'<li><a href="/courses/{slug}/">{title}</a>'
-            f'<div class="sub">{subtitle}</div>'
+            f'<li><a href="/courses/{html.escape(slug)}/">{html.escape(title)}</a>'
+            f'<div class="sub">{html.escape(subtitle)}</div>'
             f'<div class="meta">{written} of {total} lessons written</div></li>'
         )
     items = "\n".join(rows) or "<li>No courses found under <code>courses/*/manifest.json</code></li>"
@@ -102,7 +103,11 @@ if __name__ == "__main__":
         print("    No courses found under courses/*/manifest.json\n")
     print(f"  Ctrl-C to stop.\n")
     socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    try:
+        httpd = socketserver.TCPServer(("", PORT), Handler)
+    except OSError as e:
+        sys.exit(f"  Cannot bind port {PORT} ({e.strerror}). Try: python3 serve.py {PORT + 1}\n")
+    with httpd:
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

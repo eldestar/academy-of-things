@@ -11,6 +11,8 @@ courses/<slug>/
     01-first-lesson/
       lesson.md               the lesson body (Markdown)
       quiz.json               optional
+      lesson.beginner.md      optional, one per level (see Levels)
+      quiz.advanced.json      optional, one per level
     02-second-lesson/
       lesson.md
       quiz.json
@@ -41,6 +43,7 @@ array in `manifest.json`, not by filename.
 | `slug` | yes | Namespaces the browser's saved progress. Keep it stable — changing it resets everyone's progress. |
 | `title` | yes | Shown in the sidebar and on the landing page. |
 | `subtitle` | no | One line under the title. |
+| `levels` | no | Array of level slugs (lowercase letters, digits, hyphens), in display order. The first is the default. Adds a level switcher. Omit it and the course has no levels. Duplicates and malformed entries are ignored. See [Levels](#levels). |
 | `lessons[].id` | yes | Must match the folder name under `lessons/`. |
 | `lessons[].title` | yes | Sidebar label. Number it yourself if you want numbers shown. |
 | `lessons[].stub` | no | `true` means outlined but not written. Renders the `outline` instead of looking for `lesson.md`, greys the sidebar entry, and excludes it from the progress denominator. |
@@ -59,7 +62,9 @@ no templating — what you write is what renders.
 
 ## quiz.json
 
-Optional. Omit the file and the lesson simply has no quiz.
+Optional. Omit the file and the lesson simply has no quiz. The engine reads
+"missing" as a 404 from the server; any other failure to load the file shows a
+message and the lesson is not marked complete.
 
 ```json
 {
@@ -86,14 +91,67 @@ Optional. Omit the file and the lesson simply has no quiz.
 | `questions[].explanation` | yes in practice | Revealed after checking answers, for right and wrong alike. This is where the teaching actually happens — write it even when the answer looks obvious. |
 
 Passing a quiz marks the lesson complete. A lesson with no quiz is marked
-complete when you click through it.
+complete as soon as it is opened. The reader must answer every question
+before checking; after checking, a failed attempt can be retried.
+
+## Levels
+
+Optional. Add `"levels"` to the manifest and the sidebar gets a segmented
+switcher:
+
+```json
+"levels": ["beginner", "intermediate", "advanced"]
+```
+
+For each lesson the engine looks for a file named after the selected level
+and falls back to the plain file:
+
+| Selected level | Lesson body | Quiz |
+| --- | --- | --- |
+| `beginner` | `lesson.beginner.md`, else `lesson.md` | `quiz.beginner.json`, else `quiz.json` |
+| `advanced` | `lesson.advanced.md`, else `lesson.md` | `quiz.advanced.json`, else `quiz.json` |
+
+The two fallbacks are independent: you can fork a lesson's text without
+forking its quiz, or the reverse. `lesson.md` and `quiz.json` are therefore the
+standard version and the fallback for every level that has no file of its own.
+Stub lessons render their `outline` at every level.
+
+Give every lesson that has a `quiz.<level>.json` a plain `quiz.json` too.
+Without it the other levels have no quiz, and a lesson with no quiz is marked
+complete as soon as it opens.
+
+A `quiz.<level>.json` that is not valid JSON shows an error naming the file and does not fall back to `quiz.json`; that lesson cannot be completed at that level until the file is fixed.
+
+When the lesson body fell back to `lesson.md`, the engine shows one line under
+the title: `No <level> version of this lesson; showing the standard text.` A
+lesson that only ever has `lesson.md` reads that way at every level, which is
+fine and honest. Do not copy the same text into every level file.
+
+Progress is per lesson, not per level: passing a lesson's quiz at any level
+marks it complete everywhere. Switching level re-renders the open lesson and
+discards any quiz answers not yet checked.
+
+A missing level file is detected from a 404 response, so the server has to
+return a real 404 for it (`serve.py` does). A host that answers every unknown
+path with 200 and an HTML page will break the fallback, and one that answers
+with another error status (a 403 for missing files, say) shows a load error
+instead of falling back.
+
+Each lesson open at a level asks for the level file first, so the browser's
+developer console shows one failed-request (404) line per missing variant. That
+is expected, not an error in your course.
 
 ## State
 
-Progress lives in the browser's `localStorage` under
-`academy-of-things:<slug>:progress`. Nothing is sent anywhere, there is no
-account, and clearing site data resets it. Two people using the same course
-on the same machine share the same progress.
+Everything lives in the browser's `localStorage`. Nothing is sent anywhere,
+there is no account, and clearing site data resets it. Two people using the
+same course on the same machine share the same state.
+
+| Key | Holds |
+| --- | --- |
+| `academy-of-things:<slug>:progress` | Completed lessons for one course. |
+| `academy-of-things:<slug>:level` | The selected level for one course. `?level=<level>` seeds it once and is then removed from the URL; values the manifest does not declare are ignored. A stored value the manifest no longer declares falls back to the first level. |
+| `academy-of-things:theme` | `light` or `dark`. Absent means follow the system. One key for every course. |
 
 ## Constraints worth knowing
 
@@ -104,3 +162,5 @@ on the same machine share the same progress.
   with the engine vendored in, for handing a single course to someone.
 - **One external dependency**: marked.js from cdnjs, for Markdown rendering.
   Everything else is hand-written HTML, CSS and JS in `engine/`.
+- **Modern browser.** Colors use `light-dark()`, `color-mix()` and `:has()`
+  (Baseline 2024 and later). Older browsers are not supported.

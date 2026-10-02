@@ -15,54 +15,192 @@ function progressKey(courseSlug) {
 
 function loadProgress(courseSlug) {
   try {
-    return JSON.parse(localStorage.getItem(progressKey(courseSlug))) || {};
+    return JSON.parse(storageGet(progressKey(courseSlug))) || {};
   } catch (e) {
     return {};
   }
 }
 
 function saveProgress(courseSlug, progress) {
-  localStorage.setItem(progressKey(courseSlug), JSON.stringify(progress));
+  storageSet(progressKey(courseSlug), JSON.stringify(progress));
 }
 
 function markComplete(courseSlug, lessonId) {
   const progress = loadProgress(courseSlug);
+  if (progress[lessonId] && progress[lessonId].completed) return;
   progress[lessonId] = { completed: true, completedAt: new Date().toISOString() };
   saveProgress(courseSlug, progress);
 }
 
-function renderSidebar(manifest, currentLessonId, progress) {
+// Author-supplied text (titles, stems, notes) is plain text, never HTML.
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s == null ? '' : String(s);
+  return d.innerHTML;
+}
+
+// One theme choice for every course, so it is deliberately not namespaced by
+// slug. The inline script in course.html reads the same key before first paint.
+const THEME_KEY = 'academy-of-things:theme';
+
+// Whatever localStorage refuses (private mode, quota) is kept here instead, so
+// choices and progress still work for the life of the page; they just won't persist.
+const memoryStorage = new Map();
+
+function storageGet(key) {
+  if (memoryStorage.has(key)) return memoryStorage.get(key);
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    return null;
+  }
+}
+
+function storageSet(key, value) {
+  try {
+    if (value == null) localStorage.removeItem(key);
+    else localStorage.setItem(key, value);
+    memoryStorage.delete(key);
+  } catch (e) {
+    memoryStorage.set(key, value);
+  }
+}
+
+// Radio group styled as a segmented control; native radios give keyboard and
+// screen-reader behaviour for free. Option values double as visible labels.
+function segmented(container, name, label, options, value, onChange) {
+  container.innerHTML = '';
+  container.classList.add('segmented');
+  container.setAttribute('role', 'radiogroup');
+  container.setAttribute('aria-label', label);
+  options.forEach((opt) => {
+    const lab = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = name;
+    input.value = opt;
+    input.checked = opt === value;
+    input.addEventListener('change', () => onChange(opt));
+    const text = document.createElement('span');
+    text.textContent = opt;
+    lab.append(input, text);
+    container.appendChild(lab);
+  });
+}
+
+function initThemeSwitcher() {
+  const current = document.documentElement.dataset.theme || 'system';
+  segmented(document.getElementById('theme-switcher'), 'theme', 'Theme', ['system', 'light', 'dark'], current, (theme) => {
+    if (theme === 'system') delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = theme;
+    storageSet(THEME_KEY, theme === 'system' ? null : theme);
+  });
+}
+
+const LEVEL_RE = /^[a-z0-9-]+$/;
+let level = null; // selected level slug, or null when the course declares none
+
+function levelKey(courseSlug) {
+  return `academy-of-things:${courseSlug}:level`;
+}
+
+// Keep only well-formed slugs: the level ends up in a fetched file name.
+function normalizeLevels(manifest) {
+  const raw = manifest.levels;
+  if (raw === undefined) {
+    manifest.levels = [];
+    return;
+  }
+  manifest.levels = Array.isArray(raw) ? [...new Set(raw.filter((l) => typeof l === 'string' && LEVEL_RE.test(l)))] : [];
+  if (!Array.isArray(raw) || manifest.levels.length !== raw.length) {
+    console.warn('manifest.json: ignored invalid "levels" entries (use lowercase letters, digits and hyphens)');
+  }
+}
+
+// ?level= wins (and is saved), then storage, then the first declared level.
+// Anything the manifest does not declare is ignored.
+function resolveLevel(manifest, search) {
+  const levels = manifest.levels;
+  if (!levels.length) return null;
+  const fromUrl = new URLSearchParams(search).get('level');
+  if (levels.includes(fromUrl)) {
+    storageSet(levelKey(manifest.slug), fromUrl);
+    return fromUrl;
+  }
+  const stored = storageGet(levelKey(manifest.slug));
+  return levels.includes(stored) ? stored : levels[0];
+}
+
+// Try lesson.<level>.md (or quiz.<level>.json) first, then the plain file.
+// Only a 404 means the variant does not exist; any other answer, errors
+// included, is final. `variant` says which file answered; `path` is that file.
+async function fetchVariant(lessonId, base, ext, lvl) {
+  if (lvl) {
+    const variantPath = `lessons/${lessonId}/${base}.${lvl}.${ext}`;
+    const res = await fetch(`./${variantPath}`);
+    if (res.status !== 404) return { res, variant: true, path: variantPath };
+  }
+  const path = `lessons/${lessonId}/${base}.${ext}`;
+  return { res: await fetch(`./${path}`), variant: false, path };
+}
+
+function initLevelSwitcher(manifest, onChange) {
+  if (!manifest.levels.length) return;
+  const el = document.getElementById('level-switcher');
+  el.hidden = false;
+  segmented(el, 'level', 'Reading level', manifest.levels, level, onChange);
+}
+
+function currentLessonId(manifest) {
+  return new URLSearchParams(location.search).get('lesson') || manifest.lessons[0].id;
+}
+
+const STATUS_TEXT = { stub: 'coming next', done: 'completed', current: 'in progress', todo: 'not started' };
+
+function renderSidebar(manifest, activeId, progress) {
   const list = document.getElementById('lesson-list');
   list.innerHTML = '';
+  const isDone = (l) => !!(progress[l.id] && progress[l.id].completed);
+
   manifest.lessons.forEach((lesson) => {
     const li = document.createElement('li');
     const a = document.createElement('a');
     a.href = `?lesson=${lesson.id}`;
-    a.textContent = lesson.title;
-    if (lesson.id === currentLessonId) a.classList.add('active');
-    if (lesson.stub) a.classList.add('locked');
-
-    const badge = document.createElement('span');
-    badge.classList.add('badge');
-    if (lesson.stub) {
-      badge.classList.add('stub');
-      badge.textContent = 'coming next';
-    } else if (progress[lesson.id] && progress[lesson.id].completed) {
-      badge.classList.add('done');
-      badge.textContent = 'done';
-    } else {
-      badge.textContent = 'start';
+    const current = lesson.id === activeId;
+    // precedence: stub, then done, then current (open and unfinished), then todo
+    let state = 'todo';
+    if (lesson.stub) state = 'stub';
+    else if (isDone(lesson)) state = 'done';
+    else if (current) state = 'current';
+    a.classList.add('is-' + state);
+    if (current) {
+      a.classList.add('active');
+      a.setAttribute('aria-current', 'page');
     }
-    a.appendChild(badge);
+
+    const icon = document.createElement('span');
+    icon.className = 'status';
+    icon.setAttribute('aria-hidden', 'true');
+    const title = document.createElement('span');
+    title.textContent = lesson.title;
+    const status = document.createElement('span');
+    status.className = 'sr-only';
+    status.textContent = ` (${STATUS_TEXT[state]})`;
+    a.append(icon, title, status);
     li.appendChild(a);
     list.appendChild(li);
   });
 
-  const done = manifest.lessons.filter((l) => !l.stub && progress[l.id] && progress[l.id].completed).length;
-  const total = manifest.lessons.filter((l) => !l.stub).length;
-  const pct = total ? Math.round((done / total) * 100) : 0;
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-label').textContent = `${done}/${total} lessons complete (${pct}%)`;
+  const written = manifest.lessons.filter((l) => !l.stub);
+  const done = written.filter(isDone).length;
+  const segments = document.getElementById('progress-segments');
+  segments.innerHTML = '';
+  written.forEach((l) => {
+    const s = document.createElement('span');
+    if (isDone(l)) s.className = 'done';
+    segments.appendChild(s);
+  });
+  document.getElementById('progress-label').textContent = `${done} of ${written.length} complete`;
 }
 
 function renderQuiz(container, quiz, onPass) {
@@ -70,30 +208,48 @@ function renderQuiz(container, quiz, onPass) {
 
   const wrap = document.createElement('div');
   wrap.className = 'quiz';
-  wrap.innerHTML = `<h2>Check your understanding</h2><p style="color:var(--muted)">${quiz.passing_note || 'Answer every question, then check your results.'}</p>`;
+  const heading = document.createElement('h2');
+  heading.textContent = 'Check your understanding';
+  const note = document.createElement('p');
+  note.className = 'passing-note';
+  note.textContent = quiz.passing_note || 'Answer every question, then check your results.';
+  wrap.append(heading, note);
 
   const answers = {};
+  const groupName = 'q' + Math.random().toString(36).slice(2, 8);
+  const qDivs = [];
 
   quiz.questions.forEach((q, qi) => {
     const qDiv = document.createElement('div');
     qDiv.className = 'question';
-    qDiv.innerHTML = `<p class="stem">${qi + 1}. ${q.stem}</p>`;
+    qDiv.setAttribute('role', 'group');
+    qDiv.setAttribute('aria-labelledby', `${groupName}-stem-${qi}`);
+    const stem = document.createElement('p');
+    stem.className = 'stem';
+    stem.id = `${groupName}-stem-${qi}`;
+    stem.textContent = `${qi + 1}. ${q.stem}`;
+    qDiv.appendChild(stem);
+
     const optsDiv = document.createElement('div');
     optsDiv.className = 'options';
-
     q.options.forEach((opt, oi) => {
-      const optDiv = document.createElement('div');
-      optDiv.className = 'option';
-      optDiv.textContent = opt;
-      optDiv.dataset.index = oi;
-      optDiv.addEventListener('click', () => {
-        optsDiv.querySelectorAll('.option').forEach((o) => o.classList.remove('selected'));
-        optDiv.classList.add('selected');
+      const label = document.createElement('label');
+      label.className = 'option';
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = `${groupName}-${qi}`;
+      input.addEventListener('change', () => {
         answers[qi] = oi;
+        qDiv.classList.remove('unanswered');
       });
-      optsDiv.appendChild(optDiv);
+      const text = document.createElement('span');
+      text.className = 'option-text';
+      text.textContent = opt;
+      const mark = document.createElement('span');
+      mark.className = 'mark';
+      label.append(input, text, mark);
+      optsDiv.appendChild(label);
     });
-
     qDiv.appendChild(optsDiv);
 
     const expl = document.createElement('div');
@@ -101,29 +257,58 @@ function renderQuiz(container, quiz, onPass) {
     expl.textContent = q.explanation || '';
     qDiv.appendChild(expl);
 
+    qDivs.push(qDiv);
     wrap.appendChild(qDiv);
   });
 
   const checkBtn = document.createElement('button');
   checkBtn.className = 'primary';
+  checkBtn.type = 'button';
   checkBtn.textContent = 'Check answers';
-  wrap.appendChild(checkBtn);
+  const retryBtn = document.createElement('button');
+  retryBtn.className = 'secondary';
+  retryBtn.type = 'button';
+  retryBtn.textContent = 'Try again';
+  retryBtn.hidden = true;
+  wrap.append(checkBtn, retryBtn);
 
   const resultDiv = document.createElement('div');
+  resultDiv.setAttribute('role', 'status');
   wrap.appendChild(resultDiv);
 
+  function setLocked(locked) {
+    wrap.querySelectorAll('input').forEach((i) => { i.disabled = locked; });
+  }
+
   checkBtn.addEventListener('click', () => {
+    const missing = quiz.questions.map((_, qi) => qi).filter((qi) => answers[qi] === undefined);
+    if (missing.length) {
+      qDivs.forEach((d, qi) => d.classList.toggle('unanswered', missing.includes(qi)));
+      resultDiv.innerHTML = '';
+      const warn = document.createElement('div');
+      warn.className = 'quiz-result fail';
+      warn.textContent = `Answer every question first — ${missing.length} still blank.`;
+      resultDiv.appendChild(warn);
+      qDivs[missing[0]].scrollIntoView({ block: 'center' });
+      return;
+    }
+
     let correct = 0;
-    const questionDivs = wrap.querySelectorAll('.question');
     quiz.questions.forEach((q, qi) => {
-      const qDiv = questionDivs[qi];
-      const opts = qDiv.querySelectorAll('.option');
+      const opts = qDivs[qi].querySelectorAll('.option');
       opts.forEach((o, oi) => {
         o.classList.remove('correct', 'incorrect');
-        if (oi === q.correct_index) o.classList.add('correct');
-        else if (answers[qi] === oi) o.classList.add('incorrect');
+        const mark = o.querySelector('.mark');
+        mark.textContent = '';
+        if (oi === q.correct_index) {
+          o.classList.add('correct');
+          mark.textContent = '✓ correct';
+        } else if (answers[qi] === oi) {
+          o.classList.add('incorrect');
+          mark.textContent = '✗ your answer';
+        }
       });
-      qDiv.querySelector('.explanation').classList.add('show');
+      qDivs[qi].querySelector('.explanation').classList.add('show');
       if (answers[qi] === q.correct_index) correct++;
     });
 
@@ -137,91 +322,180 @@ function renderQuiz(container, quiz, onPass) {
     result.className = 'quiz-result ' + (passed ? 'pass' : 'fail');
     result.textContent = passed
       ? `Passed: ${correct}/${total} correct (${pct}%). Lesson marked complete.`
-      : `${correct}/${total} correct (${pct}%) — below the ${passThreshold}% bar. Review the explanations above and try again.`;
+      : `${correct}/${total} correct (${pct}%) — below the ${passThreshold}% bar. Read the explanations, then try again.`;
     resultDiv.appendChild(result);
 
-    if (passed && onPass) onPass();
+    setLocked(true);
+    checkBtn.hidden = true;
+    if (passed) {
+      if (onPass) onPass();
+    } else {
+      retryBtn.hidden = false;
+      retryBtn.focus();
+    }
+  });
+
+  retryBtn.addEventListener('click', () => {
+    Object.keys(answers).forEach((k) => delete answers[k]);
+    wrap.querySelectorAll('input').forEach((i) => { i.checked = false; });
+    wrap.querySelectorAll('.option').forEach((o) => {
+      o.classList.remove('correct', 'incorrect');
+      o.querySelector('.mark').textContent = '';
+    });
+    wrap.querySelectorAll('.explanation').forEach((e) => e.classList.remove('show'));
+    resultDiv.innerHTML = '';
+    setLocked(false);
+    retryBtn.hidden = true;
+    checkBtn.hidden = false;
+    wrap.querySelector('input').focus({ preventScroll: true }); // the focused retry button just got hidden
+    qDivs[0].scrollIntoView({ block: 'start' });
   });
 
   container.appendChild(wrap);
 }
 
+function showProblem(el, message) {
+  const p = document.createElement('div');
+  p.className = 'quiz-result fail';
+  p.textContent = message;
+  el.appendChild(p);
+}
+
+let renderToken = 0;
+
 async function renderLesson(manifest, lessonId) {
+  const token = ++renderToken; // a slower earlier render must not overwrite a newer one
+  const lvl = level; // the level this render is for; a later switch bumps renderToken
   const lesson = manifest.lessons.find((l) => l.id === lessonId) || manifest.lessons[0];
   const progress = loadProgress(manifest.slug);
   renderSidebar(manifest, lesson.id, progress);
 
   document.title = `${lesson.title} — ${manifest.title}`;
   const article = document.getElementById('lesson-content');
+  const quizContainer = document.getElementById('quiz-container');
+  quizContainer.innerHTML = '';
+
+  renderNav(manifest, lesson);
 
   if (lesson.stub) {
-    article.innerHTML = `<h1>${lesson.title}</h1><blockquote>Not written yet — outline only. This section is planned next; see the repo README for the current build status.</blockquote>${lesson.outline ? marked.parse(lesson.outline) : ''}`;
-    document.getElementById('quiz-container').innerHTML = '';
+    article.innerHTML = `<h1>${esc(lesson.title)}</h1><blockquote>Not written yet — outline only. This section is planned next; see the repo README for the current build status.</blockquote>${lesson.outline ? marked.parse(lesson.outline) : ''}`;
     return;
   }
 
-  const mdRes = await fetch(`./lessons/${lesson.id}/lesson.md`);
-  const md = await mdRes.text();
-  article.innerHTML = marked.parse(md);
-
-  const quizContainer = document.getElementById('quiz-container');
-  quizContainer.innerHTML = '';
+  let md;
+  let usedVariant = false;
+  let mdPath = `lessons/${lesson.id}/lesson.md`;
   try {
-    const quizRes = await fetch(`./lessons/${lesson.id}/quiz.json`);
-    if (quizRes.ok) {
-      const quiz = await quizRes.json();
-      renderQuiz(quizContainer, quiz, () => {
-        markComplete(manifest.slug, lesson.id);
-        renderSidebar(manifest, lesson.id, loadProgress(manifest.slug));
-      });
-    }
+    const { res: mdRes, variant, path } = await fetchVariant(lesson.id, 'lesson', 'md', lvl);
+    mdPath = path;
+    if (!mdRes.ok) throw new Error(`HTTP ${mdRes.status}`);
+    md = await mdRes.text();
+    usedVariant = variant;
   } catch (e) {
-    // no quiz for this lesson — fine, some lessons are reading-only
+    if (token !== renderToken) return;
+    article.innerHTML = `<h1>${esc(lesson.title)}</h1>`;
+    showProblem(article, `Could not load ${mdPath} (${e.message}). Check that the folder name matches the id in manifest.json.`);
+    return;
+  }
+  if (token !== renderToken) return;
+  article.innerHTML = marked.parse(md);
+  if (lvl && !usedVariant) {
+    const note = document.createElement('p');
+    note.className = 'level-note';
+    note.textContent = `No ${lvl} version of this lesson; showing the standard text.`;
+    const first = article.firstElementChild;
+    if (first && first.tagName === 'H1') first.after(note);
+    else article.prepend(note);
   }
 
+  let quiz = null;
+  try {
+    const { res: quizRes, path: quizPath } = await fetchVariant(lesson.id, 'quiz', 'json', lvl);
+    if (quizRes.ok) {
+      try {
+        quiz = await quizRes.json();
+      } catch (e) {
+        if (token === renderToken) showProblem(quizContainer, `${quizPath} is not valid JSON (${e.message}), so this lesson has no quiz.`);
+        return;
+      }
+    } else if (quizRes.status !== 404) {
+      // a missing quiz is a 404; any other failure must not pass for a reading-only lesson
+      if (token === renderToken) showProblem(quizContainer, `Could not load ${quizPath} (HTTP ${quizRes.status}), so the quiz did not load and the lesson is not marked complete.`);
+      return;
+    }
+  } catch (e) {
+    if (token === renderToken) showProblem(quizContainer, `Could not load this lesson's quiz (${e.message}), so it is not marked complete. Reload to try again.`);
+    return;
+  }
+  if (token !== renderToken) return;
+
+  if (quiz && quiz.questions && quiz.questions.length) {
+    renderQuiz(quizContainer, quiz, () => {
+      markComplete(manifest.slug, lesson.id);
+      renderSidebar(manifest, lesson.id, loadProgress(manifest.slug));
+    });
+  } else {
+    // reading-only lesson: opening it counts as completing it (see FORMAT.md)
+    markComplete(manifest.slug, lesson.id);
+    renderSidebar(manifest, lesson.id, loadProgress(manifest.slug));
+  }
+}
+
+function renderNav(manifest, lesson) {
   const idx = manifest.lessons.findIndex((l) => l.id === lesson.id);
   const prev = manifest.lessons[idx - 1];
   const next = manifest.lessons[idx + 1];
   const nav = document.getElementById('lesson-nav');
-  nav.innerHTML = `
-    <a href="${prev ? '?lesson=' + prev.id : '#'}" style="visibility:${prev ? 'visible' : 'hidden'}">&larr; ${prev ? prev.title : ''}</a>
-    <a href="${next ? '?lesson=' + next.id : '#'}" style="visibility:${next ? 'visible' : 'hidden'}">${next ? next.title : ''} &rarr;</a>
-  `;
+  nav.innerHTML = '';
+  [[prev, '← ', ''], [next, '', ' →']].forEach(([target, before, after]) => {
+    const a = document.createElement('a');
+    if (target) {
+      a.href = `?lesson=${target.id}`;
+      a.textContent = before + target.title + after;
+    } else {
+      a.hidden = true;
+    }
+    nav.appendChild(a);
+  });
 }
 
 async function initCourse() {
+  initThemeSwitcher();
   const manifest = await loadManifest();
   document.getElementById('course-title').textContent = manifest.title;
   document.getElementById('course-subtitle').textContent = manifest.subtitle || '';
 
-  const params = new URLSearchParams(location.search);
-  const lessonId = params.get('lesson') || manifest.lessons[0].id;
-  await renderLesson(manifest, lessonId);
+  normalizeLevels(manifest);
+  level = resolveLevel(manifest, location.search);
+  // ?level= only seeds the saved level; drop it so the URL never disagrees with the page after a switch
+  const seeded = new URL(location.href);
+  if (seeded.searchParams.has('level')) {
+    seeded.searchParams.delete('level');
+    history.replaceState(null, '', seeded);
+  }
+  initLevelSwitcher(manifest, async (value) => {
+    level = value;
+    storageSet(levelKey(manifest.slug), value);
+    await renderLesson(manifest, currentLessonId(manifest));
+  });
+
+  await renderLesson(manifest, currentLessonId(manifest));
 
   window.addEventListener('popstate', async () => {
-    const p = new URLSearchParams(location.search);
-    await renderLesson(manifest, p.get('lesson') || manifest.lessons[0].id);
+    await renderLesson(manifest, currentLessonId(manifest));
   });
 
-  document.getElementById('lesson-list').addEventListener('click', async (e) => {
+  async function go(e) {
     const a = e.target.closest('a');
-    if (!a) return;
+    if (!a || a.hidden) return;
     e.preventDefault();
     const url = new URL(a.href);
     history.pushState({}, '', url);
     await renderLesson(manifest, url.searchParams.get('lesson'));
     window.scrollTo(0, 0);
-  });
-
-  document.getElementById('lesson-nav').addEventListener('click', async (e) => {
-    const a = e.target.closest('a');
-    if (!a || a.getAttribute('href') === '#') return;
-    e.preventDefault();
-    const url = new URL(a.href);
-    history.pushState({}, '', url);
-    await renderLesson(manifest, url.searchParams.get('lesson'));
-    window.scrollTo(0, 0);
-  });
+  }
+  document.getElementById('lesson-list').addEventListener('click', go);
+  document.getElementById('lesson-nav').addEventListener('click', go);
 }
 
 initCourse();

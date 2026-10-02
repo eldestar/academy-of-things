@@ -31,19 +31,29 @@ Don't edit it per course; if you need a change, change the engine.
 
 The `lessons` array sets the order. The `id` must match the folder name. The
 `slug` namespaces your saved progress in `localStorage`, so changing it later
-resets the progress bar for everyone who has used the course.
+resets the saved progress for everyone who has used the course.
 
 ## Stubs are first-class
 
 Lesson 3 of this course is a stub. Look at the sidebar: it is greyed out, and
-the progress bar says "0/2" rather than "0/3" — unwritten lessons are
-excluded from the denominator rather than counted as incomplete work.
+the progress label says "0 of 2 complete" rather than "0 of 3" — unwritten
+lessons are excluded from the denominator rather than counted as incomplete
+work.
 
 This matters more than it looks. The alternative, when a generator runs out
 of real material, is filler: three paragraphs restating the lesson title.
 A stub with an honest outline tells the reader what is coming and tells the
 author what to write next. Filler just wastes the reader's time and makes
 them trust the rest of the course less.
+
+## Levels are optional
+
+This course declares `"levels"` in its manifest, which is why the sidebar has
+a Beginner, Intermediate and Advanced switch. A lesson can ship
+`lesson.<level>.md` for any level; where it does not, the engine falls back to
+`lesson.md`. This lesson has a beginner and an advanced version, so
+intermediate reads this file. Lesson 2 has only `lesson.md`, so it reads the
+same at every level.
 
 ## What the engine does not do
 

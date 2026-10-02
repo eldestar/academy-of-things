@@ -15,18 +15,14 @@ function progressKey(courseSlug) {
 
 function loadProgress(courseSlug) {
   try {
-    return JSON.parse(localStorage.getItem(progressKey(courseSlug))) || {};
+    return JSON.parse(storageGet(progressKey(courseSlug))) || {};
   } catch (e) {
     return {};
   }
 }
 
 function saveProgress(courseSlug, progress) {
-  try {
-    localStorage.setItem(progressKey(courseSlug), JSON.stringify(progress));
-  } catch (e) {
-    // storage blocked (private mode, quota): progress just won't persist
-  }
+  storageSet(progressKey(courseSlug), JSON.stringify(progress));
 }
 
 function markComplete(courseSlug, lessonId) {
@@ -362,6 +358,7 @@ let renderToken = 0;
 
 async function renderLesson(manifest, lessonId) {
   const token = ++renderToken; // a slower earlier render must not overwrite a newer one
+  const lvl = level; // the level this render is for; a later switch bumps renderToken
   const lesson = manifest.lessons.find((l) => l.id === lessonId) || manifest.lessons[0];
   const progress = loadProgress(manifest.slug);
   renderSidebar(manifest, lesson.id, progress);
@@ -382,7 +379,7 @@ async function renderLesson(manifest, lessonId) {
   let usedVariant = false;
   let mdPath = `lessons/${lesson.id}/lesson.md`;
   try {
-    const { res: mdRes, variant, path } = await fetchVariant(lesson.id, 'lesson', 'md', level);
+    const { res: mdRes, variant, path } = await fetchVariant(lesson.id, 'lesson', 'md', lvl);
     mdPath = path;
     if (!mdRes.ok) throw new Error(`HTTP ${mdRes.status}`);
     md = await mdRes.text();
@@ -395,18 +392,18 @@ async function renderLesson(manifest, lessonId) {
   }
   if (token !== renderToken) return;
   article.innerHTML = marked.parse(md);
-  if (level && !usedVariant) {
+  if (lvl && !usedVariant) {
     const note = document.createElement('p');
     note.className = 'level-note';
-    note.textContent = `No ${level} version of this lesson; showing the standard text.`;
-    const h1 = article.querySelector('h1');
-    if (h1) h1.after(note);
+    note.textContent = `No ${lvl} version of this lesson; showing the standard text.`;
+    const first = article.firstElementChild;
+    if (first && first.tagName === 'H1') first.after(note);
     else article.prepend(note);
   }
 
   let quiz = null;
   try {
-    const { res: quizRes, path: quizPath } = await fetchVariant(lesson.id, 'quiz', 'json', level);
+    const { res: quizRes, path: quizPath } = await fetchVariant(lesson.id, 'quiz', 'json', lvl);
     if (quizRes.ok) {
       try {
         quiz = await quizRes.json();

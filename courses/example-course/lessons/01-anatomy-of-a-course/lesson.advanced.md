@@ -24,7 +24,8 @@ courses/example-course/
 On load the engine fetches `./manifest.json`, then renders the lesson named by
 `?lesson=<id>`, or the first lesson when the parameter is missing or unknown.
 For that lesson it fetches `lessons/<id>/lesson.md` and then
-`lessons/<id>/quiz.json`. Both paths are relative to the course folder, and
+`lessons/<id>/quiz.json` (for a selected level it tries the level's file
+first; see Levels below). Both paths are relative to the course folder, and
 nothing in the engine ties the course folder's name to the manifest `slug`.
 Only the lesson `id` has to match its folder.
 

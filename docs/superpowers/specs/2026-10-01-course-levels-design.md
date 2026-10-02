@@ -86,8 +86,10 @@ lives in memory for the page.
 - Outside the token block, `style.css` contains no color literals (hex, rgb,
   hsl, named colors other than `transparent` and `currentColor`). `app.js`
   contains none either. Verified by grep as part of "done".
-- Tokens cover: page, panel, raised, hover, border, border-strong, text, muted,
-  accent, accent-strong, good, good-bg, bad, bad-bg, code-bg, and focus ring.
+- Tokens cover: bg, panel, raised, hover, border, border-strong, ring (status
+  icons and unfilled progress), text, body, muted, accent, on-accent, good,
+  good-text, good-bg, bad, bad-text, bad-bg, and code-bg. Focus outlines use
+  accent.
   Existing hardcoded values (`#1f232c`, `#d3d6dc`, `#14171d` and similar) are
   replaced by tokens.
 

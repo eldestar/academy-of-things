@@ -12,7 +12,8 @@ courses/example-course/
   manifest.json       the table of contents
   lessons/
     01-anatomy-of-a-course/
-      lesson.md       this text
+      lesson.md       the standard text
+      lesson.beginner.md  this text
       quiz.json       the questions below
 ```
 

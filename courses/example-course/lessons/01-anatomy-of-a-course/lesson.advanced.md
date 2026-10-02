@@ -37,15 +37,16 @@ so a stub needs no folder at all.
   failed to load.
 - A missing `quiz.json` means no quiz. That is normal and silent.
 - A `quiz.json` that exists but is not valid JSON shows a message naming the
-  file and the parse error. The lesson text still renders.
+  file and the parse error. The lesson text still renders, but the lesson
+  cannot be completed until the file is fixed.
 
 ## State
 
-One `localStorage` key per course: `academy-of-things:<slug>:progress`. It
+Progress is one `localStorage` key per course: `academy-of-things:<slug>:progress`. It
 holds an object keyed by lesson id, each with a `completed` flag and a
 timestamp. A lesson with no quiz is marked complete as soon as it opens. A
 lesson with a quiz is marked complete only when the reader passes it, and
-failed attempts are not recorded. The slug is the only namespace, so renaming
+failed attempts are not recorded. The slug is the only namespace for progress, so renaming
 it orphans every reader's saved progress.
 
 ## Levels

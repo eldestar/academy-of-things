@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A team bumps `@workos-inc/node` from 10.14.0 to 11.0.0 for an unrelated fix. Their TypeScript build now fails in code that reads Pipes credentials, although no HTTP calls to WorkOS changed. What is the most accurate explanation?",
+      "options": [
+        "WorkOS removed the Pipes REST endpoints in September 2026, so the SDK can no longer call them and its generated types were pruned to match the removal",
+        "v11 requires a new API version header that the team has not set, so the SDK now types every Pipes response as an error union until the header is sent",
+        "Pipes is now early access only, and the SDK blocks accounts that have not enrolled by failing type checks on the credentials call at compile time",
+        "The release flags an SDK type break: credentials can be null and responses are unions, so exhaustive switches and typed mocks stop compiling"
+      ],
+      "correct_index": 3,
+      "explanation": "The v11.0.0 release marks Pipes 'Support organization-owned and multiple connections' as a breaking change, and the pull request says it is an intentional SDK type break, not an HTTP wire-contract change. The `credentials` field can be `null` for API-key integrations and credential variants are discriminated, so code that assumed OAuth credentials, or typed mocks, can fail to compile. Nothing in the sources says endpoints were removed, an API version header was introduced, or that compile-time gating exists."
+    },
+    {
+      "stem": "An engineer reads the Agent Auth docs, opens your staging WorkOS environment, and cannot find any way to create a blueprint. The API calls are rejected. The code is correct. What is the likely reason?",
+      "options": [
+        "Agent Auth is early access and must be enabled for your environment by WorkOS; the docs say to contact your account team first",
+        "Blueprints can only be created in production environments, so a staging environment rejects every call regardless of enablement",
+        "Agent Auth requires an Annual Credits contract, which the pricing page lists as the only plan that includes any agent features",
+        "Blueprints require the beta API Gateway to be deployed in front of the environment first, otherwise blueprint calls are rejected"
+      ],
+      "correct_index": 0,
+      "explanation": "Both the changelog (2026-09-02, 'now in early access') and the docs ('must be enabled for your environment; contact your account team') say access is gated. Nothing says staging is excluded. The pricing page does not list Agent Auth as a priced or plan-gated item, and the Gateway is a separate beta product with no stated dependency from Agent Auth."
+    },
+    {
+      "stem": "Your SRE team wants to page on WorkOS outages and asks which status page component to subscribe to for Pipes, Vault and Relay. What should you tell them?",
+      "options": [
+        "Subscribe to the AuthKit component, because every newer product is served through the same sign-in path and would degrade with it",
+        "Subscribe to the Core Services group as a whole, which the status page describes as covering all current and newer products, including later launches",
+        "The status page lists seven components, none specific to these products, so add synthetic checks against the features you depend on",
+        "Pipes, Vault and Relay are early-access only, so the vendor carries no uptime reporting for them by design and none is expected"
+      ],
+      "correct_index": 2,
+      "explanation": "The status page components I read were SSO, Directory Sync, Audit Logs, AuthKit and FGA under Core Services, plus Dashboard and Admin Portal under Supporting Services. The newer products have no component of their own (a Vault Dashboard-pages incident was filed under Dashboard). That means you cannot rely on the vendor feed to tell you your dependency is degraded. Not every product here is early access, and early-access status is not stated as a reason for omitting reporting."
+    },
+    {
+      "stem": "In a planning meeting a manager says: \"Vault, Pipes and Feature Flags are not on the pricing page, so they must be included in the free tier.\" What is the right correction?",
+      "options": [
+        "They are free, but only up to the first 1 million monthly active users, matching the AuthKit allowance on the same account",
+        "The page prices only AuthKit, SSO, Directory Sync, Audit Logs, Radar and Custom Domain, so for these the cost is unknown until WorkOS says",
+        "Their prices sit on the Support Plans page, where the Scale tier at $1,000 per month bundles them in with faster response times and onboarding help",
+        "They are bundled into the $99 per month Custom Domain fee, which unlocks every product the pricing page does not price separately"
+      ],
+      "correct_index": 1,
+      "explanation": "On 2026-10-03 the pricing page had line items for AuthKit, Single Sign-On, Directory Sync, Audit Logs, Radar and Custom Domain only. A missing price is missing information, not a zero. The support-plans page lists support tiers (Standard $0, Scale $1,000 per month, Enterprise custom), which buy response times and onboarding help, not product features. The 1M free MAU applies to AuthKit users, not to other products."
+    },
+    {
+      "stem": "Your company is building its own first-party AI agent that acts for signed-in users inside an application you already authenticate with AuthKit, and you want delegated tokens capped by each user's permissions and instantly revocable. Which WorkOS product, as documented, is aimed at this?",
+      "options": [
+        "Relay, because it attaches user credentials server-side so the agent never sees them, which is exactly the control a first-party agent needs for delegation",
+        "auth.md, because it lets agents discover how to register and so mints the delegated tokens your first-party agent needs for signed-in users",
+        "Airlock, because it is the only product that mints agent tokens and evaluates each call against intent-based policy for the IT team",
+        "Agent Auth: blueprints mint short-lived tokens, and delegated ones are capped by the user's permissions and the blueprint; built for first-party agents"
+      ],
+      "correct_index": 3,
+      "explanation": "Agent Auth is described as designed for your own first-party agents, with delegated instances capped by the user's permissions and a blueprint ceiling, plus session revocation. auth.md and Agent Registration address outside agents registering with your service. Relay is a proxy that keeps provider credentials away from the agent, and Airlock evaluates agent calls against intent and policy; neither mints your application's agent identities."
+    },
+    {
+      "stem": "You need CI tests that prove your app keeps users signed in when the WorkOS refresh endpoint returns 503s. Running them against your real staging tenant would need credentials in CI and cannot force failures on demand. What does the WorkOS testing guidance suggest?",
+      "options": [
+        "Block api.workos.com at the CI runner's firewall and assert on the resulting timeouts, which exercises the same code path as receiving a 503 response",
+        "Run the local Emulate server with failure injection for most tests, keep a smaller real-environment suite, and check the supported-features matrix",
+        "Use the emulator for one smoke test only, because it is a complete replica of production and adds nothing beyond what a staging run covers",
+        "Ask WorkOS support to trigger 503s on your staging tenant on a schedule, so the CI job can assert on genuine upstream failures at will"
+      ],
+      "correct_index": 1,
+      "explanation": "The docs describe Emulate as an in-memory local server implementing core AuthKit flows with injectable failures, recommend it for most tests, and say it is a stand-in for the platform, not a complete copy, so you should consult the supported-features matrix and keep real-environment coverage for key integration paths. Firewall blocking tests timeouts but not specific 503 bodies, and nothing in the docs describes support triggering failures on a tenant."
+    }
+  ]
+}

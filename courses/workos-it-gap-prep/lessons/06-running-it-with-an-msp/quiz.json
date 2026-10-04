@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Okta System Log events have been streaming to Splunk Cloud. Three days after a brief Splunk outage, your alert for MSP admin role changes has gone silent and nothing new appears in Splunk, while the Okta System Log itself shows activity. What happened?",
+      "options": [
+        "Okta queued the undelivered events and will replay them in order once the target recovers, so the gap closes itself",
+        "The Okta System Log only keeps three days of events, so the stream emptied once the outage outlasted that retention window",
+        "Splunk Cloud applies a daily ingestion cap that Okta cannot see, so it keeps discarding new events after the outage ended",
+        "After two delivery attempts with no wait between them, Okta deactivated the stream; nothing flows until you reactivate it"
+      ],
+      "correct_index": 3,
+      "explanation": "Okta's log streaming documentation says that when the target stops responding only two delivery attempts are made without any additional wait, after which Okta deactivates the stream and sends nothing. Delivery is at least once while the stream is active, but there is no replay promise for a dead one. System Log retention inside Okta is 90 days, not three. A vendor-side ingestion cap is possible in general but does not match the symptom of a brief outage followed by permanent silence. The fix is to alert on stream health and on event silence, not only on event content."
+    },
+    {
+      "stem": "The MSP's ticketing integration calls the Okta API with an SSWS token that an in-house engineer created. The engineer is offboarded and deactivated; the next morning the integration returns 401. What is the root cause and the durable fix?",
+      "options": [
+        "The token's network-range restriction was applied at offboarding, so widen the allowed range to include the MSP's addresses",
+        "The token hit its 30-day idle expiry the same day, so have the integration call the API more often to keep it alive",
+        "The token died with its creator's deactivation; move the integration to an OAuth 2.0 service app, which Okta prefers",
+        "The MSP shared one token across several tools, which triggers automatic revocation, so issue one token per tool going forward"
+      ],
+      "correct_index": 2,
+      "explanation": "Okta documents that API tokens inherit the privilege of the admin who created them and that deactivating that user deprovisions the token. The coincidence with offboarding is the clue. Okta strongly recommends OAuth 2.0 with scoped, short-lived access tokens, which also removes the dependency on one person. The idle expiry is real (30 days unused) but would not line up with the offboarding. Network-range restriction is a feature you configure, not something offboarding applies. One token per tool is good hygiene but would still die with its creator."
+    },
+    {
+      "stem": "Your tier 1 runbook says: after manager approval, add the user to the app-access group. The MSP agents hold only Okta's Help Desk Administrator role, and the step fails. Why, and what are your options?",
+      "options": [
+        "That role cannot assign users to groups; automate the step, or use another admin role or a custom role with a resource set",
+        "Help Desk Administrator can only act on users created that day, so older accounts need a full Super Administrator to change",
+        "The step fails because Help Desk Administrators cannot view user profiles, so they cannot find the user to add to the group",
+        "Help Desk Administrator needs MFA reset rights granted separately before it can change any group membership for a user"
+      ],
+      "correct_index": 0,
+      "explanation": "Okta's documentation lists assigning users to apps or groups among the things Help Desk Administrator cannot do, alongside creating or activating users, suspending or deleting users and creating API tokens. The role can reset passwords and MFA, unlock accounts, clear sessions and view profiles, optionally limited to selected groups. So the runbook step needs a different mechanism: your automation, or a role with group-membership permissions, possibly custom with a resource set. Check the custom-role permission scope first, since Okta states it is currently limited to user, group and app activity and profile source imports."
+    },
+    {
+      "stem": "During offboarding, an MSP agent runs Clear User Sessions with default options and your automation then deactivates the leaver. Hours later the leaver's browser is still working in a SAML app. What does Okta's documentation support?",
+      "options": [
+        "Deactivating the user always ends every downstream app session within minutes, so a surviving session means an Okta bug",
+        "The default clear revokes OIDC/OAuth tokens and IdP sessions; Universal Logout needs the extra option and per-app testing",
+        "Clear User Sessions only affects sessions in the Okta admin console itself, so app sessions are untouched by design always",
+        "Universal Logout is only reachable through the System Log API, so the console Clear User Sessions action can never invoke it"
+      ],
+      "correct_index": 1,
+      "explanation": "Okta's documentation says that without the Universal Logout option, Clear User Sessions revokes the user's OpenID Connect and OAuth refresh and access tokens and clears active IdP sessions. Including Logout-enabled apps and API tokens invokes Universal Logout, which can be configured for generic SAML and OIDC apps. An app that does not honor it keeps its own session. So the offboarding checklist must name apps and test them. No Okta document read for this lesson promises that deactivation ends every downstream session."
+    },
+    {
+      "stem": "Your auditor wants Jamf Pro MDM configuration changes made by the MSP exported to your SIEM. Your instance is hosted by Jamf Cloud. According to the Jamf Pro 10.25 administrator guide, what constraint should you plan around, and what should you do before committing to a design?",
+      "options": [
+        "Change Management logs only capture API calls, so changes made through the console UI are never recorded in any environment",
+        "Change Management logs are purged after 24 hours in every environment, so only a same-day export is meaningful for an auditor",
+        "Jamf Pro does not record which administrator made a change, so attribution has to come from the MSP's own tickets and records",
+        "File and syslog output is on-premise only and Jamf Cloud changes cannot be exported, so confirm behaviour for your version"
+      ],
+      "correct_index": 3,
+      "explanation": "The 10.25 guide says Change Management records the date and time, the administrator's username, object type and name, the action and details, that the option to log to a file or syslog server is only available for on-premise environments, and that in Jamf Cloud changes are displayed in the console and cannot be exported. That is version-dated documentation, so verify against current docs and your instance before relying on it. If export is not possible, your audit control may need periodic manual review or a different tool. The other options contradict the documented fields or invent retention and scope limits."
+    },
+    {
+      "stem": "The MSP's quarterly review shows its ticket reopen rate fell, but its ticket volume also halved after an AI agent started resolving password resets in Slack before any ticket is created. What is the sound reading?",
+      "options": [
+        "Quality improved, so the MSP deserves credit for the lower reopen rate and the contract needs no change at all this year",
+        "The quarters are not comparable on reopen rate alone: easy requests left the queue, so measure deflection from request data",
+        "Reopen rate becomes meaningless once any automation exists, so drop it from the quarterly review entirely and track volume only",
+        "The MSP is gaming the metric by closing fewer tickets, so the review should apply the penalty clause for the quarter"
+      ],
+      "correct_index": 1,
+      "explanation": "Reopen rate over tickets the MSP closed is a useful quality measure, but its meaning changes when the mix changes: the agent absorbs the simple, rarely reopened requests, leaving the MSP the harder ones. Deflection is a different metric and needs request-level data from the chat channel, not just tickets (these definitions are practitioner convention, not vendor standards). Concluding that quality improved, or that the MSP cheated, both skip that mix shift. Declaring the metric meaningless throws away a signal you can still use by comparing like-for-like categories."
+    }
+  ]
+}

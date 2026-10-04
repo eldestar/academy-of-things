@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A vendor has 25 enterprise customers in production, each using both SSO and Directory Sync. A colleague asks for the monthly WorkOS bill from the published pay-as-you-go page (checked 2026-10-03). What is the defensible answer?",
+      "options": [
+        "$2,875 per month, because the page treats Directory Sync as included with an SSO connection and applies marginal tiers",
+        "$5,750 per month, because the page documents marginal tiers and counts SSO and Directory Sync as separate connections",
+        "Between $2,500 and $5,750 per month, because the page leaves open whole-volume versus marginal tiers and one versus two connections",
+        "$3,125 per month, because every connection costs the headline $125 until a vendor reaches 100 connections, and the tier discounts only start after that"
+      ],
+      "correct_index": 2,
+      "explanation": "The page publishes tiers (1-15 at $125, 16-30 at $100, and so on) in separate SSO and Directory Sync tables, but its FAQ says each customer 'with SSO or Directory Sync' counts as one connection, and it never says whether a discount applies to every connection or just the ones in that band. For 25 connections that is $2,500 (whole-volume) or $2,875 (marginal) per product, doubled if the products count separately. Picking $2,875 assumes Directory Sync is free (not stated); $5,750 assumes two unstated rules at once; $3,125 ignores the published tier breaks entirely. When the source is ambiguous, the right move is a range plus the question to ask sales."
+    },
+    {
+      "stem": "In an interview you want to mention WorkOS's AI customers. Which statement is supported by the sources you read?",
+      "options": [
+        "WorkOS's Series C post reports that its AI customers collectively run more than a million SSO connections through the platform",
+        "WorkOS's Series C post lists OpenAI among AI companies that use WorkOS, and it does not say which products each one uses",
+        "The customers page's 3,000+ figure counts paying customers, as audited and confirmed in the Series C announcement",
+        "OpenAI and Anthropic together account for most of WorkOS's revenue, according to the company's own funding posts"
+      ],
+      "correct_index": 1,
+      "explanation": "The logo lists on the Series C post and customers page are WorkOS's own marketing claims and are silent on which product (AuthKit, SSO, Directory Sync, Audit Logs) a given logo uses, so the safe form is 'WorkOS lists X as a customer'. Note that a WorkOS founder has said elsewhere (a 2025 Hacker News comment) that OpenAI uses WorkOS for SSO and SCIM; that is a founder statement, not something the Series C post or customers page says, so attribute it as such. The first option invents a usage count that no page reports. The third turns '3,000+ companies powered by WorkOS' into an audited paying-customer count that no source states. The fourth is revenue concentration, which no WorkOS page reports; analyst revenue figures are estimates, not statements."
+    },
+    {
+      "stem": "A vendor has two customers on Okta SAML. One has 40 employees using the app; the other has 40,000. How does WorkOS's published SSO pricing treat them?",
+      "options": [
+        "The 40,000-user customer pushes the vendor into the MAU tier, adding $2,500 per month to the SSO bill",
+        "Okta SAML connections are discounted relative to Entra ID because Okta has a prebuilt integration in the dashboard and costs WorkOS less to support",
+        "SSO connections are free until a customer passes 1M monthly active users, after which per-connection pricing applies",
+        "Each is one connection at the same per-connection price, because the pricing FAQ says billing ignores the IdP and the user count"
+      ],
+      "correct_index": 3,
+      "explanation": "SSO and Directory Sync are metered per connection (per customer relationship), not per user. The 1M MAU free tier and the $2,500 per extra 1M belong to AuthKit's pricing, which is a different meter; mixing the two is the classic half-informed error. The FAQ also says a connection is billed the same regardless of IdP, so there is no Okta-versus-Entra discount. The consequence for the vendor is that a tiny customer with SSO costs the same as a huge one. Whether that is painful for low-priced products depends on the vendor's contract values, which is your judgement to make, not something WorkOS states."
+    },
+    {
+      "stem": "A product uses the standalone SSO API in production with 5 customers on SAML and thousands of users who sign in with Google OAuth through WorkOS. According to the SSO launch checklist, what is charged?",
+      "options": [
+        "Only enterprise (SAML or OIDC) connections in the production environment are charged; OAuth connections in production are free",
+        "Every production connection including OAuth is charged, and staging connections start billing once a trial period ends",
+        "Nothing is charged until the account passes 1M monthly active users, because SSO shares the same free allowance that AuthKit provides to customers",
+        "Only SAML connections that completed at least one login in the calendar month are charged, so idle connections cost nothing"
+      ],
+      "correct_index": 0,
+      "explanation": "The launch checklist says only enterprise connections in the production environment are charged and OAuth connections in production are free; staging is free to test with. The second option is wrong because staging is never billed. The third borrows AuthKit's MAU allowance for a product that is billed per connection. The fourth invents an activity-based rule; the sources define a connection by the relationship, not by login volume (MAU is how AuthKit counts users, not SSO connections)."
+    },
+    {
+      "stem": "A security reviewer asks why a vendor should not simply maintain its own SAML library. Which fact from this lesson is the strongest evidence, and how should you present it?",
+      "options": [
+        "SAMLStorm showed the SAML protocol itself is cryptographically broken, so enterprises are now moving to OIDC wholesale",
+        "A signature-verification flaw in shared library xml-crypto let attackers forge SAML responses; WorkOS's patch and no-harm claims are self-reported",
+        "WorkOS's own SAML implementation was breached through that library, and customers were told to rotate certificates and metadata",
+        "SAMLStorm only affected unsigned assertions, which WorkOS already rejects, so apps requiring signed assertions were never exposed to forged responses"
+      ],
+      "correct_index": 1,
+      "explanation": "SAMLStorm (CVE-2025-29774 and CVE-2025-29775) was an XML signature-verification flaw in a widely shared library, not a flaw in the SAML protocol, so the first option overstates it. It lets a forged response pass signature checks, which is exactly the integrity guarantee SAML relies on; the second option is the accurate account and keeps the vendor's own claims labelled as claims. WorkOS's post says it found no evidence of past compromise, which contradicts the third option. The fourth is backwards: the bug defeated signature verification, so requiring signed assertions alone did not protect affected apps."
+    },
+    {
+      "stem": "An interviewer asks why WorkOS wants an IT systems engineer who knows SAML and SCIM from the admin side. Which answer stays inside what the sources support?",
+      "options": [
+        "The posting says WorkOS runs its staff SSO and SCIM on its own products, so you would be a daily user of the company's own product and its rough edges",
+        "The posting says the role exists to answer customers' SSO support tickets, so SAML and SCIM depth is a support skill",
+        "The posting names Okta and Google Workspace identity with an MSP on tier 1 and asks for protocol depth; the customer-admin link is my inference",
+        "WorkOS publishes a requirement that its IT team audit each customer's IdP configuration before the customer goes live"
+      ],
+      "correct_index": 2,
+      "explanation": "The posting describes an internal IT role: own identity on Okta (SSO, MFA, Workflows, SCIM provisioning, lifecycle) and Google Workspace, with an MSP on tier 1, and it asks for protocol depth to troubleshoot and architect. The link to customers' admins is an inference and should be labelled as one. The first option is contradicted by the posting, which puts staff SSO on Okta; what remains open is whether WorkOS tests its own product internally, which is a fair question to ask. The second misreads an internal-IT role as customer support. The fourth describes a requirement that appears in none of the sources."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A vendor's WorkOS environment predates Oct. 19, 2023 (or support enabled the custom management flow). It offboards users only on dsync.user.deleted. A customer's Okta admin deactivates a leaver, but the leaver still has access in the vendor's app. What is the most likely gap?",
+      "options": [
+        "Okta never tells SCIM apps about deactivation, so WorkOS has no signal to emit and the vendor can never receive anything about it",
+        "In the custom flow an Okta deactivation arrives as dsync.user.updated with an inactive state, not a delete, so offboard on inactive updates",
+        "WorkOS only emits dsync.user.deleted after a 90-day grace period, so the leaver stays active in the vendor's app until that window ends",
+        "Deactivation only takes effect when the user's SSO session expires, so the SCIM event is deferred until the session ends"
+      ],
+      "correct_index": 1,
+      "explanation": "Okta's docs say deprovisioning updates the SCIM app's user resource with active=false, and in the custom management flow WorkOS reports that as dsync.user.updated with an inactive state (plus group.user_removed), while hard deletes produce dsync.user.deleted. In environments on the default secure flow, an inactive user is deleted instead, so a delete-only handler would work there and the remaining risk is a live session; that is why a defensive handler treats inactive or suspended updates, user.deleted and dsync.deleted all as offboarding. Okta does send deactivation, there is no documented 90-day delay, and session expiry is a separate mechanism that SCIM does not control."
+    },
+    {
+      "stem": "A new hire shows up quickly in your app for an Okta customer but can take up to about half an hour for a Google Workspace customer. What explains the difference?",
+      "options": [
+        "WorkOS throttles non-SCIM directories to protect Google's API quota, so Google changes are batched for up to half an hour",
+        "Google Workspace users must first sign in through SSO before WorkOS provisions them, which delays their first appearance",
+        "SCIM providers push on the IdP's own schedule, while WorkOS polls Google roughly every 30 minutes (manual sync allowed, five-minute cooldown)",
+        "Google Workspace directories deliver through webhooks, which are delayed by exponential back-off whenever the vendor's endpoint is slow to answer"
+      ],
+      "correct_index": 2,
+      "explanation": "SCIM providers push to a WorkOS-hosted endpoint, so latency is set by the IdP's own scheduler (WorkOS documents about 40 minutes for Entra; Okta's typical push timing is not stated in WorkOS's docs, so treat 'quickly' as typical behaviour to verify), while non-SCIM providers such as Google, Workday and HiBob are polled by WorkOS about every 30 minutes. Only Google directories support the manual sync call, which returns 202 when queued and enforces a five-minute cooldown. No throttling policy is documented, provisioning does not wait for SSO, and webhooks are how WorkOS delivers events to the vendor, not how it collects data from Google."
+    },
+    {
+      "stem": "In a customer's Okta, a user was removed from the Engineering group, yet your app still lists them in it. Engineering is used both to assign the app and as the Push Groups entry. What explains it and what is the fix?",
+      "options": [
+        "Okta does not send the removal when one group both assigns the app and is pushed (a documented bug); use a separate push group and Push now",
+        "The dsync.group.user_removed event was delivered out of order, so the handler should sort events by id before applying them",
+        "The webhook signature check failed for that event, so the vendor should rotate the webhook secret and ask WorkOS to resend it",
+        "WorkOS does not support group membership removal for SCIM directories, so the vendor has to remove the member from its own database manually"
+      ],
+      "correct_index": 0,
+      "explanation": "Removing a user from a group that also assigns the app triggers deactivation, and Okta then fails to send the removal; WorkOS's Okta guide names this known issue and prescribes Push now, while Okta's own docs say the same group cannot be used for assignment and Group Push. Ordering problems can happen with webhooks, but they would not leave a permanent stale membership for one user in this specific configuration. A failed signature check drops an event, but nothing here points at the webhook layer. WorkOS does emit group.user_removed events for SCIM directories."
+    },
+    {
+      "stem": "A customer's IdP admin changes the SCIM userName mapping on a live directory from the email address to a display handle. Afterwards your app shows duplicate users for the same people. Why?",
+      "options": [
+        "WorkOS has a deduplication bug that is triggered when an attribute mapping changes on a live directory that already has synced users",
+        "The Events API replayed its 90-day history after the mapping change, so every user was delivered to the app a second time",
+        "WorkOS identifies a directory user by SCIM username, and most providers re-provision a renamed user as new, so both records exist",
+        "Directory Sync stores only the first value seen for each attribute, so any later edit creates a copy of the user record"
+      ],
+      "correct_index": 2,
+      "explanation": "WorkOS's uniqueness guide says the SCIM username is how a directory user is identified and that providers typically re-provision a renamed user as new; it advises mapping userName to a value that never changes and not re-pointing the mapping on a live directory. RFC 7643 also requires userName to be unique in the service provider. Replay and storage behaviour are unrelated, and nothing documents a dedupe bug."
+    },
+    {
+      "stem": "Your nightly reconciliation job polls GET /directory_users and re-syncs only users whose updated_at is newer than its last run. After a bulk Okta Push Groups run, some users' group memberships in your app are wrong. Which documented fact best explains it?",
+      "options": [
+        "Directory users carry no updated_at field, so the job compared against the wrong timestamp and re-synced everyone or no one",
+        "WorkOS lists a known issue that membership changes do not alter updated_at, so a timestamp-delta job misses them; list groups per user",
+        "Membership changes are only available through webhooks, never through the API, so a polling job cannot see them whatever it compares",
+        "Webhook events always arrive in order, so the nightly poll replayed older state over the newer memberships the webhooks had applied"
+      ],
+      "correct_index": 1,
+      "explanation": "WorkOS's reconciliation guidance carries a known-issue note: tracking updated timestamps is of limited use because group membership changes do not alter a user's updated_at. A job that skips users whose timestamp did not move therefore never sees membership drift; reconcile with GET /directory_groups?user=... (the deprecated groups field on users is empty by default for teams created from May 1, 2026). Directory users do carry updated_at, and it is still a reasonable staleness check for user attribute updates; it is just not a signal for memberships. Membership state is available through the API, and webhooks carry no ordering guarantee."
+    },
+    {
+      "stem": "Okta terminates a contractor by unassigning the SCIM app. Six hours later the contractor's SAML session in the vendor's app is still alive. Which statement matches the sources?",
+      "options": [
+        "WorkOS ends the SAML session through Single Logout as soon as the dsync event fires for the unassigned contractor",
+        "SCIM guarantees that active sessions end when the directory marks the user inactive, because the protocol itself defines session semantics for apps",
+        "SSO sessions are tied to the SCIM user state inside WorkOS, so deleting the directory user ends them automatically",
+        "SCIM changes directory state but does not end live sessions, and Single Logout covers only OIDC and limited cases, so revoke the session yourself"
+      ],
+      "correct_index": 3,
+      "explanation": "SSO proves identity at login and SCIM manages the directory record; neither terminates a session the vendor already issued. WorkOS says Single Logout currently covers only OIDC connections and limited scenarios, so a SAML session is not reliably ended by the IdP. That puts session revocation in the vendor's offboarding handler. The other options assume coupling between SSO sessions and directory state that no source describes."
+    }
+  ]
+}

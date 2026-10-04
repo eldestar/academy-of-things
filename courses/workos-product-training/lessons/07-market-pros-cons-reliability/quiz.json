@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Using the SSO tiers on the WorkOS pricing page (1-15 at $125, 16-30 at $100, 31-50 at $80, 51-100 at $65 per connection per month) and the graduated calculation the page's own calculator script uses, what does a vendor with 40 SSO connections pay per month?",
+      "options": [
+        "$3,200, because all 40 connections are billed at the $80 tier they land in once the volume passes 30",
+        "$5,000, because the first-tier price of $125 applies to every connection until you pass 100 connections",
+        "$4,175, from 15 x $125 plus 15 x $100 plus 10 x $80, each band at its own tier rate",
+        "$4,375, from 15 x $125 plus 25 x $100, with the second tier covering everything above the first 15"
+      ],
+      "correct_index": 2,
+      "explanation": "In graduated pricing, each band is charged at its own rate: 15 x 125 = 1,875, 15 x 100 = 1,500 and 10 x 80 = 800, totalling 4,175. The whole-volume reading (40 x 80 = 3,200) would be $975 lower, but it is not how the page's calculator computes the number, and the page's prose does not settle it, so get the reading confirmed in writing. Neither $5,000 nor $4,375 corresponds to any reading of the published tiers."
+    },
+    {
+      "stem": "A B2B vendor sells a $4,000-per-year product to about 200 small customers, and around a third of them now insist on SSO through their own IdP. What does the published per-connection pricing imply for the planning conversation?",
+      "options": [
+        "Each SSO customer adds roughly $780 to $1,500 a year, a big share of a $4,000 contract, so SSO needs its own price tier or a pass-through",
+        "The cost is negligible because WorkOS prices per user, so a small customer with a handful of seats costs almost nothing to connect to SSO",
+        "AuthKit's free first million monthly active users also covers enterprise connections, so SSO for these customers costs nothing extra to the vendor",
+        "The cost falls to zero because connections beyond the first 15 are free, so the third of customers who want SSO are fully covered by that tier"
+      ],
+      "correct_index": 0,
+      "explanation": "Connections are billed per customer relationship regardless of head count, at $65 to $125 per month by the published tiers, which is $780 to $1,500 a year, or roughly a fifth to over a third of a $4,000 contract. The free first million MAU covers AuthKit users, not SSO or Directory Sync connections, and tiers only reduce the rate, never to zero. This is why per-connection pricing fits few-large-customer vendors and strains many-small-customer ones."
+    },
+    {
+      "stem": "Leadership asks you to plan an exit from WorkOS AuthKit to a self-hosted system without forcing users to reset passwords. What is the best-supported statement from what you read?",
+      "options": [
+        "WorkOS documents a support-ticket export of password hashes, as Auth0 does, so you ask support to run it for you before the cutover date",
+        "Hashes can be downloaded as a CSV from the WorkOS dashboard, as Clerk allows from its dashboard, so you export them before leaving the platform",
+        "Hash portability is effectively guaranteed because WorkOS imports bcrypt and scrypt hashes, so the stored format is already an industry standard",
+        "The docs describe import but no export, the User object has no hash field, and a competitor says none exists; plan for resets and ask in writing"
+      ],
+      "correct_index": 3,
+      "explanation": "The reference's User object lists no password field, and the user create and update calls take a hash as input only. Better Auth, a competitor, says WorkOS offers no hash export, while WorkOS's own docs are silent, so treat that as a vendor-sourced claim, plan for resets and get a written answer. A support-ticket export and a dashboard CSV are what Auth0 and Clerk document (Stytch and Descope support-only, per WorkOS's guides); nothing in WorkOS's docs describes either. Being able to import hashes says nothing about exporting them."
+    },
+    {
+      "stem": "During the 2026-07-16 incident, WorkOS's postmortem reports SSO login, AuthKit login and token exchange and refresh failing at high rates. Your product depends on SSO sign-in, AuthKit sessions, Directory Sync webhooks and audit-event emission. Which dependency does the postmortem say was unaffected?",
+      "options": [
+        "Token refresh for existing sessions, which is served from a separate pool and kept running while the sign-in flows failed for new logins",
+        "Directory Sync and Audit Logs, which the postmortem says were unaffected while SSO, AuthKit login and token refresh failed",
+        "SSO sign-in, because SAML responses are handled on a path that does not touch the user management code or its database pool",
+        "AuthKit login, because the hosted sign-in pages are static assets served from a CDN and so stay up during a database outage"
+      ],
+      "correct_index": 1,
+      "explanation": "The postmortem states elevated errors across the User Management API, AuthKit and SSO sign-in flows (SSO login about 58% aggregate, AuthKit login about 45%, token exchange and refresh about 41%) and that Directory Sync and Audit Logs were unaffected. The root cause was a shared database connection pool on the session-creation path, which is why refresh failed too. This is the case for the transient-versus-terminal refresh handling in lesson 5: a brief failure should not sign everybody out."
+    },
+    {
+      "stem": "The pricing page lists a 99.99% uptime SLA on Annual Credits. A colleague notes that the 2026-07-16 incident lasted about 130 minutes and concludes WorkOS owes service credits. Having read the SLA at workos.com/legal/sla, what is the careful reading?",
+      "options": [
+        "Credits are owed automatically, because 130 minutes far exceeds the 99.99% budget and the SLA applies to every product and environment alike",
+        "The postmortem states that SLA credits were issued to all customers, so no claim is needed and the question is already settled for everyone",
+        "Downtime is minutes above 10% 5xx for covered services (SSO, Audit Logs, Directory Sync); credits must be requested, and AuthKit coverage is unclear",
+        "The SLA covers only non-production use such as staging and sandbox, so a production incident like this one falls outside the commitment entirely"
+      ],
+      "correct_index": 2,
+      "explanation": "The SLA text is public at workos.com/legal/sla. It measures downtime per minute at more than 10% 5xx for a covered service above a request threshold, excludes staging, sandbox and beta features, and gives 10% or 20% credits only if the customer notifies support within the following calendar month. Valid Request is defined only for SSO, Audit Logs and Directory Sync, so whether AuthKit login errors count depends on the Enterprise-tier agreement. The 130-minute event (SSO errors about 58% overall) would plausibly count for SSO, but credits are not automatic. The postmortem says nothing about credits, and the SLA excludes staging rather than applying only to it."
+    },
+    {
+      "stem": "A colleague says WorkOS is always the cheaper choice than Stytch once you pass a handful of enterprise connections. Using Stytch's published terms (5 SSO or SCIM connections free, then $125 each) and WorkOS's graduated tiers for SSO only, what is the best response at 30 SSO connections?",
+      "options": [
+        "WorkOS is cheaper at 30 connections: $3,125 against Stytch's $3,375, because its graduated tiers drop to $100 early and the free allotment is small",
+        "They are identical at 30 because both vendors start at $125 per connection and Stytch's free allotment is cancelled out by WorkOS's volume tiers",
+        "Stytch costs far more at every count because it charges a base platform fee on top of the per-connection rate, whatever the connection count",
+        "Stytch is about $250 a month cheaper at 30 ($3,125 vs $3,375) and the lines cross at 36; this is SSO only, and Stytch includes just 10,000 free MAU to WorkOS's 1M"
+      ],
+      "correct_index": 3,
+      "explanation": "Stytch: (30 - 5) x 125 = 3,125. WorkOS graduated: 15 x 125 + 15 x 100 = 3,375. The free allotment makes Stytch cheaper until WorkOS's lower upper tiers catch up; at 35 connections it is 3,775 versus 3,750 and at 36 it is 3,855 versus 3,875, so WorkOS is cheaper from 36. Stytch's pay-as-you-go Base Price is $0, so there is no base platform fee. The comparison is SSO only: Stytch counts SSO and SCIM together, includes only 10,000 free MAU (WorkOS includes 1M), and does not publish its per-member rate beyond that, so the full bill depends on your user count and a general claim that either vendor is always cheaper is unsupported."
+    }
+  ]
+}

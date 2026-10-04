@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Your WorkOS webhook handler passes its unit tests, which use a fixture signed with the test secret. In staging, every real delivery is rejected as a bad signature. Secrets and system clocks have been checked. The framework parses the JSON body before your handler runs, and the handler calls json.dumps on the parsed object before verifying. What is the most likely cause?",
+      "options": [
+        "The header timestamp is older than your tolerance because the clocks of WorkOS and your server have drifted apart by minutes",
+        "Your framework lowercases header names, so WorkOS-Signature is read as empty and every request fails verification",
+        "The HMAC covers exact bytes; re-serialising the parsed JSON changes them, so you hash a different string than WorkOS signed",
+        "The v1 hex digest must be compared case-insensitively, and your handler compares it case-sensitively, rejecting valid signatures here"
+      ],
+      "correct_index": 2,
+      "explanation": "The documented scheme hashes the issue timestamp, a dot, and the request body. A MAC covers bytes, not meaning, so a parsed-then-re-dumped body differs in whitespace even when the data is identical; the demo's re-serialised case fails for exactly this reason. Your fixture passed because the test signed the same bytes it verified. Clock skew would produce a timestamp rejection, and in the demo that is a separate check that runs after the signature compare. An empty header would be reported as malformed rather than as a bad signature in the demo, and a case-insensitive header lookup handles any case change. Hex case is not the issue: the signature failed before any case question arises, and a correctly hashed body would match."
+    },
+    {
+      "stem": "A reviewer says the timestamp tolerance check in your webhook verifier is redundant: the HMAC already proves the request came from WorkOS, so there is nothing more to check. An attacker who can see traffic on a proxy has captured one valid delivery. What is the accurate response?",
+      "options": [
+        "A captured signature never expires by itself, so a resend passes the HMAC; only the timestamp check rejects it, since t is signed",
+        "The reviewer is right: an attacker who cannot forge the HMAC cannot get any request accepted, so the timestamp check adds nothing",
+        "The tolerance check matters only if the attacker can modify the body, since a replayed body is identical and therefore harmless",
+        "The attacker can rewrite t= to the current time and keep the original v1, so the IP allowlist is the real control, not the tolerance"
+      ],
+      "correct_index": 0,
+      "explanation": "Authenticity and freshness are different properties. The captured request is authentic, so replaying it passes the HMAC. Because t is part of the signed string, changing it breaks the signature, which is why the demo's rewritten-timestamp case is rejected. So the tolerance is what bounds replay. Saying the HMAC alone suffices confuses unforgeable with unrepeatable. A replayed body is not harmless: it can re-trigger side effects such as a second provisioning action or email. The idea that t can be rewritten is wrong for this scheme, and an IP allowlist is a useful extra layer but does not stop a replay launched from an allowed path or a compromised proxy."
+    },
+    {
+      "stem": "A WorkOS-integrated app's staging endpoint was down for ten hours overnight. Production runs the same code. Which statement matches the documented delivery behaviour?",
+      "options": [
+        "Both environments retry with exponential backoff for up to 3 days, so everything arrives once the endpoint recovers",
+        "Neither environment retries, so any non-2xx response drops the event immediately and it must be fetched from the events API",
+        "Both environments make one retry, as with Okta event hooks, and then give up on that delivery for good afterwards",
+        "Production retries with backoff for up to 3 days, but staging retries only for minutes, so staging needs a dashboard retry"
+      ],
+      "correct_index": 3,
+      "explanation": "WorkOS documents production retries over up to 3 days (up to 6 attempts with exponential backoff) and says staging retries only for several minutes, with manual retry available in the dashboard. The 3-day figure applies to production, so an overnight staging outage can lose events silently. The single-retry behaviour belongs to Okta event hooks, whose docs describe at most one retry and no retry on 4xx; assuming one vendor's retry semantics for another is the mistake the question tests. Not retrying at all is wrong for both vendors."
+    },
+    {
+      "stem": "Your webhook handler creates a user record and sends a welcome email, and duplicates are expected. Which dedupe design is correct?",
+      "options": [
+        "Apply the change and send the email, then record the event ID in a separate statement afterwards, since duplicates are rare",
+        "Insert the event ID under a unique constraint in the same transaction as the change, and keep email out of the replay path",
+        "Record the event ID in its own statement before applying the change, so that a duplicate can never be processed a second time",
+        "Skip the event ID log and compare updated_at on the user record, which already handles every duplicate including the welcome email"
+      ],
+      "correct_index": 1,
+      "explanation": "Atomicity is the point: the ID record and the state change must commit or fail together. Recording the ID first in a separate statement means a crash before applying makes the retry skip the event forever, which loses data. Recording afterwards means a crash in between applies the change and sends the email twice on redelivery. An updated_at comparison protects data from stale overwrites but does nothing for an email, which fires on every delivery unless something remembers it already happened. WorkOS also recommends separating data handling from side effects so replays do not repeat them."
+    },
+    {
+      "stem": "A nightly Python sync against the Okta API hits bursts of HTTP 429. Responses show X-Rate-Limit-Remaining at 0. A teammate suggests either retrying immediately, rotating across several API tokens, or building next-page URLs with a larger limit. What is the sound approach?",
+      "options": [
+        "Back off to X-Rate-Limit-Reset with jitter, lower concurrency, follow Link rel=next, and use event hooks over polling",
+        "Retry each request immediately in a loop, since a 429 is transient and the limit window is only a short interval",
+        "Spread the calls across several API tokens so that each one stays under the limit and the whole job finishes sooner overall",
+        "Construct your own page URLs with the largest limit value allowed, since fewer requests means fewer 429 responses overall"
+      ],
+      "correct_index": 0,
+      "explanation": "Okta's guidance for this situation is to throttle, handle 429 with backoff, batch jobs across time, retrieve only what you need, and prefer event hooks over polling. Reset is reported as epoch seconds; for concurrent-limit errors the reset is only a suggestion, so keep jitter and a retry cap. Immediate retry is the runaway-automation pattern Okta names as a root cause. Extra API tokens mostly share the same org-wide bucket, so they do not multiply the quota; Okta's documented routes are throttling, adjusting the token or app limit, or requesting an increase. Hand-built page URLs go against Okta's instruction to follow the Link header, because cursor formats may change."
+    },
+    {
+      "stem": "You need an unattended nightly script that deactivates users through the Okta API. Which authorization approach fits?",
+      "options": [
+        "Authorization code with PKCE, using a refresh token captured once from an administrator's browser login and kept with the script",
+        "The implicit flow, because an unattended script has no secret it can safely keep, so tokens should come from the browser",
+        "Client credentials with a service app that signs a private_key_jwt and is granted only the scopes the script needs",
+        "Resource owner password credentials with a dedicated admin account, since no browser is available to the script"
+      ],
+      "correct_index": 2,
+      "explanation": "Okta's docs say client credentials is the only flow that mints scoped Okta tokens for a service app, and private_key_jwt is the supported client authentication for it. Client credentials is meant for confidential clients acting for themselves with no user, and the RFC says a refresh token should not be issued, so the script just requests a new token. Authorization code with PKCE is designed for delegated user context; storing one admin's refresh token ties production automation to a person, which is a judgment problem rather than a spec violation. The implicit flow is discouraged by RFC 9700, and the script is a confidential client that can keep a key. The password grant puts a human credential in an unattended job."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A 2021 tutorial you are following says to point your SAML SP at samltest.id as a free test IdP. What is the right call today?",
+      "options": [
+        "Use it, but over plain HTTP only, since the HTTPS endpoint is the part of the service that has been retired",
+        "Use it with synthetic data only, because the exposure of a free public IdP is limited to whatever you type into it",
+        "Do not use it: the domain is a for-sale parking page now, so switch to Mock SAML or your own Entra or Google tenant",
+        "Use it, but only for the SP-initiated flow, since the maintainers retired just the IdP-initiated flow and left the rest running"
+      ],
+      "correct_index": 2,
+      "explanation": "Plain HTTP now returns 410 Gone, the HTTPS handshake fails, and archived snapshots from October 2024 and December 2025 show a 'Buy this domain' page. The danger of a parked domain is that your SP would be configured to exchange SAML messages with a hostname a stranger may later own, so synthetic data does not make it harmless: metadata, entity IDs and assertions still flow there. No part of the service is half-alive, which rules out the HTTP-only and flow-specific options."
+    },
+    {
+      "stem": "In a free Entra ID tenant you open Attributes & Claims for the SAML app to send groups for WorkOS role assignment, and the 'Groups assigned to the application' option is not available. What is going on, and what are your realistic options?",
+      "options": [
+        "Group assignment needs P1 or P2; the Free fallback is Security groups, which is noisier and hits the 150-group limit",
+        "WorkOS must enable role assignment on the connection first, and only then does Entra expose that option in the app",
+        "Non-gallery SAML apps cannot emit groups claims at all, only gallery apps can, so you must recreate the app from the gallery",
+        "The option stays hidden until the app's signing certificate has been rotated at least once after the first sign-in"
+      ],
+      "correct_index": 0,
+      "explanation": "Microsoft's assignment page and WorkOS's Entra guide both say group assignment requires P1 or P2. Without it the fallback is the Security groups option, which is noisier and subject to the SAML group limit; Entra omits the whole group list above 150 groups, so test with a user in many groups. Role assignment in WorkOS consumes whatever the IdP emits and does not unlock Entra options, a non-gallery app can emit group claims, and certificate rotation is unrelated."
+    },
+    {
+      "stem": "You are testing Google directory sync on a Google Workspace trial. The trial allows 10 users, you have created 10 test users, and you add an eleventh. What happens?",
+      "options": [
+        "The user is created but stays blocked from signing in until you upgrade, while the other ten keep working",
+        "The trial limit lifts automatically to 25 users and the 14-day clock keeps running without any billing change",
+        "Nothing happens, because the 10-user trial limit counts only Gmail mailboxes and not directory-only users",
+        "You are prompted to end the trial, and the paid subscription starts for every user, not only the eleventh"
+      ],
+      "correct_index": 3,
+      "explanation": "Google's trial page says that adding more than 10 users requires billing and that on the eleventh user you are prompted to end the trial, after which the paid subscription begins for all users. A trial already requires a payment method up front, so the practical rule is to stay at or under 10 users and cancel deliberately before the trial ends. Google documents no automatic extension, no per-product exemption, and no create-but-blocked state."
+    },
+    {
+      "stem": "You want to provoke WorkOS's expiring-certificate warning for a connection without waiting years. Which IdP in your lab lets you do that, based on how it issues SAML signing certificates?",
+      "options": [
+        "The hosted Mock SAML, because its namespace page lets you regenerate the certificate with a shorter lifetime",
+        "Entra ID, because a new signing certificate can be given any expiry date from today to three years ahead",
+        "Google Workspace, because its admin console lets you create a SAML certificate with a custom validity period",
+        "None of them, because WorkOS raises certificate warnings only once the certificate has actually expired"
+      ],
+      "correct_index": 1,
+      "explanation": "Microsoft documents that a new certificate defaults to three years but you can pick any date between now and three years out, so you can choose one under WorkOS's 90-day flag window. The hosted mock IdP's certificate expires in July 3021 and Google's certificates have a fixed five-year lifetime, so neither hosted option can be shortened (a self-hosted Mock SAML takes your own key pair, but that is not an IdP in your lab unless you stand it up, and its namespace page only changes the entity ID). WorkOS flags certificates within 90 days of expiry, before the real expiry, so waiting is not required if the IdP lets you issue a short-lived one."
+    },
+    {
+      "stem": "An Entra ID SCIM app is on, scope is 'Sync only assigned users and groups', and you assigned a new user 20 minutes ago. Nothing has arrived in the WorkOS directory yet and the credentials test passed. What do you do first?",
+      "options": [
+        "Regenerate the WorkOS bearer token and paste it in again, since a pending sync means the token was not accepted",
+        "Switch the app's scope to 'Sync all users and groups' so the assignment filter cannot be what is holding the user back",
+        "Use Provision on demand for that user, since Entra's default sync cycle is only about every 40 minutes",
+        "Delete and re-add the directory in WorkOS, since the sync only fires at directory creation and never again"
+      ],
+      "correct_index": 2,
+      "explanation": "WorkOS documents that Entra SCIM syncs on a schedule, typically about every 40 minutes, and offers Provision on demand to push a chosen user, group or membership immediately. A passing credentials test already shows the token works, so regenerating it adds risk without a cause. Widening the scope would push users you did not mean to, and recreating the directory throws away state for a problem that is only latency."
+    },
+    {
+      "stem": "A teammate wants to demo SSO to a pilot customer by pointing a connection in the production WorkOS environment at hosted Mock SAML, since the login screen accepts any password for example.com users. What is the strongest reason to refuse?",
+      "options": [
+        "Anyone can sign in as anyone, and WorkOS warns test providers show placeholder names and may be billed in production",
+        "Mock SAML does not sign its SAML responses, so WorkOS would reject every assertion from the connection",
+        "WorkOS production environments accept connections only from IdPs on a certified-provider list that WorkOS maintains",
+        "Mock SAML's metadata carries a validUntil about ten years out, which breaks monitored metadata refresh"
+      ],
+      "correct_index": 0,
+      "explanation": "The mock IdP is deliberately open: its login screen takes any username on two example domains with any password and is labelled not for production use, so it authenticates nobody. WorkOS's environments guide separately warns against test SAML providers in production because of placeholder branding and possible billing for any production enterprise connection. Mock SAML does sign (its metadata publishes a signing certificate, valid until 3021), and WorkOS documents no certified-IdP list."
+    }
+  ]
+}

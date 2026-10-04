@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "In one WorkOS environment, deactivating a user in Okta produces dsync.user.updated with state inactive. In a second environment, the same action produces dsync.user.deleted. Nothing is wrong with either Okta app. What explains the difference, and how should your handler respond?",
+      "options": [
+        "Okta sends different SCIM requests depending on the tenant, so pin the handler to whichever event your first tenant produced and ignore the other shape elsewhere",
+        "The environments differ in inactive-user handling: deleting is the default secure flow and retaining them is a custom flow, so the handler must cope with both",
+        "dsync.user.deleted is sent only when a user leaves a group, so the second environment has a group-sync bug that needs a support ticket to fix",
+        "Webhook delivery order is random and each environment dropped one of the two events, so enable retries to recover the missing event"
+      ],
+      "correct_index": 1,
+      "explanation": "WorkOS documents two configurations for inactive users: a default secure flow that deletes them (so you get a deletion event) and a custom management flow that retains them (so you get an update with state inactive). The docs also note that most providers soft-delete, which is why both shapes exist. A handler that assumes one shape breaks when it meets the other, so treat both as a deprovision signal. The SCIM requests from Okta are the same in both. Group membership changes produce group events, not user deletion. Ordering is not guaranteed, but ordering does not turn one event into another or drop events."
+    },
+    {
+      "stem": "A reviewer asks you to prove your service handles SAML clock skew. In your lab you can control your laptop and your own services but not Okta's or WorkOS's clocks, and the WorkOS docs you read state no skew tolerance. What is the honest evidence to record?",
+      "options": [
+        "Move the laptop clock ten minutes and record that SAML skew handling was verified, since the sign-in either succeeded or failed afterwards and nothing else changed",
+        "Quote the webhook timestamp tolerance as the SAML skew figure, and attach the 600-second webhook rejection as proof of assertion handling",
+        "Report SAML skew handling as proven because SSO succeeded across repeated staging runs, with screenshots of the successful sign-ins as evidence",
+        "The skew results you can produce, such as a signed webhook rejected at 600 seconds old and your own session lifetimes, plus a note that SAML skew handling is untested"
+      ],
+      "correct_index": 3,
+      "explanation": "The only clocks you control are the ones you host, so the defensible evidence is the webhook timestamp tolerance (the SDK default is 3 minutes in the v11.0.0 source) and your own token and session handling, with an explicit statement that assertion validity windows are validated inside WorkOS and were not tested. Moving the laptop clock changes only your machine's view and tests nothing on the validating side. The webhook tolerance is a different mechanism from SAML NotBefore and NotOnOrAfter validation, so quoting it as the SAML figure is a misattribution. Repeated successful logins show that the clocks agree, not what happens when they do not."
+    },
+    {
+      "stem": "You export a HAR from Chrome DevTools using the default 'sanitized' option and plan to attach it to your portfolio because Cookie, Set-Cookie and Authorization headers are stripped. Why is it still unsafe to publish as is?",
+      "options": [
+        "The SAML response travels in a POST form body and the authorization code in a URL, and sanitising mainly strips Cookie, Set-Cookie and Authorization headers",
+        "A sanitised HAR still contains the Cookie headers, because the option only hides them in the DevTools interface and not in the exported file you attach",
+        "HAR files always embed the browser's saved passwords for every site visited during the capture, regardless of the sanitise setting you chose when exporting",
+        "Sanitised HAR files use a Chrome-only encoding, so reviewers opening them in other tools or browsers will see corrupted, unreadable content"
+      ],
+      "correct_index": 0,
+      "explanation": "Chrome's documentation describes the sanitised export as excluding sensitive information such as Cookie, Set-Cookie and Authorization headers (Chrome's source also empties cookie arrays and omits SSE message data). WorkOS documents that SAML responses come back via the HTTP POST binding in the form body, and the SSO redirect carries an authorization code in the query string, neither of which is a header, so they remain in the file along with names, emails and ids. The option strips data in the export, not just in the UI. HAR files do not include saved passwords. HAR is an open JSON format and opens fine elsewhere, which is part of why a leaked one is dangerous."
+    },
+    {
+      "stem": "You generated an Admin Portal link with the API in your app and emailed it to a customer's IT contact. The next morning they report it does not work. What is the explanation and the better design?",
+      "options": [
+        "Portal links expire at midnight UTC on the day they are generated, so schedule the email to arrive early in the contact's morning, since expiry is a fixed time of day",
+        "The IT contact's domain was never verified in the organization, so the link was rejected; verify the domain first and resend the same link",
+        "API-generated portal links last five minutes and cannot be revoked, so redirect the user straight away and send a 30-day Dashboard setup link instead",
+        "Portal links are bound to the first browser that opens them, so ask the contact to clear their cookies and retry from the original email"
+      ],
+      "correct_index": 2,
+      "explanation": "The WorkOS docs distinguish two link types: links generated through the API expire after five minutes and are meant to be used by redirecting the user straight to them (the docs advise against emailing them), whereas setup links shared from the Dashboard last 30 days or until setup completes, and only one can be active at a time. A midnight expiry and a cookie requirement are not documented. Domain verification is a separate step in the Admin Portal and does not make a link expire."
+    },
+    {
+      "stem": "A connection was set up by manually uploading the IdP's metadata XML. Months later the IdP rotates its SAML signing certificate and every login to your app fails, although nothing changed on the WorkOS side. What is the likely cause and the preventive design?",
+      "options": [
+        "The connection holds the old certificate because manual upload does not follow IdP changes; use a monitored metadata URL or renew via the Admin Portal, and watch expiry warnings",
+        "WorkOS rotates its own SAML signing certificate on a schedule for every customer, and the IdP side was never reconfigured, so support must re-sync the connection after each rotation",
+        "The customer's verified domain lapsed when the certificate rotated, so WorkOS now blocks every profile as outside the organization until the domain is re-verified",
+        "SAML assertions are only accepted for 90 days after a connection is created, so each connection needs re-creating before that window ends to keep signing in"
+      ],
+      "correct_index": 0,
+      "explanation": "WorkOS verifies the signature on SAML responses with the IdP's certificate stored on the connection. With a manual upload, the docs say new information must be uploaded manually when the certificate changes, whereas a monitored metadata URL is refreshed automatically; WorkOS also surfaces certificates within 90 days of expiry and offers a renewal flow through the Admin Portal. The 90 days in the docs is a warning window, not an assertion lifetime. A request-signing certificate rotating on the WorkOS side is a different certificate and WorkOS updates it on the SP metadata URL. A lapsed domain would produce a domain-policy error for the affected profiles, not a signature failure for everyone."
+    },
+    {
+      "stem": "You complete teardown: terraform destroy succeeded, the state and plan files are deleted, and the Okta console shows none of the lab groups or apps. Which lab artifact can still modify that Okta org?",
+      "options": [
+        "A copy of the saved plan file that Terraform cached outside the working directory, which can be re-applied against the org later",
+        "The group and SAML app, which Okta keeps in a recycle bin and restores the next time anyone runs terraform apply against that org, so purge them there too",
+        "The OAuth service app created by hand in the console, with its admin role, plus any private key or variable holding its credentials",
+        "The provider lock file, which stores the Okta credentials so a later terraform init can reproduce the same authenticated session"
+      ],
+      "correct_index": 2,
+      "explanation": "The service app was created by hand so that Terraform could authenticate; it is not a resource in the configuration, so destroy never touches it. Its admin role, client credentials and private key remain valid until you deactivate and delete the app in Okta (the teardown checklist's Terraform step) and remove the key file and OKTA_API_* variables. The saved plan was deleted in this scenario, and the docs only say plans hold sensitive values, not that they are re-applicable credentials. Okta recycle-bin restoration is not a Terraform behaviour. The lock file records provider versions and hashes, not credentials."
+    }
+  ]
+}

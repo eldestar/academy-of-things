@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A teammate is in a hurry to check how Okta metadata imports and proposes creating one throwaway SAML connection directly in the production WorkOS environment, then deleting it. What is the right response?",
+      "options": [
+        "Fine, provided it is deleted the same day, because WorkOS prorates production connection charges by the hour",
+        "Do it in staging: connections there are free, and even a test connection in production may be billed",
+        "Fine if it uses the Test Identity Provider, because that provider is exempt from billing in any environment",
+        "Fine if the organization has a verified domain, since connections under a verified domain are not billed"
+      ],
+      "correct_index": 1,
+      "explanation": "The environments guide says staging connections incur no charges and that test SAML providers should not be configured in production, partly because production enterprise connections may count toward billing even when they are tests. Billing is by connection count (the billing page shows connection counts), not by the hour, and the built-in Test IdP exists only in staging. Domain verification has nothing to do with whether a connection is billed."
+    },
+    {
+      "stem": "You cannot find the API key for either environment. A deploy to staging and a deploy to production both need it today. Which plan matches how WorkOS issues keys?",
+      "options": [
+        "Regenerate both and redeploy, because neither environment lets you view an API key again after it is created",
+        "Look both up in the Dashboard, because an Admin can view an API key again in both environments at any time",
+        "Look up the production key and regenerate the staging one, because staging keys are rotated on a 30-day schedule",
+        "Look up the staging key, but create a new production key and redeploy, since production keys are shown once"
+      ],
+      "correct_index": 3,
+      "explanation": "Staging keys may be viewed as often as needed (a staging key is even pre-generated for you), while production keys are viewable only once, so a lost production key means creating a new one and updating every place it is used. The other options invent a symmetric policy or a 30-day rotation that the API authentication and environments pages do not describe. This asymmetry is also why the production key belongs in a secret manager from the first minute."
+    },
+    {
+      "stem": "A developer's tunnel hostname changes on every run, so they want to register https://*.ngrok-free.app/callback as the redirect URI to stop editing the Dashboard. What should you tell them?",
+      "options": [
+        "Use an http://localhost callback in staging and tunnel only webhooks; public suffix domains cannot take wildcards",
+        "That works if the wildcard URI is also marked as the default redirect URI for the application, so the Dashboard accepts it",
+        "That works in staging but is rejected in production, because WorkOS disables wildcard redirect URIs there only",
+        "Use a wildcard port on the tunnel hostname instead, since WorkOS allows port wildcards on any HTTPS host you control"
+      ],
+      "correct_index": 0,
+      "explanation": "WorkOS's redirect URI rules exclude wildcards on public suffix domains (the docs' own example is *.ngrok-free.app), forbid a wildcard URI as the default, and allow port wildcards only for localhost and loopback addresses. SSO redirects travel through the user's browser, so a localhost callback is fine in staging, which accepts http and localhost. Only the webhook endpoint needs a public HTTPS tunnel, and its URL is registered separately from the redirect URI."
+    },
+    {
+      "stem": "Your IdP-initiated test in staging lands somewhere you did not expect. The Login Flows page says WorkOS sends the user to a sign-in endpoint you configured under the application's Redirects with connection_id appended, and documents RelayState overrides. The SSO guide describes the default redirect URI being used, with the customer setting RelayState. What do you do?",
+      "options": [
+        "Assume the Login Flows page wins because it is the more specific guide, and treat the observed result as a bug in your app",
+        "Open a support ticket before continuing, since conflicting docs mean the feature is not safe to test in staging",
+        "Run the IdP-initiated Test SSO scenario with AuthKit disabled and design your endpoint for the behaviour you observe",
+        "Disable IdP-initiated SSO on the connection until WorkOS support confirms which description is the correct one"
+      ],
+      "correct_index": 2,
+      "explanation": "WorkOS describes IdP-initiated SSO in at least three ways (sign-in endpoint with connection_id, default redirect URI with an optional customer RelayState, and the default application), so the doc cannot settle it. The Test SSO page offers an IdP-initiated scenario and says to disable AuthKit first, which is the cheap way to observe the behaviour your environment actually has. Declaring one page authoritative or switching the feature off hides the question, and a ticket is premature when a free staging experiment answers it."
+    },
+    {
+      "stem": "You commit a README that includes a curl example with a real lab Okta token in the form 'Authorization: SSWS 00...'. Your pre-commit gitleaks run with default rules reports no leaks. What is the correct conclusion?",
+      "options": [
+        "A clean scan proves little: default rules skipped that header form, so rotate the token, scrub history and add a rule",
+        "The commit is clean, because the default gitleaks rules cover Okta tokens in every format they can appear in, including headers",
+        "The token is harmless, because SSWS tokens expire on a fixed schedule and an expired token cannot be reused by anyone",
+        "Only WorkOS API keys need scanning, because Okta tokens are scoped to the lab org and are not treated as secrets"
+      ],
+      "correct_index": 0,
+      "explanation": "In a local test with gitleaks 8.30.1 and random fake values, an Okta-shaped token assigned to a variable was caught, but the same token in an Authorization header was not. A clean scan is only as good as the rules, so a real credential that reached a commit must be rotated and removed from history regardless. Tokens are valid for 30 days from last use, which is plenty of exposure, and Okta tokens carry the creating admin's privileges."
+    },
+    {
+      "stem": "To make a guest-domain test pass, a colleague adds their employer's real domain to the lab organization by typing it into the WorkOS Dashboard. Why is that a bad habit?",
+      "options": [
+        "WorkOS bills each domain added through the Dashboard as a separate line item, even in staging environments",
+        "Staging environments reject any domain that resolves publicly, so the colleague's test would fail anyway at sign-in",
+        "WorkOS then emails the domain's registered administrators to ask whether they approve the new organization",
+        "Hand-added Dashboard domains count as verified with no DNS proof, which weakens the cross-organization check"
+      ],
+      "correct_index": 3,
+      "explanation": "WorkOS's domain guide says domains manually added in the Dashboard are automatically considered verified, while API-created ones start pending until proven. The email-domain check exists because IdP admins can create users with any address, so a verified-by-assertion domain removes the protection while looking legitimate. Use example.com in the lab. The other options invent billing, blocking or notification behaviour that WorkOS does not describe for domains."
+    }
+  ]
+}

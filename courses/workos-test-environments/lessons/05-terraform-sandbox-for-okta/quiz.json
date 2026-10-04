@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A colleague clones your Okta lab repo and drops in a terraform.tfvars copied from another project, which names a production org. Which control in the repo would have stopped the run before anything was planned against that org?",
+      "options": [
+        "A validation block on the org name variable that allowlists the sandbox org and fails with a clear message",
+        "Pinning the provider with a ~> 7.0.0 constraint in required_providers so the same provider build always runs",
+        "Writing every plan to a file with -out and applying only that saved file, so apply matches what was reviewed",
+        "Listing *.tfstate and *.tfvars in .gitignore so that the copied variable file can never end up committed to the lab repo"
+      ],
+      "correct_index": 0,
+      "explanation": "Terraform evaluates variable validation as it processes inputs, before it plans resources, so an allowlist on the org name turns a wrong-tenant mistake into an immediate, readable error. The version pin protects against provider upgrades and says nothing about which tenant you target. Applying a saved plan guarantees you apply what you reviewed, but if the plan was made against production, the reviewed plan is a production plan. Gitignoring state keeps secrets out of commits and has no effect on where the provider points."
+    },
+    {
+      "stem": "Your Terraform run authenticates with an Okta OAuth service app. The token request succeeds and the scopes okta.groups.manage and okta.apps.manage were granted, but creating a group returns a 403. What is the most likely gap?",
+      "options": [
+        "The access token expired mid-run, because tokens issued by the client credentials flow live for only a few seconds before refresh is required",
+        "The private key was supplied as a PKCS#12 bundle, which the provider cannot read, so requests go out without a valid token",
+        "No admin role is assigned to the service app, and Okta limits a service app to what its assigned role permits",
+        "The scopes were passed through the api_token setting, which is the only field that carries scopes for group operations"
+      ],
+      "correct_index": 2,
+      "explanation": "Okta's service-app guide says to assign an admin role to every OAuth service app and that the app is limited to the permissions and resources in that role, so a granted scope without a role can still be denied. Access tokens last one hour per the same guide, so a seconds-long expiry is wrong. A wrong key format would fail when the provider tries to get a token, which you already did successfully. api_token is the legacy SSWS scheme and is mutually exclusive with the OAuth settings, so it is not a way to pass scopes."
+    },
+    {
+      "stem": "You are using local state for a throwaway Okta lab and want the repo to be reproducible for a reviewer. What belongs in version control?",
+      "options": [
+        "The terraform.tfstate file, so the reviewer sees the real resource ids and can compare them to the console",
+        "The .terraform.lock.hcl file and the .tf files, while state, saved plans, tfvars and private keys stay out",
+        "Only the .tf files; the lock file is generated output and, like state, saved plans and tfvars, it should stay out of version control",
+        "The .tf files plus the saved plan file from the last apply, as evidence that the change was reviewed first"
+      ],
+      "correct_index": 1,
+      "explanation": "HashiCorp recommends committing the dependency lock file so changes to provider hashes go through code review. Local state is plaintext and includes secret values from your configuration, and saved plan files retain sensitive values in cleartext even when the terminal output hides them, so neither belongs in git. Excluding the lock file loses the reviewable provider pin. A reviewer needs the configuration and a pinned provider, not the state."
+    },
+    {
+      "stem": "You import a console-created group with terraform import okta_group.console <group_id>. The next terraform plan reports one in-place change to the group. What is the right move?",
+      "options": [
+        "Apply it straight away, because Terraform's job is to make the org match the code and the diff is just a harmless normalisation of the object",
+        "Remove the state entry and re-run the import until the plan comes back empty, since the import must have been incomplete",
+        "Run terraform destroy on the group and apply again, so the group is created fresh from the code with no drift at all",
+        "Read the diff, then fix the HCL to match the real object unless the change is intended, and re-plan until it reports no changes"
+      ],
+      "correct_index": 3,
+      "explanation": "Import binds the existing object to the address without generating or validating configuration, so a non-empty plan means your HCL differs from reality. Applying blindly overwrites console settings you may not know you had, which is exactly the surprise an import exercise exists to expose. Re-importing yields the same diff because the mismatch is in the code, not the state. Destroy and recreate changes the group's id, which breaks any app assignment or downstream reference. Apply is legitimate only when the diff is a change you intend to make and have read."
+    },
+    {
+      "stem": "Someone edited the lab group's description in the console. You want to see exactly what drifted without Terraform proposing to revert it yet. Which command fits?",
+      "options": [
+        "terraform apply -auto-approve",
+        "terraform plan -refresh-only",
+        "terraform plan -destroy",
+        "terraform import okta_group.lab <group_id>"
+      ],
+      "correct_index": 1,
+      "explanation": "A refresh-only plan updates the picture of state to match changes made outside Terraform and reports them, instead of proposing to push your configuration back over them, so you can decide whether the console edit or the code is correct. A normal plan would show the revert, and apply -auto-approve would perform it with no review. A destroy plan targets everything. Importing an object that is already in state errors rather than showing drift."
+    },
+    {
+      "stem": "Your okta_app_oauth resource auto-generates a client secret and you notice it sitting in the state file. You are on Terraform 1.10 and want it out of state. Which statement is accurate?",
+      "options": [
+        "Marking the Terraform variable that feeds the app as sensitive keeps the generated secret out of the state file as well as the console output",
+        "Using client_basic_secret_wo works on any Terraform version, so switch to it and the secret leaves state on 1.10",
+        "Setting omit_secret to true stops the provider keeping client_secret in state, but flipping it back to false later recreates the app",
+        "Encrypting the saved plan file strips the secret from the state file, because the plan is where the provider stores it"
+      ],
+      "correct_index": 2,
+      "explanation": "The provider docs say omit_secret = true drops the generated client_secret from state (the secret as of that apply remains in Okta), and that changing it from true back to false recreates the app so a new secret can be stored. The write-only client_basic_secret_wo attribute is documented as Terraform 1.11 or newer, so it is not available on 1.10. Marking a variable sensitive hides it in output but state still records values. A plan file is a separate artifact from state, and the docs say it keeps sensitive values in cleartext."
+    }
+  ]
+}

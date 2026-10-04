@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A vendor's WorkOS environment has been relaxed (via support) to accept profiles from any email domain, to allow contractors. An IdP admin at customer A creates a user in their Okta with the email of an executive at customer B and signs in. Which control still protects customer B's account in the vendor's app?",
+      "options": [
+        "WorkOS still rejects the profile because its email domain does not match a verified domain of the organization, so the relaxed policy changes nothing",
+        "The vendor's callback comparing profile.organizationId with the organization the sign-in started for, not the email or its domain",
+        "The vendor's user lookup by email address, because email addresses are unique across customers and the lookup returns the right account",
+        "The idp_id format, which differs between Okta and Entra and therefore tells the app which customer the signed-in user belongs to"
+      ],
+      "correct_index": 1,
+      "explanation": "The domain check is WorkOS's default guard and is exactly what the relaxed policy removes, so the first option no longer applies. WorkOS's docs tell you to validate the profile's organization ID in the callback and call email-domain validation unsafe, since IdP admins can create users with any address. Looking up by email alone is how the impersonation succeeds: it would match customer B's executive. idp_id is only unique within a connection and says nothing about which customer a user belongs to."
+    },
+    {
+      "stem": "A customer's Okta admin is configuring the SAML app for your product and asks which Single Sign-On URL and Audience URI to enter. Where do those values come from?",
+      "options": [
+        "Your app's /callback URL for both fields, because your app is the one that receives the result after the user signs in",
+        "The IdP metadata URL in your WorkOS Dashboard, because it identifies the connection and the audience for the assertion the IdP signs and posts",
+        "Your app's redirect URI as the SSO URL and your app's domain as the audience, as in a standard OAuth client setup",
+        "The ACS URL and SP Entity ID in the connection's Service Provider Details, because WorkOS is the SAML service provider, not your app"
+      ],
+      "correct_index": 3,
+      "explanation": "In this architecture the assertion is posted to WorkOS's ACS URL and the audience is WorkOS's SP Entity ID; your app only receives an OAuth-style redirect with a code afterwards. The WorkOS Okta guide maps the ACS URL to Okta's Single Sign-On URL and the SP Entity ID to the Audience URI. Your callback URL is registered in WorkOS as a redirect URI, which is a different trust relationship. The IdP metadata URL flows the other direction: the admin copies it from the IdP into WorkOS."
+    },
+    {
+      "stem": "You are asked to confirm what happens when a user clicks your app's tile in Okta. The WorkOS quick start says IdP-initiated sessions land on the default redirect URI (customizable by RelayState), while the Login Flows page says WorkOS redirects to a configured sign-in endpoint with a connection_id parameter. A release is due. What is the best move?",
+      "options": [
+        "Follow the quick start, since it is the first page in the docs and it describes the default redirect URI behaviour",
+        "Follow Login Flows, since it is the more specific page and its sign-in endpoint approach avoids unsolicited responses",
+        "Test the IdP-initiated scenario in staging with the Test IdP and the customer's IdP type, and build against the observed behaviour",
+        "Move the customer to OIDC, so the tile launches through the same redirect on both sides and the ambiguity about what the tile does goes away"
+      ],
+      "correct_index": 2,
+      "explanation": "The two pages describe different mechanisms (a direct redirect with optional RelayState versus a sign-in endpoint that starts an ordinary SP-initiated request), and nothing in either page says which is current. WorkOS's Test SSO guide includes an IdP-initiated scenario for exactly this reason. Choosing by page order or by guessing which is more specific is how you ship a login loop. OIDC does not remove the question: WorkOS says OIDC connections are always SP-initiated, so an Okta OIDC tile would simply send the user to your login URL, which is an SP-initiated request and not the IdP-initiated behaviour you were testing."
+    },
+    {
+      "stem": "On Monday every login for one customer fails with failed SSO sessions. Their admin rotated the Okta app's signing certificate on Friday. Your team set the connection up by uploading an XML metadata file. What is the likely cause and the lasting fix?",
+      "options": [
+        "WorkOS has not yet picked up the new SP request-signing certificate; wait for it to rotate and logins will recover without any change on your side",
+        "Clock skew between Okta and WorkOS began when the certificate changed; fix NTP on the customer side and retest sign-in",
+        "Attribute mapping returned null for email after the rotation, so WorkOS rejects every profile until the mapping is redone",
+        "A manual upload does not refresh itself, so WorkOS still trusts the old certificate; upload new metadata, prefer a monitored URL"
+      ],
+      "correct_index": 3,
+      "explanation": "WorkOS's certificate docs distinguish a monitored metadata URL (refreshed automatically) from a manual upload (stale until someone uploads again), and the session docs list invalid or expired certificates as a failure cause. The IdP certificate API also lets you add a new certificate ahead of rotation while the old one keeps working. The request-signing certificate is the opposite direction: WorkOS rotates it and the IdP watches the SP metadata URL, so the first option mixes up the two. Clock skew would produce intermittent failures, not a clean break at a known change, and null attribute mappings fail on specific users rather than everyone."
+    },
+    {
+      "stem": "A customer's Entra admin adds a group claim that emits all security groups. A user who should be an Admin in your app signs in with the default role. The user is a member of 160 groups. What is the most likely cause?",
+      "options": [
+        "WorkOS caches role assignments per user until the next scheduled sync, so the Admin mapping applies only after a refresh interval",
+        "Entra omits the group list above its SAML limit (150 per WorkOS's guide), so no group mapping matches and the default role applies",
+        "The group mappings were created with display names while the claim emits object IDs, so the Admin mapping never matches for anyone who signs in",
+        "The user's NameID format changed when the claim was added, so WorkOS created a second profile that received the default role"
+      ],
+      "correct_index": 1,
+      "explanation": "WorkOS's Entra guide warns that Entra omits the group list when it exceeds 150 groups and that missing group claims fall back to the default role; the fix is to emit only groups assigned to the application (which needs Entra P1 or P2). SSO role assignment is calculated at each sign-in, so there is no cache to wait out. A display-name versus object-ID mismatch is a real mistake the guide also warns about, but it would affect every user in the group, not just someone over the limit. NameID is unrelated to group claims."
+    },
+    {
+      "stem": "Your vendor ships an IdP-initiated flow and a customer's Rippling users can sign in from your app but not from the Rippling tile. Which explanation fits the documentation and the SAML spec?",
+      "options": [
+        "Tile logins are unsolicited responses, which must not carry InResponseTo; the Rippling guide has the admin disable that field",
+        "Rippling can never run SP-initiated and IdP-initiated sign-in on the same connection, so the vendor has to pick one flow for each customer",
+        "Tile logins skip signature checks, so WorkOS blocks them by default until support enables unsigned IdP-initiated responses",
+        "The redirect URI must use http rather than https for IdP-initiated flows in production, because the tile posts directly to the app"
+      ],
+      "correct_index": 0,
+      "explanation": "Per SAML Profiles section 4.1.4.3 the service provider checks InResponseTo against its original request unless the response is unsolicited, in which case the attribute must not be present. WorkOS's Rippling guide has the admin tick 'Disable InResponseTo ... for IdP initiated SSO' to accept both flows. The reasoning that a tile click has no original request, so an IdP that stamps InResponseTo anyway breaks it, is my inference from the spec; WorkOS's page says only that the setting lets it accept both SP and IdP initiated SSO. The second option is wrong because the guide's setting exists precisely to allow both flows. Signed assertions are required in every flow, so signatures are not skipped. Production redirect URIs must be HTTPS, with only narrow loopback exceptions, so the fourth option is backwards."
+    }
+  ]
+}

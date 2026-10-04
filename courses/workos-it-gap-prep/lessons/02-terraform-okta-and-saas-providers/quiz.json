@@ -1,0 +1,61 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "4 of 5 correct to pass.",
+  "questions": [
+    {
+      "stem": "A Terraform pipeline for Okta authenticates with an SSWS `api_token` and runs only during the quarterly access review. This quarter it returns 401 on the first call. Nothing in the repo or tenant config changed, and the admin who created the token is still active. What is the most likely cause, and the structural fix?",
+      "options": [
+        "The provider hit its rate limit on the first call, so lower `max_api_capacity` and add a longer backoff before the quarterly run",
+        "The creating admin changed their password, which invalidates their API tokens, so rotate the token every quarter on a calendar",
+        "The token was unused for more than 30 days and expired; move to an OAuth 2.0 service app with a narrow custom role and scopes",
+        "The provider version drifted since last quarter, so pin it with `~>` so the token is accepted by the plugin again"
+      ],
+      "correct_index": 2,
+      "explanation": "Okta's API token guide says tokens are valid for 30 days from creation or last use, so a pipeline idle for longer finds the token dead. The same guide notes tokens inherit the creating admin's privileges and strongly recommends OAuth 2.0, which is also what the provider docs recommend; a service app with a custom role and only the scopes Terraform needs removes the expiry cliff and the over-privilege. A rate limit would return 429s and the provider retries those, not a 401. Provider pinning does not affect credentials, and the documented expiry is the 30-day inactivity window, not the creator's password. Okta also deprovisions a token when its creator's account is deactivated, which the stem rules out."
+    },
+    {
+      "stem": "You ran `terraform plan -generate-config-out=generated.tf` against import blocks for your existing Okta apps and groups, and it produced a large file. What is the right next step?",
+      "options": [
+        "Review and prune the generated HCL, swap raw IDs for references, then iterate `plan` until it reports no changes before applying",
+        "Apply it immediately, because generated configuration is guaranteed to match the live objects exactly and therefore needs no review, pruning or further plan runs",
+        "Add every Okta user to the import blocks as well, so group memberships and app assignments are captured in state",
+        "Delete the import blocks first, because generated configuration only works for resources that are not yet being imported"
+      ],
+      "correct_index": 0,
+      "explanation": "HashiCorp describes the generated file as a template that may need attributes removed, values adjusted and blocks reorganised, calls the feature experimental, and warns it can emit invalid configuration where arguments conflict. Okta's import guide has the same loop: generate, prune to required arguments, swap IDs for references, confirm a clean plan, then apply. Okta advises avoiding importing users because their memberships and assignments make state large. The import blocks are what drive generation, so deleting them first would defeat it."
+    },
+    {
+      "stem": "After a refactor, `terraform plan` on your app-assignment config shows the same diff on every run and apply never converges. You used `for_each` over a set of group IDs on `okta_app_group_assignments`, all with the same `app_id`. What is going on?",
+      "options": [
+        "Okta's API is eventually consistent, so reads lag behind writes and each plan sees stale assignments for several minutes",
+        "Terraform does not support for_each on Okta resources, so it silently ignores it and plans one instance on every run",
+        "State locking is failing between the instances, so each one applies against a stale copy of state and overwrites the other",
+        "Each instance's update deletes groups it does not own and its read re-absorbs the others as drift; use one resource with a dynamic group block"
+      ],
+      "correct_index": 3,
+      "explanation": "The resource documents this exactly: its Read fetches every group assigned to the app, not only the ones in config, so multiple instances sharing an app_id fight and the plan never converges. One resource with a `dynamic \"group\"` block manages them all. for_each is fine when each instance targets a different app_id. Read-after-write lag would cause intermittent not-found errors, whereas this symptom is deterministic and repeats identically on every plan. Locking failures produce lock errors, not a stable repeating diff."
+    },
+    {
+      "stem": "A reviewer is worried that the OIDC client secret for an app created with `okta_app_oauth` sits in your S3 state. Which change actually keeps the generated secret out of state?",
+      "options": [
+        "Mark the output that references the secret as `sensitive = true`, so Terraform stops writing the value into state and plan files for every later run",
+        "Set `omit_secret = true` so the provider stops persisting `client_secret` in state, and manage the secret elsewhere",
+        "Turn on server-side encryption for the state bucket, which removes the secret from the stored state object itself",
+        "Rotate the client secret after every apply, so the value that sits in state is always a stale and unusable one"
+      ],
+      "correct_index": 1,
+      "explanation": "The okta_app_oauth docs say client_secret is output only and 'in plain text in your statefile' unless omit_secret is set; with omit_secret true the provider no longer manages the value in state (flipping it back to false recreates the app, so decide early). Terraform 1.11 or later also offers client_basic_secret_wo, a write-only argument that is never persisted. Marking an output sensitive only redacts CLI display. Bucket encryption protects the object at rest but anyone allowed to read the object still sees plaintext. Rotation does not stop the current secret from being in state."
+    },
+    {
+      "stem": "Someone edits a group rule in the Admin Console and the next plan wants to revert it. An engineer proposes `terraform apply -refresh-only` to make the diff go away. What does that do?",
+      "options": [
+        "It writes the console value back into your .tf files, so config and tenant agree and the diff disappears for good",
+        "It re-applies your configuration over the console change without a prompt, reverting the edit as part of the refresh and then recording the result in state",
+        "It records the console change in state only; config still says the old value, so the next normal plan proposes the revert again",
+        "It marks the rule as managed outside Terraform, so future plans stop proposing any change to that group rule at all"
+      ],
+      "correct_index": 2,
+      "explanation": "Refresh-only mode updates state to match remote objects and changes nothing else. Config is untouched, so state and config still disagree and a normal plan will plan to revert the console edit. The real decision is ownership: revert via apply, or edit the HCL in a PR to adopt the change. Okta's own guidance is to avoid managing the same objects with both Terraform and the console. Terraform never writes .tf files during refresh, and ignoring an attribute requires an explicit lifecycle ignore_changes in config."
+    }
+  ]
+}

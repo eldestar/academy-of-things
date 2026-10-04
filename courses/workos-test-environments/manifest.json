@@ -1,0 +1,31 @@
+{
+  "slug": "workos-test-environments",
+  "title": "Test Environments Lab Guides",
+  "subtitle": "Stand up, exercise and tear down the Okta, Entra, Google Workspace and WorkOS sandboxes the other two courses assume",
+  "lessons": [
+    {
+      "id": "01-okta-test-tenant",
+      "title": "1. Okta test tenant"
+    },
+    {
+      "id": "02-entra-and-google-workspace-test-idps",
+      "title": "2. Entra ID and Google Workspace test IdPs"
+    },
+    {
+      "id": "03-workos-sandbox-and-dashboard",
+      "title": "3. WorkOS sandbox and Dashboard"
+    },
+    {
+      "id": "04-local-app-webhooks-and-tunnels",
+      "title": "4. A local service-provider app, webhooks and tunnels"
+    },
+    {
+      "id": "05-terraform-sandbox-for-okta",
+      "title": "5. A safe Terraform sandbox for Okta"
+    },
+    {
+      "id": "06-end-to-end-test-matrix-and-teardown",
+      "title": "6. End-to-end test matrix and teardown"
+    }
+  ]
+}

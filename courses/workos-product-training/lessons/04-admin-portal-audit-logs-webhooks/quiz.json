@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A customer success manager pastes an Admin Portal link into a support email on Friday. The customer's IT admin clicks it on Monday and the portal will not open. The link came from your application's \"Configure SSO\" button, which calls the generate-link API. What is the most likely cause?",
+      "options": [
+        "The IT admin's email was not listed in it_contact_emails, so WorkOS blocked the click when it did not recognise the visitor",
+        "A dashboard setup link was already active for that organization, and only one link can be active at a time",
+        "API-generated portal links expire five minutes after issuance; email a dashboard setup link (30 days) or generate the API link on click",
+        "The sso intent can only be used once per organization, and the customer completed setup over the weekend using a different link"
+      ],
+      "correct_index": 2,
+      "explanation": "A portal link from the API lives five minutes and cannot be revoked. It is designed to be minted when a signed-in admin clicks a button and redirected immediately. For emailing a customer, the dashboard setup link lasts 30 days or until setup completes. it_contact_emails does not restrict who can open a link (it only enrols alert recipients), so the first option is wrong. The one-active-link rule applies to dashboard setup links, not to API links. Intents are not single-use."
+    },
+    {
+      "stem": "Your webhook handler uses Express with express.json() middleware, then passes the parsed req.body to the WorkOS SDK for verification. It works in staging with ASCII test data. In production, events for users with accented names fail signature verification a few times a day, while others pass. What is the best explanation and fix?",
+      "options": [
+        "The signature covers the exact request bytes; re-serialising a parsed body can change escaping, so verify the raw body before parsing",
+        "The 3-minute default timestamp tolerance is too tight for payloads containing non-ASCII data, so raise the tolerance on the verifier side",
+        "WorkOS signs only the data object, so the verifier should hash req.body.data rather than the whole request body",
+        "The endpoint secret rotates for non-ASCII payloads, so the handler should fetch the secret again before each verification"
+      ],
+      "correct_index": 0,
+      "explanation": "The documented algorithm is HMAC-SHA256 over the timestamp, a dot, and the request body as a UTF-8 string. If your framework parses the JSON and you re-dump it, any difference from the sender's bytes (escape style for non-ASCII characters is the classic one) changes the digest. Timestamp tolerance is unrelated to payload content. WorkOS signs the whole body, not data. The endpoint secret is static until you change it in the dashboard."
+    },
+    {
+      "stem": "During a bulk directory sync for a new customer, your webhook receiver gets dsync.group.user_added for a user your database has never seen, followed seconds later by that user's dsync.user.created. Your code threw on the first event and the membership was lost. What is the right design?",
+      "options": [
+        "Return a non-2xx so WorkOS retries the early event later, after the user exists, and keep the handler strict about event ordering",
+        "Sort incoming events by created_at in memory before processing them, buffering until the batch looks complete",
+        "Run a single worker for all organizations so events are processed serially, which restores the order they were sent in",
+        "Treat each event as an upsert from the full objects in the payload, skipping user or group data older than what you hold"
+      ],
+      "correct_index": 3,
+      "explanation": "WorkOS does not guarantee webhook ordering, and each event carries the full objects involved, so an upsert can create the missing user from the membership event. Comparing updated_at on the user and group objects prevents a late retry from overwriting newer state; do not use it to judge membership events, because membership changes do not move updated_at (lesson 3), so apply those as they arrive and reconcile through the API. Returning non-2xx works against you: retries are limited (six, over three days) and you would bounce events during a spike. An in-memory sort has no reliable window to sort over. A single serial worker does nothing for out-of-order webhook arrival; ordering is a property of the Events API."
+    },
+    {
+      "stem": "A customer's security team asks for every audit event from eight months ago, for one incident. The organization's retention is set to 1 year and you never configured a log stream. Which statement matches the documented behaviour?",
+      "options": [
+        "Run a CSV export for that date range; exports cover the full retention period, so the year-long setting makes the events reachable",
+        "CSV export reaches back only three months, so it cannot return them; the docs point to streaming for longer-term copies",
+        "Lower the retention to 6 months so WorkOS archives the older events into a CSV that the export can then return",
+        "Ask the IT contact to open the Admin Portal audit_logs intent, which extends the export window beyond three months"
+      ],
+      "correct_index": 1,
+      "explanation": "Retention (30 days default, up to 10 years) controls how long events are stored, but CSV exports only include events from the past three months. For long-term copies WorkOS points you to continuous streaming (a SIEM, warehouse or bucket) set up before you need it. I found no documented way to extend the export window; check with WorkOS support before telling a customer the events are unreachable by any route. Retention can be raised but not lowered, so the third option is impossible and would not archive anything anyway. The docs say the Admin Portal can view and export events like the Dashboard, so nothing suggests it widens the window."
+    },
+    {
+      "stem": "During an onboarding call, a vendor engineer creates the organization for a new customer with their email domain already marked state: 'verified' through the API, so the SSO test can proceed before the customer's DNS admin is available. What is the real risk?",
+      "options": [
+        "WorkOS will refuse to activate SSO until DNS verification completes, so the call will fail and no unverified domain control is ever created",
+        "The domain will move to failed after thirty days and take the SSO connection down with it, interrupting every login for that customer",
+        "DNS ownership was never proven, yet the organization holds authentication policy for that domain, and in AuthKit its users can count as email-verified",
+        "The verification strategy becomes dns, which blocks any later manual verification of the same domain by WorkOS support or the vendor"
+      ],
+      "correct_index": 2,
+      "explanation": "Setting verified state via the create or update API is allowed and skips the TXT check, intended for domains already proven elsewhere. The reference warns that the organization controlling a domain exerts authentication policy over it, and the AuthKit docs say a verified domain feeds the email-verified shortcut for SSO users. If the domain belongs to someone else (or is a typo), you have handed that control out unverified. The thirty-day failure applies to pending DNS verification, and the manual strategy exists precisely for domains verified without the DNS flow, so it is not something that blocks later changes."
+    },
+    {
+      "stem": "Your customer's SOC streams WorkOS audit logs to Splunk. After their HEC endpoint was down for a weekend, the stream shows Error and nothing has arrived since Saturday, although Splunk is healthy again. What do the docs tell you to do?",
+      "options": [
+        "Update and re-save the stream configuration so validation succeeds; delivery then resumes from the last delivered event, outage included",
+        "Wait; Error streams automatically retry on the next emitted event, so delivery resumes by itself once Splunk accepts it",
+        "Delete the Splunk stream and replace it with the generic HTTPS destination, because Splunk streams cannot recover from Error",
+        "Export a CSV for the gap and import it into Splunk, since a stream's state cannot be changed once it has failed after a long outage"
+      ],
+      "correct_index": 0,
+      "explanation": "The docs say streams never transition from Error or Invalid back to Active on their own; a successful configuration update returns them to Active, and delivery then resumes from the last successfully delivered event, including events from the outage as long as they are still inside the retention period. So alert on stream state after any SIEM outage. Nothing says Splunk streams are unrecoverable. A CSV is unnecessary: once the stream is Active again WorkOS delivers the events from the outage window (within retention). The docs describe the Error state both as a non-retryable error and as retries being exhausted; either way, the recovery is the same."
+    }
+  ]
+}

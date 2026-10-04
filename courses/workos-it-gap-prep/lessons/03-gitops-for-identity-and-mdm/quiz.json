@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Your apply job uses a concurrency group with `cancel-in-progress: true`. Two merges land two minutes apart while the first apply is mid-run against Okta. What is the risk, and what is the safer setting?",
+      "options": [
+        "The first apply is cancelled partway, leaving a partial apply with no rollback and maybe a held lock; set `cancel-in-progress: false`",
+        "Both applies run at the same time and corrupt state, because a concurrency group only orders jobs and does not serialise them; remove the block entirely",
+        "Nothing, because Terraform rolls a cancelled apply back automatically and releases the lock before the new run starts",
+        "The second merge is lost permanently, because the group drops it; give every merge its own concurrency group instead"
+      ],
+      "correct_index": 0,
+      "explanation": "Terraform does not automatically roll back a partially completed apply, so killing a job mid-run strands some changes applied and some not, and the lock may need a force-unlock. With cancel-in-progress false, GitHub keeps at most one running and one pending job in the group, and a newer pending job replaces an older pending one. That is acceptable because each run covers the whole configuration at its own commit, and a saved plan that went stale while waiting is rejected at apply, so you re-run. A concurrency group is what prevents simultaneous applies, so removing it makes that worse, and no automatic rollback exists."
+    },
+    {
+      "stem": "Security asks you to remove all long-lived secrets from the Okta Terraform repo. You switch CI to GitHub OIDC with an AWS role for the state bucket. A reviewer asks whether the pipeline can now run with no stored credentials at all. What is the accurate answer?",
+      "options": [
+        "Yes, because the GitHub OIDC token is also accepted by the Okta provider as a credential for service-app authentication, so no stored secret remains",
+        "Yes, because the S3 backend injects Okta credentials from the state file once the AWS role has been assumed",
+        "No, because OIDC only federates to AWS here; the Okta provider still needs an API token or service-app key from somewhere",
+        "No, because GitHub Actions cannot use OIDC at all when the Terraform state backend is an S3 bucket in AWS, so keys must be stored"
+      ],
+      "correct_index": 2,
+      "explanation": "GitHub's OIDC token is exchanged for a short-lived AWS role via the trust policy, which covers AWS access such as the state bucket. The Okta provider's documented authentication options are api_token or an OAuth 2.0 service app with client_id, private_key_id, private_key and scopes, so a credential for Okta still has to come from somewhere: an environment secret, or a secrets manager read through the AWS role. State files are not a credential source. GitHub documents OIDC to AWS, and this lesson uses it for the S3 state bucket."
+    },
+    {
+      "stem": "You want only jobs that passed a human approval to be able to assume the AWS role that writes Okta state and read the apply-scope Okta credentials. Which design fits GitHub's documented behaviour?",
+      "options": [
+        "Trust a `sub` equal to the main branch ref on the apply role, since only reviewed and merged code ever reaches main and runs there, so a human approval is implied by the merge itself",
+        "Use a GitHub environment with required reviewers on the apply job, trust that environment's `sub` on the apply role, and keep Okta apply credentials as environment secrets",
+        "Trust any `sub` under the organisation on the apply role, and rely on the `aud` value of `sts.amazonaws.com` to limit which workflow may assume it",
+        "Put the apply credentials in repository secrets so that every job in the workflow can fall back to them when its own credential step fails"
+      ],
+      "correct_index": 1,
+      "explanation": "GitHub documents that jobs using an environment can access its secrets only after protection rules such as required reviewers pass, and that the OIDC sub claim carries the environment name when the job references one. The sub format depends on the repo: repositories created after 2026-07-15 (or opted in) include immutable owner and repo IDs, so copy the exact value from a decoded token. Binding the apply role and secrets to that environment ties write access to a recorded approval, but required reviewers in a private repo need an Enterprise plan; on Free, Pro or Team they work only in public repos. A branch-based sub trusts every job on main, including unapproved ones. The aud value only names the audience (the AWS STS service), not which workflow may assume the role. Repository-level secrets are available to any job and defeat the gate."
+    },
+    {
+      "stem": "Your scheduled drift job runs `terraform plan -detailed-exitcode` and the step fails with exit code 2. How should the on-call engineer read that?",
+      "options": [
+        "Terraform errored, most likely a provider or credential problem, so check the Okta token and the provider version before anything else",
+        "The state lock is held by another run, so wait a few minutes and retry the job once the other run has finished and released it",
+        "The plan was empty and the failure is a CI misconfiguration, so remove the exit code check from the step",
+        "The plan succeeded with a non-empty diff: someone changed the tenant outside Terraform, or merged config has not been applied"
+      ],
+      "correct_index": 3,
+      "explanation": "-detailed-exitcode returns 0 for success with no changes, 1 for an error, and 2 for success with a non-empty diff, so a failed step with code 2 is the signal you built the job to raise. The alert should tell responders to check the diff against recent merges and the System Log to separate console drift from an unapplied change. An error would be exit code 1, a held lock surfaces as a lock error with -lock-timeout exhausted (also an error exit), and an empty plan exits 0."
+    },
+    {
+      "stem": "Applies of about thirty Jamf Pro resources fail intermittently with the provider unable to find a resource it created seconds earlier. What does the provider's documentation point to?",
+      "options": [
+        "The Jamf API token expired between the create and the read, so shorten the apply or refresh the token more often during long runs, ideally before every resource",
+        "Jamf Cloud's load balancer can take up to 60 seconds to show a new resource on another web app member; use the provider's lock resource and `-parallelism=1`",
+        "Terraform state locking is releasing early under load, so move the state backend to a different store that offers stronger read-after-write consistency",
+        "Jamf Pro is a Classic API product that cannot be managed declaratively, so intermittent failures are expected with any provider and any parallelism"
+      ],
+      "correct_index": 1,
+      "explanation": "The community jamfpro provider's README describes a read after create landing on a different web app member before the change propagates, which produces 'not found' during state refresh. It ships a lock resource that pins one session cookie (sticky session) and recommends -parallelism=1; Terraform's default parallelism is 10. Token expiry would show as authentication errors, not missing resources. Locking is unrelated to read-after-write consistency. The provider covers both Jamf Pro and Classic APIs, though it is community-supported and in public preview."
+    },
+    {
+      "stem": "In an interview you are asked how you would apply GitOps to a Kandji (now Iru) fleet. Which answer is accurate as of 2026-10-03?",
+      "options": [
+        "Use HashiCorp's official Iru Terraform provider, which is stable, versioned past 1.0 and supported by the vendor for production use",
+        "There is no public API, so nothing about the fleet can be reviewed in Git, and the right answer is to stay in the console for all changes",
+        "Iru's `iructl` syncs a local repo of profiles, scripts and apps with the tenant for PR review; Terraform providers found are individual early 0.x projects",
+        "Use iructl for everything, because it has no API rate limits and no permission model that would need managing per route or per token, unlike a Terraform provider"
+      ],
+      "correct_index": 2,
+      "explanation": "Iru's GitHub organisation (kandji-inc) publishes the MIT-licensed iructl, which pulls and syncs profiles, scripts and apps between a local repository and the tenant, and marks blueprint assignment as an experimental preview. The Iru API exists, uses tenant bearer tokens with per-route permissions, and is limited to 10,000 requests per hour per customer shared across tokens. The Terraform providers I found were individual community projects with 0.x versions, so neither HashiCorp nor Iru supports them. Describe the pattern (Git, PR review, staged scope) rather than overselling any tool."
+    }
+  ]
+}

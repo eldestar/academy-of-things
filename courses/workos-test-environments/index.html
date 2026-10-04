@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Course</title>
+<script>
+/* Apply the saved theme before first paint. One key for every course; keep in sync with THEME_KEY in app.js. */
+(function () {
+  try {
+    var t = localStorage.getItem('academy-of-things:theme');
+    if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+  } catch (e) {}
+})();
+</script>
+<link rel="stylesheet" href="../../engine/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="home" href="../../">&larr; All courses</a>
+    <p class="course-title" id="course-title">Loading…</p>
+    <div class="subtitle" id="course-subtitle"></div>
+    <div id="level-switcher" hidden></div>
+    <div class="progress-segments" id="progress-segments" aria-hidden="true"></div>
+    <div id="progress-label" class="progress-label"></div>
+    <nav aria-label="Lessons"><ul class="lesson-list" id="lesson-list"></ul></nav>
+    <div class="sidebar-foot"><div id="theme-switcher"></div></div>
+  </aside>
+  <main>
+    <article id="lesson-content"></article>
+    <div id="quiz-container"></div>
+    <footer class="nav" id="lesson-nav"></footer>
+  </main>
+</div>
+<script src="../../engine/app.js"></script>
+</body>
+</html>

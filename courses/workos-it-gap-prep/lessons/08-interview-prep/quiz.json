@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Early in the technical interview you are asked about your Terraform experience. You have never owned production Terraform, but you have completed the course labs against a free Okta developer org. Which answer serves you best?",
+      "options": [
+        "Say you have hands-on Terraform experience, since the labs were hands-on and the posting lists it as a requirement",
+        "State plainly you have no production Terraform, describe the lab concretely (imports, plan, state), and give a ramp plan",
+        "Reframe Okta Workflows as your infrastructure-as-code experience, since both automate configuration changes without any clicking",
+        "Say you have worked alongside Terraform through teammates, then move quickly to your Okta strengths where you are stronger"
+      ],
+      "correct_index": 1,
+      "explanation": "Hands-on Terraform is a stated requirement, so this is the line the interviewer will probe, and a follow-up about state or drift exposes an inflated answer within a minute. A plain statement with specific lab detail shows real learning and honesty, and it fits the rule never to claim hands-on Terraform before the work is done. Claiming it on the strength of a lab blurs the line you will be asked to defend. Workflows is visual automation with no plan, state, or drift model, so calling it IaC invites a pointed follow-up you cannot answer. Vague proximity through teammates sounds like evasion and wastes the one opening to show your ramp plan."
+    },
+    {
+      "stem": "Which statement about the Systems Engineer posting is accurate as of 2026-10-03?",
+      "options": [
+        "WorkOS runs tiers 1 through 3 in-house, and the engineer joins an on-call rotation covering all three tiers of support",
+        "The role is a help desk position with some automation work on the side, so expect mostly ticket-handling questions",
+        "An MSP partner handles tiers 2 and 3, and the engineer provides tier 1 coverage during US business hours only, then hands off",
+        "An MSP partner handles tier 1; the engineer designs what it works from, automates upstream, and takes tier 2/3 escalations"
+      ],
+      "correct_index": 3,
+      "explanation": "The posting states that an MSP partner handles tier 1 support, and describes the engineer's job as architecting what the MSP executes against, automating everything upstream, and handling tier 2/3 escalations. It also says plainly that this is not a help desk role. That shape matters for preparation: expect questions about runbooks, permission boundaries and escalation criteria rather than ticket handling. The other options each invert a fact: tiers are split between the MSP and you differently than they claim, and none of those other arrangements is stated in the posting text read for this lesson."
+    },
+    {
+      "stem": "An interviewer asks about the 70% provisioning-time reduction on your resume. You remember the result but not the exact before-and-after times. What is the strongest response?",
+      "options": [
+        "Give your best recollection of both numbers, label them estimates, explain how you measured them, and say what you built",
+        "Pick round numbers that produce exactly 70% so the story sounds precise and survives a quick follow-up question from the panel",
+        "Say the figure came from the team and that you cannot speak to how it was calculated or what it was measured against",
+        "Decline to give any numbers and describe the project only qualitatively, since an unverifiable figure is a liability"
+      ],
+      "correct_index": 0,
+      "explanation": "A labelled estimate with a measurement method is credible, and it shows you understand why the number matters. Interviewers at this level probe numbers to see whether you owned the result. Fabricated round numbers risk a contradiction on the next follow-up and are an invented metric you then have to defend. Attributing the figure to the team suggests you did not own the measurement. Giving no numbers at all discards your strongest evidence and signals that the claim may be soft."
+    },
+    {
+      "stem": "You want one question about how WorkOS uses its own product internally. Which question is best?",
+      "options": [
+        "Do you use your own product for everything internally, or are there systems where you chose something else?",
+        "Why did you choose Okta instead of your own product for workforce identity, given what you sell to other companies?",
+        "Which internal apps sign in through WorkOS and which through Okta directly, and who owns that boundary day to day?",
+        "Is it true that the product team ignores IT's requests for early access to new features, as I have heard from others?"
+      ],
+      "correct_index": 2,
+      "explanation": "The posting names Okta as the identity platform you will own, and says nothing about which internal systems use WorkOS, so the useful question asks for that specific fact without assuming an answer. It also shows you are thinking about the ownership boundary between two identity systems, which is the real operational question. A yes-or-no question about whether they use their own product invites a comfortable non-answer. Asking why they chose Okta presumes a decision that the posting does not describe and can sound accusatory. Asking about ignored requests repeats an unverified rumor and puts the interviewer on the defensive."
+    },
+    {
+      "stem": "You finish the Terraform and GitOps labs. What is the honest change to your resume?",
+      "options": [
+        "Rewrite a current-role bullet to say you manage Okta configuration with Terraform, since you now know how to do it",
+        "Add Terraform and GitOps to the headline summary as core strengths so that resume screening picks them up",
+        "Leave the resume alone and claim the skill verbally if asked, since a lab-level skill does not belong on paper at all",
+        "Add Terraform with the Okta provider to skills, marked lab-level; keep experience bullets to work you actually did"
+      ],
+      "correct_index": 3,
+      "explanation": "Skills may be added once the matching lab is actually done, but with honest scope, and experience bullets must stay true to what you did at work. The posting says AI tools may help screen applications, which makes matching keywords tempting, but a keyword you cannot defend converts directly into a failed technical round. Rewriting a bullet misstates your role. Promoting new lab skills into the headline overstates them relative to years of Okta depth. Claiming something verbally that you refuse to put on paper is the same overclaim with less accountability, and it forfeits the legitimate credit the labs earned."
+    },
+    {
+      "stem": "A friend says your process for this role is documented: recruiter screen, take-home, live coding, then a final panel. What can you actually say about the interview process?",
+      "options": [
+        "A WorkOS blog post says the CEO has personally met every candidate, but no IT stage list is public, so ask the recruiter",
+        "The posting confirms the process and includes an unpaid take-home exercise before any live conversation takes place at all",
+        "Candidate-review sites confirm that IT candidates complete a live coding session before the final interviews begin",
+        "There is no process beyond a recruiter screen, because the posting lists no stages and nothing else has been published"
+      ],
+      "correct_index": 0,
+      "explanation": "Only one process claim comes from WorkOS itself: the CEO meeting every candidate, from a company blog post. The posting lists no stages. The recruiter-screen, take-home and live-coding sequence comes from second-hand summaries of candidate reviews about engineering roles, from a source that blocks automated checking, so it is a hint at best and unconfirmed for IT. Treating it as confirmed repeats folklore as fact. Concluding that nothing exists beyond a recruiter screen makes the opposite error, inferring from silence. The right move is to prepare for a technical session and ask the recruiter for the actual stage list."
+    }
+  ]
+}

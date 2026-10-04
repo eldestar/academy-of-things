@@ -1,0 +1,39 @@
+{
+  "slug": "workos-it-gap-prep",
+  "title": "WorkOS IT Systems Engineer: Gap Prep",
+  "subtitle": "Terraform, GitOps, cloud federation, networking, MSP model, webhooks and interview prep — the gaps between a strong Okta/MDM resume and the WorkOS posting",
+  "lessons": [
+    {
+      "id": "01-terraform-fundamentals-and-state",
+      "title": "1. Terraform fundamentals and state"
+    },
+    {
+      "id": "02-terraform-okta-and-saas-providers",
+      "title": "2. Terraform for Okta and SaaS configuration"
+    },
+    {
+      "id": "03-gitops-for-identity-and-mdm",
+      "title": "3. GitOps for identity and device management"
+    },
+    {
+      "id": "04-cloud-identity-federation",
+      "title": "4. Cloud identity federation on GCP and AWS"
+    },
+    {
+      "id": "05-networking-for-sso-troubleshooting",
+      "title": "5. Networking fundamentals for SSO troubleshooting"
+    },
+    {
+      "id": "06-running-it-with-an-msp",
+      "title": "6. Running IT with an MSP"
+    },
+    {
+      "id": "07-apis-webhooks-and-auth-flows",
+      "title": "7. REST APIs, webhooks and auth flows"
+    },
+    {
+      "id": "08-interview-prep",
+      "title": "8. Interview prep for the WorkOS Systems Engineer role"
+    }
+  ]
+}

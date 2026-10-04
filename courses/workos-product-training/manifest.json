@@ -1,0 +1,35 @@
+{
+  "slug": "workos-product-training",
+  "title": "WorkOS: Product Training",
+  "subtitle": "What WorkOS sells, how each product works, where it breaks, and how it compares — for an identity-fluent IT systems engineer",
+  "lessons": [
+    {
+      "id": "01-enterprise-ready-problem",
+      "title": "1. The enterprise-ready problem"
+    },
+    {
+      "id": "02-sso-service-provider-side",
+      "title": "2. SSO from the service-provider side"
+    },
+    {
+      "id": "03-directory-sync-scim",
+      "title": "3. Directory Sync and SCIM"
+    },
+    {
+      "id": "04-admin-portal-audit-logs-webhooks",
+      "title": "4. Admin Portal, Audit Logs, Events and webhooks"
+    },
+    {
+      "id": "05-authkit-rbac-fga",
+      "title": "5. AuthKit, RBAC and FGA"
+    },
+    {
+      "id": "06-newer-products-and-agents",
+      "title": "6. Radar, Vault, Pipes, agent auth and the newer products"
+    },
+    {
+      "id": "07-market-pros-cons-reliability",
+      "title": "7. Competitors, pros and cons, reliability"
+    }
+  ]
+}

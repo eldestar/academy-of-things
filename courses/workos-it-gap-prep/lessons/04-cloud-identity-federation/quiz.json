@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Okta to IAM Identity Center has run for a year. Today HR reports that new hires are not appearing in AWS and last week's terminations were never disabled. Okta users can still sign in to the AWS access portal who were provisioned earlier. Nothing changed in Okta. What is the most likely cause?",
+      "options": [
+        "The Okta SAML signing certificate expired, so Identity Center rejects assertions and provisioning requests from the Okta app",
+        "The Identity Center permission set session duration was reached, so new provisioning calls are refused until sessions are renewed",
+        "The SCIM access token generated in Identity Center reached its one-year validity, so synchronization stopped entirely",
+        "Two Okta groups were assigned to the app instead of one, so the second group's membership blocks the sync queue"
+      ],
+      "correct_index": 2,
+      "explanation": "AWS generates SCIM access tokens with a one-year validity. After expiry, synchronization stops entirely, so creates, updates and deletes all stop, while existing users keep signing in over SAML. An expired SAML certificate would break sign-in, not provisioning. A permission set session duration only controls how long an AWS account session lasts. Assigning more groups does not stop SCIM; it changes who is in scope. AWS posts reminders at 90 days or less, which is easy to miss, so own the date."
+    },
+    {
+      "stem": "You deactivate a contractor in Okta, SCIM disables them in Identity Center, and you end their AWS access portal session. Ten minutes later CloudTrail shows that contractor's role session still making API calls from the console. Why?",
+      "options": [
+        "Role sessions run independently once established, so the console session lives on until its permission-set duration, up to 12 hours",
+        "SCIM deprovisioning takes up to 24 hours to apply in AWS, so the contractor's console session stays valid until the next sync finally lands",
+        "Okta sessions must be cleared before Identity Center honors a deactivation, so the contractor's own Okta session kept them in",
+        "Portal sessions and console sessions share one timer, so the end-session action failed and must be repeated by an admin"
+      ],
+      "correct_index": 0,
+      "explanation": "AWS documents that role sessions operate independently once established, regardless of the status of the original sign-in session; the console session duration is set in the permission set (default 1 hour, maximum 12). A session already issued keeps working until it expires. SCIM timing is controlled by the IdP, not a fixed 24 hours. Okta session state is not what AWS evaluates for an already-issued role session. The two timers are separate, which is the whole point. For high-risk offboarding, keep permission-set durations short."
+    },
+    {
+      "stem": "Your Google Cloud organization uses Okta SAML SSO through Cloud Identity with an SSO profile, and Okta requires FastPass for every sign-in. An auditor asks whether every human with Google super admin rights is therefore covered by that Okta policy. What is the accurate answer?",
+      "options": [
+        "Yes, because an SSO profile assigned to the OU applies to every user in it, and super admins are not exempt from profile assignment",
+        "Yes, provided the super admins also sign in through gcloud, because command-line sign-in always goes through the SAML profile",
+        "No, because super admin status is evaluated after the SAML assertion, so it overrides the Okta policy for those accounts",
+        "No, because super admins can bypass SSO by design and sign in with a Google password, so Okta MFA does not apply to them"
+      ],
+      "correct_index": 3,
+      "explanation": "Google states that super admins can bypass SSO, by design, so they can still get in when the SSO configuration is wrong or the IdP is down. That means IdP-enforced MFA does not apply to them, and Google recommends 2-Step Verification at Google for them. It is not an assertion-time override, and gcloud is not a different path. Google also says super-admin SSO is supported only on the legacy SSO profile. This is both a break-glass feature and an audit finding."
+    },
+    {
+      "stem": "You enforce the managed constraint iam.managed.disableServiceAccountKeyCreation at the organization root. A quarter later a scan finds a service account key created years ago still authenticating successfully. What explains it?",
+      "options": [
+        "Org policy constraints take about 90 days to propagate to existing projects, so the old key was simply not reached yet",
+        "The constraint is not retroactive, so keys created before it was enforced keep working until you find and remove them",
+        "The key inherited an exemption from a folder-level custom role that grants service account key creation to that project",
+        "iam.serviceAccountKeyExpiryHours expires every key automatically once the constraint is set, so the scan must be wrong"
+      ],
+      "correct_index": 1,
+      "explanation": "Google's documentation says these constraints do not affect previously created service accounts or keys; they stop new key creation. Finding the leftovers needs the key authentication events metric and service account insights for unused accounts, then replacing the key with an attached service account or Workload Identity Federation. There is no propagation delay. Custom roles cannot be defined at folder level and are not an exemption mechanism. The expiry constraint applies to newly created keys, not to existing ones."
+    },
+    {
+      "stem": "Contractors from a partner company's own Okta org need console access to one Google Cloud project for two weeks. You do not want Google accounts created for them. Which design fits, and what must you add if the partner IdP uses one issuer for many tenants?",
+      "options": [
+        "Cloud Identity with an SSO profile, adding 2-Step Verification so that the contractors' Google accounts are protected",
+        "Service account keys issued per contractor, adding key expiry so that the credentials lapse when the engagement ends",
+        "Workforce Identity Federation with a pool and provider; add attribute conditions so only the right tenant's users qualify",
+        "Workload Identity Federation with a pool and provider, adding an Okta group push so the contractors are provisioned"
+      ],
+      "correct_index": 2,
+      "explanation": "Workforce Identity Federation is sync-less: it authenticates users from an external OIDC or SAML IdP without storing accounts in Google Cloud, and Google names contractors and partners as intended users. Google warns that a multi-tenant IdP with a single issuer URI needs attribute conditions or users from another tenant could qualify. Cloud Identity SSO requires a Google account per person. Shared keys are the pattern Google tells you to avoid. Workload Identity Federation is for workloads, not people."
+    },
+    {
+      "stem": "Okta shows SCIM push errors for about a dozen users to IAM Identity Center. Everyone else syncs and no token error appears. Which check is most likely to find the cause?",
+      "options": [
+        "Whether the failing users are missing a required attribute such as display name, or hold multiple values in a single-value attribute",
+        "Whether the permission set session duration is above one hour, since long sessions block new per-user provisioning calls from the Okta app",
+        "Whether the Okta app was assigned both individual users and groups, since mixed assignment is rejected by Identity Center",
+        "Whether Identity Center is configured in more than one AWS Region, since each Region keeps its own SCIM user store"
+      ],
+      "correct_index": 0,
+      "explanation": "Identity Center requires first name, last name, username and display name; a user missing any of them is not provisioned. It also fails on multivalue attributes, which Okta users with duplicate phone or email values can trigger. Partial failure that follows specific users points at data, not at a connection-level cause like an expired token, which would fail everyone. Session duration does not affect provisioning. Mixed user and group assignment is allowed. Additional Regions affect access endpoints, not per-user SCIM errors."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "During a brief WorkOS API disruption, your app's session middleware calls the refresh endpoint and receives 503s and timeouts for a few minutes. Your code clears the session cookie and redirects to sign-in on any refresh error. What went wrong?",
+      "options": [
+        "Nothing; a failed refresh means the session can no longer be trusted, so clearing the cookie and re-authenticating is the safe default",
+        "`invalid_grant` is the terminal failure; timeouts, 408, 429 and 5xx are transient, so keep the session and retry the refresh with backoff",
+        "The refresh token should have been replayed once the 30-second grace period had passed, since replay after that window restores the session",
+        "The middleware should have re-validated the access token against the JWKS, which issues a fresh token without calling the refresh endpoint"
+      ],
+      "correct_index": 1,
+      "explanation": "The docs split failures into terminal (`invalid_grant`: revoked, expired or already-consumed token) and transient (network errors, 408, 429, 5xx). Destroying a valid session on a transient failure turns a short outage into a mass sign-out. The grace period works the other way: it makes a second refresh with the same token inside 30 seconds return the same new tokens; after it elapses the old token is permanently invalid. JWKS validation only checks a token's signature and cannot mint a new access token."
+    },
+    {
+      "stem": "A customer's Okta admin removes a user from the `app-admins` group at 09:00. You mapped that group to the `admin` role using WorkOS SSO group role assignment. At 11:00 the user is still performing admin actions in your product without re-signing in. What does the documented behaviour predict?",
+      "options": [
+        "WorkOS received a SCIM deactivation for the user and revoked the session inside the 30-second refresh grace period, so your app is simply showing a stale view of the account",
+        "The role in the JWT is recomputed on every token refresh, so the change is already effective and your app must be caching the old token",
+        "SSO group role assignment is evaluated only at the user's first sign-in and then stays fixed on the membership until an admin edits it by hand",
+        "SSO group assignment updates the role only at authentication, so admin persists until the next SSO sign-in; shorter sessions narrow the window"
+      ],
+      "correct_index": 3,
+      "explanation": "The docs say that with SSO group role assignment the organization membership's role updates each time the user authenticates; directory-group assignment updates on each directory event. Removing a group in the IdP is therefore not an instant revocation for an already-signed-in SSO user. Session length and access-token settings bound the exposure, and Directory Sync gives you event-driven changes. The 30-second grace period concerns refresh-token replay, not role changes. The role is not fixed forever; it is re-evaluated on each authentication."
+    },
+    {
+      "stem": "A new teammate finds a tutorial about WorkOS FGA that defines a schema in a DSL, writes relation tuples (\"warrants\") and runs checks against them. They want to model your product that way. Based on the current WorkOS docs, what is the correct response?",
+      "options": [
+        "Treat it as the earlier Warrant/Zanzibar-style product; current FGA uses dashboard-defined resource types and resource-scoped roles, so re-model rather than port",
+        "Follow the tutorial; FGA is Zanzibar-based and the dashboard is just a UI layered over relation tuples, so the schema DSL and warrants map directly onto the current product",
+        "Use the OpenFGA migration guide in reverse, since WorkOS FGA stores OpenFGA-compatible tuples that the guide can export into a DSL file for the dashboard to import",
+        "Wait until the warrant API reaches general availability, because the current FGA product is a limited preview that only supports tuples and a schema DSL"
+      ],
+      "correct_index": 0,
+      "explanation": "WorkOS acquired Warrant (Zanzibar-style) in April 2024, but the FGA announced on 2026-02-17 is described as resource-scoped hierarchical RBAC: dashboard-defined resource types, no schema DSL, no tuples, roles and permissions scoped to types. Its migration guides for OpenFGA, SpiceDB and Oso describe mapping concepts across, not tuple compatibility. The docs I read carry no preview label for FGA. The warrant.dev page says Warrant 'has been deprecated and is now WorkOS FGA' (vendor-stated); what that means for existing customers is not documented, so ask WorkOS rather than assuming."
+    },
+    {
+      "stem": "You launch with AuthKit on the default WorkOS-hosted auth domain and enable passkeys. Three months later, marketing wants sign-in on `login.example.com`. What is the risk?",
+      "options": [
+        "None; passkeys are stored by WorkOS as account credentials, so they follow the user across any domain you later attach to the environment, including custom ones",
+        "Only users who also enrolled MFA must re-enrol, since passkeys that double as a second factor are the only ones tied to the original auth domain",
+        "Passkeys bind to the domain they were registered on, so existing ones stop working; set the custom domain before enabling them in production",
+        "The custom domain can only be added while passkeys are disabled, and every user is signed out of all sessions at the moment of the switch"
+      ],
+      "correct_index": 2,
+      "explanation": "The passkey docs state that passkeys are bound to the domain they were registered on and that adding a custom domain later prevents the use of passkeys registered on the old domain; they advise configuring the AuthKit custom domain before enabling passkeys in production. This is WebAuthn's origin binding, which you know from FIDO2 on the IdP side. The MFA role of passkeys is irrelevant to domain binding, and nothing says disabling passkeys is required to add a domain."
+    },
+    {
+      "stem": "A customer's workspace has about 3 million documents, and your engineer proposes registering every document as an FGA resource so that each can have its own role assignments. What does the FGA documentation point you toward instead?",
+      "options": [
+        "Raise the per-type limit yourself in the dashboard, since FGA enforces strong consistency and therefore scales to any instance count",
+        "Put each document's permissions into the JWT, because org-scoped tokens scale better than per-request API checks for millions of items",
+        "Create one resource type per document collection and stay under the 50 resource types per environment limit to shard the instances",
+        "Keep documents in your own database, register only stable parents such as workspaces or projects, and check access on the nearest FGA parent"
+      ],
+      "correct_index": 3,
+      "explanation": "The docs set a soft limit of about 5,000 instances per resource type per organization and describe a pattern for high-cardinality entities: keep them local and traverse to the nearest registered parent before the check, which avoids syncing and drift. Resource-scoped roles are intentionally excluded from the JWT because of token size and staleness. Creating many resource types to dodge the instance limit hits the 50-type cap and models the hierarchy wrongly. Strong consistency does not remove the documented guidance."
+    },
+    {
+      "stem": "Your security team turns on \"Required\" for multi-factor auth in your AuthKit environment and expects every user of your product, including those from enterprise customers who sign in through SSO, to now be prompted for TOTP. After rollout, SSO users report no prompt. What explains this and what is the right control?",
+      "options": [
+        "The environment needs a restart or redeploy before the Required MFA setting applies to connections that authenticate through an IdP, because connection settings are cached at creation",
+        "Hosted AuthKit MFA does not apply to SSO users; the customer's IdP enforces MFA, so your control is their IdP policy and what you ask of them",
+        "SSO users are exempt only on their first sign-in; every later sign-in prompts for TOTP once the user has an enrolled authenticator",
+        "SSO users must be enrolled in SMS MFA through the standalone MFA API, which overrides and replaces the TOTP requirement for them"
+      ],
+      "correct_index": 1,
+      "explanation": "The AuthKit MFA documentation states that the MFA requirement does not apply to SSO users. That is consistent with how federation works: the IdP performed authentication, including any MFA, and the service provider trusts the assertion. Your leverage is the customer's IdP policy (the thing you already design on the Okta side), not an AuthKit toggle. There is no restart step or first-sign-in exemption in the docs, and the standalone SMS MFA API is a separate integration, not an override."
+    }
+  ]
+}

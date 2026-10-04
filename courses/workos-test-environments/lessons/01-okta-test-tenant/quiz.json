@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "You signed up for an Okta Integrator Free Plan org in July and have not logged in since. It is now four months later. The sign-up form and the org reference page promise deactivation after 90 consecutive days without a user sign-in, while the pricing FAQ says 180 days. What is the sound planning assumption?",
+      "options": [
+        "180 days, because the pricing page is the commercial commitment and the other two are only developer documentation",
+        "90 days: when documented limits conflict you plan on the stricter one, and this org is already at risk or gone",
+        "The org never expires, because Integrator Free Plan orgs, unlike the retired Developer Edition, are described as permanent",
+        "Expiry applies only if you also submitted an app to the OIN, so an org with no listed app is safe however long it sits idle"
+      ],
+      "correct_index": 1,
+      "explanation": "Two sources (the sign-up acknowledgement and the org-configurations reference) say 90 days of no user sign-in and one says 180. With no paid support to reverse a deactivation, you assume the stricter figure and sign in monthly. The OIN exemption is the reverse of option four: submitting an app to the OIN is what stops deactivation, not what triggers it. 'Does not expire' is half true (there is no fixed term) but the inactivity rule still applies, which is the trap for someone remembering Developer Edition behaviour."
+    },
+    {
+      "stem": "Your Terraform or script uses an Okta OAuth service app. Both okta.groups.manage and okta.apps.manage appear under the app's Okta API Scopes tab as granted, the JWT assertion is valid and you get an access token, yet calls to manage groups are denied. What is the most likely missing piece?",
+      "options": [
+        "The access token has expired, because service-app tokens last only minutes and must be renewed with a refresh token",
+        "The app still uses client secret authentication, which Okta does not allow for scoped tokens even though a token was issued",
+        "The org's service-app rate limit is exhausted, and Okta reports that as an authorization error rather than a 429",
+        "The service app has no admin role, or one that does not cover groups, so the scopes alone grant nothing"
+      ],
+      "correct_index": 3,
+      "explanation": "Okta requires an admin role on every OAuth service app; the app is constrained to what that role covers, and scopes are validated against the grants on top of that. A token was issued, so authentication worked. Option two would have failed at the token request, not at the API call. Access tokens last a fixed hour and Client Credentials has no refresh token, so option one misstates the mechanism. Rate limiting surfaces as 429s, not as a permission denial."
+    },
+    {
+      "stem": "After a deprovisioning test, a user shows as removed from the group in Okta but still appears as a member of the directory group in the WorkOS Dashboard. One Okta group is used both to assign the SCIM app and for Push Groups. What explains it and what is the fix?",
+      "options": [
+        "Okta skips the removal when a user is deactivated or unassigned; split assign and push groups, then Push now",
+        "Okta SCIM syncs on the same roughly 40-minute cycle as Entra, so waiting one full cycle will deliver the pending removal",
+        "Okta suspended the user instead of deactivating them, and a suspended user's group changes are never propagated to WorkOS",
+        "WorkOS keeps group membership history until the directory is deleted, so removals are never reflected in the Dashboard"
+      ],
+      "correct_index": 0,
+      "explanation": "WorkOS documents this as a known Okta issue: push-group membership removals are not sent when the affected user is deactivated or unassigned, which happens automatically when the same group controls assignment. Splitting the groups avoids it and Push now on the group repairs existing drift. The 40 minute interval is documented for Entra, while WorkOS says Okta SCIM syncs in real time, so waiting does not help. Suspension is a separate behaviour (it leaves the WorkOS status alone) and does not explain the membership gap."
+    },
+    {
+      "stem": "You are saving a new Okta OIDC web app for the lab. The Assignments section defaults to Everyone, and the org only has a handful of synthetic users. What do you do?",
+      "options": [
+        "Leave it, because with at most 10 active users there is nobody to over-expose and the habit only matters in production",
+        "Switch to a named group such as wk-lab-test-users, because Everyone is the default habit that over-exposes real apps",
+        "Leave it and rely on the app's redirect URI allowlist to stop the wrong users from launching the app or signing in",
+        "Clear all assignments and assign users later, because the wizard cannot save an OIDC web app with a group selected"
+      ],
+      "correct_index": 1,
+      "explanation": "Assignment, not the redirect URI, decides who sees and can launch the app. Everyone assigns every current and future user. A tiny org makes it harmless today, but the lab is also where you rehearse the habit you will use in a real tenant, so the answer is to assign a named group. The redirect URI constrains where responses go, not who may sign in. The wizard happily saves with a group selected."
+    },
+    {
+      "stem": "A lab script that calls the Okta API with an SSWS token worked when you built it. Five weeks later, with nobody having touched the org or the token owner's account, it fails with an authentication error. Which is the best first explanation?",
+      "options": [
+        "The token's network zone restriction was automatically widened to the whole internet, and Okta blocks unrestricted tokens",
+        "The token's rate-limit share of 50 percent was used up and does not reset until 30 days after the first call",
+        "SSWS tokens are valid for 30 days from creation or last use, and this one sat idle for five weeks, so it simply expired",
+        "The creating admin's privilege level dropped, which silently converted the token to read-only and broke the write call"
+      ],
+      "correct_index": 2,
+      "explanation": "Okta documents that tokens are valid for 30 days from creation or last use, a fixed period, so a lab token unused for five weeks has simply expired. The privilege-inheritance behaviour is real but describes changes in what a token may do, and this scenario says the owner was untouched. Rate limits are per-minute capacity shares, not a monthly budget, and network zones do not widen themselves. This is why a lab credential should be re-issued on demand rather than kept around."
+    },
+    {
+      "stem": "A colleague offers a CSV export of 40 real employees from your production Okta so your test SCIM and SAML runs look realistic, and suggests loading eight of them. Which response matches how the lab must be run?",
+      "options": [
+        "Accept, but strip the emails and keep real names, since names without emails are not sensitive personal data",
+        "Accept eight users with their emails changed to example.com, which keeps the data useful and the org under the 10-user cap",
+        "Decline and use synthetic example.com users, because assertions, SCIM payloads, logs and screenshots all leave the org",
+        "Accept if you rotate the test org's admin password afterwards, because the org is isolated from production anyway"
+      ],
+      "correct_index": 2,
+      "explanation": "Everything in a test org flows outward: SAML responses to the SP, SCIM bodies to WorkOS and through any tunnel, System Log entries, screenshots in your portfolio. Real names plus a pseudo-anonymised email is still personal data, and the lab has no purpose that synthetic users cannot serve. Isolation of the org does not isolate the copies that the integrations make, and changing the password does nothing about data already sent to third parties."
+    }
+  ]
+}

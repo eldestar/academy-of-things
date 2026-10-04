@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A cleanup PR deletes the whole `okta_app_saml.payroll` block. A reviewer says it is safe because the block had `lifecycle { prevent_destroy = true }`. What will the CI plan show?",
+      "options": [
+        "A plan error, because prevent_destroy blocks any plan that would delete the app, including one caused by removing the block",
+        "A planned destroy of the payroll app, because the lifecycle rule was removed together with the block it lived in",
+        "A planned destroy that only executes if someone passes -auto-approve, since prevent_destroy still requires explicit consent",
+        "No change, because Terraform ignores deleted blocks until `terraform state rm` has been run against the address"
+      ],
+      "correct_index": 1,
+      "explanation": "prevent_destroy makes Terraform reject plans that destroy the object while the resource block (and its lifecycle setting) is still in the configuration. HashiCorp documents that it does not stop destruction when you remove the configuration, because the rule disappears with the block. Anything in state but absent from config is planned for destroy. Terraform does not ignore deleted blocks, and auto-approve is only about whether a prompt appears, not whether the destroy is planned. If you want a resource unmanaged but alive, use a removed block or state rm."
+    },
+    {
+      "stem": "A team keeps Okta prod and Okta preview in two Terraform CLI workspaces on the same S3 backend, applied by one CI role. What is the core problem?",
+      "options": [
+        "Workspaces cannot hold different variable values per workspace, so the prod and preview tenants would end up sharing the same settings and the same provider arguments",
+        "Each workspace needs its own provider version, and the lock file has no way to record a different selection per workspace",
+        "Workspaces force local state on the runner, so the configured S3 backend is ignored and nothing is locked or shared",
+        "They share one backend and one credential set, so they are not a suitable isolation mechanism when deployments need different access controls"
+      ],
+      "correct_index": 3,
+      "explanation": "HashiCorp states CLI workspaces use the same backend and so are not a suitable isolation mechanism when you need strong separation between deployments. Anyone or any job that can reach the prod state through that role can reach preview and vice versa. Workspaces do take different variable values, the lock file is per working directory rather than per workspace, and each workspace's state lives in the configured backend. Use separate directories, state keys and credentials per tenant."
+    },
+    {
+      "stem": "A CI job runs `terraform plan -out=tfplan` and uploads tfplan as a build artifact so reviewers can inspect it. All secret variables are marked `sensitive = true`. Who can read those secret values?",
+      "options": [
+        "Anyone who can download the artifact, because saved plans store sensitive values in cleartext",
+        "Nobody without the key, because sensitive = true encrypts those values inside the saved plan file itself",
+        "Only people with access to the state backend, because plan files hold a pointer to state rather than the values",
+        "Nobody, because the plan file is a binary format that only the same Terraform version is able to open"
+      ],
+      "correct_index": 0,
+      "explanation": "The sensitive argument only redacts values in CLI and UI output; the values are still written to state and plan files. HashiCorp's plan documentation warns that sensitive data is saved in cleartext in the plan file, and the automation tutorial says plan files contain the configuration, the state and any variables. 'Opaque' describes the format, not its confidentiality. Treat plan artifacts like state: restrict access and set short retention."
+    },
+    {
+      "stem": "An apply of nine resources fails on resource four with an API error. What state is the backend in, and what is the right next move?",
+      "options": [
+        "Everything is rolled back and state is unchanged, so rerunning the pipeline unchanged is safe and starts from scratch",
+        "State records nothing and stays locked until someone runs force-unlock, because the failed apply never wrote any changes",
+        "State records resources one to three, the lock is released, nothing is rolled back; fix the cause and apply again",
+        "State records all nine resources as tainted, so the right move is to run destroy and start the whole apply again"
+      ],
+      "correct_index": 2,
+      "explanation": "Per the apply documentation, on error Terraform logs it, updates state with the changes that completed, unlocks the state and exits, and it does not roll back a partially completed apply. The next plan shows only the remaining work. A lock persists only if the process dies before releasing it, which is a different failure. Resources are not marked tainted wholesale, and destroying them would be the destructive overreaction."
+    },
+    {
+      "stem": "You inherit an S3 backend block copied from an older tutorial that sets `dynamodb_table = \"terraform-locks\"`. What does current HashiCorp documentation say?",
+      "options": [
+        "DynamoDB is the only supported locking mechanism for the S3 backend, so the block should stay exactly as it is until HashiCorp ships a replacement",
+        "S3 state locking is only available on an enterprise licence, so the DynamoDB table is the free option to keep",
+        "Locking only works through HCP Terraform, so the S3 backend with a lock table should be abandoned entirely",
+        "use_lockfile gives S3-native locking, DynamoDB locking is deprecated, and both can run together while you migrate"
+      ],
+      "correct_index": 3,
+      "explanation": "The S3 backend page documents use_lockfile as the way to enable S3 state locking and states that DynamoDB-based locking is deprecated and will be removed in a future minor version; both mechanisms can be enabled together to migrate gradually. (The page recommends bucket versioning; it does not use the word recommended for use_lockfile.) The lockfile approach needs s3:GetObject, s3:PutObject and s3:DeleteObject on the .tflock object. No licence is involved, and the S3 backend supports locking directly, so DynamoDB is not the only option and HCP Terraform is not required."
+    },
+    {
+      "stem": "In an interview you are asked why a company might choose OpenTofu over Terraform. Which answer is accurate and shows you understand the situation?",
+      "options": [
+        "HashiCorp moved Terraform to the BUSL in 2023; OpenTofu is the MPL-2.0 fork with state encryption and the same HCL, so I would ask what they run",
+        "OpenTofu is a different configuration language, so it sidesteps the BUSL by not using HCL, which means existing Terraform code must be rewritten first",
+        "OpenTofu is the only way to use the Okta provider now, because the BUSL change also relicensed the provider plugins",
+        "Terraform was withdrawn after the IBM acquisition, so every company running it has been forced to migrate to the fork"
+      ],
+      "correct_index": 0,
+      "explanation": "HashiCorp announced the move from MPL 2.0 to BUSL 1.1 on 2023-08-10; OpenTofu is the community fork, now at the Linux Foundation under MPL-2.0, and documents state and plan encryption. It reads the same configuration language and works with existing providers, which is why the practical interview answer is to ask what the company runs and ask what each ships, since OpenTofu's state and plan encryption has no Terraform equivalent. Providers are separate MPL-2.0 plugins (the Okta provider repository is MPL-2.0), so the core licence change does not make OpenTofu the only way to use them. Terraform has not been withdrawn, and IBM's acquisition is not a forced migration."
+    }
+  ]
+}

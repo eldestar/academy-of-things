@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A script verifies Okta custom-domain ownership by taking the first TXT answer for a verification name that shares its record set with other TXT records (for example at an apex) and comparing it to the expected value. It passes on your laptop and fails in CI. CI does return answers, and querying the name from both machines shows the same set of records, just listed in a different order. What is the likeliest explanation?",
+      "options": [
+        "CI resolves through a different resolver that is still serving a stale cached copy of the previous record set",
+        "TXT answers come in no guaranteed order and a name can hold several, so the script must test for the value among all",
+        "The record's TTL lapsed between the two runs, so CI queried the authoritative server and received an empty answer back",
+        "Okta requires the CNAME for the custom domain to exist first, so the TXT record is not visible to resolvers yet either"
+      ],
+      "correct_index": 1,
+      "explanation": "DNS does not order the records in an answer set, and a name can carry unrelated TXT records. In this lesson's real output, example.com returned its two TXT records in opposite orders from 1.1.1.1 and 8.8.8.8, so a script must test membership. Both machines see the same set here, which rules out a stale cache or an empty answer after a TTL lapse (TTL only controls how long a cached answer lives, and a cache would show an old set, not a reordered one). TXT and CNAME records are independent record sets, so one does not gate the visibility of the other."
+    },
+    {
+      "stem": "openssl s_client -connect webhooks.example.org:443 prints Verify return code: 0 (ok), yet your webhook client reports a certificate name mismatch for that host on the same IP. What did the openssl check not do?",
+      "options": [
+        "Validate the certificate chain up to a trusted root, because it only inspects the leaf certificate it was sent",
+        "Check the certificate's notBefore and notAfter dates, because s_client leaves expiry checking to the application",
+        "Test which TLS version the webhook client negotiates, since an older protocol version can surface as a name error there",
+        "Compare the certificate's names to the hostname you meant, which s_client does only when -verify_hostname is passed"
+      ],
+      "correct_index": 3,
+      "explanation": "s_client's verification covers the chain and validity dates but does not check that the certificate names the host you meant, unless you pass -verify_hostname. In the lesson's run, a bogus SNI name still got the example.com certificate with Verification: OK, and adding -verify_hostname wrong.example.org produced return code 62 (hostname mismatch). The run shows chain validation happening (four depths, Verification: OK), and OpenSSL's verification also covers the validity period, so those two options are not what was missed. TLS version negotiation is a separate failure that produces a handshake error, not a name mismatch. A green s_client result is therefore not proof of a name match."
+    },
+    {
+      "stem": "In Chrome, SP-initiated SAML sign-in to an internal app fails only for users who spend two to three minutes in MFA; fast logins work, and IdP-initiated sign-in always works. The app keeps its login-state cookie with no SameSite attribute. What is the most likely cause?",
+      "options": [
+        "In Chrome the default-Lax cookie is not sent on the SAML response's cross-site POST once about two minutes have passed",
+        "The IdP and SP clocks differ by two to three minutes, so the assertion's validity window has already closed on slow logins",
+        "The Okta session lifetime is shorter than the MFA prompt, so the IdP discards the session before it posts the response",
+        "The app's SCIM access token expired while the user sat in the MFA prompt, so the login can no longer complete"
+      ],
+      "correct_index": 0,
+      "explanation": "The IdP delivers the SAML response with a cross-site POST. SameSite=Lax cookies are not sent on cross-site POSTs, and per MDN the browsers that apply Lax by default (Chrome 80+, Edge 86+) make a short exception for cookies set within the last two minutes. So fast logins work and slow ones lose state; the fix is SameSite=None with Secure on that cookie. Firefox and Safari do not default to Lax, so the same app may behave differently there. Clock skew would fail everyone, not only slow users, and would show as NotBefore or NotOnOrAfter errors. IdP-initiated flows have no pre-set SP state cookie, which is why they work. SCIM is unrelated to interactive sign-in."
+    },
+    {
+      "stem": "After you put a SAML service provider behind a TLS-terminating load balancer, sign-in fails with a Recipient or ACS URL mismatch. DNS and certificates are fine. The app builds its ACS URL from the incoming request's scheme and host. What is the sound fix?",
+      "options": [
+        "Register the http ACS URL at the IdP so it matches whatever scheme the load balancer hands to the app",
+        "Lengthen the assertion's NotOnOrAfter window so the response still validates after the redirect round trip",
+        "Have the app honour X-Forwarded-Proto and the forwarded host only from your trusted proxy, or pin the external URL",
+        "Turn off assertion signature validation for the load balancer's address so requests with a mismatched URL are accepted"
+      ],
+      "correct_index": 2,
+      "explanation": "The app sees http from the proxy while the IdP posts to https, so the URL it builds differs from the registered ACS. AWS requires the assertion Recipient to match the sign-in URL and WorkOS's debugging guide stresses exact ACS matching including the scheme. Reading X-Forwarded-Proto or Forwarded (RFC 7239) fixes that, but clients can send those headers, so trust them only from your own proxy, or pin the external URL. Registering http weakens the flow rather than fixing it. NotOnOrAfter concerns time, not URL. Signature validation is unrelated and should never be disabled."
+    },
+    {
+      "stem": "An Okta sign-in policy allows only your corporate network zone, built from the VPN egress IPs. Remote engineers on split-tunnel VPN are denied intermittently; full-tunnel users are fine. What do you check first?",
+      "options": [
+        "Whether the SCIM access token for the app is close to expiry and silently failing user lookups at sign-in",
+        "The client IP recorded on the failing sign-in events in the System Log, compared with the zone's egress list",
+        "Whether a CAA record is blocking issuance for the Okta-managed certificate on the custom sign-in domain",
+        "Whether the event hook endpoint is answering within Okta's three-second timeout at peak sign-in times for those users"
+      ],
+      "correct_index": 1,
+      "explanation": "Network zones are matched on IP, geography or ASN, so the question is which IP Okta actually saw. With split tunneling, traffic to Okta can leave via the user's own ISP instead of the VPN egress, so the zone list never matches (an inference from how zones work). The sign-in event's client IP confirms it before you change anything. SCIM token expiry affects provisioning, a CAA problem affects certificate renewal, and the event hook timeout affects webhook delivery; none changes sign-in policy evaluation."
+    },
+    {
+      "stem": "A colleague wants to hand-maintain a firewall allowlist for Okta egress from Okta's published JSON file. In the 2026-10-03 file there were 31 cells and 5259 CIDR entries in total, and Okta states the list is updated periodically. Which conclusion is best supported?",
+      "options": [
+        "The list is compact and stable enough that a hand-maintained rule reviewed once a year is acceptable for this purpose",
+        "Port 80 to the published ranges is sufficient, so the exact CIDR list matters less than getting the port rule right",
+        "Okta publishes separate IP lists for SCIM, hooks and Workflows, so pick the one that matches your traffic",
+        "Generate the rule from the file on a schedule and alert on drift, since a hand-copied list this size goes stale"
+      ],
+      "correct_index": 3,
+      "explanation": "Okta's guidance is to allow port 443 to its published IPs and says the list is updated periodically, and the file is thousands of entries across many cells. Hand-copied rules go stale silently, and a stale allowlist breaks provisioning or callbacks with no obvious error. The page says port 443 for the published IPs; port 80 appears only for certificate-revocation hosts, and the page also lists domains to allow, so a port-80-only rule is wrong. The file is organised by cell, not by traffic type, and the Okta page read for this lesson showed no per-traffic-type split, so confirm what your org needs before assuming one."
+    }
+  ]
+}

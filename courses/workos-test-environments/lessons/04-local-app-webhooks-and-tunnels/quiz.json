@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Your Express app uses express.json() and passes req.body, the already-parsed object, as the payload to workos.webhooks.constructEvent. It verified fine for weeks. After a vendor-side change in how the sender formats its JSON (whitespace and unicode escaping), every event now fails verification. The signing secret, system clock and endpoint URL have not changed. What is the root cause?",
+      "options": [
+        "The 180-second tolerance is too tight for retried events, so valid payloads are now rejected as stale before the HMAC is even compared",
+        "The staging signing secret is now being applied to a production endpoint, so every HMAC is computed with the wrong key for that environment",
+        "The SDK re-serialises a parsed object with JSON.stringify before hashing, so the bytes it signs no longer match the bytes WorkOS signed",
+        "WorkOS switched the v1 hex digest to upper case and the comparison is case-sensitive, so identical digests no longer match as strings"
+      ],
+      "correct_index": 2,
+      "explanation": "The signature is an HMAC over the timestamp, a dot, and the exact raw body bytes. In the v11.0.0 source a non-string, non-binary payload goes through JSON.stringify before hashing, so any difference in whitespace, key formatting, number form or escaping between the sender's bytes and the re-serialised bytes breaks the HMAC. Capture the raw string or Buffer before any JSON middleware touches it. A tight tolerance would fail on timestamp, not start failing when only formatting changes. A wrong-environment secret would have failed from the first request, not after a formatting change. Nothing in the documented scheme changes digest case; the documented compare is of hex digests."
+    },
+    {
+      "stem": "You registered a Cloudflare quick tunnel URL as your staging webhook endpoint on Monday and saw events arrive. On Tuesday you restarted cloudflared, and now no events reach your receiver, your app logs show no errors, and nothing in your code changed. What best explains this?",
+      "options": [
+        "WorkOS permanently disabled the endpoint after the first failed delivery, and a disabled endpoint must be re-created before it receives events",
+        "The quick tunnel hostname is regenerated on every run, so the registered URL points at nothing and staging stops retrying after minutes",
+        "The tunnel exceeded its 200 in-flight request limit after the restart and now answers 429 to every caller, including WorkOS retries",
+        "Staging endpoints are only valid for the calendar day they were registered, so Monday's registration lapsed overnight and needs re-saving"
+      ],
+      "correct_index": 1,
+      "explanation": "Cloudflare's docs say quick tunnel hostnames are temporary and are regenerated each time the tunnel is created, so the URL you registered is dead after the restart. The WorkOS docs say staging retries failed deliveries for only several minutes (with manual retry in the Dashboard), so the failure looks like silence. The 200 in-flight limit concerns concurrent requests, not a restart, and a webhook trickle would not hit it. Disabling an endpoint over one bad HMAC is not documented behaviour, and in any case your app received nothing to fail on. There is no same-day delivery rule. The fix is a stable hostname, such as an ngrok free dev domain, or re-registering on each run."
+    },
+    {
+      "stem": "You need to prove your service provider rejects an assertion signed by an unexpected key, and that it handles an IdP certificate rotation. Which test target can actually exercise this?",
+      "options": [
+        "WorkOS Emulate with an errorHooks entry that returns a certificate error from the SSO endpoints, which simulates the wrong-key rejection",
+        "WorkOS Emulate with a seeded SSO connection whose profile carries a rotated certificate attribute, which exercises the rotation path your code must handle",
+        "A local mock that returns a hand-built profile from the token endpoint, since your code never sees the SAML signature in either case",
+        "A staging connection backed by a real IdP app whose certificate you control, since Emulate fakes the IdP step and never validates a SAML signature"
+      ],
+      "correct_index": 3,
+      "explanation": "Emulate is an in-memory API double: its README states there is no IdP to prove an identity and that /sso/authorize signs in whoever login_hint names. Signature validation happens inside WorkOS against the certificate stored on a real connection, so only a staging connection backed by an IdP whose certificate you control, such as your own Okta or Entra app, can show a wrong-key rejection (upload a different certificate to the connection) or a rotation (generate a new certificate in the IdP). The Dashboard Test IdP is not enough: it exposes only fixed scenarios (SP-initiated, IdP-initiated, guest domain, error response). Error hooks only force HTTP responses; they simulate the symptom, not the cryptography. A seeded profile has no certificate to rotate. A mock that hands back a profile never exercises signature validation at all. Emulate is still valuable for CI and for your own error-path code."
+    },
+    {
+      "stem": "A contractor signs in through the customer's Okta and your callback receives error=profile_not_allowed_outside_organization. The contractor's address is on a consultancy's domain. What is going on, and what is the sound response?",
+      "options": [
+        "The email domain is not among the organization's verified domains and WorkOS rejects such profiles by default; add the domain, or ask support to relax the policy",
+        "The authorization code expired because the contractor took longer than 10 minutes, so have them restart the flow and finish sign-in faster next time",
+        "Your callback is expected to validate the email domain itself and WorkOS raises this error when that check is absent, so add the comparison in the handler",
+        "Okta assigned the contractor to a different SAML application than the one linked to this connection, so reassign the user's app in Okta"
+      ],
+      "correct_index": 0,
+      "explanation": "WorkOS checks the profile's email domain against the organization's verified domains and, by default, rejects profiles outside them, because IdP admins can create an account with any email address and impersonate users in other organizations. The documented options are adding the domain to the organization's Domains or contacting support to relax the policy for the environment, which then affects every organization in it. An expired code produces a different failure and the error here is raised before your code exchange. The check runs in WorkOS, not in your callback, and WorkOS's guidance is to rely on profile.organizationId in your own code rather than the email domain. A misassigned Okta app would fail at Okta, not with this error."
+    },
+    {
+      "stem": "During an initial directory sync your webhook handler writes to the database before replying, and the endpoint begins timing out. WorkOS retries; some dsync.group.user_added events arrive before the matching dsync.user.created, and a few events show up twice. Which redesign addresses all three symptoms?",
+      "options": [
+        "Keep processing inline but return HTTP 500 whenever an event's dependencies are missing, so WorkOS redelivers it after the parent event has arrived",
+        "Reply 200 right after verifying the signature and queue the event; process with idempotent upserts keyed on event id and each object's updated_at",
+        "Raise the verification tolerance and the handler timeout so slow, retried and reordered events are still accepted when they eventually arrive",
+        "Allowlist WorkOS's published IP addresses and drop signature verification, which removes the CPU cost that is causing the timeouts"
+      ],
+      "correct_index": 1,
+      "explanation": "The WorkOS docs say to acknowledge quickly and process asynchronously, that ordering is not guaranteed, that duplicates happen, and that each event carries full object payloads so you can upsert and compare updated_at to avoid overwriting newer data with stale data. A queue plus idempotent upserts fixes the timeouts, the out-of-order arrival and the duplicates together. Returning 500 does not reorder anything: redelivery is a retry with backoff, not a sequenced replay, and it adds load during the very spike that caused timeouts. Tolerance concerns the timestamp in the signature, not delivery order. The IP list is a defence in depth and does not replace HMAC verification; dropping verification trades a performance problem for a spoofing hole."
+    },
+    {
+      "stem": "You tunnel your whole local SP app (login, callback and webhook routes on one port) to the internet to receive a webhook, and later notice requests to /callback from addresses you do not recognise. Which design would have avoided exposing it?",
+      "options": [
+        "Turn on the tunnel's browser interstitial so unknown visitors must click through a warning page before they can reach any route on the port",
+        "Put the tunnel behind an email one-time PIN so that only invited visitors can reach any route on the port, including the webhook route itself",
+        "Run the webhook receiver as a separate process on its own port and tunnel only that port, since SSO redirects travel through your own browser",
+        "Register the tunnel URL as the SSO redirect URI so that every request to the callback passes through WorkOS before reaching your app"
+      ],
+      "correct_index": 2,
+      "explanation": "The SSO redirects are carried by your browser, which can reach localhost directly, so only server-to-server webhook delivery needs a public URL. Tunnelling only the receiver port limits what the internet can reach, and the HMAC check is the control on that one route. An email one-time PIN gate (Cloudflare's quick-tunnel docs say it does not support non-interactive clients) would lock out WorkOS itself, which cannot answer a PIN. The interstitial applies to HTML browser traffic, not API clients, and is a phishing deterrent rather than access control. A redirect URI is only where the browser is sent after authentication; it does not put WorkOS in front of your server."
+    }
+  ]
+}

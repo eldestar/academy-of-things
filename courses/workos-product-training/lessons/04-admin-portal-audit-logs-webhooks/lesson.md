@@ -14,7 +14,7 @@ An organization domain has `state` of `pending`, `verified` or `failed`, and a s
 
 Unless an organization is set to allow any domain, a verified domain is required to activate SSO. That makes this a security control, not paperwork: the reference says the organization that defines a domain policy controls authentication for that domain across your application, and, in AuthKit, a verified domain lets WorkOS treat matching SSO users as email-verified (that last point is from the AuthKit docs, not the standalone SSO API). Failure modes:
 
-- **Self-attested domains.** Passing `state: 'verified'` when you create or update an organization skips DNS entirely. It is meant for domains you already proved elsewhere. Using it to "unblock a demo" hands that domain's policy to whoever the org is. WorkOS refuses consumer domains such as `gmail.com`.
+- **Self-attested domains.** Passing `state: 'verified'` when you create or update an organization skips DNS entirely. It is meant for domains you already proved elsewhere. The docs I read do not say which verification strategy such a domain records, so do not assume. Using it to "unblock a demo" hands that domain's policy to whoever the org is. WorkOS refuses consumer domains such as `gmail.com`.
 - **Wrong domain, silent wait.** A typo'd domain sits in `pending` for thirty days, then fails. Nothing pages anybody unless you consume the failure event.
 - **The TXT record format.** The API guide describes a record named for the domain with value `verification_token=...`. The object samples also carry a `verification_prefix`. Copy the record from the Admin Portal or the returned object; do not hand-write it from memory.
 

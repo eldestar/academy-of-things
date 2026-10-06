@@ -49,13 +49,13 @@
     {
       "stem": "A nightly Python sync against the Okta API hits bursts of HTTP 429. Responses show X-Rate-Limit-Remaining at 0. A teammate suggests either retrying immediately, rotating across several API tokens, or building next-page URLs with a larger limit. What is the sound approach?",
       "options": [
-        "Back off to X-Rate-Limit-Reset with jitter, lower concurrency, follow Link rel=next, and use event hooks over polling",
+        "Back off with jitter and retry, lower concurrency, follow Link rel=next, and use event hooks over polling where you can",
         "Retry each request immediately in a loop, since a 429 is transient and the limit window is only a short interval",
         "Spread the calls across several API tokens so that each one stays under the limit and the whole job finishes sooner overall",
         "Construct your own page URLs with the largest limit value allowed, since fewer requests means fewer 429 responses overall"
       ],
       "correct_index": 0,
-      "explanation": "Okta's guidance for this situation is to throttle, handle 429 with backoff, batch jobs across time, retrieve only what you need, and prefer event hooks over polling. Reset is reported as epoch seconds; for concurrent-limit errors the reset is only a suggestion, so keep jitter and a retry cap. Immediate retry is the runaway-automation pattern Okta names as a root cause. Extra API tokens mostly share the same org-wide bucket, so they do not multiply the quota; Okta's documented routes are throttling, adjusting the token or app limit, or requesting an increase. Hand-built page URLs go against Okta's instruction to follow the Link header, because cursor formats may change."
+      "explanation": "Okta's guidance for this situation is to throttle, handle 429 with backoff, batch jobs across time, retrieve only what you need, and prefer event hooks over polling. Reset is reported as epoch seconds; for concurrent-limit errors the reset is only a suggestion, so keep jitter and a retry cap. Immediate retry is the runaway-automation pattern Okta names as a root cause. Extra API tokens draw on the same org-wide bucket, and each token is capped at a percentage of the API limit, so they do not multiply the quota; Okta's documented routes are throttling, adjusting the token or app limit, or requesting an increase. Hand-built page URLs go against Okta's instruction to follow the Link header, because cursor formats may change."
     },
     {
       "stem": "You need an unattended nightly script that deactivates users through the Okta API. Which authorization approach fits?",

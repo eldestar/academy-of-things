@@ -39,10 +39,10 @@ Each entry gives what it is, then status and price, then my read on when you wou
 
 ## Agents and MCP
 
-- **Agent Auth.** Blueprints define a permission ceiling and token lifetimes. Short-lived scoped tokens are minted as delegated (user) or autonomous (organization) agent instances. First-party agents only.
+- **Agent Auth.** Blueprints define a permission ceiling and token lifetimes. Short-lived scoped tokens are minted as delegated (user) or autonomous (organization) agent instances. First-party agents only. A delegated instance needs the signed-in user's access token to mint, and its effective permissions are the intersection of that user's permissions and the blueprint ceiling.
   - Status: the 2026-09-02 changelog says early access; the docs say it must be enabled for your environment. Price: not published.
   - IT angle: agent identities you can revoke instantly instead of shared API keys.
-- **auth.md and Agent Registration.** An `auth.md` file an app hosts tells agents how to register on a user's behalf. AuthKit supports `anonymous`, `service_auth` and `refresh` identity types with a claim ceremony.
+- **auth.md and Agent Registration.** An `auth.md` file an app hosts tells agents how to register on a user's behalf. This is for agents from outside registering with your service, not the blueprint path for your own first-party agents. AuthKit supports `anonymous`, `service_auth` and `refresh` identity types with a claim ceremony.
   - Status: docs say it must be enabled; the workos.com/auth-md page offers early access. Price: not published.
   - IT angle: the user-binding step is where an IT team asks who approved which agent.
 - **AuthKit as OAuth server for MCP.** AuthKit, through WorkOS Connect, is the authorization server for the vendor's own MCP server, with Client ID Metadata Documents (changelog 2025-11-30; off by default, a dashboard toggle under Connect, with DCR kept for older clients) and resource indicators (2026-05-13).
@@ -62,7 +62,7 @@ WorkOS also runs a management MCP server (`https://mcp.workos.com/mcp`, 2026-07-
 
 ## Emulate and testing in CI
 
-WorkOS Emulate is an in-memory local emulator of the WorkOS API for tests: authorization and code exchange, sessions, organization selection, signed webhooks, and injected failures. The docs call it open source and warn it performs no real authentication and must never see production secrets. The GitHub repository's latest release is v0.14.0 (2026-09-24), which is pre-1.0. The repository ships a `LICENSE.txt` that reads MIT (GitHub's detector reports "other"). The docs also point to a supported-features matrix, so check it before relying on an endpoint.
+WorkOS Emulate is an in-memory local emulator of the WorkOS API for tests: authorization and code exchange, sessions, organization selection, signed webhooks, and injected failures. The docs call it open source and warn it performs no real authentication and must never see production secrets. The GitHub repository's latest release is v0.14.0 (2026-09-24), which is pre-1.0. The repository ships a `LICENSE.txt` that reads MIT (GitHub's detector reports "other"). The docs also point to a supported-features matrix, so check it before relying on an endpoint. WorkOS's testing guide says the emulator should carry most of the suite, calls it a stand-in for the platform, not a complete copy, and says to keep enough real-environment coverage to verify the boundary between your app and WorkOS.
 
 This one matters for the role as written: it is how you would test the webhook receiver from lesson 4 without a tenant.
 

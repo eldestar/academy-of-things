@@ -42,7 +42,7 @@ HashiCorp's own guidance: local state is a plaintext file that includes any secr
 *.pem
 ```
 
-Commit `.terraform.lock.hcl`; HashiCorp says to, so provider hash changes get reviewed. Saved plans (`-out`) keep sensitive values in cleartext, hence `*.tfplan`. Where do real secrets land? `okta_app_oauth` persists the auto-generated `client_secret` in state unless `omit_secret = true`, and its `client_basic_secret_wo` write-only attribute needs Terraform 1.11 or newer. Run `gitleaks protect --staged` (`gitleaks git --staged` in current releases; both exist in v8.30.1 here) anyway; state is not the only way a key reaches a commit.
+Commit `.terraform.lock.hcl`; HashiCorp says to, so provider hash changes get reviewed. Saved plans (`-out`) keep sensitive values in cleartext, hence `*.tfplan`. Where do real secrets land? `okta_app_oauth` persists the auto-generated `client_secret` in state unless `omit_secret = true` (flipping false to true drops it from state, and the secret as of that apply stays in Okta; flipping true back to false recreates the app, to regenerate a secret the provider can store), and its `client_basic_secret_wo` write-only attribute needs Terraform 1.11 or newer. Run `gitleaks protect --staged` (`gitleaks git --staged` in current releases; both exist in v8.30.1 here) anyway; state is not the only way a key reaches a commit.
 
 ## A group, a SAML app and an assignment
 

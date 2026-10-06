@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Your multi-tenant SaaS now accepts OIDC sign-ins from several customers' IdPs. A developer proposes storing users by the sub claim alone, because 'sub is unique and never reassigned'. Customers A and B each send sub=1001 for different people. What is the right design?",
+      "options": [
+        "Keep sub alone, and refuse to onboard any customer whose IdP emits a sub value that another customer already uses",
+        "Key on the verified email instead, because an address is readable and differs between any two real people",
+        "Key on the pair (iss, sub): sub is never reassigned only within its own issuer, and independent IdPs may collide",
+        "Ask each IdP for pairwise subject identifiers, so that the values can never collide across different customers"
+      ],
+      "correct_index": 2,
+      "explanation": "OIDC defines sub as locally unique and never reassigned within the issuer, and NIST calls it imperative that an RP never process a subject identifier without accounting for the issuer, because IdPs choose them independently and may collide. The federated identifier is therefore the pair. Refusing colliding customers cannot work, since you do not control what other IdPs emit and collisions are expected, not exceptional. Email must not be used as a unique identifier because an issuer may reuse or change it. Pairwise identifiers give each client a different sub for the same user; they say nothing about uniqueness across issuers, so the issuer is still needed."
+    },
+    {
+      "stem": "Compliance wants a fresh login before the 'export all data' action, even when the user's IdP session is still valid. Your OIDC tokens carry exp five minutes after iat. Which approach meets the requirement?",
+      "options": [
+        "Request re-authentication with max_age (ForceAuthn in SAML), then check auth_time in the new token before the export",
+        "Allow the export only when the token's iat is recent, because iat records the moment the user last authenticated",
+        "Shorten the ID token's exp to one minute, so that a stale login can never yield a token that is still unexpired",
+        "Allow the export when the token is unexpired and amr lists otp, because that proves the user authenticated just now"
+      ],
+      "correct_index": 0,
+      "explanation": "max_age (or ForceAuthn in SAML) obliges the IdP to re-authenticate when the last login is older than your limit, and auth_time then tells you when authentication really happened, which the RP SHOULD check. iat is only when the JWT was issued: NIST's example has the IdP reuse a 30-minute-old session, so the new assertion is fresh while the authentication is not. exp is a token-processing limit that the spec calls unrelated to the session lifetime, so shrinking it does not measure login age. amr lists the methods used, not when, and an unexpired token says nothing about recency."
+    },
+    {
+      "stem": "Payroll and Wiki trust the same IdP. A Wiki ID token (genuine signature, correct issuer, not expired) is pasted into a request to Payroll, and Payroll accepts it. Which missing check explains this?",
+      "options": [
+        "Signature validation against the IdP's keys, since a token meant for Wiki should fail to verify at Payroll",
+        "Issuer matching against the discovery document, since the Wiki token must name a different issuer than Payroll expects",
+        "Expiry checking, since the Wiki token must have lapsed in the time it took to reach Payroll's endpoint",
+        "Audience checking: Payroll must confirm that aud contains its own client_id and reject tokens addressed to others"
+      ],
+      "correct_index": 3,
+      "explanation": "Both apps trust the same IdP, so the signature verifies with the same keys, the iss matches, and the token has not expired; none of those checks can tell the two apps apart. Only aud does. OIDC Core section 3.1.3.7 requires the client to confirm that aud contains its client_id and to reject the token otherwise, and SAML's AudienceRestriction is valid only if the relying party is in the audience. NIST goes further at FAL2, requiring an assertion to be audience-restricted to a single RP. Without that check, any app on the IdP can replay its tokens at any other."
+    },
+    {
+      "stem": "A pen tester obtains a valid SAML assertion for their own lab account (issued to your SP), then lures a victim's browser into POSTing it to your SP's ACS so the victim lands in the tester's account. Your SP accepts unsolicited IdP-initiated responses. Which change best addresses this attack class?",
+      "options": [
+        "Cut NotOnOrAfter to one minute, so that an assertion expires before an attacker has any chance to put it to use",
+        "Start every transaction at the SP, track its state across the round trip, and reject any response it never requested",
+        "Tighten AudienceRestriction handling, because the injected assertion was never intended for this SP's own ACS endpoint",
+        "Verify the assertion's signature more strictly, because an injected assertion would not survive that check at the SP"
+      ],
+      "correct_index": 1,
+      "explanation": "This is assertion injection (NIST 63C Sec. 3.11.1): the RP is tricked into binding a session to an assertion that did not come from a transaction it started. Most of the mitigations NIST lists tie the response to an RP-initiated transaction the RP can track, including nonces, back-channel presentation and prohibiting unsolicited IdP-initiated responses, and FAL2 requires RP-initiated transactions. A short validity window does not help, since the attacker can obtain a fresh assertion and inject it at once. The assertion is addressed to this SP, so audience checks pass. A stolen or issued assertion carries a genuine signature, so signature checks pass too."
+    },
+    {
+      "stem": "A customer's security team requires that disabling a user in their IdP ends that user's sessions in your SAML SaaS app within minutes. Your app issues eight-hour sessions. Which design satisfies the requirement?",
+      "options": [
+        "Shorten NotOnOrAfter to a few minutes, so that the app drops each session once the assertion window has passed",
+        "Read SessionNotOnOrAfter from each assertion and use it as the app session's hard expiry, since it ends the user's session everywhere",
+        "Bound the app's own sessions and let the app revoke them on IdP signals, SLO where supported, or deprovisioning",
+        "Rely on the IdP session ending, because NIST says relying-party sessions end whenever the IdP session does"
+      ],
+      "correct_index": 2,
+      "explanation": "The RP session is the RP's own design and clock. NIST says the IdP ending its session will not necessarily terminate RP sessions, and that the two MAY exchange end-session events through the protocol or shared signaling, with the IdP SHOULD signalling terminated, suspended or disabled accounts. Entra says the IdP cannot directly revoke a session token an app issued. NotOnOrAfter governs only how long the assertion may be processed. SessionNotOnOrAfter is defined as the end of the session with the issuing authority, the IdP. The Web SSO profile says an SP SHOULD discard its security context at that time, but the value is optional and fixed at issuance, so it does not change when the account is later disabled and cannot meet a requirement to end sessions within minutes of a disable. And the last option states the opposite of what NIST says."
+    },
+    {
+      "stem": "A new tenant's IdP sends email=cfo@example.com with sub=7781. Your app holds a trial account for that address belonging to a different organisation's user, and auto-linked the new federated identity to it. The tester controlling the tenant's IdP then reached that data. Which design is defensible?",
+      "options": [
+        "Never auto-link on email; require an authenticated session on the existing account, ideally via a federated identifier",
+        "Make email the primary key of the federated identity, so that both records always resolve to one single account",
+        "Auto-link only when the assertion's AuthnContext shows MFA, since strong authentication proves who owns the email address",
+        "Auto-link when the existing account has no federated identifier yet, since there is nothing for the link to conflict with"
+      ],
+      "correct_index": 0,
+      "explanation": "An email is not proof of identity: OIDC says an issuer may reuse or change it and that it must not be a unique identifier, and Microsoft notes tenant admins or sometimes users can control it. NIST requires an authenticated session for all linking, which SHOULD use an existing federated identifier, and says account resolution SHALL NOT attach a record to an identifier that does not belong to that subscriber. Keying on email makes the takeover permanent. AuthnContext describes how the person authenticated at the tenant's IdP, not who owns an address. An account with no federated identifier is exactly where an unproven link does the most damage."
+    }
+  ]
+}

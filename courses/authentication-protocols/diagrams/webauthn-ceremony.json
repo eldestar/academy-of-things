@@ -1,0 +1,27 @@
+{
+  "id": "webauthn-ceremony",
+  "prefix": "wa",
+  "title": "WebAuthn registration and authentication ceremonies",
+  "desc": "Three parties: the user with an authenticator, the browser, and the relying party. Registration: the relying party sends creation options with a challenge and its RP ID, the browser asks the authenticator to create a key pair if the RP ID fits the page origin, the user approves with a gesture, the authenticator returns the public key and credential ID, and the browser sends the registration response to the relying party, which checks the challenge, origin and RP ID hash and stores the public key. Authentication: the relying party sends a fresh challenge, the browser asks the authenticator to sign it for the RP ID of the real origin, the user approves, the authenticator returns a signature and authenticator data, and the browser sends the assertion response (client data, authenticator data and signature) to the relying party, which verifies the signature with the stored public key and checks the challenge, origin, RP ID hash and user presence flag. On a look-alike domain the browser cannot request the real RP ID, so no credential signs.",
+  "duration": 32,
+  "legend": {"front": "message in the ceremony", "good": "what the relying party checks"},
+  "lanes": [
+    {"id": "user", "title": "User + authenticator", "sub": "the key pair lives here"},
+    {"id": "br", "title": "Browser", "sub": "knows the real origin"},
+    {"id": "rp", "title": "Relying party", "sub": "the site or the IdP", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "rp", "to": "br", "label": ["creation options", "challenge, RP ID, user"], "badge": "R1"},
+    {"type": "arrow", "from": "br", "to": "user", "label": ["create a key pair", "only if the RP ID fits the origin"], "badge": "R2"},
+    {"type": "note", "under": "user", "lines": ["user approves with a gesture", "(touch, PIN, biometric)"], "with_previous": true},
+    {"type": "arrow", "from": "user", "to": "br", "label": ["public key + credential ID", "plus an attestation object"], "badge": "R3"},
+    {"type": "arrow", "from": "br", "to": "rp", "label": ["registration response", "clientDataJSON, attestationObject"], "badge": "R4"},
+    {"type": "note", "under": "rp", "lines": ["checks type, challenge, origin,", "rpIdHash; stores the public key"], "tone": "good"},
+    {"type": "arrow", "from": "rp", "to": "br", "label": ["request options", "fresh challenge, RP ID"], "badge": "A1"},
+    {"type": "arrow", "from": "br", "to": "user", "label": ["sign this challenge", "for the RP ID of this origin"], "badge": "A2"},
+    {"type": "note", "under": "br", "lines": ["look-alike domain: the browser", "cannot request the real RP ID"], "tone": "bad", "with_previous": true},
+    {"type": "arrow", "from": "user", "to": "br", "label": ["assertion", "signature + authenticatorData"], "badge": "A3"},
+    {"type": "arrow", "from": "br", "to": "rp", "label": ["assertion response", "clientDataJSON, authenticatorData,", "signature"], "badge": "A4"},
+    {"type": "note", "under": "rp", "lines": ["verifies the signature with the", "stored public key; checks challenge,", "origin, rpIdHash, UP (UV if required)"], "tone": "good"}
+  ]
+}

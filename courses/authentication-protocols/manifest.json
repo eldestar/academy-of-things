@@ -1,0 +1,44 @@
+{
+  "slug": "authentication-protocols",
+  "title": "Authentication and Identity Protocols",
+  "subtitle": "SAML, OIDC, OAuth 2.0, SCIM, MFA and passkeys at three levels, for IT systems engineers and identity admins",
+  "levels": [
+    "beginner",
+    "intermediate",
+    "advanced"
+  ],
+  "lessons": [
+    {
+      "id": "01-foundations",
+      "title": "1. Foundations: who is who, and why SSO exists"
+    },
+    {
+      "id": "02-saml",
+      "title": "2. SAML 2.0"
+    },
+    {
+      "id": "03-oauth2",
+      "title": "3. OAuth 2.0"
+    },
+    {
+      "id": "04-oidc",
+      "title": "4. OpenID Connect and JWT validation"
+    },
+    {
+      "id": "05-scim",
+      "title": "5. SCIM 2.0 provisioning"
+    },
+    {
+      "id": "06-mfa-passkeys-sessions",
+      "title": "6. MFA, passkeys and sessions"
+    },
+    {
+      "id": "07-authorization-and-lifecycle",
+      "title": "7. Authorization and the identity lifecycle"
+    },
+    {
+      "id": "08-troubleshooting-and-design",
+      "title": "8. Choosing a protocol and troubleshooting it"
+    }
+  ]
+}

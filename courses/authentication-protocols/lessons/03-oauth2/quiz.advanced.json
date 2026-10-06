@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Your product lets each customer bring their own authorization server, and the client uses one redirect URI for all of them. A pentester registers a hostile AS and shows codes meant for an honest AS arriving at the hostile token endpoint. Which fix does RFC 9700 prefer?",
+      "options": [
+        "Store the AS URL the user chose in the session and check it against the response before redeeming the code",
+        "Register a distinct redirect URI for every AS and make that the primary defence for all new integrations",
+        "Cut the authorization code lifetime to one minute so a code sent to the wrong server expires quickly",
+        "Store the issuer per request, bound to the browser; compare it to the returned iss and abort on mismatch"
+      ],
+      "correct_index": 3,
+      "explanation": "This is a mix-up attack. The preferred defence is issuer identification: the client records which issuer it sent each request to, the AS returns iss (RFC 9207), and the client aborts if they differ. Storing only the AS URL is insufficient, because an attacker can name an honest authorization endpoint while pointing to their own token endpoint. Distinct redirect URIs are listed as an alternative that should be used only if other options are unavailable, and they can be circumvented by registering a new client at the honest AS. A shorter lifetime narrows the window but does not stop the code being sent to the wrong server."
+    },
+    {
+      "stem": "Your AS supports PKCE but only enforces it when code_challenge is present. A SPA relies on PKCE for CSRF protection and sends no state. A pentester strips code_challenge from a flow on their own device and ends up linking the victim's SPA session to the attacker's account. Which AS-side change closes this?",
+      "options": [
+        "Reject a token request that carries a code_verifier when the authorization request had no code_challenge",
+        "Accept only the S256 method and reject plain, so the challenge cannot be weakened",
+        "Require client authentication for the SPA at the token endpoint",
+        "Shorten the lifetime of authorization codes so the attacker's code expires before the victim's browser delivers it"
+      ],
+      "correct_index": 0,
+      "explanation": "This is the PKCE downgrade attack: because the presence of code_challenge acts as the switch, the attacker removes it, the AS issues an unbound code, and the victim's client then sends a code_verifier that the AS ignores. RFC 9700 requires the AS to reject a code_verifier when no challenge was stored, and an AS that mandates PKCE gets this for free. Restricting methods does nothing when the parameter is absent altogether. A SPA is a public client and cannot hold a secret. Shorter lifetimes only change timing."
+    },
+    {
+      "stem": "A team proposes DPoP for its single-page app so that a cross-site scripting bug can no longer produce usable stolen tokens. Which assessment matches RFC 9700?",
+      "options": [
+        "Accurate, since a DPoP-bound token is useless without the private key and script in the page cannot reach that key",
+        "Inaccurate, since DPoP can only be used by confidential clients and a single-page app can never qualify as one",
+        "Partly accurate, since DPoP binds the token to the TLS connection so script running inside the page cannot reuse it elsewhere",
+        "Overstated: constraining fails if the attacker can use the key too, and a protected key only blocks use while offline"
+      ],
+      "correct_index": 3,
+      "explanation": "RFC 9700 states that sender-constraining is undermined when an attacker obtains both the token and the key material, and names cross-site scripting and corrupted client software as examples. A key in a hardware or software module, or one reachable only indirectly, at least stops use of the token when the client is offline. DPoP is an application-level mechanism that public clients can use, so the second answer is wrong. The TLS-binding description belongs to mutual TLS (RFC 8705), not DPoP, and script in the page still runs inside the client."
+    },
+    {
+      "stem": "Your RS validates JWT access tokens: the signature against any key the AS publishes, iss, aud and exp all pass. A tester replays a valid ID token issued for the API's own client registration, and the RS accepts it as an access token. Which rule would have rejected it?",
+      "options": [
+        "Use separate signing keys for ID tokens and access tokens, so that the RS rejects any signature made with the ID-token key",
+        "Require the RS to check typ is at+jwt, and have the AS give access tokens a distinct aud for each resource",
+        "Require the RS to introspect every token it receives, so that the AS tells it whether active is true for that token",
+        "Require DPoP proofs on every call, so that a replayed token is not accepted when it arrives from a new sender"
+      ],
+      "correct_index": 1,
+      "explanation": "RFC 9068 requires the typ header at+jwt on access tokens precisely so ID tokens cannot be accepted as access tokens, and requires the AS to use a distinct aud for access tokens issued for distinct resources to prevent cross-JWT confusion. Separate keys do not help, because RFC 9068 gives the RS no way to know which published key signs access tokens, so it accepts any of them. Introspection returns active when the AS issued the token, has not revoked it and it is within its validity window, which can hold for an ID token too, so it is not the targeted control here. DPoP binds a token to a key, but it does not change what type of token the RS is willing to accept."
+    },
+    {
+      "stem": "Service A must call service B on behalf of user U. Compliance wants audit logs at B to show that A acted for U, and not U directly. U's access token is audience-restricted to A. Which design fits?",
+      "options": [
+        "Forward U's access token to B unchanged, since it already names U as the subject and B can see who the user is",
+        "Request an impersonation-style token so that B sees U, with all of U's rights, as if U had called B directly, so the token for B names only U",
+        "Token exchange for B: U's token as subject_token, A's token as actor_token, so the token can carry an act claim for A",
+        "Use token exchange with audience set to A, so the new token names A as its intended recipient and carries its identity"
+      ],
+      "correct_index": 2,
+      "explanation": "Delegation keeps A's identity separate from U's: the subject_token represents U and the actor_token (optional in the RFC) represents A, and if the AS issues a composite JWT its act claim names the actor, which is what audit logs need. Whether and when the AS issues one is its policy (RFC 8693, section 1.1). Impersonation makes A indistinguishable from U within the token's rights, so the logs cannot separate them. U's token is restricted to A, so B must refuse it as meant for another RS. The audience or resource parameter names the service where the new token will be used, here B, not A."
+    },
+    {
+      "stem": "A code-review finding: a mobile client sends code_challenge set to its raw verifier and omits code_challenge_method. The AS accepts it and sign-in works. What is the problem and the fix?",
+      "options": [
+        "The omitted method defaults to plain, exposing the verifier in the authorization request; send S256 with a hashed challenge",
+        "The AS is non-compliant, because RFC 7636 requires the method parameter and the request should have been refused outright",
+        "The verifier is too short at 43 characters; use 128 characters so it cannot be guessed from the authorization request",
+        "The challenge belongs in the token request; move code_challenge there so it never appears in any redirect URL"
+      ],
+      "correct_index": 0,
+      "explanation": "In RFC 7636, code_challenge_method is optional and defaults to plain, in which case the challenge is the verifier. The verifier then travels in the authorization request, where anyone who can read it (RFC 9700's attacker who reads authorization requests) can redeem the code. S256 is the only method that does not expose the verifier. The AS is within the RFC, so the second answer is wrong. Forty-three characters from 32 random octets is the recommended size, and the verifier, not the challenge, belongs in the token request."
+    }
+  ]
+}

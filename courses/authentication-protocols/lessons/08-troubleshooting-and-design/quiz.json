@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "An audit finds 14 leavers whose accounts are still active in a vendor app. They were disabled in Okta, but the app is wired up with SAML plus JIT provisioning only. Which change fixes the cause rather than the symptom?",
+      "options": [
+        "Shorten NotOnOrAfter on the assertions, so a leaver's assertion expires before the account can be reused",
+        "Move the app to SCIM provisioning, so that deactivating the user in Okta sets active to false in the app",
+        "Move the app from SAML to OIDC, because an ID token carries claims that can delete the user's account",
+        "Rotate the IdP signing certificate each quarter, so that sessions created under the old key stop being valid"
+      ],
+      "correct_index": 1,
+      "explanation": "SAML and OIDC prove who signed in now; neither manages the account. JIT creates and updates the user from the claims at sign-in but cannot delete or deactivate, so a leaver's account sits there. SCIM is the lifecycle protocol: deactivation sets active to false. Shortening the assertion window only limits how long a captured assertion can be delivered, switching to OIDC does not add lifecycle control, and certificate rotation changes which signatures verify, not which accounts exist."
+    },
+    {
+      "stem": "A server-side web app fails login with invalid_grant. Your browser capture, with Preserve log on, shows the redirect back to the app carrying ?code=..., and then an error page. Where is the failing request?",
+      "options": [
+        "In the Network list filtered to XHR, where the token POST appears together with the authorization code in its body",
+        "In SAML-tracer, which decodes OAuth token requests in the same way as it decodes SAML messages for you",
+        "In Firefox with Persist Logs on, which also records the requests that the app server makes by itself",
+        "In the app server's logs or the IdP's log, because the client calls the token endpoint itself, not the browser"
+      ],
+      "correct_index": 3,
+      "explanation": "In the code flow the authorization request and the code travel through the browser, but the token request is made by the client application directly to the token endpoint, so a server-side app's call never shows in the Network list however the log is preserved. Check the app's server logs or the IdP's log, then test the usual invalid_grant causes: a code that has expired (10 minutes is the most RFC 6749 recommends; many servers expire it sooner), a code used twice, a redirect_uri that differs from the first request, a different client, or a wrong PKCE verifier. SAML-tracer decodes SAML, and Persist Logs only stops the browser clearing its own list."
+    },
+    {
+      "stem": "An auditor asks for evidence of every failed attempt by users to open the expense app through Okta SSO in the last 30 days. You will call the System Log API. Which retrieval is right?",
+      "options": [
+        "System Log with since set to 30 days ago and filter eventType eq \"user.authentication.sso\" and outcome.result eq \"FAILURE\"",
+        "System Log with since set to 30 days ago and filter eventType eq \"user.session.start\" and outcome.result eq \"FAILURE\"",
+        "System Log with since set to 30 days ago and filter eventType eq \"user.authentication.sso\" and outcome.result eq \"SUCCESS\"",
+        "Entra sign-in logs, which are kept 30 days on P1 and P2 and show failures with AADSTS codes"
+      ],
+      "correct_index": 0,
+      "explanation": "user.authentication.sso is an SSO attempt to an app managed in Okta, and outcome.result narrows it to failures. Without since the API covers only the 7 days before until, so you must set since to 30 days ago; the 90-day retention is a separate limit on how old a returned event can be, and 30 days is inside it. user.session.start is Okta issuing a session to a user who is authenticating to Okta itself, which is a different step from opening an app. A SUCCESS filter returns the wrong population. Entra logs are the log of an Entra tenant, and the IdP here is Okta."
+    },
+    {
+      "stem": "A decoded SAML response shows Audience https://app.example.com/saml/metadata. The SP's entity ID is https://app.example.com/saml, and Destination and Recipient both equal the SP's ACS URL. Which Okta app setting do you correct?",
+      "options": [
+        "The Single sign-on URL field, so the assertion is posted to a different ACS URL",
+        "The Name ID format field, so the SP maps the user to a different identifier at sign-in",
+        "The Audience URI (SP Entity ID) field, so that it matches the entity ID the SP expects",
+        "The checkbox that reuses the Single sign-on URL as the Recipient URL and Destination URL"
+      ],
+      "correct_index": 2,
+      "explanation": "The audience restriction holds only if the SP is one of the listed audiences, and the Audience URI (SP Entity ID) field is what Okta puts there; the capture shows it differs from the SP's entity ID. Destination and Recipient already match the ACS URL, so the Single sign-on URL and the checkbox that keeps Recipient and Destination equal are not at fault. Name ID format changes the NameID sent for the user, which has nothing to do with the audience."
+    },
+    {
+      "stem": "Okta's push of new hire Dana@Example.com fails: the SCIM server answers 409 with scimType uniqueness. Its user list holds dana@example.com with no externalId, created by hand last year. What is the best next step?",
+      "options": [
+        "Look the record up with GET /Users?filter=userName eq \"Dana@Example.com\" and link it to the Okta user",
+        "Report a vendor bug, because a SCIM server ought to compare userName with exact case, so that these two names differ",
+        "Delete the old record in the app, then let Okta recreate it so that the externalId is set from the very start",
+        "Retry the create with the userName in lower case, since the 409 comes from the capital letters alone"
+      ],
+      "correct_index": 0,
+      "explanation": "userName must be unique and is case-insensitive, so Dana@Example.com and dana@example.com are the same name and the 409 with scimType uniqueness is the correct answer. In Okta's documented flow Okta first checks existence with GET /Users?filter=userName eq and links a match it finds, so a 409 on create suggests the server's filter missed a record it holds; the practical step is to look the record up with that filter and link it. Reporting a bug because the server ignores case is backwards, since case-insensitive matching is the standard and a case-sensitive comparison would be the bug; deleting discards whatever the hand-made account holds, and retrying in lower case would still collide."
+    },
+    {
+      "stem": "An app rejects an ID token. Decoded, iss is https://login.example.com/ with a trailing slash, aud equals the app's client_id, the signature verifies against the JWK Set, and exp is in the future by a synchronized clock. The discovery document says issuer is https://login.example.com. What is the cause?",
+      "options": [
+        "The key was rotated and the cached JWK Set is stale, so the kid in the header finds no matching key in the cache",
+        "iss must exactly match the discovery issuer, and a trailing slash alone makes the two strings differ",
+        "The email scope was not requested, so the ID token is missing the claims the app insists on having",
+        "The app's clock is ahead of the IdP's, so the token is treated as expired a few seconds too early"
+      ],
+      "correct_index": 1,
+      "explanation": "The client must check that iss exactly matches the issuer from discovery, which is also the prefix used to fetch /.well-known/openid-configuration, so a trailing slash is enough to fail. The other candidates are ruled out by the scenario: a stale JWK Set or unknown kid would stop the signature verifying, a missing scope affects claims such as email rather than iss, and exp is in the future so clock skew is not the trigger."
+    }
+  ]
+}

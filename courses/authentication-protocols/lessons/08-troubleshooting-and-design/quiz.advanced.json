@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Your SaaS matches an incoming OIDC login to a local user by the email claim. A customer's IdP admin reassigns a leaver's address to a new hire, who then signs in and lands in the leaver's workspace. What is the design flaw and its fix?",
+      "options": [
+        "The email scope is voluntary and was probably omitted, so require the scope on every authorization request to guarantee the claim",
+        "The match ignored letter case, so compare email addresses case-sensitively as the SCIM specification does for every userName",
+        "email is not a stable or unique identifier, since an issuer may reuse or change it; key users on the iss and sub pair, per tenant",
+        "The ID token outlived the reassignment, so shorten its exp until it can no longer cover a change of mailbox ownership"
+      ],
+      "correct_index": 2,
+      "explanation": "OIDC says iss plus sub, used together, is the only guaranteed identifier for an end user, because sub is never reassigned within an issuer, while other claims, email included, can be reused for a different person or change over time. Requiring the scope only makes the claim present, not stable. SCIM's userName is case-insensitive, not case-sensitive, and the flaw here is reuse rather than case. A shorter exp cannot make an address mean the same person tomorrow."
+    },
+    {
+      "stem": "A captured SAML POST has a valid signature, the right Audience, a Recipient equal to the ACS URL, and is replayed two minutes later, still inside its NotOnOrAfter window. Your SP accepts it a second time. Which control is missing?",
+      "options": [
+        "A set of already-seen assertion IDs that the SP keeps until the bearer confirmation's own NotOnOrAfter has passed",
+        "A stricter signature algorithm, because the replayed assertion carries a signature that a verifier can still accept",
+        "A tighter Audience check, because the same assertion can be accepted by every SP that trusts the issuing IdP",
+        "A NotBefore attribute inside SubjectConfirmationData, so that a replayed assertion is rejected as arriving too early"
+      ],
+      "correct_index": 0,
+      "explanation": "Bearer assertions must not be replayed, and the SP does that by remembering the IDs it has accepted until the confirmation's NotOnOrAfter makes them undeliverable anyway. The stem already satisfies the signature, Audience and Recipient checks, so strengthening them changes nothing: a replay is the same valid message. NotBefore must not appear in the bearer SubjectConfirmationData, so that option is also non-conformant."
+    },
+    {
+      "stem": "A resource server validates JWT access tokens locally: typ, iss, aud, signature and exp. The user is disabled in the IdP and SCIM sets active to false, yet the former user's API calls keep succeeding for 40 minutes. Which change bounds that exposure?",
+      "options": [
+        "A stricter signature check on every single call, since the signature on the token is what the server trusts",
+        "A SCIM push to the application, because the SP account state is what every locally validated token gets checked against on each call",
+        "A nbf check on the access token, because a token issued before the disablement is no longer valid for that user",
+        "A shorter token lifetime, or introspection (which reflects revocation) on sensitive calls, since local checks never ask the IdP"
+      ],
+      "correct_index": 3,
+      "explanation": "Local validation checks only what is in the token, so it stays good until exp however the account changed. Exposure is therefore bounded by the remaining lifetime, which you shorten, or by asking the authorization server: introspection (RFC 7662) reports whether the token is currently active, which commonly means not expired and not revoked. Revocation (RFC 7009) is a request the client makes, so a locally validating resource server sees it only by introspecting. Stronger signature checking does not help, since the token is genuine, and SCIM changes the SP's account record rather than the token. nbf is fixed at issuance and says when a token starts being valid, not whether the user has since left."
+    },
+    {
+      "stem": "A multi-tenant SaaS uses the authorization code flow against many customer IdPs, all through one redirect URI. A malicious tenant's IdP redirects users to a victim IdP and then collects the code. Which defence addresses this specific attack?",
+      "options": [
+        "Adopt PKCE with S256 for every client, so that a stolen authorization code cannot be exchanged by anyone who lacks the code verifier",
+        "Store the chosen issuer with each request and compare it with iss in the response (RFC 9207); distinct redirect URIs are a fallback",
+        "Enforce exact string matching of the redirect URI, since the attacker's IdP never registered the shared URI at all",
+        "Validate that aud in the returned ID token contains the client_id registered at the issuer that the user picked"
+      ],
+      "correct_index": 1,
+      "explanation": "This is a mix-up attack: with two or more authorization servers the client can be tricked into sending its code to the wrong token endpoint. The defence is to store the issuer with each request, bound to the user agent, and compare it with the issuer returned (the iss response parameter, RFC 9207); RFC 9700 treats distinct redirect URIs as a fallback for when other options are unavailable. PKCE is not a mix-up defence, since the client sends its verifier to the attacker's token endpoint along with the code, and exact matching is already satisfied because the one URI is legitimately registered. An aud check runs only after the code has already been redeemed at the attacker's token endpoint, which also controls the token it returns, so aud proves nothing."
+    },
+    {
+      "stem": "A penetration tester submits a token whose header says alg is none, and your service accepts it, because the library picks the verification algorithm from the token's own header. What is the correct control?",
+      "options": [
+        "Encrypt every token, so that a tester who cannot read the header cannot choose the algorithm for the library",
+        "Require that a kid exists in the JWK Set, so that a token naming an unknown key can never reach the verification step",
+        "The calling code supplies the allowed algorithm set, the library uses no other algorithm, and none is rejected",
+        "Reduce exp to just a few minutes, so that an unsigned token is useful to an attacker for only a short time"
+      ],
+      "correct_index": 2,
+      "explanation": "Libraries must let the caller specify the supported algorithms and must not use any others, and the alg header has to agree with the algorithm actually applied; JWT access tokens (RFC 9068) must reject none outright. The allow-list is set by your code, not by the token. Encryption hides content but does not choose how a signature is verified. A kid hint only selects a key and a token without one can still name none. A short exp narrows the window but still accepts forged tokens."
+    },
+    {
+      "stem": "After an IdP rotates its signing key, about 3% of logins fail because the token header's kid is not in your cached JWK Set, and the failures end after a restart. Which change is right?",
+      "options": [
+        "On an unknown kid, refetch the jwks_uri document with a rate limit and retry with only the allowed algorithms",
+        "Pin the first key found at the jwks_uri, so that a later change of keys cannot invalidate tokens that are in use",
+        "Skip the signature check for tokens whose iss equals a known issuer, so that rotation never blocks a login",
+        "Raise the clock-skew leeway to thirty minutes, since the new tokens are being treated as not yet valid"
+      ],
+      "correct_index": 0,
+      "explanation": "The kid header selects a key within the JWK Set during rollover, and the keys that validate tokens come from the issuer's jwks_uri. An unknown kid after rotation means the cache predates the new key, so refetch with a rate limit to avoid hammering the endpoint, then validate with the same allow-listed algorithms. Pinning the first key breaks every rotation, skipping signature validation removes the control entirely, and RFC 7519 says leeway is usually no more than a few minutes, which is unrelated to a missing key."
+    }
+  ]
+}

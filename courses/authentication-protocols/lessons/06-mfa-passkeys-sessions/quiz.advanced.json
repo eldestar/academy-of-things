@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A compliance project requires AAL3 for privileged admins. The platform team proposes synced passkeys in the built-in password managers, arguing that they are phishing-resistant and recover easily. What is your response?",
+      "options": [
+        "Accept: a passkey with user verification is phishing-resistant, and phishing resistance together with the user's gesture is all that AAL3 requires of an authenticator",
+        "Reject for AAL3: syncable authenticators SHALL NOT be used at AAL3 because they need an exportable private key; use device-bound keys with extra authenticators",
+        "Accept if every credential reports BS as 1, because a credential that is currently backed up is held in a non-exportable key and therefore meets the AAL3 requirement",
+        "Accept if attestation is set to direct, because an attestation statement from the vendor turns a synced credential into a hardware-bound one that meets AAL3"
+      ],
+      "correct_index": 1,
+      "explanation": "AAL3 requires a cryptographic authenticator with a non-exportable private key that provides phishing resistance, and NIST states that syncable authenticators SHALL NOT be used at AAL3 because they require the private key to be exportable. Phishing resistance is necessary but not sufficient. BS equal to 1 means the credential is multi-device and backed up, which is the opposite of non-exportable, and attestation describes the model that created the credential, it does not change how the key is stored. Device-bound keys then need a second authenticator or a recovery process, since a lost device means a lost credential."
+    },
+    {
+      "stem": "Your RP ID is example.org. A product team will let customers publish pages at pages.example.org. A reviewer notes your verifier checks only that rpIdHash equals the SHA-256 of example.org. What is the gap, and what is the fix?",
+      "options": [
+        "There is no gap: rpIdHash proves the assertion was made for your own origin, so a page on a customer subdomain cannot produce a valid assertion for example.org",
+        "Require the UV flag on every assertion, because a set user verification bit proves that the page which asked for the signature was trustworthy and under your control",
+        "Raise the challenge to 32 bytes, because longer challenges stop assertions that were created on customer-published pages from verifying against your records",
+        "Also validate the origin in clientDataJSON against an expected list, refuse subdomain origins by default, and never serve untrusted code on any allowed subdomain"
+      ],
+      "correct_index": 3,
+      "explanation": "An RP ID may be a registrable domain suffix, so a page on pages.example.org may legitimately request RP ID example.org and obtain a valid signature and rpIdHash. The RP MUST validate the origin and MUST NOT accept unexpected values; by default it SHOULD NOT allow a subdomain origin, and if it must, it MUST NOT serve untrusted code on any allowed subdomain. The UV flag says a gesture happened, not which page asked, and challenge length only protects against guessing and replay."
+    },
+    {
+      "stem": "A passkey assertion arrives with a signCount lower than the stored value. A junior engineer wants to lock the account and delete the credential. What does the specification support?",
+      "options": [
+        "Treat it as a risk signal, not proof of cloning: a malfunction or out-of-order processing can cause it, and the response is RP policy",
+        "Fail the ceremony every time: a counter that does not increase proves that the private key was copied onto a second device somewhere",
+        "Ignore it: the counter exists only for FIDO U2F compatibility and is never part of verifying a WebAuthn assertion in any ceremony",
+        "Accept it silently and overwrite the stored value, because the specification forbids failing a ceremony on a counter mismatch of any kind"
+      ],
+      "correct_index": 0,
+      "explanation": "The check runs when the authenticator value or the stored value is nonzero. A value less than or equal to the stored one is a signal, but not proof, that the authenticator may be cloned: two copies of the key in use, a malfunctioning authenticator, or a race that processes assertions out of order can all produce it. Whether to update the stored value or fail the ceremony is RP-specific, so neither a mandatory failure nor a mandatory pass matches the specification, and the check is part of the algorithm, not a U2F-only afterthought."
+    },
+    {
+      "stem": "An architect wants to roll out Device Bound Session Credentials next quarter to stop infostealer malware reusing session cookies, and to drop the absolute session timeout once it is on. Which assessment is accurate?",
+      "options": [
+        "Approve: with the session key held in hardware, malware running on the device can no longer use the session in any way, so the absolute timeout can safely be removed",
+        "Reject: DBSC replaces cookies with long-lived bearer tokens that are easier to steal than today's cookies, so it would increase the session theft risk instead of reducing it",
+        "Partial control only: the spec is still a draft, it targets cookie reuse on another device, not an attacker on the device, and NIST still requires lifetime limits to be enforced",
+        "Approve: with a device key proving possession, MFA at sign-in can be dropped, because the session itself then acts as the authentication factor for every later request"
+      ],
+      "correct_index": 2,
+      "explanation": "DBSC is an Editor's Draft whose introduction calls it a very early drafting. It aims to let a server verify that a session credential, a private key, has not been exported from the device. Its stated non-goals include preventing access while an attacker is resident on the device, because the signing capability remains available to programs running as the user. NIST mentions DBSC as emerging and says lifetime limits must still be enforced even when possession of the secret is proven, so dropping the timeout is wrong. Chrome on Windows ships it (Google Workspace Updates, May 2026), but support elsewhere was not verified, so it is a partial control, not a replacement for lifetime limits or MFA."
+    },
+    {
+      "stem": "A new hire's account is created with a temporary password and no authenticators. Logs show an attacker with the leaked temporary password enrolled their own authenticator before the hire signed in. Which control closes this window?",
+      "options": [
+        "Require the UV flag at enrolment, since a set user verification bit proves that the legitimate user, and not an attacker, performed the enrolment itself",
+        "Bind the first authenticator only on return of a single-use code sent to contact details the hire controls, plus the independent notification NIST requires",
+        "Request direct attestation, so the RP can see which authenticator model enrolled and then reject the attacker's authenticator on the strength of its model alone",
+        "Cut the overall session timeout to 12 hours, so that the attacker's enrolled authenticator and every session created with it expire quickly afterwards"
+      ],
+      "correct_index": 1,
+      "explanation": "NIST requires authentication at the lower of the account's maximum AAL and the new authenticator's AAL, so an account with only AAL1 capability can gain an AAL2 authenticator on a password alone, and the attacker holding the temporary password passes that check. A binding code requested from an already-authenticated endpoint does not help, because the attacker is that endpoint. SP 800-63A governs the first binding: outside a single protected session with the proofed user, the CSP must confirm the intended subscriber, for example by return of a continuation code, which someone holding only the password cannot complete when the code goes to the hire's own contact details. The independent notification makes a rogue enrolment visible but does not prevent it. The first UV bit is not trusted yet (uvInitialized is false), attestation names a model, not a person, and a session timeout does not expire an enrolled authenticator."
+    },
+    {
+      "stem": "Policy says IT admins may use only device-bound security keys from approved models. Your registration options use the default attestation conveyance, and the RP stores any credential that passes the standard checks. A reviewer finds an admin registered a synced passkey from a phone. What is the root cause and fix?",
+      "options": [
+        "Attestation is mandatory in WebAuthn, so the browser should have rejected the credential at registration because it came without any attestation statement at all",
+        "The phone falsified its BE flag, so only a TPM-based attestation statement could ever have revealed that this credential was a synced passkey, not a device-bound one",
+        "Requiring user verification at registration blocks synced passkeys, so the RP simply left UV unset when it built the creation options for the admin",
+        "The RP never enforced policy: BE is in the authenticator data even with none attestation, so reject BE 1 for admins and request attestation to limit models"
+      ],
+      "correct_index": 3,
+      "explanation": "The default conveyance is none, so the RP gets no verifiable statement about the model, and nothing in the standard checks encodes your admin policy. The BE flag is part of the authenticator data in every registration, so the RP can record it and reject BE equal to 1 for admins. To restrict models it must also ask for direct or enterprise attestation and verify the statement against acceptable trust anchors, for example from the FIDO Metadata Service by AAGUID, as Entra passkey profiles do by group. The flag is only as trustworthy as the authenticator reporting it: with none attestation nothing signs it, and Entra says that without enforced attestation it cannot guarantee whether a passkey is synced or device-bound. The stem gives no sign that the phone falsified anything, and any verified attestation format, not only TPM, can identify the model. Attestation is optional, and user verification says nothing about whether a credential is synced."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Sam signs in to the expense app through SSO with no error, but the Approve button never appears for him. A colleague files the ticket as 'SSO is broken'. What is the better reading?",
+      "options": [
+        "The IdP failed to authenticate Sam, because a successful sign-in is supposed to unlock every feature of the app",
+        "The proof expired before the app finished reading it, so the app is showing Sam a reduced version of itself",
+        "Authentication worked; what Sam may do is the app's own decision, so check his permissions inside the app",
+        "Sam's IdP session has ended, which strips features from any app he already has open on screen"
+      ],
+      "correct_index": 2,
+      "explanation": "SSO answers 'who are you?' (authentication) and nothing more. Deciding that Sam may approve expenses is authorization, and the app makes that decision, so the fix is in the app's roles or permissions. The first option treats a sign-in as a master key, which it never is. An expired proof would make the app refuse the sign-in entirely, not show half an app. And the lesson says that when an IdP session ends, sessions already open in apps may carry on, so it does not remove buttons."
+    },
+    {
+      "stem": "A vendor's SAML guide says 'enter your Identity Provider's sign-in URL'. Their OpenID Connect guide for the same product asks for the 'OpenID Provider' address. What is true of those two names?",
+      "options": [
+        "They name the same role in the two standards: the service that checks the user and tells the app who they are",
+        "The Identity Provider checks the user, but the OpenID Provider is the app that wants to know who the user is",
+        "The OpenID Provider is the OAuth resource server, meaning the API the user is trying to reach once they are signed in",
+        "They are two unrelated services, because SAML needs an IdP and OpenID Connect needs a directory instead"
+      ],
+      "correct_index": 0,
+      "explanation": "The role table lines up the dialects: SAML says Identity Provider, OpenID Connect says OpenID Provider, NIST says identity provider, and all three mean the service that checks the user. The app's side is Service Provider in SAML and Relying Party in OpenID Connect, so the second option swaps the two sides. In OAuth the API is the resource server, while an OpenID Provider is an OAuth authorization server, so the third option confuses two OAuth roles. A directory only stores accounts and does not replace the IdP role, which rules out the last option."
+    },
+    {
+      "stem": "You are connecting a new app to the company IdP using OpenID Connect. Before anyone signs in, what must the app be able to obtain so it can tell a genuine proof from a forged one?",
+      "options": [
+        "A copy of each employee's password hash from the directory, so it can double-check the IdP's work",
+        "The IdP admin's own session cookie, so the app can ask the IdP to confirm the user on every click",
+        "A list of employee email addresses, so it can match each incoming proof against a known person on file",
+        "The IdP's signing keys, which it finds through the jwks_uri listed in the IdP's discovery document"
+      ],
+      "correct_index": 3,
+      "explanation": "The proof is signed by the IdP, so the app needs the IdP's signing keys to check that signature. In OpenID Connect the discovery document at the issuer's address plus /.well-known/openid-configuration lists a jwks_uri where those keys are published; in SAML the same job is done by the metadata file. Federation means the app never verifies the user's password itself, so password hashes are not part of it. The proof is checked once at sign-in rather than by calling the IdP on every click. And an email list says who may exist but cannot show that a proof is genuine."
+    },
+    {
+      "stem": "A contractor's account was disabled at the IdP ten minutes ago, yet they are still working in the expense app. What explains this?",
+      "options": [
+        "The IdP's proof is still valid for a few more minutes, and the app re-reads that proof on every single click it receives",
+        "The app made its own session after sign-in, and disabling the IdP account does not automatically end sessions already open",
+        "The sign-in exchange itself pushes the disable to each app on a delay, and the contractor's app has not received it yet",
+        "Disabling an IdP account deletes the app's own account too, but only at the contractor's next sign-in attempt, not before"
+      ],
+      "correct_index": 1,
+      "explanation": "After checking the proof once, the app creates its own session, usually a cookie, and that session runs on the app's clock. NIST says the IdP ending its session will not necessarily end sessions at apps, and Microsoft says Entra cannot directly revoke a session token an app issued. The first option is wrong because the proof is used once at sign-in, not on every click. The sign-in steps carry no disable message to apps: telling an app about a disabled user is provisioning (lesson 5), a separate job, and whether an open session then ends is up to the app. That rules out the third option, and an existing app account is not removed by a later sign-in, which rules out the last."
+    },
+    {
+      "stem": "The expense app matches people to accounts by email address. HR reassigns Sam's old address to a new hire, who signs in through SSO and sees Sam's expense history. What should the app have used to recognise people?",
+      "options": [
+        "The person's display name, because both the IdP and the app can show it in the same readable form",
+        "The email address, compared in lowercase, because the clash was caused by a capitalisation mismatch between systems",
+        "The issuer plus the subject (iss and sub), the only combination OpenID Connect guarantees to be unique",
+        "The app's own session cookie value, because every sign-in produces a different one for each person"
+      ],
+      "correct_index": 2,
+      "explanation": "OpenID Connect says only the issuer plus the subject are guaranteed unique, and that an email can be reused for a different person or change over time, so it must not be used as a unique identifier. That is exactly what happened to Sam's old address. A display name is not unique at all. Lowercasing does not help, because the address itself now belongs to someone else. A session cookie is a per-session secret that changes at each sign-in, so it cannot identify a person across sessions."
+    },
+    {
+      "stem": "Three accountants share one IdP account, 'finance-shared', to reach the payments app. An auditor asks who approved last Tuesday's payment. Which is the right reading?",
+      "options": [
+        "The logs name the account, so nobody can tell which of the three acted; NIST ties each federated identifier to one person",
+        "The approval is invalid, because the app rejects any sign-in where one proof is reused from two different browsers at once",
+        "The IdP can answer it, because the session record it keeps shows which person typed the password on that particular day",
+        "The app can answer it from the session cookie, because each of the three people is handed a distinct cookie by the app"
+      ],
+      "correct_index": 0,
+      "explanation": "NIST requires each federated identifier to be associated with a single subscriber, meaning one person. With a shared login, the proof and every log line identify the account, not the individual, so accountability is lost even though SSO worked perfectly. Nothing in the lesson makes the app reject shared use. The IdP's session belongs to the account and does not record which human typed the password. A cookie also belongs to a session of the account, so it cannot tell the three people apart."
+    }
+  ]
+}

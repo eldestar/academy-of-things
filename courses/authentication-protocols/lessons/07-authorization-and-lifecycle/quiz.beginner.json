@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A help-desk ticket says members of the group Marketing-Viewers can delete customer records in the CRM. In the CRM's app assignment, that group has been given the Administrator role. What explains the ticket?",
+      "options": [
+        "The CRM reads the word Viewers in the group name and applies it, so the Administrator setting on the assignment must be a display bug in the console",
+        "The name is only a label; the assignment gives every member Administrator, so check what a group is assigned to and with which role",
+        "Group rules automatically add people to admin groups, so some members were added by mistake and the group itself is fine",
+        "Deleting records is an ACL problem on each record, and the group assignment has no effect on what members can do"
+      ],
+      "correct_index": 1,
+      "explanation": "A group is just a set of people. What it allows comes from where it is assigned and with which role, not from its name, so a group called Marketing-Viewers that holds the Administrator role gives every member administrator rights. Systems do not interpret names. The fix is to change the assignment or split the group, then check the other groups the same way. Group rules fill groups from attributes; they do not explain the role on an assignment."
+    },
+    {
+      "stem": "Sam moved from Sales to Support in March. In the October review Sam still holds Sales CRM entitlements as well as the Support ones. What is this called, and what process step was missed?",
+      "options": [
+        "Role explosion; the company created too many roles, so Sales and Support should be merged into one role that everyone shares",
+        "Birthright access; Sam received the baseline everyone gets, so the review can close with no change and nothing is missed",
+        "A joiner failure; Sam's hire date was entered wrongly in HR, so the Support access was never properly granted in the first place",
+        "Privilege accumulation; nobody removed the old access when the role changed, which NIST SP 800-53 PS-5 asks you to review on a transfer"
+      ],
+      "correct_index": 3,
+      "explanation": "A mover keeps old access when the job changes unless the move triggers a review. That build-up is privilege accumulation, and PS-5 asks you to review and confirm that old access is still needed when someone is reassigned. Role explosion is about too many roles. Birthright access is the small baseline everyone in a job gets, not leftover Sales rights. Sam was already granted access properly as a joiner, so the gap is the mover step."
+    },
+    {
+      "stem": "Dana was deactivated in Okta on Friday. On Monday her manager reports that a mailbox rule is still forwarding customer emails to Dana's personal address, and a shared team password she knew has not been changed. What does this show?",
+      "options": [
+        "Deactivating the main account is not the whole leaver job; forwarding rules and shared passwords need their own steps",
+        "Okta deactivation failed and must be repeated, because a real deactivation removes forwarding rules and rotates shared passwords",
+        "Only the forwarding rule matters, because a person without an account cannot use a shared password they remember",
+        "This is normal, because forwarding rules and shared passwords belong to the next employee in the role and are reviewed by them"
+      ],
+      "correct_index": 0,
+      "explanation": "Deactivation removes app access, stops Okta sessions and deprovisions apps only where that is enabled. Okta's description of deactivation does not mention forwarding rules or shared secrets, so treat them as separate items on the leaver checklist: delegated access such as forwarding, and shared passwords that need changing. Repeating the deactivation changes nothing. A person who remembers a shared password can often use it at the service directly, which is why it must be changed, and leaving it for the next employee leaves the gap open."
+    },
+    {
+      "stem": "A review lists the service account svc-invoice: it has no owner, and its last sign-in was 90 days ago. Which statement matches what the lesson teaches?",
+      "options": [
+        "Service accounts are exempt from dormancy rules because they are not people, so only the missing owner needs fixing before the next review",
+        "It is not a problem: a program account that is rarely used is simply low risk, so the review can leave it as it is until someone reports an issue or a user complains about it",
+        "It is orphaned and dormant; CIS says to delete or disable dormant accounts after 45 days where supported, and each needs an owner, review date and purpose",
+        "It becomes dormant only after 120 days, so the right step is to wait another month and then ask who created it"
+      ],
+      "correct_index": 2,
+      "explanation": "No active owner makes a service account orphaned. Ninety days of inactivity is past CIS Safeguard 5.3's 45-day line, which covers any dormant account, so it should be deleted or disabled where supported. Safeguard 5.5 adds that service accounts belong in an inventory with department owner, review date and purpose. There is no exemption for non-human accounts, and there is no 120-day threshold in the guidance the lesson cites."
+    },
+    {
+      "stem": "At 10:00 an admin removes Priya from the Finance group. At 10:20, without signing in again, Priya still opens the finance app, which reads her groups from the token issued at her sign-in. What is the most likely reason?",
+      "options": [
+        "Group removals only take effect after a nightly job runs, so Priya keeps access until midnight regardless of anything else that happens in between",
+        "The finance app ignores groups and checks a password stored inside the app, so the removal in Okta never reaches it at all",
+        "Okta holds removals in a queue that the app owner must approve before the group change is applied to any connected app",
+        "The app still trusts the signed note from Priya's sign-in, which lists her old groups, until it expires, is replaced or the session is revoked"
+      ],
+      "correct_index": 3,
+      "explanation": "At sign-in the identity provider gives the app a signed note listing details such as groups, and the app trusts it, or the session it built from it, until the note expires or the session ends. Microsoft states that group information in a token is current only when you receive the token, so a later removal is not visible to the app yet. That is a stale claim. Ending access sooner needs a live check or a revoked session. The nightly-job, password-in-app and approval-queue explanations are not how this works."
+    },
+    {
+      "stem": "Security asks for this rule: only Sales employees using a company-managed laptop may open the pricing sheet. Which model describes a rule like this, and why?",
+      "options": [
+        "ABAC, because it decides from facts about the person and conditions (department, device) according to policies",
+        "RBAC, because a single role such as Sales covers the department and the laptop condition without extra roles",
+        "ACL, because the pricing sheet carries a list of allowed names and the laptop condition is stored in that list",
+        "ReBAC, because the rule depends on the laptop being a relationship between the user and the sheet's folder"
+      ],
+      "correct_index": 0,
+      "explanation": "ABAC decides from attributes of the person, the thing and conditions such as device or location, under a set of policies. Department and device are attributes, so this is its home ground. NIST notes RBAC does not easily handle decisions that depend on things like location, so covering the laptop condition would take extra ad hoc roles, the road to role explosion. An ACL lists names and has no concept of device state. ReBAC follows relationships such as team membership, not device attributes."
+    }
+  ]
+}

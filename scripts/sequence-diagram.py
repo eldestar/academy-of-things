@@ -184,6 +184,7 @@ svg.{P}-flow:hover .{P}-g,svg.{P}-flow:hover .{P}-pk{{animation-play-state:pause
         body.append(f'<text class="{P}-dim" x="{tx}" y="{ly + 4}" style="text-anchor:start">{esc(text)}</text>')
         x = tx + int(len(text) * 6.4) + 34
 
+    desc = re.sub(r"\s*The diagram highlights each step.*$", "", spec["desc"].strip(), flags=re.S)  # the generator adds its own sentence
     # A real checkbox styled as a button: keyboard operable (Tab, Space) with no script, so a
     # keyboard user can pause moving content (WCAG 2.2.2). Hover still pauses as well.
     svg = (
@@ -194,7 +195,7 @@ svg.{P}-flow:hover .{P}-g,svg.{P}-flow:hover .{P}-pk{{animation-play-state:pause
         f'<svg class="{P}-flow" viewBox="0 0 {W} {H}" role="img" aria-labelledby="{P}-t {P}-d" '
         'style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">\n'
         f'<title id="{P}-t">{esc(spec["title"])}</title>\n'
-        f'<desc id="{P}-d">{esc(spec["desc"])} The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>\n'
+        f'<desc id="{P}-d">{esc(desc)} The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>\n'
         + "\n".join(css) + "\n" + "\n".join(body) + "\n</svg>\n</div>\n</div>"
     )
     minidom.parseString(svg)

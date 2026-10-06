@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "You review an API gateway that must accept JWTs from several Okta orgs and Entra tenants. For each request it reads `iss` from the unverified token, appends the discovery path, fetches that issuer's JWKS and verifies the signature against it. What is the flaw, and what is the fix?",
+      "options": [
+        "None, provided `iss` is an https URL without query or fragment, which Core requires, so an attacker cannot make it point somewhere untrusted or hostile.",
+        "The only risk is latency from fetching a key set per request, so cache every fetched JWKS indefinitely and the design then becomes safe to run.",
+        "An attacker can name an issuer they control and so choose the verifying keys. Use an allowlist of issuers, each bound to its own configured keys.",
+        "The gateway should follow the `jku` header instead, because the signer's own header is the authoritative place to find the key set for the token."
+      ],
+      "correct_index": 2,
+      "explanation": "Keys must be shown to belong to a trusted issuer (RFC 8725 section 3.8), and claims used for lookups or URLs are injection and SSRF vectors (section 2.9). Fetching from whatever an unverified token names lets an attacker pick the verifier. The fix is an allowlist of issuers, each with its own configured `jwks_uri`, expected `aud` and algorithms. An https-shaped `iss` says nothing about trust. Caching does not change who you trust. Core says ID tokens SHOULD NOT use `jku`, and RFC 8725 section 3.10 warns against following it blindly."
+    },
+    {
+      "stem": "Your validator re-fetches the issuer's JWKS whenever it sees a `kid` it does not have; the specs set no refresh policy beyond that, so choose the sound design. A load test shows that tokens carrying random `kid` values make it hit the issuer's JWKS endpoint on every request. What do you change?",
+      "options": [
+        "Keep refresh-on-miss but add a cooldown, so repeated unknown `kid` values cause at most one refresh per interval, and reject unresolved kids.",
+        "Remove refresh-on-miss and refresh only at restart, because Okta rotates keys just four times a year and the spec does not require a refresh.",
+        "Verify tokens with an unknown `kid` against every cached key and accept on any match, because `kid` is only a hint in the JWS spec itself.",
+        "Hardcode the current public key and drop discovery, so the `kid` header never influences which key the validator uses to check signatures."
+      ],
+      "correct_index": 0,
+      "explanation": "Core describes rotation as the OP signalling a new key through `kid` and the verifier going back to `jwks_uri` on an unfamiliar one; a cooldown on that refresh stops attacker-chosen `kid` values from becoming a fetch amplifier. The cooldown is design advice, not spec text. Refreshing only at restart fails because the schedule can change without notice. Trying every cached key and accepting any match is itself a failure mode and would not find a newly published key. Hardcoded keys can fail at the next rotation."
+    },
+    {
+      "stem": "A team skips signature verification on ID tokens, citing Core's allowance for tokens received directly from the token endpoint over TLS. Later they forward the ID token to an internal microservice, a backend of the same client application, which also skips verification. What should you tell them?",
+      "options": [
+        "The allowance holds anywhere inside the company network, because internal hops are also protected by TLS and so the token cannot be altered.",
+        "The microservice may skip verification as long as the forwarded token's `exp` is only a few minutes away, which limits the damage a forgery does.",
+        "Skipping is acceptable when `alg` is RS256, because RS256 is the default algorithm and the OP is then the only party able to have signed it.",
+        "Only the direct token-endpoint hop is covered. The forwarded token needs signature, `iss` and `aud` checks by the microservice itself, not trust."
+      ],
+      "correct_index": 3,
+      "explanation": "Core allows TLS server validation to replace the signature check only for an ID token received directly from the token endpoint, where the TLS channel authenticates the issuer. A forwarded, stored or client-supplied token has no such guarantee, so it needs full validation, including `aud` and `iss`. Internal TLS protects the next hop, not the origin of the token. A short `exp` does not tell you who issued it. The algorithm name is not the issue; the missing signature check is."
+    },
+    {
+      "stem": "Two Entra app registrations in your tenant each sign in the same employee. Analytics wants to join user records across the apps on `sub` and finds no matches. A colleague wants to file a bug with Microsoft. What is the correct response?",
+      "options": [
+        "File the bug: Core requires every client to receive the same `sub` for a given user, so Entra is issuing an invalid subject identifier.",
+        "No bug: Entra's `sub` is pairwise per application ID. Join on `oid` with `tid`, which stay the same across apps in the same tenant.",
+        "Join on `email` instead, since Microsoft documents it as the reliable value to share across apps for the same user in a tenant.",
+        "Join on `preferred_username`, which stays constant for a user across applications and is unique inside the tenant, so joins are safe."
+      ],
+      "correct_index": 1,
+      "explanation": "Core section 8 defines pairwise subject identifiers, giving each client a different `sub` so clients cannot correlate users. Microsoft documents that the Entra `sub` is pairwise per application ID, that `oid` is the same across apps, and that `oid` plus `tid` is best for sharing data across services. Microsoft also says `email` is mutable and not guaranteed correct, and Core says `preferred_username` must not be relied on as unique."
+    },
+    {
+      "stem": "Your back-channel logout endpoint receives a POST with a `logout_token`. The signature, `iss`, `aud`, `iat` and `exp` validate. It has an `events` claim containing `http://schemas.openid.net/event/backchannel-logout`, a `sub`, no `sid` and no `nonce`. The user has three active sessions at your app. What do you do?",
+      "options": [
+        "Reject with 400, because a Logout Token must contain `sid` and a `sub` alone cannot identify exactly what the app is meant to log out.",
+        "End only the most recently created session, because without `sid` the token cannot refer to more than one of the user's sessions.",
+        "Reject with 400, because a Logout Token must carry a `nonce` that binds it to the particular session that is being ended at the app.",
+        "End all of that user's sessions at the app, found by `iss` and `sub`, and respond 200; a repeat of the request counts as already done."
+      ],
+      "correct_index": 3,
+      "explanation": "A Logout Token must contain a `sub`, a `sid`, or both. When `sid` is absent, the intent is that all sessions at the RP for the user identified by `iss` and `sub` are logged out. A `nonce` must not be present at all, which is what stops a logout token passing as an ID token. A successful logout gets 200, and a user who is already logged out counts as success, so a retransmitted request is harmless."
+    },
+    {
+      "stem": "A service verifies tokens with `verify(token, key=idp_public_key_pem)` and no algorithm list. The IdP signs with RS256. A pen tester builds a token with `alg: HS256` whose HMAC secret is that same public key PEM, and the service accepts it. What is the right fix?",
+      "options": [
+        "Pass an explicit allowlist of RS256 so HS256 and `none` are refused, and use each key with exactly one algorithm.",
+        "Stop publishing the public key at `jwks_uri` so the tester cannot use it as the HMAC secret.",
+        "Check `iss` and `aud` before the signature, because a forged token will carry the wrong values for both.",
+        "Rely on the signature check alone; RS256 is the default `alg` in Core, so a standards-compliant library will already use it."
+      ],
+      "correct_index": 0,
+      "explanation": "This is the RS256-to-HS256 confusion in RFC 8725 section 2.1: the library trusts the header's `alg` and uses the public key as an HMAC secret. Section 3.1 requires the caller to specify the supported algorithms and each key to be used with exactly one. Hiding a public key is not possible when discovery requires `jwks_uri`, and the attack needs only the public key. The attacker controls `iss` and `aud` in a forged token, so checking them first does not help. A default `alg` does not stop a library from believing the header."
+    }
+  ]
+}

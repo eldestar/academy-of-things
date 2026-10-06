@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "In a quarterly review you find the Okta group Finance-Readers (340 members) assigned to the billing app, and the app role on that assignment is admin. The group owner says it is only a readers group, because the name says so. What is the correct reading?",
+      "options": [
+        "Okta enforces the intent of a group's name when it resolves app roles, so the admin role on the assignment is cosmetic and the review can close",
+        "Okta blocks admin grants through groups, because group rules cannot assign users to admin groups, so the assignment cannot actually be effective",
+        "All 340 hold admin in the billing app: the assignment grants the role and the name is only a label, so audit what each group is assigned to",
+        "Review the membership list only, because access follows from who is in the group and the assignment settings are the app owner's separate concern to check"
+      ],
+      "correct_index": 2,
+      "explanation": "A group is a bundle of users; what it grants comes from where it is assigned and with which app role, not from its label. Okta's help page says only that group rules can't be used to assign users to admin groups; our reading is that this limits what a rule may fill, not which role an app assignment carries, so it says nothing about app roles inside the billing app. Reviewing only membership misses the grant itself, which is how a group ends up granting more than its name says. Fix the assignment (or split the group) and re-review."
+    },
+    {
+      "stem": "An app validates Entra ID tokens and denies access whenever the groups claim is absent. A user who belongs to 260 groups is locked out. The token has no groups claim but contains a _claim_names claim with a groups member. What is going on and what should the app do?",
+      "options": [
+        "This is a group overage: the user exceeds the 200-group JWT limit, so the app must read the overage indicator and call Graph, or assign groups to app roles",
+        "The user is in no groups the app cares about, so denying is correct; the missing claim means Entra evaluated membership and found nothing relevant to this app",
+        "The tenant should switch the app to SAML, because SAML tokens are larger than JWTs and carry up to 260 groups without overage ever being triggered",
+        "The app registration limit can be raised above 200 in token configuration, so an admin should raise it to cover the largest group count in the tenant"
+      ],
+      "correct_index": 0,
+      "explanation": "Entra caps the groups claim at 200 for a JWT, 150 for SAML and 6 for the implicit flow. Past the cap the token carries an overage indicator (hasgroups, or _claim_names with a groups member) instead of the claim, and the app must fetch membership from Graph. SAML is worse, not better, at 150. The cap is a token-size limit, and Microsoft's remedies are group filtering, assigning groups to app roles, or Graph, not raising it. Assigning groups to app roles gives the app a roles claim and avoids the overage entirely."
+    },
+    {
+      "stem": "At 10:00 you remove a contractor from an Entra group that gates an internal API. The API validates JWT access tokens locally and trusts the groups claim. At 10:40 the contractor still calls it successfully. Which explanation and fix hold?",
+      "options": [
+        "The group removal has not replicated yet; wait for Entra to converge, after which the same token will be rejected on the next call to the API",
+        "Revoking the contractor's access token alone is enough, because Okta-style revocation of an access token also kills the refresh token behind it",
+        "Continuous access evaluation already enforces group changes instantly for every API, so the API must be misconfigured and should be fixed first",
+        "The claim is a snapshot taken at issue and a locally validated token is not rechecked until expiry; add a live check, shorter lifetimes or a session revoke"
+      ],
+      "correct_index": 3,
+      "explanation": "A self-contained token needs no call to the authorization server, so a change after issue is invisible until expiry (about an hour by default in Entra). Microsoft says token group data is current only at acquisition and recommends Graph for real-time membership. RFC 7009 offers the trade-offs: extra backend revocation signalling, handle tokens, or short lifetimes. In Okta, revoking an access token does not revoke its refresh token (the reverse holds), and the tokens in this stem are Entra's; CAE applies only to resource providers that subscribe to its events."
+    },
+    {
+      "stem": "Gus was terminated at 17:00 and the Okta user was deactivated at 17:05. The next morning sales ops reports a nightly export job still running as Gus against a CRM that has no provisioning integration. The job authenticates with a key Gus created in the CRM. What best explains it and what do you do?",
+      "options": [
+        "Okta deactivation revokes every API key the user ever created at connected apps, so the job must be running under a second account that nobody has found yet; search for duplicates",
+        "Deactivation stopped Okta sessions and deprovisioned only apps with deprovisioning enabled; a CRM API key is app-local, so revoke it and give the job an owner",
+        "The CRM session cookie is simply stale; once it expires the export will fail on its own, so no action is needed beyond waiting a day or so",
+        "SCIM active=false would have killed the key, so re-run the deactivation with a SCIM integration enabled for the CRM"
+      ],
+      "correct_index": 1,
+      "explanation": "Okta's deactivation removes app access, stops Okta sessions and deprovisions assigned apps only where deprovisioning is enabled. An API key created inside the CRM is a separate credential: Okta's description of deactivation does not cover app-local credentials (our reading; Okta's pages do not mention app-created keys), and an unattended job runs on the key, not on a browser session. RFC 7643 leaves the meaning of active to the service provider, so even a SCIM deactivation does not promise to revoke keys, sessions or tokens. Leaver completeness means checking each surface: account, sessions, tokens, keys, shared secrets, delegation, devices. Also move the job to a service account with an owner."
+    },
+    {
+      "stem": "svc-report is flagged ORPHANED in your review: its owner left in August, but it logged in yesterday and a nightly finance export still runs under it. A teammate wants to disable it today under the 45-day dormant-account rule. What do you tell them?",
+      "options": [
+        "Agree: any account whose owner has left must be disabled immediately under the dormancy rule, whatever its recent activity or what business process depends on it today and tomorrow",
+        "Leave it alone: recent activity proves the access is still authorized, and an inventory entry is only needed for accounts that have gone dormant",
+        "Delete it now: a service account with a terminated owner has no valid purpose, so deletion is cleaner than disabling and avoids a review later",
+        "The 45-day rule is about inactivity, so it does not apply; it is orphaned, so find its consumers, assign an owner or retire it, and record owner and purpose"
+      ],
+      "correct_index": 3,
+      "explanation": "CIS 5.3 targets accounts inactive for 45 days; this one is active, so dormancy is the wrong lever. It is orphaned because it has no active owner, and CIS 5.5 requires service accounts to be inventoried with department owner, review date and purpose. Disabling or deleting blind risks an outage for whatever uses it daily (and CIS 6.2 notes disabling instead of deleting may be needed to preserve audit trails), while leaving it ignores that nobody is accountable for it. Find the consumers, then assign an owner or retire it deliberately."
+    },
+    {
+      "stem": "A SOC 2 auditor samples your Q3 access review for the CRM: one manager approved all 60 rows in four minutes with no comments, and two of the approved rows belong to leavers. What is the finding and the best remediation?",
+      "options": [
+        "No finding: a decision exists for every row, which is all CC6.2 requires of a periodic access review at this size of population",
+        "Rubber-stamping: evidence exists but the control did not operate; show what each entitlement allows, add recommendations, and treat leaver rows as lifecycle failures",
+        "Review frequency is the problem, so moving the same review from quarterly to weekly will fix it without changing what reviewers see on screen, how long they spend, or who they are",
+        "The leaver rows show reviewers are unnecessary, because leavers should be removed by the leaver process alone and the review adds no extra value"
+      ],
+      "correct_index": 1,
+      "explanation": "Per secondary summaries of the AICPA criteria (the text is not freely retrievable), CC6.2 lists periodic review of the appropriateness of access as a point of focus, which means someone has to evaluate each entitlement; approving everything in four minutes is rubber-stamping, where evidence exists and the control does not. Two leavers surviving to review show the leaver process missed surfaces, so fix that as well. A faster cadence of the same blind approval just produces more rubber stamps, and reviews exist precisely to catch what lifecycle automation missed. Showing what each entitlement allows, plus recommendations, is the remedy."
+    }
+  ]
+}

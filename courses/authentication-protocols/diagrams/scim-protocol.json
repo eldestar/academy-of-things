@@ -1,0 +1,116 @@
+{
+  "id": "scim-protocol",
+  "prefix": "sc",
+  "title": "SCIM lifecycle: create, group change, deactivate, delete",
+  "desc": "Eight steps between an identity provider acting as SCIM client and your app acting as SCIM server, with the user's already-open browser session as a third lane. Step 1: the IdP sends POST /Users to create a user with userName, externalId and active true. Step 2: the app answers 201 Created and returns the id it assigned, which the IdP stores. Step 3: the IdP sends PATCH /Groups/{id} to add or remove one member. Step 4: the IdP deactivates the user with PATCH /Users/{id} setting active to false (Okta sends PUT instead to apps built with its App Integration Wizard). Step 5, failure mode: a request on the user's old session is still served unless the app revokes it. Step 6: on active false your app revokes sessions and tokens itself, because RFC 7644 defines no call that ends a session. Step 7: a hard delete is DELETE /Users/{id}, which Entra sends by default on a hard delete and Okta never sends for users. Step 8: the app answers 404 Not Found for every later request for that id.",
+  "duration": 24,
+  "legend": {
+    "front": "request",
+    "back": "response",
+    "bad": "failure mode",
+    "good": "what your app must do"
+  },
+  "lanes": [
+    {
+      "id": "idp",
+      "title": "Identity provider",
+      "sub": "SCIM client (Okta, Entra)"
+    },
+    {
+      "id": "app",
+      "title": "Your app",
+      "sub": "SCIM server",
+      "hot": true
+    },
+    {
+      "id": "br",
+      "title": "User's browser",
+      "sub": "already signed in"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "idp",
+      "to": "app",
+      "label": [
+        "POST /Users",
+        "userName, externalId, active=true"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "arrow",
+      "from": "app",
+      "to": "idp",
+      "label": [
+        "201 Created + id",
+        "the IdP stores the id"
+      ],
+      "tone": "back",
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "idp",
+      "to": "app",
+      "label": [
+        "PATCH /Groups/{id}",
+        "add or remove one member"
+      ],
+      "badge": "3"
+    },
+    {
+      "type": "arrow",
+      "from": "idp",
+      "to": "app",
+      "label": [
+        "PATCH /Users/{id}",
+        "active = false (Okta Wizard apps: PUT)"
+      ],
+      "badge": "4"
+    },
+    {
+      "type": "arrow",
+      "from": "br",
+      "to": "app",
+      "label": [
+        "request with the old session",
+        "still served unless you revoke"
+      ],
+      "tone": "bad",
+      "badge": "5"
+    },
+    {
+      "type": "note",
+      "under": "app",
+      "lines": [
+        "on active = false, your app",
+        "revokes sessions and tokens"
+      ],
+      "tone": "good",
+      "badge": "6"
+    },
+    {
+      "type": "arrow",
+      "from": "idp",
+      "to": "app",
+      "label": [
+        "DELETE /Users/{id}",
+        "hard delete (Entra default; Okta never)"
+      ],
+      "badge": "7"
+    },
+    {
+      "type": "arrow",
+      "from": "app",
+      "to": "idp",
+      "label": [
+        "404 Not Found",
+        "for every later request"
+      ],
+      "tone": "back",
+      "badge": "8"
+    }
+  ]
+}

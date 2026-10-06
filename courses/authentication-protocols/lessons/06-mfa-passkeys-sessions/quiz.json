@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "You set an Okta app sign-in rule to Possession factor constraints are: Phishing resistant. A user now gets Access denied in one app, yet the same user signs in without trouble to other apps in a supported browser. What is the documented cause?",
+      "options": [
+        "The user never enrolled in the number challenge, so Okta Verify refuses every sign-in that needs a possession factor on any client",
+        "DNS Rebind Protection on the user's router blocks the phishing-resistant check for every browser and app on that network, not only native ones",
+        "The app uses a WebView implementation that Okta phishing-resistant authentication does not support, so the policy fails with Access denied",
+        "On macOS an SSO extension is required before any native client can complete a FastPass sign-in, and that extension has not been installed"
+      ],
+      "correct_index": 2,
+      "explanation": "Okta documents that some apps do not support phishing-resistant authentication because of their WebView implementation, and when the policy requires it the sign-in fails with an Access denied message. Because the same user succeeds in a supported browser, the factor and enrolment are fine. DNS Rebind Protection can make the check fail for browsers or native apps on the device, but this option claims it breaks every browser and app on the network, which contradicts the symptom. The macOS SSO extension is documented for Safari, not for every native client, and the number challenge is a push setting, not an enrolment gate."
+    },
+    {
+      "stem": "A Conditional Access policy requires the built-in Phishing-resistant MFA authentication strength for admin roles. Which admin sign-in will still be blocked?",
+      "options": [
+        "Microsoft Authenticator phone sign-in with number matching, which meets Passwordless MFA but is not in the phishing-resistant list",
+        "A FIDO2 security key that the admin touches and unlocks with its PIN, which the built-in strength lists as an allowed method",
+        "Windows Hello for Business on a managed laptop that the admin unlocks with a PIN or face, which the built-in strength lists as an allowed method",
+        "Certificate-based authentication in its multifactor form on a managed laptop, which the built-in strength lists as an allowed method"
+      ],
+      "correct_index": 0,
+      "explanation": "The built-in Phishing-resistant MFA strength allows Windows Hello for Business or a platform credential, a FIDO2 security key, and certificate-based authentication (multifactor). Microsoft Authenticator phone sign-in satisfies the MFA and Passwordless MFA strengths but is not on that list, so number matching does not make it phishing-resistant under this policy. Okta draws the same line, naming only Passkey (FIDO2 WebAuthn) and Okta FastPass."
+    },
+    {
+      "stem": "One user's authenticator app codes are rejected every time. Their phone clock is about two minutes slow, and the server follows the RFC 6238 advice of allowing at most one time step of delay. What explains it, and what fixes it?",
+      "options": [
+        "The server already accepted each code once, RFC 6238 forbids accepting an OTP twice, so the user must wait for a brand-new secret",
+        "The phone computes T from its own slow clock, so the code belongs to a step outside the server's window; correct the phone clock",
+        "The shared secret is valid for only 30 seconds after enrolment, so the user must scan the QR code again before every sign-in attempt",
+        "HMAC-SHA-1 is rejected by default on devices with slow clocks, so the server must be switched to SHA-256 for this one user"
+      ],
+      "correct_index": 1,
+      "explanation": "TOTP is HOTP(K, T) with T = floor((now - T0) / X), X = 30 seconds and T0 = 0. The phone derives T from its clock, so a clock two minutes slow produces codes for steps about four behind the server's, outside a window the RFC recommends keeping to at most one step of delay, plus a bounded resync limit. Fixing the clock fixes every code. Replay protection rejects a reused code, not every first attempt, the 30 seconds is the time step and not the secret's life, and the hash choice does not depend on clock error."
+    },
+    {
+      "stem": "Your tenant now requires phishing-resistant authenticators at every app sign-in. An audit finding says an attacker could still take over an account by resetting the password with an SMS code sent to a ported number. Which fix does the lesson point to in Okta?",
+      "options": [
+        "Move the phishing-resistant app sign-in rule to the top of the priority list, because password recovery follows the same rule order as the app sign-in policy does for every group",
+        "Set the number challenge option to All push challenges, because that org-wide setting also gates password resets and account unlocks across every group and every authenticator in the org",
+        "Shorten the Maximum Okta global session idle time so that any session created by a reset expires quickly, which stops the takeover before the attacker can use the new password for anything",
+        "Set the password policy's Recovery authenticators access control to Authentication policy, then add an Okta account management policy rule requiring a phishing-resistant possession factor"
+      ],
+      "correct_index": 3,
+      "explanation": "Recovery is a separate path from the app sign-in rule, so a strong sign-in policy does not constrain a reset that accepts SMS or email. In Okta you set the Access control condition in the password policy rule's Recovery authenticators section to Authentication policy, which only hands recovery to the authentication policy, and then add a rule to the Okta account management policy that requires a phishing-resistant possession factor; the password policy setting alone requires nothing. Rule priority applies to app sign-in rules, the number challenge only affects push prompts, and a shorter idle timeout limits the damage after a takeover instead of preventing it."
+    },
+    {
+      "stem": "After a push fatigue incident the security lead wants Okta Verify push to require a number challenge, but only for finance and executives. What does the lesson say about that setting?",
+      "options": [
+        "Scope it to those groups in an app sign-in policy rule, because the option sits next to the rule's possession constraints and group conditions",
+        "Choose Only for high risk sign-in attempts, which Okta applies to chosen groups according to the risk score of each group's members",
+        "It is org-wide with the values Never, Only for high risk sign-in attempts and All push challenges, so it cannot be limited to groups",
+        "Set it per user through the authenticator enrollment policy, which lets finance and executives be enrolled with different push behaviour"
+      ],
+      "correct_index": 2,
+      "explanation": "Okta's Push notification (number challenge) option has three values, Never, Only for high risk sign-in attempts and All push challenges, and the setting is org-wide: you cannot enable or disable it for specific users or groups. The high-risk value depends on the risk of each attempt, not on group membership. The practical choice after an incident is All push challenges for everyone, and then moving high-value apps to phishing-resistant methods, since the lesson notes the number challenge is a fatigue control."
+    },
+    {
+      "stem": "A penetration test reports that your session cookie lacks HttpOnly, and you add the flag. Which statement correctly describes the effect?",
+      "options": [
+        "Scripts on the page can no longer read the cookie, but the browser still sends it on script-initiated requests, and relayed or copied cookies still work",
+        "The browser stops attaching the cookie to requests that script starts, which also stops a relay phishing page or malware from capturing the session",
+        "The cookie is now sent only over HTTPS connections, so a stolen cookie cannot be replayed from a different network, another computer or another browser profile",
+        "The cookie is limited to the exact host that set it and to the root path, so a sibling subdomain, or a page script on one, can no longer overwrite the cookie"
+      ],
+      "correct_index": 0,
+      "explanation": "HttpOnly forbids JavaScript from reading the cookie, for example through document.cookie, which blunts cookie theft by injected script. MDN notes the browser still sends an HttpOnly cookie on requests that script initiates, and the flag does nothing about a relay page that sees the cookie the real site returns or malware that copies it from the browser. Sending only over HTTPS is Secure, and host-only scope with Path=/ is what the __Host- prefix requires."
+    }
+  ]
+}

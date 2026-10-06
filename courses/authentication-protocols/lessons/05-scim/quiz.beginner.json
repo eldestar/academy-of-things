@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Dana left the company on Friday. An Okta admin deprovisions her in the task app, an app from Okta's catalogue (the Okta Integration Network, OIN) that is connected with SCIM. The app's vendor asks what request their SCIM server will receive for Dana. Which answer is right?",
+      "options": [
+        "A DELETE for her /Users/{id}, because deprovisioning means her account has to be removed from the app completely",
+        "Nothing until the next time Dana tries to sign in, because SCIM only reacts to people signing in to the app",
+        "A PATCH for her /Users/{id} that sets active to false in the app; Okta does not send DELETE requests for users",
+        "A new POST to /Users with active set to false, which the app uses to replace her earlier record with a fresh one"
+      ],
+      "correct_index": 2,
+      "explanation": "In Okta, deprovisioning sets the user's active attribute to false, which arrives as a PATCH on that user's /Users/{id} (step 4 of the diagram). Apps built with Okta's App Integration Wizard receive a PUT carrying active=false instead, but this stem says the app is from the catalogue. Okta does not send DELETE for users, so the account is normally kept and can be switched back on, for example for a rehired contractor. SCIM pushes the change whether or not anyone signs in, which is the whole point of separating provisioning from sign-in, so waiting for a sign-in is wrong. A POST only creates; for a userName that already exists it would be refused with 409 Conflict."
+    },
+    {
+      "stem": "A company uses just-in-time (JIT) account creation only, with no SCIM. Dana leaves on Friday, and on Monday her account in the task app is still active. Why could the JIT setup not have switched it off?",
+      "options": [
+        "JIT creation runs when someone signs in, and Dana is no longer signing in, so nothing in that flow ever tells the app she has left",
+        "The app deletes a JIT account on its own as soon as the identity provider stops accepting that person's login, so this account must have come from somewhere else",
+        "JIT cannot set the active attribute, because active only exists on Group records and JIT accounts are always Users",
+        "SCIM also reacts only to sign-ins, so adding SCIM to this setup would not have changed what happened to Dana's account"
+      ],
+      "correct_index": 0,
+      "explanation": "This is reasoning about how sign-in works rather than a rule in a standard. JIT creation is part of signing in, and a person who has left no longer signs in, so no sign-in event exists to carry the news to the app. If the IdP refuses her login, that refusal happens at the IdP and the app sees nothing, which rules out automatic cleanup inside the app. RFC 7642 describes SCIM as doing provisioning and deprovisioning in a separate context from authentication, so the IdP can push the change to the app whether or not anyone signs in. And active is an attribute of a User (it is the field set to false on /Users/{id}), not of a Group."
+    },
+    {
+      "stem": "New hire Dana's account was not created in the task app. The identity provider's provisioning log shows the error 409 Conflict with the message \"userName already in use\". What is the most likely cause?",
+      "options": [
+        "The bearer token pasted into the identity provider has expired, so the app no longer trusts the requests it receives from it",
+        "The app is rate-limiting the identity provider and wants it to wait for a while before it sends the same request again",
+        "Dana was never added to a pushed group, so the app has nowhere to put the new account and refuses to create it at all",
+        "The app already holds a user whose userName matches Dana's, perhaps an old or duplicate account, and refuses to create a second"
+      ],
+      "correct_index": 3,
+      "explanation": "409 Conflict means the request clashes with something that already exists, and the usual clash is a second user with the same userName, which the app must keep unique. An expired or wrong token produces 401 Unauthorized, and it would fail every request, not just Dana's. Rate limiting produces 429 Too Many Requests, after which Okta waits and retries. A missing group membership is a separate problem that shows up as a group that does not update, not as a refused account. The fix is to find and resolve the existing account with that userName."
+    },
+    {
+      "stem": "Dana was deactivated at 9:00. The app's SCIM log shows the request arrived and the app answered successfully. At 11:00 an audit shows Dana still using the app in a browser she opened at 8:00. What is the best explanation?",
+      "options": [
+        "Okta should have sent a DELETE for her /Users/{id}, because only deleting the account closes browser sessions that are already open",
+        "The app saved active=false, but ending an open session is the app's own job, and none of the requests that RFC 7644 defines does it",
+        "Okta's deactivation only affects Okta's own sign-in page, so it cannot change the account that lives inside the app",
+        "A SCIM server that receives active=false is required to end all sessions, so this vendor's server is not following the standard"
+      ],
+      "correct_index": 1,
+      "explanation": "The app saved active=false, which is the PATCH doing its job, and ending an open session is the app's own job because none of the requests that RFC 7644 defines does it. The claim that Okta's deactivation only affects Okta's own sign-in page is wrong: Okta sets active=false on the account record inside the app, so it does reach the app. The claim that a SCIM server is required to end all sessions is wrong too: the standard leaves the meaning of active to the app and defines no request that ends a session. Deleting the account is also just a SCIM request (and Okta does not send DELETE for users), so it would not end the session either. The leaver's open session is a gap you close in the app, by ending sessions when it sees active=false."
+    },
+    {
+      "stem": "In Okta, an admin uses one group, Task-App-Users, both to assign the task app to people and to push that group's membership to the app. The two copies of the group in Okta and in the app keep drifting apart. What does Okta's documentation say to do?",
+      "options": [
+        "Edit the group directly inside the app as well, so both copies match; Okta then accepts the app's version as the current one",
+        "Keep the single group, because assigning and pushing the same group is the supported setup, and drift only means Okta is being rate-limited",
+        "Create a separate group for pushing to the app, because Okta does not support using the same group for assignment and Group Push",
+        "Stop using Group Push and send membership inside each POST to /Users, because SCIM has no Groups resource to push to"
+      ],
+      "correct_index": 2,
+      "explanation": "Okta states that it does not support using the same group for app assignment and Group Push; you make a separate group that is configured to push. Pushed groups are managed from Okta, and changes made to the group in the target app cause sync problems, so hand-editing the app's copy makes drift worse. Rate limiting (429) slows requests down and Okta retries, which does not explain a persistent mismatch. SCIM does have a Groups resource at /Groups, and group membership is changed with PATCH /Groups/{id}."
+    },
+    {
+      "stem": "A help-desk tool stores a reference to each person's record in the app. The reference must keep pointing at the same record even after Dana's login name is edited from dana@example.com to dana.smith@example.com. Which SCIM value should it store?",
+      "options": [
+        "userName, because the app requires it to be unique, so it identifies exactly one record at any time",
+        "externalId, because the identity provider chose it as a label and can always use it to find the user again",
+        "The email address, because Okta uses the email address as the user ID in every connected app",
+        "id, because the app assigns it once, it never changes and it is never reused for any other record"
+      ],
+      "correct_index": 3,
+      "explanation": "The id is issued by the app, never changes and is never reused, so it keeps pointing at the same record after a rename. userName is unique but it can be edited, which is exactly the situation in the question. externalId is only a label the identity provider chooses, and the app does not enforce that it is unique. Okta advises against using an email address as the user ID because emails often change."
+    }
+  ]
+}

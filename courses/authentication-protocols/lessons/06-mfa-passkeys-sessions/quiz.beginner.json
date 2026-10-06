@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A vendor says its login is multi-factor because it asks for a password and then one more thing. Using the three factor categories in this lesson, which sign-in is actually multi-factor?",
+      "options": [
+        "A password followed by a four-digit PIN that the employee has memorised and types on the same screen",
+        "A password followed by a six-digit code read from an authenticator app installed on the employee's own phone",
+        "A password followed by the answer to a security question, such as the name of their first pet or school",
+        "A long passphrase followed by a second, different password that the employee also chose and memorised"
+      ],
+      "correct_index": 1,
+      "explanation": "MFA means factors from at least two different categories: something you know, something you have, something you are. A password, a PIN, a security-question answer and a second password are all things you know, so those sign-ins are one category used twice. The authenticator app code proves possession of the phone (something you have) on top of the password (something you know)."
+    },
+    {
+      "stem": "A help-desk ticket says an employee's phone number was moved to a new SIM card without their knowledge, their texts stopped arriving, and an attacker then signed in using SMS codes. Which weakness of SMS does this show?",
+      "options": [
+        "SMS codes are calculated from the time of day, so a wrong clock on the employee's phone makes every code fail",
+        "SMS messages hold only a few digits, so an attacker can often guess the code correctly within a single attempt",
+        "SMS codes come from a secret shared with the website, so a leak at the website lets anyone forge every code",
+        "The code goes to a phone number, so an attacker who moves that number to a SIM card they control receives it"
+      ],
+      "correct_index": 3,
+      "explanation": "An SMS code is delivered to a phone number, so whoever controls the number receives the code. A SIM change or number porting moves the number to the attacker. NIST calls this delivery method restricted, says a service must offer alternatives, and says it should look for warning signs such as a device swap, SIM change or number porting. Clock-based codes and a shared secret describe authenticator app codes, not SMS, and a few digits are not the point of this attack."
+    },
+    {
+      "stem": "At 2 a.m. an employee gets fourteen Approve or Deny prompts on their phone and taps Approve on the fifteenth. The attacker already had the password. Which change from the lesson directly stops this pattern?",
+      "options": [
+        "Number matching: the sign-in screen shows a number and the employee must pick the same one on the phone",
+        "Switching the prompts to SMS codes, because a text message cannot be sent repeatedly the way a push prompt can",
+        "Shortening the idle timeout on the session cookie so that a stolen session ends sooner than it does today",
+        "Requiring a much longer password so that the attacker could not have known it before the prompts began"
+      ],
+      "correct_index": 0,
+      "explanation": "This is an MFA fatigue attack: the attacker triggers prompts until the employee taps Approve to make them stop. With number matching the employee must choose the number shown on the sign-in screen, so a blind tap cannot complete the sign-in. NIST says the plain approve-on-the-phone method is no longer considered acceptable. A longer password does not help because the attacker already has it, session timeouts act after sign-in, and switching to SMS does not remove the pressure: anyone who knows the password can trigger repeated texts just as they trigger repeated prompts, and SMS brings the SIM-change weakness."
+    },
+    {
+      "stem": "An employee typed their password and the six-digit app code into a page that looked exactly like the company sign-in. The page passed both values to the real site at once, and the attacker is now signed in. Which method would have stopped this without the employee spotting the fake?",
+      "options": [
+        "A six-digit code that changes every 15 seconds instead of every 30, so a relayed copy goes stale far faster than today",
+        "An SMS code instead of an app code, because the phone network delivers it separately from the browser session",
+        "A passkey: the authenticator signs only for the real site's domain, so a look-alike site gets nothing to relay",
+        "A push prompt with Approve and Deny buttons, because the employee confirms the sign-in on a second device"
+      ],
+      "correct_index": 2,
+      "explanation": "This is an adversary-in-the-middle relay. Anything the person types, such as a one-time code, can be relayed to the real site, which is why NIST says typed values are not phishing-resistant. A passkey is tied to the site's domain (the RP ID): on a look-alike domain the browser cannot ask for the real one, so there is nothing to sign. Okta lists only Passkey (FIDO2 WebAuthn) and Okta FastPass as phishing-resistant, so a faster code, an SMS code or a push prompt does not close the gap."
+    },
+    {
+      "stem": "A new IT hire's only registered credential is a device-bound passkey on their one laptop, and the laptop is stolen. What does the lesson say about getting them back in?",
+      "options": [
+        "The passkey syncs through the vendor's cloud, so signing in on a replacement laptop works at once without any recovery step",
+        "A device-bound passkey has no copy elsewhere, so the account needs another registered authenticator or recovery process",
+        "The website holds the private key and can reissue it to the replacement laptop once the employee proves who they are",
+        "The employee can sign in with the public key, which the website keeps and will release to them if they ask for it"
+      ],
+      "correct_index": 1,
+      "explanation": "A device-bound passkey stays on one device or hardware security key and never leaves it, so a lost device means a lost credential. The WebAuthn specification says a site should make sure each account has an additional authenticator or an account recovery process. Syncing describes the other kind, a synced passkey. The private key is never sent to the website, and the public key is stored there but cannot be used to sign in."
+    },
+    {
+      "stem": "An employee completes MFA at 9 a.m. At 11 a.m. malware copies their browser's session cookie, and an attacker uses it from another computer without being asked for MFA. What explains this?",
+      "options": [
+        "MFA is checked at sign-in, and the cookie works as a bearer ticket, so whoever holds it is treated as already signed in",
+        "The employee's passkey synced itself to the attacker's computer when the malware ran, so the attacker answered the challenge",
+        "The HttpOnly flag makes the website skip MFA for any request that carries the cookie, so MFA is never asked again",
+        "The idle timeout switches MFA off after a short period of use so that employees are not interrupted while they work"
+      ],
+      "correct_index": 0,
+      "explanation": "After sign-in the site checks only the session cookie, not the password and MFA again. The cookie works like a bearer ticket: whoever holds it is treated as signed in, so stealing it skips MFA entirely. HttpOnly only stops scripts on the page from reading the cookie, and an idle timeout ends a session after inactivity rather than disabling MFA. Shorter timeouts, ending sessions and phishing-resistant sign-in reduce the risk."
+    }
+  ]
+}

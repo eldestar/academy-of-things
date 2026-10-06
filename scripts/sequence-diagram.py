@@ -3,6 +3,7 @@
 
     python3 scripts/sequence-diagram.py spec.json                       # print the block
     python3 scripts/sequence-diagram.py spec.json --insert lesson.md --after "## Heading"
+    python3 scripts/sequence-diagram.py spec.json --insert lesson.md --before "1. First list item"
     python3 scripts/sequence-diagram.py spec.json --insert a.md b.md c.md --after "## Heading"
 
 The block is raw HTML (inline SVG plus a <style>) that the engine renders as-is.
@@ -15,6 +16,7 @@ example a lesson's level variants) to keep every copy identical.
 
 Spec (JSON):
   id, prefix (unique short css prefix), title, desc (screen-reader text), duration (s, default 18)
+  legend (optional): override the legend words, keys front, back, bad, good
   lanes:  [{id, title, sub, hot?}]            2 to 4 lanes, left to right
   steps:  [{type: "arrow", from, to, label: [line, ...], badge?, tone?: front|back|bad, with_previous?}
            {type: "note",  under, lines: [line, ...], badge?, tone?: plain|good|bad, with_previous?}]
@@ -57,7 +59,7 @@ def build(spec):
         if st["type"] == "arrow":
             fx, tx = lx[st["from"]], lx[st["to"]]
             n = len(st["label"])
-            y = cursor + 16 * n + 10 if newslot else last_arrow[0]
+            y = cursor + 16 * n + 10   # a with_previous arrow shares the slot but gets its own row
             right = tx > fx
             x0 = fx + 14 if right else fx - 14
             x1 = tx - 14 if right else tx + 14
@@ -126,7 +128,13 @@ def build(spec):
 .{P}-pk.{P}-pkbad{{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}}
 .{P}-g{{opacity:.45;animation-duration:{dur}s;animation-timing-function:linear;animation-iteration-count:infinite}}
 svg.{P}-flow:hover .{P}-g,svg.{P}-flow:hover .{P}-pk{{animation-play-state:paused}}
-@media (prefers-reduced-motion:reduce){{.{P}-g{{animation:none;opacity:1}}.{P}-pk{{animation:none;display:none}}}}"""]
+.{P}-cb{{position:absolute;opacity:0;width:1px;height:1px;margin:0}}
+.{P}-btn{{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px {FONT};cursor:pointer;user-select:none}}
+.{P}-btn:hover{{background:var(--hover)}}
+.{P}-cb:focus-visible + .{P}-btn{{outline:2px solid var(--accent);outline-offset:2px}}
+.{P}-cb:checked + .{P}-btn .{P}-off,.{P}-cb:not(:checked) + .{P}-btn .{P}-on{{display:none}}
+.{P}-cb:checked ~ .{P}-box .{P}-g,.{P}-cb:checked ~ .{P}-box .{P}-pk{{animation-play-state:paused}}
+@media (prefers-reduced-motion:reduce){{.{P}-g{{animation:none;opacity:1}}.{P}-pk{{animation:none;display:none}}.{P}-btn{{display:none}}}}"""]
     for i in range(N):
         s, e = i / N * 100, (i + 1) / N * 100
         if i == 0:
@@ -159,10 +167,12 @@ svg.{P}-flow:hover .{P}-g,svg.{P}-flow:hover .{P}-pk{{animation-play-state:pause
         extra = "" if tone == "front" else f" {P}-pk{tone}"
         body.append(f'<circle class="{P}-pk {P}-p{i}{extra}" cx="{x0:.0f}" cy="{y}" r="5.5"/>')
 
-    legend = [("front", "normal event")]
-    if "back" in used_tones: legend.append(("back", "server to server"))
-    if "bad" in used_tones: legend.append(("bad", "failure mode"))
-    if "note-good" in used_tones: legend.append(("note-good", "what your handler must do"))
+    words = {"front": "normal event", "back": "server to server", "bad": "failure mode",
+             "good": "what your handler must do", **spec.get("legend", {})}
+    legend = [("front", words["front"])]
+    if "back" in used_tones: legend.append(("back", words["back"]))
+    if "bad" in used_tones: legend.append(("bad", words["bad"]))
+    if "note-good" in used_tones: legend.append(("note-good", words["good"]))
     ly, x = H - 24, 40
     for kind, text in legend:
         if kind.startswith("note"):
@@ -174,26 +184,36 @@ svg.{P}-flow:hover .{P}-g,svg.{P}-flow:hover .{P}-pk{{animation-play-state:pause
         body.append(f'<text class="{P}-dim" x="{tx}" y="{ly + 4}" style="text-anchor:start">{esc(text)}</text>')
         x = tx + int(len(text) * 6.4) + 34
 
+    # A real checkbox styled as a button: keyboard operable (Tab, Space) with no script, so a
+    # keyboard user can pause moving content (WCAG 2.2.2). Hover still pauses as well.
     svg = (
-        '<div style="overflow-x:auto;margin:20px 0">\n'
+        '<div style="position:relative;margin:20px 0">\n'
+        f'<input type="checkbox" id="{P}-pause" class="{P}-cb" />'
+        f'<label for="{P}-pause" class="{P}-btn"><span class="{P}-off">Pause animation</span><span class="{P}-on">Play animation</span></label>\n'
+        f'<div class="{P}-box" style="overflow-x:auto">\n'
         f'<svg class="{P}-flow" viewBox="0 0 {W} {H}" role="img" aria-labelledby="{P}-t {P}-d" '
         'style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">\n'
         f'<title id="{P}-t">{esc(spec["title"])}</title>\n'
-        f'<desc id="{P}-d">{esc(spec["desc"])} The diagram highlights each step in turn and pauses when you hover over it.</desc>\n'
-        + "\n".join(css) + "\n" + "\n".join(body) + "\n</svg>\n</div>"
+        f'<desc id="{P}-d">{esc(spec["desc"])} The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>\n'
+        + "\n".join(css) + "\n" + "\n".join(body) + "\n</svg>\n</div>\n</div>"
     )
     minidom.parseString(svg)
     assert not re.search(r"\n[ \t]*\n", svg), "blank line would end the HTML block early"
     return f'<!-- diagram:{spec["id"]} -->\n{svg}\n<!-- /diagram:{spec["id"]} -->', N
 
 
-def insert(path, block, spec_id, after, caption):
+def insert(path, block, spec_id, after, caption, before=None):
     t = open(path, encoding="utf-8").read()
     pat = re.compile(rf"<!-- diagram:{re.escape(spec_id)} -->.*?<!-- /diagram:{re.escape(spec_id)} -->", re.S)
     if pat.search(t):
         t = pat.sub(lambda m: block, t, count=1)
+    elif before:
+        at = re.search(rf"^{re.escape(before)}", t, re.M)
+        assert at, f"line not found in {path}: {before}"
+        tail = f"\n\n{caption}" if caption else ""
+        t = t[:at.start()] + block + tail + "\n\n" + t[at.start():]
     else:
-        assert after, "--after is required for the first insert"
+        assert after, "--after or --before is required for the first insert"
         line = re.search(rf"^{re.escape(after)}[ \t]*$", t, re.M)
         assert line, f"heading not found in {path}: {after}"
         tail = f"\n\n{caption}" if caption else ""
@@ -206,6 +226,7 @@ def main():
     ap.add_argument("spec")
     ap.add_argument("--insert", nargs="+", metavar="FILE")
     ap.add_argument("--after", help="exact heading line to insert under, e.g. '## The flow'")
+    ap.add_argument("--before", help="insert before the first line starting with this text instead (e.g. a numbered list)")
     ap.add_argument("--caption", help="one paragraph placed right after the diagram")
     a = ap.parse_args()
     spec = json.load(open(a.spec, encoding="utf-8"))
@@ -214,7 +235,7 @@ def main():
         print(block)
         return
     for f in a.insert:
-        insert(f, block, spec["id"], a.after, a.caption)
+        insert(f, block, spec["id"], a.after, a.caption, a.before)
         print(f"inserted {spec['id']} ({n} steps) into {f}")
 
 

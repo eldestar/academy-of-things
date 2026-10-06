@@ -24,6 +24,132 @@ The documented events are `dsync.activated`, `dsync.deleted`, `dsync.user.create
 
 ## Deprovisioning is three different events
 
+<div style="overflow-x:auto;margin:20px 0">
+<svg class="ds-flow" viewBox="0 0 760 772" role="img" aria-labelledby="ds-t ds-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="ds-t">SCIM provisioning and deprovisioning through WorkOS</title>
+<desc id="ds-d">The IdP provisions a user to WorkOS over SCIM, and WorkOS sends user and group events to the vendor app, which upserts them. When the admin deactivates the user, Okta sets active to false. In the default secure flow WorkOS sends dsync.user.deleted; in the custom flow it sends dsync.user.updated with an inactive state plus dsync.group.user_removed. The vendor must revoke sessions and offboard. A late retry of an older active update can resurrect the user unless the handler keeps a tombstone with the deprovision time. The diagram highlights each step in turn and pauses when you hover over it.</desc>
+<style>
+.ds-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.ds-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.ds-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.ds-front{stroke:var(--accent);stroke-width:2;fill:none}
+.ds-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.ds-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-badt{fill:var(--bad-text)}
+.ds-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-badge{fill:var(--accent)}
+.ds-b-bad{fill:var(--bad)}
+.ds-b-good{fill:var(--good)}
+.ds-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.ds-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.ds-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.ds-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.ds-pk.ds-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.ds-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.ds-flow:hover .ds-g,svg.ds-flow:hover .ds-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.ds-g{animation:none;opacity:1}.ds-pk{animation:none;display:none}}
+@keyframes ds-g0{0%{opacity:1}12.5%{opacity:1}12.51%,100%{opacity:.45}}
+@keyframes ds-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12.5%{opacity:1;transform:translateX(240px)}12.51%,100%{opacity:0;transform:translateX(240px)}}
+.ds-g0{animation-name:ds-g0}.ds-p0{animation-name:ds-p0}
+@keyframes ds-g1{0%,12.49%{opacity:.45}12.5%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
+@keyframes ds-p1{0%,12.49%{opacity:0;transform:translateX(0)}12.5%{opacity:1;transform:translateX(0)}25%{opacity:1;transform:translateX(240px)}25.01%,100%{opacity:0;transform:translateX(240px)}}
+.ds-g1{animation-name:ds-g1}.ds-p1{animation-name:ds-p1}
+@keyframes ds-g2{0%,24.99%{opacity:.45}25%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.45}}
+@keyframes ds-p2{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}37.5%{opacity:1;transform:translateX(240px)}37.51%,100%{opacity:0;transform:translateX(240px)}}
+.ds-g2{animation-name:ds-g2}.ds-p2{animation-name:ds-p2}
+@keyframes ds-g3{0%,37.49%{opacity:.45}37.5%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
+@keyframes ds-p3{0%,37.49%{opacity:0;transform:translateX(0)}37.5%{opacity:1;transform:translateX(0)}50%{opacity:1;transform:translateX(240px)}50.01%,100%{opacity:0;transform:translateX(240px)}}
+.ds-g3{animation-name:ds-g3}.ds-p3{animation-name:ds-p3}
+@keyframes ds-g4{0%,49.99%{opacity:.45}50%{opacity:1}62.5%{opacity:1}62.51%,100%{opacity:.45}}
+@keyframes ds-p4{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}62.5%{opacity:1;transform:translateX(240px)}62.51%,100%{opacity:0;transform:translateX(240px)}}
+.ds-g4{animation-name:ds-g4}.ds-p4{animation-name:ds-p4}
+@keyframes ds-g5{0%,62.49%{opacity:.45}62.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
+.ds-g5{animation-name:ds-g5}
+@keyframes ds-g6{0%,74.99%{opacity:.45}75%{opacity:1}87.5%{opacity:1}87.51%,100%{opacity:.45}}
+@keyframes ds-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87.5%{opacity:1;transform:translateX(240px)}87.51%,100%{opacity:0;transform:translateX(240px)}}
+.ds-g6{animation-name:ds-g6}.ds-p6{animation-name:ds-p6}
+@keyframes ds-g7{0%,87.49%{opacity:.45}87.5%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.ds-g7{animation-name:ds-g7}
+</style>
+<defs>
+<marker id="ds-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="ds-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<line class="ds-life" x1="110" y1="72" x2="110" y2="720"/>
+<line class="ds-life" x1="380" y1="72" x2="380" y2="720"/>
+<line class="ds-life" x1="650" y1="72" x2="650" y2="720"/>
+<rect class="ds-box" x="20" y="10" width="180" height="62" rx="10"/><text class="ds-ttl" x="110" y="36">Okta (any SCIM IdP)</text><text class="ds-sub" x="110" y="56">pushes, on its own schedule</text>
+<rect class="ds-hot" x="290" y="10" width="180" height="62" rx="10"/><text class="ds-ttl" x="380" y="36">WorkOS</text><text class="ds-sub" x="380" y="56">the SCIM server, read-only API</text>
+<rect class="ds-box" x="560" y="10" width="180" height="62" rx="10"/><text class="ds-ttl" x="650" y="36">Vendor app</text><text class="ds-sub" x="650" y="56">reads WorkOS, receives events</text>
+<g class="ds-g ds-g0">
+<text class="ds-main" x="252" y="108">SCIM provisions the user</text>
+<text class="ds-dim" x="252" y="124">create user, push group</text>
+<line class="ds-front" x1="124" y1="138" x2="366" y2="138" marker-end="url(#ds-m-front)"/>
+<circle class="ds-badge ds-b-front" cx="110" cy="138" r="12"/><text class="ds-bt" x="110" y="142.5">1</text>
+</g>
+<g class="ds-g ds-g1">
+<text class="ds-main" x="522" y="188">events: dsync.user.created</text>
+<text class="ds-dim" x="522" y="204">dsync.group.user_added</text>
+<line class="ds-front" x1="394" y1="218" x2="636" y2="218" marker-end="url(#ds-m-front)"/>
+<circle class="ds-badge ds-b-front" cx="380" cy="218" r="12"/><text class="ds-bt" x="380" y="222.5">2</text>
+<rect class="ds-note" x="536" y="236" width="214" height="31" rx="8"/>
+<text class="ds-nt" x="643" y="257">upsert user and membership</text>
+</g>
+<g class="ds-g ds-g2">
+<text class="ds-main" x="252" y="290">admin deactivates the user</text>
+<text class="ds-dim" x="252" y="306">Okta sets active = false</text>
+<line class="ds-front" x1="124" y1="320" x2="366" y2="320" marker-end="url(#ds-m-front)"/>
+<circle class="ds-badge ds-b-front" cx="110" cy="320" r="12"/><text class="ds-bt" x="110" y="324.5">3</text>
+</g>
+<g class="ds-g ds-g3">
+<text class="ds-main" x="522" y="370">secure flow (the default)</text>
+<text class="ds-dim" x="522" y="386">dsync.user.deleted</text>
+<line class="ds-front" x1="394" y1="400" x2="636" y2="400" marker-end="url(#ds-m-front)"/>
+<circle class="ds-badge ds-b-front" cx="380" cy="400" r="12"/><text class="ds-bt" x="380" y="404.5">4a</text>
+</g>
+<g class="ds-g ds-g4">
+<text class="ds-main" x="522" y="434">custom flow (via support)</text>
+<text class="ds-dim" x="522" y="450">dsync.user.updated, inactive</text>
+<text class="ds-dim" x="522" y="466">+ dsync.group.user_removed</text>
+<line class="ds-front" x1="394" y1="480" x2="636" y2="480" marker-end="url(#ds-m-front)"/>
+<circle class="ds-badge ds-b-front" cx="380" cy="480" r="12"/><text class="ds-bt" x="380" y="484.5">4b</text>
+</g>
+<g class="ds-g ds-g5">
+<rect class="ds-note-good" x="520" y="516" width="230" height="48" rx="8"/>
+<text class="ds-nt" x="635" y="537">revoke sessions, offboard</text>
+<text class="ds-nt" x="635" y="554">SCIM never ends a live session</text>
+<circle class="ds-badge ds-b-good" cx="520" cy="540" r="12"/><text class="ds-bt" x="520" y="544.5">5</text>
+</g>
+<g class="ds-g ds-g6">
+<text class="ds-main ds-badt" x="522" y="610">a late retry arrives</text>
+<text class="ds-dim" x="522" y="626">dsync.user.updated, state active</text>
+<line class="ds-bad" x1="394" y1="640" x2="636" y2="640" marker-end="url(#ds-m-bad)"/>
+<circle class="ds-badge ds-b-bad" cx="380" cy="640" r="12"/><text class="ds-bt" x="380" y="644.5">6</text>
+</g>
+<g class="ds-g ds-g7">
+<rect class="ds-note-good" x="520" y="668" width="230" height="48" rx="8"/>
+<text class="ds-nt" x="635" y="689">tombstone keeps the deprovision</text>
+<text class="ds-nt" x="635" y="706">time, so the old event is skipped</text>
+<circle class="ds-badge ds-b-good" cx="520" cy="692" r="12"/><text class="ds-bt" x="520" y="696.5">7</text>
+</g>
+<circle class="ds-pk ds-p0" cx="126" cy="138" r="5.5"/>
+<circle class="ds-pk ds-p1" cx="396" cy="218" r="5.5"/>
+<circle class="ds-pk ds-p2" cx="126" cy="320" r="5.5"/>
+<circle class="ds-pk ds-p3" cx="396" cy="400" r="5.5"/>
+<circle class="ds-pk ds-p4" cx="396" cy="480" r="5.5"/>
+<circle class="ds-pk ds-p6 ds-pkbad" cx="396" cy="640" r="5.5"/>
+<line class="ds-front" x1="40" y1="748" x2="70" y2="748"/><text class="ds-dim" x="78" y="752" style="text-anchor:start">normal event</text>
+<rect class="ds-note-good" x="262" y="740" width="22" height="16" rx="4"/><text class="ds-dim" x="292" y="752" style="text-anchor:start">what your handler must do</text>
+<line class="ds-bad" x1="520" y1="748" x2="550" y2="748"/><text class="ds-dim" x="558" y="752" style="text-anchor:start">failure mode</text>
+</svg>
+</div>
+
+Read the diagram top to bottom: steps 1 and 2 are the easy half. Step 3 onwards is where the three event shapes come from. Steps 6 and 7 are the failure the task at the end reproduces.
+
 The standards leave this to the provider. RFC 7643 defines `active` as the user's administrative status and says its meaning is up to the service provider. RFC 7644 lets a provider keep a deleted resource but requires 404s for it afterwards. Real IdPs differ:
 
 - **Okta** deprovisioning sets `active=false` on the SCIM app; deleting an already-deactivated profile sends nothing more (Okta docs).

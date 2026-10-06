@@ -6,6 +6,76 @@ You have configured SAML and OIDC apps in Okta for years. This lesson is the oth
 
 The first surprise: the vendor's app is not the SAML service provider. WorkOS is. The SP Entity ID, the ACS URL and the SP metadata you paste into Okta belong to WorkOS (the docs call them "Service Provider Details" on the connection). The vendor's app is an OAuth 2.0 client of WorkOS, which the docs describe as abstracting the IdP handshakes for SAML and OIDC alike.
 
+<div style="overflow-x:auto;margin:20px 0">
+<svg viewBox="0 0 720 548" role="img" aria-labelledby="aot-saml-t aot-saml-d" style="width:100%;min-width:600px;max-width:760px;height:auto;display:block;margin:0 auto">
+<title id="aot-saml-t">SP-initiated SAML sign-in through WorkOS</title>
+<desc id="aot-saml-d">Three parties: the vendor app, WorkOS, and the identity provider. The app redirects the browser to WorkOS, WorkOS redirects to the IdP with a SAML request, the IdP posts a signed assertion to WorkOS, WorkOS redirects back to the app with a code, and the app exchanges the code for a profile server to server.</desc>
+<style>
+.aot-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.aot-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.aot-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.aot-front{stroke:var(--accent);stroke-width:2;fill:none}
+.aot-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.aot-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-badge{fill:var(--accent)}
+.aot-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.aot-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+</style>
+<defs>
+<marker id="aot-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="aot-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+</defs>
+<line class="aot-life" x1="120" y1="72" x2="120" y2="498"/>
+<line class="aot-life" x1="360" y1="72" x2="360" y2="498"/>
+<line class="aot-life" x1="600" y1="72" x2="600" y2="498"/>
+<rect class="aot-box" x="30" y="10" width="180" height="62" rx="10"/>
+<text class="aot-ttl" x="120" y="36">Vendor app</text>
+<text class="aot-sub" x="120" y="56">OAuth 2.0 client of WorkOS</text>
+<rect class="aot-hot" x="270" y="10" width="180" height="62" rx="10"/>
+<text class="aot-ttl" x="360" y="36">WorkOS</text>
+<text class="aot-sub" x="360" y="56">the SAML service provider</text>
+<rect class="aot-box" x="510" y="10" width="180" height="62" rx="10"/>
+<text class="aot-ttl" x="600" y="36">Okta (any IdP)</text>
+<text class="aot-sub" x="600" y="56">the side you already run</text>
+<text class="aot-main" x="240" y="112">redirect to /sso/authorize</text>
+<text class="aot-dim" x="240" y="128">organization, redirect_uri, state</text>
+<line class="aot-front" x1="134" y1="142" x2="350" y2="142" marker-end="url(#aot-m-front)"/>
+<circle class="aot-badge" cx="120" cy="142" r="12"/><text class="aot-bt" x="120" y="146.5">1</text>
+<text class="aot-main" x="480" y="182">SAML request</text>
+<text class="aot-dim" x="480" y="198">HTTP-Redirect by default</text>
+<line class="aot-front" x1="374" y1="212" x2="590" y2="212" marker-end="url(#aot-m-front)"/>
+<circle class="aot-badge" cx="360" cy="212" r="12"/><text class="aot-bt" x="360" y="216.5">2</text>
+<rect class="aot-note" x="500" y="236" width="200" height="44" rx="8"/>
+<text class="aot-nt" x="600" y="255">user signs in at the IdP</text>
+<text class="aot-nt" x="600" y="271">(MFA, your policies)</text>
+<text class="aot-main" x="480" y="322">signed assertion</text>
+<text class="aot-dim" x="480" y="338">HTTP-POST to the ACS URL</text>
+<line class="aot-front" x1="586" y1="352" x2="370" y2="352" marker-end="url(#aot-m-front)"/>
+<circle class="aot-badge" cx="600" cy="352" r="14"/><text class="aot-bt" x="600" y="356.5">3a</text>
+<rect class="aot-note" x="280" y="372" width="160" height="30" rx="8"/>
+<text class="aot-nt" x="360" y="392">WorkOS verifies it</text>
+<text class="aot-main" x="240" y="432">redirect to your redirect_uri</text>
+<text class="aot-dim" x="240" y="448">code (valid 10 min) and state</text>
+<line class="aot-front" x1="346" y1="462" x2="130" y2="462" marker-end="url(#aot-m-front)"/>
+<circle class="aot-badge" cx="360" cy="462" r="14"/><text class="aot-bt" x="360" y="466.5">3b</text>
+<line class="aot-back" x1="134" y1="498" x2="350" y2="498" marker-end="url(#aot-m-back)"/>
+<circle class="aot-badge" cx="120" cy="498" r="12"/><text class="aot-bt" x="120" y="502.5">4</text>
+<text class="aot-main" x="240" y="486">POST /sso/token</text>
+<line class="aot-back" x1="350" y1="514" x2="130" y2="514" marker-end="url(#aot-m-back)"/>
+<text class="aot-dim" x="240" y="530">returns the profile</text>
+<line class="aot-front" x1="388" y1="522" x2="420" y2="522"/>
+<text class="aot-dim" x="540" y="526" style="text-anchor:middle">solid: through the user's browser</text>
+<line class="aot-back" x1="388" y1="538" x2="420" y2="538"/>
+<text class="aot-dim" x="540" y="542" style="text-anchor:middle">dashed: server to server</text>
+</svg>
+</div>
+
+The numbers match the steps below; step 3 covers both the assertion post (3a) and the redirect back with the code (3b).
+
 1. The app calls `getAuthorizationUrl` with exactly one selector: `organization`, `connection` or `provider`. It also passes `redirectUri` and an optional `state`.
 2. WorkOS sends the user to the IdP. By default the SAML request goes by HTTP-Redirect binding and the response comes back by HTTP-POST; support can switch a connection to POST for IdPs that need it.
 3. The IdP posts the assertion to WorkOS. WorkOS verifies it and redirects to the app's redirect URI with `code` (valid 10 minutes) and your `state`.

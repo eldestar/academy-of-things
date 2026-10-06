@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Code review of an SP: it calls a library to confirm the Response contains a valid XML signature, then reads the user with the XPath //saml:Assertion/saml:Subject/saml:NameID and takes the first match. A pentester takes a Response signed by the IdP, inserts an extra Assertion before the signed one, and logs in as another user. What is the defect and the fix?",
+      "options": [
+        "The signature algorithm is too weak for a bearer assertion; move the IdP from RSA-SHA1 to RSA-SHA256 and the forged assertion will fail verification",
+        "The SP did not check the AudienceRestriction on the first assertion; add that check and the inserted assertion would have been rejected by it",
+        "The Response should have been delivered with HTTP-Redirect so its signature sits in the query string, where an attacker cannot insert XML",
+        "Verification and extraction read different nodes; read every value from the element the verified Reference points at and reject extra assertions"
+      ],
+      "correct_index": 3,
+      "explanation": "This is signature wrapping. The original signed assertion is untouched and still verifies, but the application's lookup finds the inserted one first, so the verifier and the business logic read different nodes. The fix is to resolve the Reference the signature covers to its element, read every security-relevant value from that node, and reject documents with unexpected assertion counts or an ID declared twice. A stronger algorithm does nothing when the signed bytes never change. A forger can write the correct Audience into the inserted assertion. And the profile forbids HTTP-Redirect for the Response."
+    },
+    {
+      "stem": "Your SP accepts a Response up to five minutes after the bearer NotOnOrAfter to absorb clock skew. Its replay cache evicts each assertion ID exactly at NotOnOrAfter, and each of the six nodes keeps its own in-memory cache. The SP also accepts IdP-initiated (unsolicited) Responses. Which change closes the gap?",
+      "options": [
+        "Keep the per-node caches and pin each user to one node with sticky sessions, so a replay always reaches the node that recorded the ID",
+        "Hold each ID until NotOnOrAfter plus the five-minute allowance, in one store shared by all six nodes with an atomic check-and-insert",
+        "Drop the cache and rely on InResponseTo alone, because every SP-initiated Response is bound to a request the SP issued",
+        "Cut the skew allowance to zero so that NotOnOrAfter is exact, which makes an ID cache unnecessary"
+      ],
+      "correct_index": 1,
+      "explanation": "The profile requires the SP to keep used assertion IDs for as long as the assertion would be considered valid based on NotOnOrAfter (4.1.4.5). This lesson's own reasoning is that if you accept responses five minutes late, entries must live until NotOnOrAfter plus that allowance, otherwise the leniency window becomes a replay window. Per-node caches let a replay go to a node that never saw the ID, and the attacker, not the SP, picks the node, so sticky sessions do not help. InResponseTo helps only for SP-initiated flows and does not replace the mandated cache, since the unsolicited Responses this SP accepts carry none. Zero skew would reject legitimate users and still would not remove the requirement."
+    },
+    {
+      "stem": "A customer asks you to enable IdP-initiated SSO on your SP so users can click a tile. Which statement describes what you lose and what compensates?",
+      "options": [
+        "InResponseTo can no longer be checked because it must be absent; compensate with the ID cache, short validity, a RelayState allowlist, and off by default",
+        "Recipient and Audience no longer apply because no AuthnRequest names the ACS or the entity, so keep the signature check and the ID cache and drop those two",
+        "The signature requirement relaxes, because an unsolicited Response arrives over the IdP's own authenticated session instead of through the browser",
+        "Nothing is lost, because InResponseTo is optional in both flows and the SP simply skips that check whenever the attribute is missing from the Response"
+      ],
+      "correct_index": 0,
+      "explanation": "An unsolicited Response has no AuthnRequest behind it, so InResponseTo must be absent and the SP loses its strongest tie between a Response and a request it issued. The remaining checks, signature, Recipient, Audience and times, still apply in full, and the ID cache matters more. Compensate with a short window, accepting only the registered IdP and ACS, a RelayState allowlist, and keeping the flow off unless needed. The Response still travels through the browser, so signing is still required. InResponseTo is mandatory to match in the SP-initiated flow."
+    },
+    {
+      "stem": "A customer's IdP signs only the Response, not the Assertion. Your SP policy requires signed assertions, citing the profile; the customer's architect cites core section 5.3 on signature inheritance. Which position is defensible?",
+      "options": [
+        "Accept it unconditionally: the profile requires a signed Response with POST and says nothing about the Assertion, so a Response-only signature is fully conformant",
+        "Accept it if any ds:Signature in the document validates, since SAML places no restriction on where in the Response the signature element sits",
+        "Accept a Response signature only if the Assertion you consume lies inside the element its verified Reference covers; otherwise require its own signature",
+        "Follow core 5.3 alone: an unsigned assertion inside any signed message is trustworthy, because the signature is simply inherited by everything inside"
+      ],
+      "correct_index": 2,
+      "explanation": "The documents pull apart: the profile says assertions MUST be signed with POST and leaves the Response optional, while core 5.3 lets an assertion inherit the signature of an enclosing element when that signature applies to the Assertion and all its children. A defensible policy accepts inheritance only when the verified Reference covers the element you actually consume. Accepting any validating signature anywhere is the opening signature wrapping needs. Inheritance depends on what the signature applies to, not on the message merely being signed. And the profile does not make the Response signature the requirement; the assertion is."
+    },
+    {
+      "stem": "After the March 2025 ruby-saml advisories you audit your own SP: it validates the signature with one library's XML parser, then passes the original string to a second library's DOM parser to extract the NameID and conditions. What is the risk and the fix?",
+      "options": [
+        "No risk while both parsers are standards-compliant, because any given byte string has exactly one XML tree and both parsers will see it",
+        "A parser differential: the same bytes can yield different trees, so verified and read nodes may differ; use one parse tree for both",
+        "The risk is confined to DOCTYPE handling, so stripping any DOCTYPE with a regular expression before parsing is a sufficient fix",
+        "The risk was specific to Ruby; the Java and Python SAML libraries were not affected by any of the cases discussed in this lesson"
+      ],
+      "correct_index": 1,
+      "explanation": "The ruby-saml advisories describe exactly this: two parsers can produce entirely different document structures from the same XML input, which enables signature wrapping. Verifying on one tree and reading from another recreates the flaw, so verify and extract from a single parse tree and read from the verified node. The advisories name two triggers, DOCTYPE handling and namespace handling, so a regex for DOCTYPE does not cover the class. The Somorovsky study found wrapping flaws in 11 of 14 frameworks, and CVE-2017-11427 hit python-saml by a related route (XML comment handling in DOM and canonicalization APIs), so signature-handling bugs are not Ruby-only."
+    },
+    {
+      "stem": "A vendor IdP sends an EncryptedAssertion whose signature sits inside the assertion. Your handler verifies signatures on the raw Response first, finds none, and a developer proposes accepting the assertion unsigned because the transport is TLS. What is correct?",
+      "options": [
+        "Decrypt first, then verify the signature inside the decrypted assertion; only an encrypted NameID or Attribute reverses the order",
+        "Accept it unsigned: encryption gives integrity as well as confidentiality, so an assertion that decrypts must have come from the IdP",
+        "Verify a signature over the ciphertext in xenc:EncryptedData, because that is the element that actually arrived inside the Response",
+        "Always decrypt last, so that tampered messages are rejected by the signature check before any effort is spent on decrypting them"
+      ],
+      "correct_index": 0,
+      "explanation": "Signature validation and decryption run in the reverse order to signing and encryption. A signed assertion that is then encrypted carries its signature inside the ciphertext, so the SP decrypts first and then verifies. Only for an encrypted NameID or Attribute inside a signed assertion is it verify first, then decrypt. Encryption is a confidentiality mechanism and says nothing about who produced the content; with POST the assertions must still be signed. The signature does not cover the ciphertext element. Decrypting last is the reverse of the stated rule."
+    }
+  ]
+}

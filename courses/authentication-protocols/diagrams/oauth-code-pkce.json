@@ -1,0 +1,126 @@
+{
+  "id": "oauth-code-pkce",
+  "prefix": "oa",
+  "title": "OAuth 2.0 authorization code flow with PKCE",
+  "desc": "Three parties: the client app, the authorization server and the resource server. Step 1: the client redirects the user's browser to the authorization server with a code_challenge. Step 2: the user signs in and consents at the authorization server. Step 3: the authorization server redirects the browser back to the client's redirect URI with a code and the state value. Step 4: the client checks that the state matches the stored value, or relies on PKCE for CSRF protection where the authorization server is known to support it. Step 5: as a direct request rather than a browser redirect, the client posts the code and the code_verifier (and the redirect_uri if it was sent at step 1) to the token endpoint and receives an access token. A code stolen at step 3 is useless without the code_verifier. Step 6: the client calls the resource server with the access token. Step 7: the resource server checks that the token is genuine, meant for it, within its scope and not expired before serving the request.",
+  "duration": 22,
+  "legend": {
+    "front": "through the user's browser",
+    "back": "direct request, not a redirect",
+    "good": "a check to perform"
+  },
+  "lanes": [
+    {
+      "id": "client",
+      "title": "Client app",
+      "sub": "keeps the code_verifier"
+    },
+    {
+      "id": "as",
+      "title": "Authorization server",
+      "sub": "issues the tokens",
+      "hot": true
+    },
+    {
+      "id": "rs",
+      "title": "Resource server",
+      "sub": "the API"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "redirect to /authorize",
+        "client_id, redirect_uri, scope, state",
+        "code_challenge, method S256"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "user signs in and consents",
+        "AS binds the challenge to the code"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "client",
+      "label": [
+        "redirect to your redirect_uri",
+        "code and state"
+      ],
+      "badge": "3"
+    },
+    {
+      "type": "note",
+      "under": "client",
+      "lines": [
+        "check state matches",
+        "(or rely on PKCE)"
+      ],
+      "tone": "good",
+      "badge": "4"
+    },
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "POST /token",
+        "code, code_verifier, client_id",
+        "redirect_uri if sent at step 1"
+      ],
+      "tone": "back",
+      "badge": "5"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "client",
+      "label": [
+        "access token (maybe refresh token)",
+        "or an error if the verifier differs"
+      ],
+      "tone": "back",
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "a code stolen at step 3 fails:",
+        "the thief has no code_verifier"
+      ],
+      "tone": "bad",
+      "badge": "!"
+    },
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "rs",
+      "label": [
+        "API request",
+        "Authorization: Bearer <token>"
+      ],
+      "tone": "back",
+      "badge": "6"
+    },
+    {
+      "type": "note",
+      "under": "rs",
+      "lines": [
+        "check the token:",
+        "genuine, audience, scope, expiry"
+      ],
+      "tone": "good",
+      "badge": "7"
+    }
+  ]
+}

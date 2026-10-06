@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "An audit finding reads: 'Users stay signed in to the HR app for eight hours, although the SAML assertion's NotOnOrAfter is five minutes after issue.' The auditor asks you to cut the assertion lifetime to one minute to shorten sessions. What is the right response?",
+      "options": [
+        "Agree: the assertion's validity window is what keeps the app session alive, so cutting it to one minute shortens every session the app creates later on",
+        "Explain that the window only limits how long the SP accepts the assertion at sign-in, so tighten the app's session and reauthentication settings",
+        "Set SessionNotOnOrAfter to one minute instead, because the Web SSO profile requires the SP to end its session then, so the app's own session settings can stay as they are",
+        "Agree, but only for OIDC apps, because the ID token's exp claim is what ends the app's session once that expiry time has passed"
+      ],
+      "correct_index": 1,
+      "explanation": "The assertion is consumed once, at the ACS, and the app then creates its own session. NIST says the assertion's validity window does not indicate the lifetime of the session at the IdP or the RP, and that the RP session will usually far outlive the assertion. SessionNotOnOrAfter is not the fix either: Core defines it as the end of the session with the issuing IdP, the IdP may omit it, and the Web SSO profile only says an SP SHOULD discard its security context then, so it is not an app-session control you can rely on and the app's own session settings still need tightening. OIDC is no different, because the spec says the ID token's exp is unrelated to the lifetime of the session. Cutting the assertion to one minute would leave the eight-hour session untouched."
+    },
+    {
+      "stem": "A leaver was deactivated in the IdP at 09:00. At 10:30 security sees that account still editing records in a SAML SaaS app. Which statement about ending that session is accurate?",
+      "options": [
+        "Rotating the IdP's signing key invalidates the original assertion, so the app drops the session on the user's next request",
+        "Wait for the original assertion's NotOnOrAfter to pass, after which the app is required to discard the session it built from it",
+        "Okta Single Logout will end it, because SLO is triggered from the IdP side whenever an admin deactivates a user account",
+        "The session is the app's own, so the app must revoke it, e.g. by deprovisioning, or via SLO or Universal Logout where supported"
+      ],
+      "correct_index": 3,
+      "explanation": "After step 5 the app holds its own session and does not go back to the assertion, so deactivating the IdP account stops new sign-ins but not sessions already open. NIST says ending the IdP session will not necessarily terminate RP sessions, and Entra's documentation says the IdP cannot directly revoke a session token an app issued, so the app must revoke it. Rotating a key or waiting for NotOnOrAfter does nothing because the RP session is independent of the assertion once it has been consumed. Okta SLO is initiated only by the SP, and only for apps that support it, so an admin deactivation does not trigger it; Universal Logout and CAE are the other mechanisms, again only for supported apps."
+    },
+    {
+      "stem": "An app keys its accounts on the email claim. After a rebrand every user's address changed and each got a second, empty account; separately, a reused address exposed a former employee's records to a new hire. What do the specs say to key on?",
+      "options": [
+        "The issuer and the subject together (iss plus sub), the only combination OIDC guarantees to be unique",
+        "The email, normalised to lowercase and combined with the customer's tenant name, to keep it unique per tenant",
+        "preferred_username, because unlike email it is the login name the user chose and keeps across rebrands",
+        "The sub value alone, because a subject identifier is unique across every IdP the app accepts"
+      ],
+      "correct_index": 0,
+      "explanation": "OIDC Core section 5.7 says iss and sub together are the only claims an RP can rely on as a stable identifier, that an issuer MAY reuse an email value for different users and a user's email MAY change, and that email, phone_number, preferred_username and name MUST NOT be used as unique identifiers. That covers both of your incidents and rules out the lowercase-email and preferred_username options. The last option is the subtle one: sub is only locally unique within its issuer, and NIST warns that different IdPs choose subject identifiers independently and may collide, so sub must always be paired with iss."
+    },
+    {
+      "stem": "After an IdP signing-key rotation, your SAML app starts rejecting sign-ins with signature errors, while an OIDC app on the same IdP keeps working. What best explains the difference?",
+      "options": [
+        "SAML assertions are encrypted for the app with the old key, while ID tokens are not encrypted, so only SAML breaks",
+        "The OIDC app trusts the issuer name alone, so it never needs to check a signing key against any published key set",
+        "The SAML app verifies with the key stored from old metadata; the OIDC verifier re-fetches jwks_uri on an unfamiliar kid",
+        "The SAML app's AudienceRestriction no longer matches after a rotation, while ID tokens carry no audience at all to compare"
+      ],
+      "correct_index": 2,
+      "explanation": "SAML metadata carries the signing key in a KeyDescriptor, so the app verifies with whatever copy it stored, and a rotation means the stored copy has to be refreshed. OIDC publishes keys at the jwks_uri from the discovery document, and Core section 10.1.1 describes the verifier going back to that location when it sees a kid it does not know. The OIDC app is not skipping verification: step 5 lists the signature check for both protocols. Audience is unaffected by key rotation, and ID tokens do carry an aud claim that must contain the client_id. Encryption is a separate feature and not what the signing key is for."
+    },
+    {
+      "stem": "During customer onboarding a vendor developer says: 'We only accept sign-ins from customer IdPs, so any valid assertion belongs to an employee. We map every authenticated user to the Admin role to save work.' What is the correct critique?",
+      "options": [
+        "The assertion already carries the permissions the user holds in the app, so the app only needs to read the role out of it directly",
+        "Admin is acceptable if the AuthnContext shows MFA, because a strong login is what entitles a user to the top role",
+        "It is safe if AudienceRestriction is checked, because that proves the assertion was meant for this app and its users",
+        "Authentication proves who signed in; roles are the app's decision, so map attributes or groups to roles and deny by default"
+      ],
+      "correct_index": 3,
+      "explanation": "An assertion or ID token states who authenticated, how and when, plus attributes such as email and groups. It is not a grant of permissions, and mapping those attributes to roles is the app's own logic, which is why SSO does not authorize. AuthnContext describes how the user authenticated, and a strong method does not make someone an admin. AudienceRestriction only establishes the intended recipient of the assertion. Mapping everyone to Admin turns 'can authenticate at the customer IdP' into 'can do anything', which is the classic SSO-as-authorization failure."
+    },
+    {
+      "stem": "Auditors find a finance-app user who signed in with only an app-local password, with no MFA ever running, even though the IdP's app sign-in policy requires MFA and SAML SSO is configured for the app. What is the likely gap?",
+      "options": [
+        "App sign-in policies only evaluate OIDC apps, so a SAML app such as this one is never checked against them at all",
+        "The app still accepts local passwords, a side door that never reaches the IdP, so no IdP policy ran for that sign-in",
+        "The assertion had expired, so the app quietly fell back to its own login form and skipped the IdP altogether, with no error",
+        "Conditional-style policies run only before the first factor, so a user who knew the password slipped past them"
+      ],
+      "correct_index": 1,
+      "explanation": "IdP policy is evaluated during step 3, when the IdP authenticates the user. A sign-in that never goes through the IdP, such as a local password, an API key, a session already open or a token already issued, is a side door that policy never sees, so closing local logins for the app is the fix. The policy runs in step 3, whichever protocol sent the user to the IdP, so it is not limited to OIDC apps. An expired assertion makes the SP reject the sign-in; it does not make an app invent a local login. And Entra's Conditional Access is enforced after first-factor authentication, not before it."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A product team's web app creates a session whenever Okta's UserInfo endpoint accepts the bearer access token that their single-page front end sends. The app never receives or checks an ID token. In the design review, what is the core problem?",
+      "options": [
+        "The only problem is naming: the access token is a JWT carrying the same claims as the ID token, so reading `sub` from it is as good as using the ID token.",
+        "An access token is permission issued to the client and usually opaque to it, so nothing in it proves this login and a token copied from another session goes undetected.",
+        "UserInfo accepting the token proves the person just signed in to this app, so the design is sound and the ID token is redundant extra work for the team.",
+        "The design is sound if the app also checks the access token's `nonce` and `aud`, which every access token carries in a payload the app can read."
+      ],
+      "correct_index": 1,
+      "explanation": "Core section 1 says OAuth alone cannot provide information about the authentication of the user; OIDC adds the ID token for that. RFC 6749 describes the access token as permission issued to the client and usually opaque to it, so a client should not look inside it, and it carries no statement about this login. A token that merely works at UserInfo says nothing about which session it came from, which is the token substitution (cut and paste) risk in Core section 16.11. The ID token's `iss`, `sub`, `aud` and hashes are what let the client detect that. `nonce` and `aud` checks belong to the ID token."
+    },
+    {
+      "stem": "A finance backend accepts ID tokens forwarded to it by clients and verifies the signature, `iss` and `exp`. It never sent an authentication request, so it has no nonce to compare. An Okta admin shows that an ID token issued for the HR portal's client ID logs a user into the finance app. Both apps use the same Okta org. Which missing check explains it?",
+      "options": [
+        "`iss`: the finance app should have compared it with an issuer unique to the HR portal, which differs for each application in the org.",
+        "`email_verified`: a token whose address was unverified should be rejected, and the HR portal's tokens carry a different value.",
+        "`auth_time`: a token whose authentication time is older than the finance app's own session should be rejected as too old.",
+        "`aud`: it must contain the finance app's own `client_id`, so a token that names only the HR portal's client ID is rejected."
+      ],
+      "correct_index": 3,
+      "explanation": "One OP signs tokens for many apps, so a valid signature, the right `iss` and an unexpired `exp` say nothing about who the token was issued to. `aud` must contain the receiving app's `client_id`, and the token must be rejected if it does not or if it lists audiences the app does not trust. `iss` is the same for every app in one Okta org, so it cannot tell the apps apart. `email_verified` and `auth_time` describe the user and the authentication, not the intended recipient."
+    },
+    {
+      "stem": "After Okta's weekend key rotation, new logins to one internal app fail with \"invalid signature\" until the service is restarted, then work. The app loads the JWKS once at startup and keeps it in memory. Which fix addresses the cause?",
+      "options": [
+        "Re-fetch the JWKS from `jwks_uri` when a token has an unfamiliar `kid`, and otherwise cache per the response's Cache-Control headers.",
+        "Paste the new public key into the app's config after each rotation; Okta rotates on a fixed schedule, so the change can be planned in advance.",
+        "Verify each token against every key already cached and accept it if any key matches, so the app no longer depends on the `kid` header.",
+        "Raise the `exp` leeway to an hour, because apps that do not know the new key will treat tokens signed with it as already expired."
+      ],
+      "correct_index": 0,
+      "explanation": "In a rotation the OP adds a new key and signals it through `kid`; the verifier goes back to `jwks_uri` when it sees an unfamiliar `kid`, and Okta documents caching per Cache-Control. A cache that is never refreshed has no new key, so trying every cached key cannot help and accepting any key that matches is itself a failure mode. Hardcoded keys can fail because the schedule (currently four times a year) can change without notice. Leeway applies to `exp` and clock skew, not to unknown keys."
+    },
+    {
+      "stem": "During onboarding, a customer tells you their IT team recycles email addresses: a leaver's address is given to a new hire. Your app currently links each login to a user record by `email`, and the new hire is seeing the leaver's records. Which design fixes it?",
+      "options": [
+        "Key records on `email` and require `email_verified` to be true before linking, since a verified address is unique to one person.",
+        "Key records on `name` together with `email`, since two different people are unlikely to share both values at the same issuer.",
+        "Key records on the `iss` plus `sub` pair, and keep `email` as an attribute that can change or be reused by someone else later.",
+        "Key records on `preferred_username`, which the specification guarantees the OP never reuses for a different person."
+      ],
+      "correct_index": 2,
+      "explanation": "`iss` plus `sub` is the only guaranteed unique identifier for a user: `sub` is never reassigned within an issuer. `email`, `preferred_username` and `name` must not be used as unique identifiers, and an issuer may reuse an email for a different person later. `email_verified` only says the OP confirmed control of the address at the time, in a way that depends on the parties' arrangement; it does not make the address unique or permanent."
+    },
+    {
+      "stem": "Logins through one of three app servers fail intermittently with \"ID token expired\" within seconds of sign-in. The other two servers are fine, and the token's `exp` is in the future by Okta's clock. A teammate proposes fixes. Which is right?",
+      "options": [
+        "Remove the `exp` check on that server; the signature and `aud` checks already guarantee the token is fresh enough.",
+        "Ask Okta to lengthen ID token lifetimes, because `exp` also controls how long the user's session at the OP lasts.",
+        "Set the leeway equal to the token lifetime so that no difference between server clocks can ever matter again.",
+        "Correct that server's time sync, and allow only a small leeway for any remaining skew, no more than a few minutes."
+      ],
+      "correct_index": 3,
+      "explanation": "The server's clock disagrees with the OP's, so a fresh token looks expired. The specs allow some small leeway for clock skew, usually no more than a few minutes, but the real fix is correct time. `exp` must be checked; signature and `aud` say nothing about freshness. A leeway as long as the token lifetime would defeat the check. `exp` is the token's own lifetime, unrelated to the session at the OP, so lengthening it fixes nothing."
+    },
+    {
+      "stem": "Security requires that when the OP ends a terminated user's session, each app's own session for that user is ended even if the user's browser is closed or offline. Which mechanism meets this?",
+      "options": [
+        "RP-initiated logout from the offboarding script, which ends the OP session and every app's session together.",
+        "Front-channel logout, where the OP renders each app's registered logout URI in an iframe in the user's browser.",
+        "Back-channel logout, where the OP POSTs a signed Logout Token directly to each app's registered logout URI.",
+        "A short `exp` on the ID token, so that the app's session ends as soon as the token passes its expiry."
+      ],
+      "correct_index": 2,
+      "explanation": "Back-channel logout does not depend on the browser: the OP posts the Logout Token to the app's registered URI, provided that endpoint is reachable from the OP. Front-channel needs a live browser to render the iframe, and browsers that block third-party content can stop it working. RP-initiated logout is the app asking the OP to end its session when someone signs out; informing other apps is the job of front-channel or back-channel logout. `exp` is the token's lifetime, not the session lifetime, and none of these mechanisms makes an already issued access token or ID token stop working before it expires."
+    }
+  ]
+}

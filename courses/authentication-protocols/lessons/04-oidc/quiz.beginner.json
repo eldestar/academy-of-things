@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A developer on the ExampleCRM team says: \"Our login works by checking that the user's access token is present and unexpired, so we know who they are.\" You are asked to review the design. What is the problem?",
+      "options": [
+        "Nothing is wrong: the OP only issues an access token after the user has authenticated, so an unexpired one proves who just logged in.",
+        "The app should read the user's identity out of the access token itself, because it is a JWT whose payload lists claims just like the ID token's.",
+        "An access token is permission issued to the app, not a statement of who logged in; only the validated ID token proves that a login happened.",
+        "The app should skip tokens and use the `state` value from the redirect as proof of who signed in, because the OP only returns it after login."
+      ],
+      "correct_index": 2,
+      "explanation": "OAuth on its own cannot tell an app who the user is; OIDC adds the ID token for that. The access token is a string representing permission issued to the app, and an app usually treats it as opaque, so it is not something to read an identity from. Holding an unexpired access token does not prove a person just logged in; that is the tempting but wrong assumption. `state` only lets the app match the returning browser to the request it sent and says nothing about the user."
+    },
+    {
+      "stem": "HR renames Priya Shah to Priya Patel, and her email address changes. At her next login ExampleCRM, which identifies users by email, creates a second, empty account for her. Which change fixes the design?",
+      "options": [
+        "Identify users by `sub`, which the OP never reassigns to another person, and treat email as a detail that can change over time.",
+        "Identify users by `email` together with `email_verified: true`, since a verified address cannot change or be given to anyone else.",
+        "Identify users by `preferred_username`, which the OP guarantees is unique so two people can never share the same value.",
+        "Identify users by `name`, because it is the claim the OP refreshes first when HR updates a record and it is unique per person."
+      ],
+      "correct_index": 0,
+      "explanation": "`sub` is the OP's identifier for the user and is never reassigned to a different person, so it survives renames and email changes. A verified email is still just an email: `email_verified` means the OP says it checked, how it checked depends on the OP's arrangements, and an issuer may hand an old address to someone new. Neither `preferred_username` nor `name` is guaranteed to be unique, so both can collide or change."
+    },
+    {
+      "stem": "ExampleCRM and ExampleWiki both sign users in through the same Okta, and ExampleCRM also accepts ID tokens forwarded by its browser front end. A tester submits to ExampleCRM a valid, correctly signed, unexpired ID token that Okta issued for ExampleWiki, and ExampleCRM accepts it because it only checked the signature, `iss` and `exp`. Which check would have told ExampleCRM the token was meant for a different app?",
+      "options": [
+        "`kid`, the label in the token's header that names which of the OP's published keys signed it and therefore which app it belongs to.",
+        "`nonce`, the value that records which application the OP issued the token to and so identifies the intended recipient app.",
+        "`state`, the value the OP sends back unchanged, which is how the OP shows the token belongs to the app that started the sign-in.",
+        "`aud`, which must include ExampleCRM's own client ID; a token meant for another app of that OP has a different audience."
+      ],
+      "correct_index": 3,
+      "explanation": "The same OP signs tokens for many apps, so a good signature and the right issuer say nothing about who the token is for. `aud` (audience) must include the receiving app's own client ID, and a token meant for another app must be rejected there. `kid` only names a signing key. `nonce` ties a token to one browser's sign-in, not to an app. `state` only lets the app match the returning browser to the request it sent; it is not a claim in the token."
+    },
+    {
+      "stem": "On Monday morning every ExampleCRM login fails with \"invalid signature\". Okta rotated its signing keys over the weekend, and ExampleCRM's developers pasted the key set into a config file when they set the app up. What is the right fix?",
+      "options": [
+        "Switch signature checking off until the config file has been updated, because the other four checks still protect the app.",
+        "Read the keys from the OP's `jwks_uri` and fetch them again whenever a token carries a `kid` the app does not yet have.",
+        "Raise the allowed leeway on `exp` to several hours, because a rotation makes tokens look expired to apps with older keys.",
+        "Ask Okta to freeze the rotation schedule at four times a year so the config file stays correct between planned changes."
+      ],
+      "correct_index": 1,
+      "explanation": "Providers change signing keys on a schedule that can change without notice, so a hardcoded key set can fail. The app should get keys from `jwks_uri` (found in the discovery document) and re-fetch when it sees an unfamiliar `kid`. Turning off the signature check removes the one control that makes the token trustworthy. Leeway on `exp` handles clock drift, not unknown keys, and the lesson says the rotation schedule is not something the app can rely on staying fixed."
+    },
+    {
+      "stem": "A security tester captures Priya's ID token. It is still valid, correctly signed, from the right issuer and addressed to ExampleCRM. They replay it into a different browser session of ExampleCRM. Which check should stop it?",
+      "options": [
+        "`nonce`: the token carries the value created for Priya's original sign-in, which does not match the value stored for this new session.",
+        "`exp`: a captured token has always passed its expiry by the time it is replayed, so the time check rejects every replay.",
+        "`iss`: a replayed token comes from a different issuer than the original login, so the issuer comparison fails.",
+        "The signature: copying a token into another session breaks the signature because the signature covers the browser session."
+      ],
+      "correct_index": 0,
+      "explanation": "The app creates a fresh nonce for each sign-in and keeps it for that browser's session; the ID token carries it back. A replay into another session has a nonce that does not match what that session stored. The stem already says the token is unexpired, correctly signed and from the right issuer, and a signature covers the token's contents, not the browser it is presented in."
+    },
+    {
+      "stem": "Priya clicks Sign out in ExampleCRM, whose Sign out button only clears ExampleCRM's own session cookie, then clicks Sign in again. ExampleCRM sends her to Okta, and Okta immediately returns her with a new code and no password prompt. The help desk suspects a bug. What is the most likely explanation?",
+      "options": [
+        "Signing out removed her `sub`, so Okta issued her a new identifier and treated her as a brand new user who needed no prompt.",
+        "Her ID token had not yet reached its `exp`, so Okta skipped authentication until the token's lifetime ran out.",
+        "Okta's keys rotated during her session, and a rotation resets the prompt for every user at the next sign-in.",
+        "Sign out ended only ExampleCRM's session. Her separate Okta session is still active, so Okta signs her straight back in."
+      ],
+      "correct_index": 3,
+      "explanation": "The app and the OP each keep their own session. Signing out of the app ends the app's session only; the OP still considers Priya signed in and vouches for her again immediately. To end the OP session the app has to send the browser to the OP's logout address. `sub` is stable and never reassigned, so it does not change on sign out. `exp` is a token lifetime and unrelated to the session at the OP. Key rotation affects signatures, not prompts."
+    }
+  ]
+}

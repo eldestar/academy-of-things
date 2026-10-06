@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Your payments API validates self-contained JWT access tokens locally and reads a groups claim. Security wants a removed approver blocked from approving wires at once, but cannot afford a lookup on every read call. Which design fits the trade-offs?",
+      "options": [
+        "Cut every access token lifetime to one minute so group changes always show up, and drop live checks entirely to keep the API simple and fast",
+        "Rely on revoking the access token at the authorization server, since the API will see the revocation without needing to call anything",
+        "Keep a long-lived cache of groups in the API and refresh it nightly, because group data changes slowly, the token is already signed, and a lookup per call is too expensive",
+        "Keep coarse claims for routine reads, accept the token lifetime as the revocation window, and make a live check before the wire approval"
+      ],
+      "correct_index": 3,
+      "explanation": "RFC 7009 section 3: a self-contained token needs no authorization server call, so revocation needs extra signalling, and short lifetimes only bound the window. The design rule is to classify decisions by blast radius: claims for coarse, slow-changing facts, with the token lifetime as the revocation SLA, and a live check for high-impact actions. One-minute tokens push the cost into constant refreshes without giving a guarantee. Revoking at the server is invisible to a resource server that validates locally. A nightly cache is exactly the freshness-versus-security trade-off NIST 3.3.1 warns about."
+    },
+    {
+      "stem": "A multi-tenant SaaS needs tenant admins who manage only their own tenant, plus per-document sharing across tenants for single customers. The team has defined an admin-org-42 role per tenant and a viewer-doc-9001 role per share. What is the sound critique and alternative?",
+      "options": [
+        "A ReBAC problem: per-tenant and per-share roles are how RBAC explodes, and one stored tuple per share avoids multiplying roles",
+        "Add more attributes: ABAC with a tenant attribute on every user solves per-document sharing without any per-share data to maintain, since policies are written over attributes, not lists",
+        "Nothing is wrong: RBAC with role hierarchies is the standard model and role count is not a scalability limit in practice",
+        "Switch to ACLs on every document, because lists of identities on each object solve sharing and prevent privileges from accumulating over time as people move around"
+      ],
+      "correct_index": 0,
+      "explanation": "Roles per tenant and per share are the multiplication the lesson calls role explosion; OpenFGA's docs say (a vendor's claim) that per-tenant roles multiply while ReBAC takes one tuple per share, and Zanzibar-style tuples (object#relation@user) also express nested groups. Attributes can express tenant membership but a per-document share is a relationship, not a user attribute. ACLs are the model NIST says leaves users accumulating privileges when removal is neglected, and they have no types or inheritance. A hierarchy only relates roles by inheritance, so admin-org-42 and admin-org-43 remain separate roles."
+    },
+    {
+      "stem": "In your authorization store, an owner removes Bob from a group and immediately saves a new document version. An ACL replica that has not yet seen the removal serves the check, and Bob reads the new version. Which mechanism addresses this class of problem?",
+      "options": [
+        "Shorten the application's own cache TTL for decisions, which makes the replica lag irrelevant for practical purposes and closes the problem completely for every later check",
+        "Treat it as a data-loss bug; add synchronous encryption of the document so that stale ACLs can never leak content to anyone",
+        "Evaluate checks with a consistency token such as Zanzibar's zookie, stored with the content version, so ACL data is no older than that version",
+        "Accept eventual consistency, since ACL changes are rare and removals will converge before most users could notice anything"
+      ],
+      "correct_index": 2,
+      "explanation": "This is the new enemy problem: applying an old ACL to new content. Zanzibar addresses it with external consistency plus snapshot reads of bounded staleness: the client keeps a zookie with each content version, and a check is evaluated on ACL data no older than that timestamp. A shorter application cache narrows the window but does not order ACL writes relative to content writes. Encryption does not fix who the replica thinks may read. Eventual consistency is exactly what lets the stale check happen."
+    },
+    {
+      "stem": "A CI pipeline must deploy to AWS. A proposal stores an IAM user access key in the CI secret store with quarterly rotation. Another proposes GitHub Actions OIDC federation to an AWS role. A third has the team lead create an Okta API token for a deploy-status integration. Which is the best design and why?",
+      "options": [
+        "The IAM user key, because quarterly rotation makes a long-lived stored secret equivalent in risk to a short-lived token",
+        "OIDC federation: the workflow presents a short-lived token naming its source in sub and gets temporary credentials, so there is no stored long-lived secret",
+        "The Okta token, because tokens valid 30 days from last use are shorter-lived than keys and do not need a named owner",
+        "OAuth client credentials with a refresh token, because the refresh token lets the pipeline renew access without any stored client secret at all"
+      ],
+      "correct_index": 1,
+      "explanation": "GitHub's OIDC exchange gives short-lived tokens, so you do not store long-lived cloud credentials, and AWS lists role federation with a web identity JWT as the way to give workloads outside AWS temporary credentials; long-term keys are the exception. Rotation shortens exposure but leaves a secret to leak and to orphan. An Okta API token inherits the creating admin's privileges and is deprovisioned when that person is deactivated, coupling automation to a human, and Okta recommends OAuth 2.0 over such tokens. RFC 6749 section 4.4.3 says a refresh token SHOULD NOT be issued for client credentials, and the client still holds a secret."
+    },
+    {
+      "stem": "A leaver runbook step says: SCIM PATCH active=false to the CRM, HTTP 200, ticket closed. An auditor asks what shows the CRM access is actually gone. What is the gap and the fix?",
+      "options": [
+        "None: RFC 7644 makes the SCIM response authoritative, so a 200 proves that the account, sessions and keys are all removed from the CRM",
+        "Wait for the longest token lifetime to pass and then close the ticket, since expiry always removes every credential the person held, including keys and shared secrets",
+        "Re-activate the user and then delete the CRM account, because only deletion is accepted by auditors as evidence of removal",
+        "The meaning of active is up to the provider, so verify observable end state (account, sessions, keys, tokens) and keep the evidence with the ticket"
+      ],
+      "correct_index": 3,
+      "explanation": "RFC 7643 describes active as administrative status whose definitive meaning is determined by the service provider; a 200 shows the write was accepted, not that sessions, API keys or tokens died. Treat deactivated as a claim and verify the surfaces: account state, sessions, keys, tokens, forwarding, shared secrets. Waiting for expiry helps only for tokens and never for API keys or shared secrets. Re-activating the user restores a sign-in path rather than proving removal, deletion is irreversible per Okta, and CIS 6.2 notes disabling instead of deleting may be needed to preserve audit trails, so deleting is not what auditors require."
+    },
+    {
+      "stem": "Finance staff sometimes cover for each other, so some people legitimately hold both the invoice-creator and invoice-approver roles. Policy: nobody may create and approve in the same session. Which control matches, and what does it constrain?",
+      "options": [
+        "Static separation of duty, because it prevents any user from being assigned both roles at all, which is exactly what the policy requires of people who cover for each other",
+        "A role hierarchy, because making approver senior to creator stops one person from using both roles together in a session",
+        "Dynamic separation of duty: it limits which roles can be active within or across a user's sessions, so both can be assigned but not used together",
+        "Core RBAC, because it requires that a user can exercise only one role's permissions at a time, which satisfies the policy"
+      ],
+      "correct_index": 2,
+      "explanation": "In the NIST RBAC model, static SoD is a pair (role set, n) limiting assignment: no user is assigned n or more roles from the set, which would forbid the legitimate cover arrangement. Dynamic SoD constrains which roles may be active within or across a user's sessions, so a person may hold both and never combine them. Core RBAC requires the opposite of a one-role limit: users can exercise the permissions of multiple roles at once. A hierarchy is about inheritance between roles, not about restricting which roles can be combined."
+    }
+  ]
+}

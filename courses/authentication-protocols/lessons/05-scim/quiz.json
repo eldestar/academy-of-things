@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "An auditor asks why a terminated contractor still appears in a vendor app after you deactivated them in Okta, and wants proof the account was deleted. The app is an OIN integration. What does Okta send, and what should you tell the auditor?",
+      "options": [
+        "A DELETE on /Users/{id}; the vendor soft-deleted the row afterwards, so explain to the auditor that the account was removed but retained for records",
+        "A PATCH replacing active with false and no DELETE for users; the app defines what inactive means, so show how it treats the inactive account",
+        "A PUT of the whole profile with active omitted, which the app reads as a deletion request and then keeps for 30 days before purging it",
+        "Nothing yet; Okta only deprovisions in the app after the user is also unassigned, and the unassignment is what finally sends the DELETE"
+      ],
+      "correct_index": 1,
+      "explanation": "For OIN apps Okta deprovisions by sending active=false as a PATCH; it does not send DELETE for users, and it sends nothing more if an admin later deletes the already deactivated profile. RFC 7643 leaves the definitive meaning of active to the service provider, so the evidence an auditor needs is the vendor's handling of the inactive account (blocked sign-in, licence freed), not a delete. PUT is what apps built with the App Integration Wizard receive, and it carries active=false rather than omitting it. Unassignment is not a trigger for DELETE, because Okta never sends DELETE for users."
+    },
+    {
+      "stem": "A vendor's new SCIM server works with Okta but answers every Entra PATCH, including group membership changes, with 400. Its PATCH code rejects any op that is not exactly add, remove or replace. Entra's POST calls that create users and groups succeed. What is the most likely cause?",
+      "options": [
+        "Entra authenticates with a different scheme than Okta, so the server rejects its token on group calls only while accepting it on user calls",
+        "Entra updates group membership with PUT rather than PATCH, and the server implemented only PATCH for the /Groups endpoint, so it answers 400",
+        "Entra emits op as Add, Replace and Remove, and Microsoft's page tells servers not to require a case-sensitive match on that value",
+        "Entra batches membership changes into one /Bulk request, and the server has no /Bulk endpoint to receive it, so it answers 400"
+      ],
+      "correct_index": 2,
+      "explanation": "Microsoft's SCIM page says Entra emits op values as Add, Replace and Remove and tells servers not to require a case-sensitive match, while the RFC examples are lowercase and Okta's are lowercase too. A strict comparison fails on every capitalised Entra PATCH, user or group, and not on POST creates, which carry no op. A rejected token would fail every call, including the creates, and the stem says those succeed. Entra provisions groups only if the app supports PATCH, so it does not fall back to PUT for membership. Entra's page says it does not support /Bulk, so no batched request arrives."
+    },
+    {
+      "stem": "In Okta, the group Eng is assigned to a vendor app and also pushed to it with Group Push. Dana is added to Eng and shows as assigned, but the vendor's Eng group never lists her. A vendor admin has also been adding people to Eng by hand in the app. What should you do?",
+      "options": [
+        "Push a separate group for membership, keep Eng for assignment only, and stop anyone editing the pushed group by hand in the vendor app",
+        "Add Dana to the pushed group inside the vendor app as well, because Okta reconciles membership in both directions after any change",
+        "Remove Dana's SCIM user and let the next assignment recreate it, because Okta pushes membership only at the moment it creates a user",
+        "Ask the vendor to accept PUT for groups, because OIN apps receive the whole group in one PUT and the vendor's server is dropping it"
+      ],
+      "correct_index": 0,
+      "explanation": "Okta does not support using the same group for app assignment and Group Push; you create a separate group configured to push. Okta also manages pushed groups from Okta, and edits made to the group in the target app cause synchronization problems, so manual additions add to the drift rather than fixing it. Membership changes are sent as updates (a PATCH for OIN apps) whenever the user is in the group, assigned and the group is pushed, not only at creation. PUT of the full group is what apps built with the App Integration Wizard send, not OIN apps."
+    },
+    {
+      "stem": "During a bulk onboarding the vendor's SCIM server starts answering 429, with the header Retry-After: Wed, 21 Oct 2026 07:28:00 GMT. What will Okta do?",
+      "options": [
+        "Pause the task, wait until the date and time in that header, as the header says, and then retry the request once after that moment",
+        "Fail the provisioning task immediately because the header value is malformed, and mark every affected user as not provisioned in the log",
+        "Retry the request every minute until the server stops returning 429, keeping the same wait and never giving up on the task itself",
+        "Pause, wait five minutes (it reads only integer seconds), double the wait on each further 429, and fail the task after the 10th attempt"
+      ],
+      "correct_index": 3,
+      "explanation": "Okta pauses the task on 429 and reschedules it. If Retry-After holds integer seconds it waits exactly that long; if the header is missing or in an unsupported format such as an HTTP-date, it defaults to five minutes. For each further 429 it doubles the previous wait, and after the 10th attempt fails the task permanently, so a person has to intervene. It does not fail instantly, wait for a date it cannot parse, or retry on a fixed schedule. RFC 7644 itself never mentions 429, so this behaviour comes from Okta's documentation."
+    },
+    {
+      "stem": "After you connect a custom SCIM app to Okta, every assigned user who already exists in the vendor app produces 409 Conflict, while genuinely new users are created fine. The vendor's logs show that Okta's GET /Users?filter=userName eq \"...\" requests return totalResults 0 even for users that exist. What is wrong?",
+      "options": [
+        "The vendor's POST handler ignores userName uniqueness, which makes Okta retry the create until it gets a response it accepts",
+        "The lookup filter is broken, so Okta believes the user is new and sends a create, which the uniqueness rule rightly rejects",
+        "Okta's lookup uses externalId, which the vendor does not store, so a miss is expected and the 409 can safely be ignored",
+        "The vendor must return 404 instead of an empty list for no match, because the empty 200 response is what triggers the create"
+      ],
+      "correct_index": 1,
+      "explanation": "Okta decides between update and create by running GET /Users?filter=userName eq \"...\" on the identifier configured for the integration, and creates only when that lookup finds nothing. If the lookup wrongly reports no match for a user the app holds, Okta POSTs a create, and the server correctly answers 409 with scimType uniqueness because the userName exists; the fix is the filter, not the 409. A POST handler that ignored uniqueness would create duplicates rather than return 409. The lookup is on userName, not externalId (Okta's reference describes externalId inconsistently, so do not build on it). Okta accepts an empty list or a 404 as not found, so changing to 404 would not fix a filter that never matches."
+    },
+    {
+      "stem": "A security review finds that a contractor deactivated in Okta at 09:00, with the vendor's SCIM log showing the PATCH accepted, still used the vendor app at 14:00 from a session opened at 08:00. Which change closes the gap?",
+      "options": [
+        "Ask Okta to send DELETE as well on deactivation, because RFC 7644 says that a deleted user's sessions must be ended by the server",
+        "Raise the IdP's sync frequency so that the active=false update reaches the app sooner than it reached it at 09:00 this morning",
+        "Have the vendor's active=false handler revoke that user's sessions and tokens, since no RFC 7644 operation ends a session",
+        "Remove the user from the Okta group that is pushed to the app, because pushing that membership change ends the user's sessions"
+      ],
+      "correct_index": 2,
+      "explanation": "The update reached the app and was accepted, so more frequent syncing changes nothing. None of the operations and endpoints in RFC 7644 ends a session or revokes a token, and RFC 7644 does not say a delete does either; Okta also never sends DELETE for users. A pushed group change is just another PATCH on the Group resource. The only reliable control is in the app: revoke sessions and tokens when active=false is saved, or check active on every use."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Your server keeps a deleted user's row with a deleted_at stamp, and after DELETE it returns 404 for that id. Months later HR rehires the person and the IdP sends POST /Users with the same userName. Your unique index still covers the soft-deleted row, so the create gets 409. What does RFC 7644 expect here?",
+      "options": [
+        "409 is right, because userName must be unique across every user the service has ever held, deleted or not, so the old row still blocks the create",
+        "Reactivate the old row and answer 200 with its original id, because the data still exists and the earlier DELETE only hid it from queries",
+        "Answer 201 but reuse the original id, so that the IdP's cached link to the old record keeps working after the rehire without a new lookup",
+        "A 201 with a new id: the deleted user should not count in the conflict check, and the old id must keep returning 404 for every later operation"
+      ],
+      "correct_index": 3,
+      "explanation": "RFC 7644 section 3.6 lets a provider keep deleted data but requires 404 for every later operation on the deleted resource, and says a create with the same userName SHOULD NOT fail with 409 because of the deleted resource. RFC 7643 requires id to be stable and non-reassignable, so a new resource gets a new id; reviving or reusing the old one would break both the 404 rule and the id rule. Back the uniqueness index with a partial index that excludes deleted rows."
+    },
+    {
+      "stem": "To be safe, your server hides users with active=false from every GET and filter query, treating inactive as gone. After a leave of absence Entra tries to reactivate a user and provisioning fails with duplicate errors. What is the design fault?",
+      "options": [
+        "Inactive users must still be returned with active false and only hard-deleted users omitted, or Entra's lookup misses the existing record and its create hits the uniqueness rule",
+        "The server should have deleted the user at deactivation, so that the later create from Entra would have succeeded and produced a fresh id for that person without any conflict",
+        "The server should have freed the userName at the moment active became false, because that is what active false is defined to mean in RFC 7643 for every provider",
+        "Entra should send DELETE at deactivation; its use of active=false instead of a delete is a non-compliant dialect that servers do not need to support at all"
+      ],
+      "correct_index": 0,
+      "explanation": "Entra matches by querying the target with its matching attribute and creates the user only when nothing matches; its documentation says an inactive user should be returned, and only a hard-deleted user should not be. Hiding inactive users makes the match miss, Entra creates, and the userName that still exists gives a uniqueness conflict. RFC 7643 leaves the meaning of active to the provider and says nothing about freeing userName. Deleting at deactivation would also break the restore path Entra uses. Entra does send DELETE, by default only for a hard delete (Microsoft names exceptions for apps without soft-delete support, but active=false is its normal deactivation)."
+    },
+    {
+      "stem": "Entra's documented group removal is {\"op\":\"Remove\",\"path\":\"members\",\"value\":[{\"value\":\"u1\"}]}. RFC 7644 section 3.5.2.2 says a remove on a multi-valued attribute with no filter removes all values. For a server that has to work with Entra by default, how should your PATCH handler treat this request?",
+      "options": [
+        "Follow the RFC literally and empty the group, since a path with no filter removes every value and the value member is not defined for remove",
+        "Reject it with 400 invalidPath, because a compliant remove carries its filter inside path, and tell the customer to enable the compatibility flag",
+        "Remove only the listed ids when value is present, empty the group only for a path-only remove on members, and accept Remove in any letter case",
+        "Treat it as a replace of members with the listed ids, so the group ends up containing exactly u1 and nobody else after the request"
+      ],
+      "correct_index": 2,
+      "explanation": "Entra's request means remove these members. The RFC defines remove by path alone, and its own remove-all example is a path-only remove with no value; it defines no value on remove, so applying the path-only rule to Entra's request would empty the group, a data-loss bug triggered by a documented client. Rejecting it breaks group removals from Entra by default, since the RFC-shaped form sits behind a tenant URL flag and Microsoft lists the change as not done. Treating it as replace inverts the intent, leaving only the removed user. A tolerant handler keeps the RFC rule (empty the group) for a bare path-only remove, honours ids in value when present, and does not require op to be lowercase."
+    },
+    {
+      "stem": "Okta's import of your /Users pages with count=100 and startIndex 1, 101, 201. Users created during the import are sometimes skipped or listed twice, and a colleague proposes four fixes. Which one actually makes paging stable?",
+      "options": [
+        "Order by meta.lastModified descending, so that the most recently changed users always appear on the first page of every import run and nothing recent is missed",
+        "Order every list response by an immutable key such as id or creation sequence, so repeated startIndex and count calls cut one stable ordering of the users",
+        "Return all users in one response whenever totalResults is larger than count, so that no page boundary can skip or repeat anyone at all in the import",
+        "Replace startIndex with an opaque nextCursor token in ListResponse, and ignore startIndex and count in the request from now on, which fixes the skipping"
+      ],
+      "correct_index": 1,
+      "explanation": "RFC 7644 paging is stateless, so the results can differ between calls and clients must expect that; Okta additionally requires the same ordering for any count and startIndex. This is a design recommendation rather than an RFC rule: an immutable sort key makes startIndex and count cut a consistent sequence, so new users append at the end instead of shuffling pages. lastModified changes on every edit and moves users between pages. The server MUST NOT return more than count. ListResponse defines no cursor, and Okta advances startIndex by 100, so a cursor would never be used."
+    },
+    {
+      "stem": "An IdP's POST /Users times out on its side after your server has already committed the user. The IdP replays the same POST. RFC 7643 and 7644 define no idempotency key. What should your server return for the replay?",
+      "options": [
+        "A 201 with the stored record again, because the RFC requires a retried create to be idempotent and return the same resource each time",
+        "A 200 with the stored record, treating the replay as an update because the externalId in the request already matches an existing user of the app",
+        "A 202 Accepted, queueing the replay behind the first request so that the user is created only once and the client polls for the result",
+        "A 409 with scimType uniqueness, which the RFC requires for a duplicate userName, leaving the client to resolve the replay with a lookup"
+      ],
+      "correct_index": 3,
+      "explanation": "RFC 7644 section 3.3 requires 409 with scimType uniqueness when a create conflicts with an existing resource such as a duplicate userName, and success on a create is 201 for a newly created resource. The RFC defines no idempotency key and no 202 for creates, so silently returning the stored record would hide a genuine duplicate from a different caller. Because the lost 201 is a normal failure, IdPs depend on the lookup by userName or externalId to find the id of the user that exists."
+    },
+    {
+      "stem": "Audit finding: an engineer's personal API token, minted in your app, still worked three days after the IdP deactivated them. Your SCIM log shows PATCH active=false returned 200. Which change closes the gap?",
+      "options": [
+        "Ask the IdP to send DELETE after the PATCH, because RFC 7644 section 3.6 requires a deleted user's credentials to be invalidated as well as the record",
+        "Return 404 for the user from now on, which RFC 7644 defines as invalidating every token that was ever issued to that user by the app, however it was minted",
+        "Revoke sessions, refresh tokens and API tokens in the active=false handler, or check active on every use, because RFC 7644 has no operation for it",
+        "Shorten the lifetime of the SCIM connection's bearer token, because the engineer's personal token is derived from that connection credential and expires with it"
+      ],
+      "correct_index": 2,
+      "explanation": "No operation or endpoint in RFC 7644 ends a session or revokes a token, so a successful PATCH only changes the stored account. The revocation must be in your code: either push it when active=false is saved, or pull it by checking active whenever a credential is used, and do both for long-lived credentials. Section 3.6 says nothing about credentials, and a 404 is just a response code. Section 7.4 says bearer tokens must have a limited lifetime without saying whose; read in the SCIM-connection context it concerns the credential the IdP presents, and nothing in it says that credential derives or expires a user's personal token."
+    }
+  ]
+}

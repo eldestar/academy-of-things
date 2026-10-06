@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Priya signs in to Acme Tracker through SSO. A help-desk lead asks which system produced the signed statement about Priya that Acme Tracker accepted. What is the answer?",
+      "options": [
+        "Acme Tracker itself, after it compared the password she typed with the copy of her account that it keeps",
+        "Priya's browser, which builds the statement from her saved sign-in and hands it to the app to present",
+        "The identity provider, which checked her password and MFA and signed the assertion with its key",
+        "The ACS URL, the address on the IdP that puts the Response together before it sends it on"
+      ],
+      "correct_index": 2,
+      "explanation": "The identity provider authenticates the person and issues the assertion, signed with a private key only it holds. The service provider, here Acme Tracker, never sees her password; it only consumes the assertion. The browser is just the courier that carries the messages between the two. And the ACS URL is an address on the app, not on the IdP: it is where the Response is delivered."
+    },
+    {
+      "stem": "A new colleague worries that SSO is unsafe because the sign-in message passes through Priya's own browser, so she could edit it to say she is an administrator. What protects the app?",
+      "options": [
+        "The assertion is signed with a key only the IdP holds, and the app checks it against the IdP certificate on file",
+        "The browser scrambles the message with base64 before sending it, so Priya cannot read or change what it says",
+        "The app phones the IdP over a private direct link to confirm every message, because the two talk in the background",
+        "The RelayState note locks the message to Priya's session, so any change to the assertion makes the app reject it"
+      ],
+      "correct_index": 0,
+      "explanation": "The browser is only a courier, so the app trusts the signature rather than the courier. The IdP signs with a private key; the app holds the matching public certificate and checks the signature, so any edit breaks it. Base64 is only a way of writing data as letters and anyone can reverse it, so it protects nothing. In this flow the IdP and the app do not talk directly at all. RelayState is a note the IdP hands back unchanged, usually where the user was heading; it does not protect the assertion."
+    },
+    {
+      "stem": "Acme Tracker rejects every SSO attempt with an 'audience' error. In the IdP the admin typed https://acme.example.com/saml/metadata as the app's entity ID, but the app's own metadata says https://acme.example.com/saml. What is the fix?",
+      "options": [
+        "Extend the valid window on the assertion, because an audience error means it arrived outside the time it was meant for",
+        "Replace the IdP's certificate in the app, because an audience error means the app could not read the signature",
+        "Change the ACS URL on the IdP to the address in the app's metadata, because the audience is the Response's destination",
+        "Make the entity ID on the IdP identical to the one in the app's metadata, copying it rather than retyping it by hand"
+      ],
+      "correct_index": 3,
+      "explanation": "The audience in the assertion has to equal the app's own entity ID, so the letter is known to be meant for this app. Here the two sides disagree, and the fix is to copy the app's entity ID from its metadata. The valid window is a separate time check, the certificate is a separate signature check, and the ACS URL is the address that accepts the Response; none of them is the audience."
+    },
+    {
+      "stem": "Since a server migration on Monday, every user of Acme Tracker gets 'assertion not yet valid', while the other SSO apps still work. The vendor admits the app server's clock is twelve minutes slow. Why does that break sign-in?",
+      "options": [
+        "The app compares its clock with the IdP certificate's end date and now believes the certificate has not started yet",
+        "The app compares its clock with the assertion's valid window, and twelve minutes exceeds the tolerance it allows",
+        "The IdP signs each assertion with the time of day, so a slow clock on the app makes every signature fail to match",
+        "The app remembers each assertion ID, and a slow clock makes it think every ID has already been used"
+      ],
+      "correct_index": 1,
+      "explanation": "An assertion carries a valid window (NotBefore to NotOnOrAfter) and the app checks its own clock against it, allowing only a small tolerance for clocks that differ (a few minutes, not an hour). A clock twelve minutes slow is outside that tolerance and puts the assertion's start time in the app's future, so it reads as not yet valid, for every user of that app. The certificate end date is a different check, signatures do not depend on the app's time of day, and remembering used IDs is the replay check, which does not depend on the clock being wrong."
+    },
+    {
+      "stem": "At 00:00 on 3 November every sign-in to Acme Tracker starts failing, while the other SSO apps keep working. The IdP admin finds that the signing certificate for that one app ended on 2 November. What should happen?",
+      "options": [
+        "Reset the password of every Acme Tracker user, because the app checks passwords itself before it trusts the IdP",
+        "Change the ACS URL on the IdP, because an ended certificate usually means the app's address has moved",
+        "Give the app the IdP's new signing certificate or metadata, because it checks signatures against the one it holds",
+        "Ask users to clear their browser cookies, because the browser carries the certificate and its copy has gone stale"
+      ],
+      "correct_index": 2,
+      "explanation": "The IdP signs the assertion, and the app checks the signature using a copy of the IdP's public certificate, which has an end date. When the IdP starts signing with a new certificate, or the old one ends, the app needs the new one: update the app with the new certificate or metadata. Passwords are checked at the IdP, never at the app. The ACS URL is the address that accepts the Response and is unrelated to certificate dates. The browser only carries the messages; it does not hold the certificate."
+    },
+    {
+      "stem": "Priya changes her surname and her email address changes with it. At Acme Tracker she now sees an empty workspace under a new account. The app files accounts by the email NameID in the assertion. What is the best long-term fix?",
+      "options": [
+        "Have the IdP send a persistent NameID, a random label that survives a name change, and keep email as an attribute",
+        "Have the IdP send an unspecified NameID, which tells the app to look her up by her full name instead of her email address",
+        "Turn on IdP-initiated sign-in, so that the IdP rather than the app decides which account she opens when she arrives",
+        "Shorten the assertion's valid window, so that the app has to look up her account again on every single sign-in"
+      ],
+      "correct_index": 0,
+      "explanation": "The app recognises people by the NameID. An email address changes with a name change, so the new address looks like a stranger and creates a second account. A persistent NameID is an opaque, random, pair-specific label that stays the same, so the account follows the person; email can still travel as an attribute. An unspecified NameID format promises nothing and names no field to look anyone up by, and a value built from her full name would change on a rename too. IdP-initiated sign-in only changes where the flow starts, and the valid window only controls how long one assertion is accepted. Neither changes how the account is matched."
+    }
+  ]
+}

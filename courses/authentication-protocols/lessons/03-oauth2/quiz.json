@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "A SaaS vendor onboarding ticket asks you to register the redirect URI https://*.vendor.example/* in your tenant's OAuth app \"so every customer subdomain works\". What is the right call?",
+      "options": [
+        "Accept it, since the pattern is limited to the vendor's own domain and TLS is enforced on every single host in it",
+        "Accept it, since the state value will reveal any code that is delivered to the wrong host",
+        "Decline the pattern and register each exact redirect URI, because the AS must use exact string matching",
+        "Accept it, but shorten the authorization code lifetime to one minute so that a misdirected code expires quickly"
+      ],
+      "correct_index": 2,
+      "explanation": "RFC 9700 requires exact string matching of redirect URIs (the only variation allowed is the port on localhost for native apps). It documents a registered pattern like https://*.somesite.example/* being matched by https://attacker.example/.somesite.example, and notes that even a correctly interpreted wildcard fails if an attacker takes over a subdomain. TLS and a restricted domain do not help against either. The state value is checked by the client after the code has already been delivered to the attacker's host, and a shorter code lifetime only narrows the window."
+    },
+    {
+      "stem": "An audit finding says your single-page app is a public client using the authorization code flow, and the authorization server issues codes with no code_challenge. Which remediation is correct?",
+      "options": [
+        "Issue the SPA a client secret and require it at the token endpoint, so only the SPA can redeem codes",
+        "Move the SPA to the implicit grant, which avoids the code exchange and so removes the interception risk",
+        "Have the SPA send PKCE with the plain method, which is simplest because it needs no hashing",
+        "Require S256 PKCE for this client, with the AS enforcing code_verifier whenever a challenge was sent"
+      ],
+      "correct_index": 3,
+      "explanation": "RFC 9700 says public clients must use PKCE and the AS must enforce the code_verifier when a challenge was sent; S256 is the method to use. A secret shipped in browser code is not secret, because public clients cannot keep credentials. The implicit grant is the one RFC 9700 says clients should not use, since tokens in the redirect URL leak and cannot be sender-constrained. The plain method exists only for clients that cannot hash, and it exposes the verifier in the authorization request."
+    },
+    {
+      "stem": "A contractor's laptop is lost. You call the revocation endpoint with the access token the contractor's app holds, but a partner API that validates JWT access tokens locally keeps accepting it for about 40 more minutes. What explains this and what is the design control?",
+      "options": [
+        "The revocation endpoint returned 200 because the token was invalid, so nothing was revoked; call it again with a freshly issued token",
+        "Revocation only ever applies to refresh tokens; access tokens cannot be revoked and nothing can bound their life",
+        "The partner API is misconfigured, because an RS must call the AS on every request and local JWT validation is not allowed",
+        "A self-contained JWT stays valid until exp unless the RS asks the AS, so keep lifetimes short or have the RS introspect"
+      ],
+      "correct_index": 3,
+      "explanation": "A JWT carries its own signature and exp, so an RS that checks them locally never learns about revocation. RFC 7009 notes that self-contained tokens need non-standardized back-end signalling for immediate revocation, so the practical controls are short lifetimes (RFC 6750 says one hour or less) or an RS that introspects with RFC 7662. The endpoint answers 200 for an invalid token, but this token was valid. Refresh tokens must be revocable and access tokens should be, so the second option overstates it. Local JWT validation is a sanctioned method for an RS, so the partner API is not misconfigured, but it explains why revocation alone is not immediate."
+    },
+    {
+      "stem": "The Okta System Log shows app.oauth2.token.detect_reuse for a SPA user, who was then forced to sign in again. What did the authorization server actually learn and do?",
+      "options": [
+        "It identified the attacker's session by IP address and revoked only that attacker's session, leaving the user signed in",
+        "A rotated token was presented again; the AS cannot tell the thief from the real client, so it revoked the active one",
+        "The user's access token expired during rotation, so a new refresh token was issued silently with the same lifetime",
+        "The grace period expired, so the old refresh token was deleted and the new refresh token was kept for the user"
+      ],
+      "correct_index": 1,
+      "explanation": "With RFC 9700 rotation, each refresh returns a new refresh token and invalidates the previous one (Okta's guide says whether it returns a new refresh token depends on the refresh token lifetime setting, so confirm that in your org). When an invalidated token is presented, either the thief or the legitimate client holds it, and the AS cannot tell which. It therefore revokes the active token (Okta also invalidates access tokens issued since the user authenticated), which forces a new grant. The grace period (default 30 seconds, 0 to 60) is a leniency window for flaky networks, not the trigger. Nothing here is silent: the user had to sign in again."
+    },
+    {
+      "stem": "Your inventory API accepts a correctly signed JWT access token from your AS that was issued for the payroll API. A developer argues the signature and issuer are valid, so it is fine. The RS already verifies that the typ header is at+jwt. Which check is missing?",
+      "options": [
+        "That aud names this inventory API; if not, reject the token with invalid_token (401)",
+        "That the typ header is at+jwt, since typ is what tells payroll tokens and inventory tokens apart",
+        "That the scope claim contains at least one scope, since any scoped token is valid at every API of the same AS",
+        "That the client_id matches a registered app, since every API must accept every registered app's tokens"
+      ],
+      "correct_index": 0,
+      "explanation": "The RS must verify that the audience names itself and refuse tokens meant for another RS (RFC 9068 for JWTs, RFC 9700 for the principle); the failure is reported as invalid_token with HTTP 401 (RFC 6750). The typ check is required too, and the stem says it already passes: typ marks a JWT as an access token rather than an ID token, and it is the same for every API, so it cannot tell payroll from inventory. A scope is typically about what access is wanted, not where it may be used (RFC 8707), so having one does not make the token valid at every API; the RS checks aud for that. Registered client IDs do not make a token valid for every API."
+    },
+    {
+      "stem": "A CLI tool using the device authorization grant receives {\"error\":\"slow_down\"} from the token endpoint while the user is still typing the code on a phone. What should the tool do?",
+      "options": [
+        "Stop polling and show an error, as it must for every error response the endpoint can return",
+        "Wait once for 5 seconds, then go back to the original interval",
+        "Add 5 seconds to the interval for this and every later request, and keep polling",
+        "Request a fresh device_code and user_code so that the user can start the process again"
+      ],
+      "correct_index": 2,
+      "explanation": "RFC 8628 defines slow_down as a variant of authorization_pending: polling continues, but the interval must increase by 5 seconds for this and every later request. The client must stop only for other errors, such as access_denied or expired_token. The default interval is 5 seconds, so the second option confuses the default with the increase. A new device_code is needed only after the session has expired, and a device should start a new request only when the user asks."
+    }
+  ]
+}

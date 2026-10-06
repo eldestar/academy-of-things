@@ -1,0 +1,111 @@
+{
+  "id": "oidc-code-flow",
+  "prefix": "oi",
+  "title": "OpenID Connect authorization code flow, ending in ID token validation",
+  "desc": "Two parties: the relying party (your app) and the OpenID Provider. Step 1: the app sends the user's browser to the provider's authorization endpoint with scope openid, a state, an optional nonce and, for a public client, a PKCE code_challenge with method S256. The user signs in at the provider. Step 2: the provider redirects the browser back to the app's redirect URI with an authorization code and the state. Step 3: the app, server to server, posts the code to the token endpoint, with the PKCE code_verifier if it is a public client or with client authentication if it is a confidential client, and receives an ID token and an access token. Step 4: the app validates the ID token: signature using the provider's published keys, then iss, aud, exp and, if it sent a nonce, nonce. Step 5, optional: the app calls the UserInfo endpoint with the access token and checks that sub matches the ID token's sub.",
+  "duration": 22,
+  "legend": {
+    "front": "through the user's browser",
+    "back": "server to server"
+  },
+  "lanes": [
+    {
+      "id": "rp",
+      "title": "Relying party",
+      "sub": "your app (the OAuth client)",
+      "hot": true
+    },
+    {
+      "id": "op",
+      "title": "OpenID Provider",
+      "sub": "Okta, Entra ID, any OP"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "redirect to the authorization endpoint",
+        "scope=openid, state, optional nonce",
+        "public client adds code_challenge (S256)"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "note",
+      "under": "op",
+      "lines": [
+        "user signs in at the provider",
+        "(MFA, policy, consent)"
+      ]
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "redirect to redirect_uri",
+        "code and state"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "POST to the token endpoint",
+        "code, plus code_verifier (public client)",
+        "or client authentication (confidential)"
+      ],
+      "tone": "back",
+      "badge": "3"
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "token response",
+        "id_token and access_token"
+      ],
+      "tone": "back",
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "rp",
+      "lines": [
+        "validate the ID token:",
+        "signature (provider's JWKS), iss, aud, exp,",
+        "nonce if one was sent"
+      ],
+      "tone": "good",
+      "badge": "4"
+    },
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "optional: GET UserInfo",
+        "access token as Bearer"
+      ],
+      "tone": "back",
+      "badge": "5"
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "claims; sub must equal",
+        "the ID token's sub"
+      ],
+      "tone": "back",
+      "with_previous": true
+    }
+  ]
+}

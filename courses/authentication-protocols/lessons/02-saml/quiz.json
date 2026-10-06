@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "Customer onboarding: you create a new Okta SAML app for a vendor. Both the dashboard tile and the vendor's login page end with 'audience restriction not satisfied'. You set Audience URI (SP Entity ID) to the vendor's login URL, and the vendor's SP metadata shows a different entityID. Which change fixes it?",
+      "options": [
+        "Set Recipient URL to the vendor's login URL, because the SP compares the Recipient value with the Audience it was sent",
+        "Set Audience URI to the entityID in the vendor's SP metadata, because the SP looks for its own entity ID there",
+        "Switch the Name ID format to persistent, because the audience check runs against the NameID value in the assertion",
+        "Turn on Assertion Encryption, because an audience mismatch means the SP could not read the assertion it received"
+      ],
+      "correct_index": 1,
+      "explanation": "Audience URI feeds the AudienceRestriction in the assertion's Conditions, and the SP accepts the assertion only if its own entity ID is one of the Audience values. Both flows fail because the value is wrong in the assertion itself, whoever started the sign-in. Recipient is checked against the ACS URL the POST arrived at, the NameID identifies the user and is not compared with the audience, and encryption hides content from the browser without changing what the SP compares."
+    },
+    {
+      "stem": "After onboarding, the Okta dashboard tile signs users in, but SP-initiated login from the vendor's page returns an error status Response. The app's Name ID format is Unspecified, the default, and the vendor's AuthnRequest asks for the emailAddress format in its NameIDPolicy. Why does only SP-initiated fail, and what fixes it?",
+      "options": [
+        "The tile flow skips signature checks, so the SP-initiated flow fails on signing; sign the Response as well as the assertion",
+        "The tile flow carries no InResponseTo, so the SP accepts it without any checks; switch the app to IdP-initiated sign-in only",
+        "The SP-initiated Response travels by HTTP-Redirect, which browsers truncate; ask the vendor to move to the HTTP-Artifact binding",
+        "The tile flow sends no AuthnRequest, so no NameIDPolicy contradicts the format; set the Okta Name ID format to match the request"
+      ],
+      "correct_index": 3,
+      "explanation": "A NameIDPolicy lives in the AuthnRequest, and an IdP that cannot satisfy it must return an error Response (the second-level status InvalidNameIDPolicy is allowed). Okta also requires its Name ID format to match the policy when a request includes one. The tile flow is unsolicited, so there is no request and no policy, and the mismatch stays hidden until someone starts at the app. Signature checks run in both flows, the Response is never delivered by HTTP-Redirect, and going IdP-initiated only would hide the fault rather than fix it."
+    },
+    {
+      "stem": "An Entra-issued SAML signing certificate for a vendor app expires in three weeks. The vendor says its SP validates certificate expiry, accepts a primary and a secondary signing certificate, and refetches your federation metadata every 24 hours. Which plan avoids an outage?",
+      "options": [
+        "Generate the new certificate inactive, wait until the SP has fetched it from metadata, activate it, then retire the old one",
+        "Activate the new certificate now and rely on the daily metadata refetch to catch up, since the SP accepts two certificates",
+        "Do nothing and let the old certificate lapse, because Entra says apps keep accepting an expired certificate anyway",
+        "Retire the old certificate first so that only the new one is in metadata, then ask the vendor to refetch it now"
+      ],
+      "correct_index": 0,
+      "explanation": "A new certificate has to reach the SP before the IdP signs with it, so the safe order is: generate it inactive, let the SP learn it from metadata, activate it, then retire the old one. Activating immediately means the IdP signs with a key the SP may not have fetched yet, so sign-ins can fail until the next refetch. Entra's statement applies only to apps that do not check expiry at all, and this SP does check, so the old certificate would simply stop working. Retiring the old certificate first removes the key the SP trusts today."
+    },
+    {
+      "stem": "You move a SaaS app from Okta to Entra ID. The app maps roles from the SAML groups claim. Most users sign in with the right role, but 12 users who each belong to between 180 and 400 groups sign in successfully and arrive with no role at all. What is the cause and the fix?",
+      "options": [
+        "Entra truncates the claim to the first 150 groups and the role groups fall outside them; reorder the groups to fix it",
+        "The app rejects the group attribute as oversized and drops the role, so the vendor must raise its payload cap",
+        "Entra omits the group claim entirely above 150 groups in a SAML assertion; send only groups assigned to the app",
+        "Their NameID values changed in the move, so the app treats them as new accounts; set the Name ID format to persistent"
+      ],
+      "correct_index": 2,
+      "explanation": "Entra emits at most 150 groups in a SAML assertion and, above that, omits the group claim entirely rather than truncating it, so heavily grouped users sign in with no role. The fix is to send only what the app needs, for example only the groups assigned to the application. Truncation is the wrong model, since nothing arrives to reorder. An oversized-payload rejection would mean no sign-in at all, and these users do sign in. A NameID change would hit users at random rather than only those with very many groups."
+    },
+    {
+      "stem": "Audit finding: an employee was deactivated in Okta at 09:00 yet was still working in a SaaS app at 14:00; Enable Single Logout was on for that app. What explains it, and which control addresses it?",
+      "options": [
+        "The assertion's NotOnOrAfter was still in the future and an SP keeps honoring an assertion until then; shorten the assertion lifetime",
+        "The SP session is independent of the IdP session and Single Logout is best effort; keep the SP session short and capped in lifetime",
+        "Okta's Single Logout ends every app the user has open, so the setting was misconfigured; re-save the app with the SP issuer filled in",
+        "Deactivation does not retire the signing certificate, so the SP kept validating the old assertion; rotate it whenever staff leave"
+      ],
+      "correct_index": 1,
+      "explanation": "The SP creates its own session after it validates the Response, by whatever mechanism it chooses, and that session lives on independently. NotOnOrAfter only bounds when the assertion may be delivered, not how long the SP session lasts. Single Logout is best effort: Okta's switch signs the user out of the app and Okta, not out of other apps that are open, and the core protocol even defines a PartialLogout status. Single Logout is a user-sign-out mechanism; nothing in the sources says deactivating a user sends logout to every SP, so do not rely on it for offboarding. The control is a short SP session, which the IdP can mark with SessionNotOnOrAfter (the profile says the SP SHOULD discard its security context then). Certificates are per-IdP keys, unrelated to any one user."
+    },
+    {
+      "stem": "A vendor's SP rejects every login with 'assertion is not signed'. Your Okta app signs the Response (Response: Signed) but has Assertion Signature set to Unsigned, and the vendor's SP metadata declares WantAssertionsSigned. What is the right change?",
+      "options": [
+        "Enable Assertion Encryption with the vendor's certificate, because encryption also proves the assertion came from the IdP",
+        "Rotate the IdP signing certificate, because the vendor's SP cannot match the key that signed the Response and rejects it",
+        "Move delivery to the HTTP-Artifact binding, because the POST binding cannot carry a signed assertion to the SP at all",
+        "Turn Assertion Signature on, since with POST the profile requires a signed assertion and leaves the Response optional"
+      ],
+      "correct_index": 3,
+      "explanation": "With the POST binding the profile says the enclosed assertions MUST be signed, and signing the Response as well is optional. The SP's metadata says it wants signed assertions, and Okta exposes the two signatures as separate settings, so turn Assertion Signature on. Encryption hides content from the browser but does not prove origin. Rotating the certificate does not change which element is signed. The POST binding carries signed assertions routinely; the Artifact binding is a different delivery mechanism."
+    }
+  ]
+}

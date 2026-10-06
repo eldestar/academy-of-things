@@ -1,0 +1,13 @@
+# Extends gitleaks' default rules. The only exception: the `jwt` rule is not applied to the lesson
+# Markdown of the authentication course, whose labs decode INVENTED sample tokens (key id
+# "sample-key-1", issuer idp.example.com, audience sample-client-id). They carry no real secret.
+# A JWT anywhere else in the repo, or any other rule firing in these lessons, is still reported.
+title = "academy-of-things gitleaks config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Invented sample JWTs decoded in the authentication course labs"
+targetRules = ["jwt"]
+paths = ['''^courses/authentication-protocols/lessons/[^/]+/lesson(\.(beginner|advanced))?\.md$''']

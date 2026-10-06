@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "You are sketching the Plannr connection for a new colleague. Priya's calendar data lives at Example Cloud. Which box is the OAuth resource server?",
+      "options": [
+        "Plannr, the scheduling app that asks to read the calendar on Priya's behalf",
+        "Example Cloud's sign-in and consent service, which signs Priya in and issues the tokens",
+        "The calendar API that holds Priya's data and accepts access tokens",
+        "Priya herself, because she owns the calendar and decides who may read it"
+      ],
+      "correct_index": 2,
+      "explanation": "The resource server hosts the protected data and accepts access tokens, so here it is the calendar API. Plannr is the client, the party asking on Priya's behalf. The sign-in and consent service is the authorization server, which authenticates Priya, collects her approval and issues tokens. Priya is the resource owner: she can grant access, but she is not a server."
+    },
+    {
+      "stem": "A security analyst points out that the authorization code appears in the browser's address bar at step 3 and ends up in history. What stops someone who copies that code from turning it into an access token?",
+      "options": [
+        "They lack the code_verifier that Plannr kept, so step 5 fails",
+        "The code is encrypted, so only Plannr's server can read it",
+        "The code can be used only once, so a thief is always too late",
+        "The state value is checked by the authorization server and will not match"
+      ],
+      "correct_index": 0,
+      "explanation": "PKCE binds the code to a secret the client invented. At step 1 the authorization server saw only the fingerprint (code_challenge); at step 5 it requires the matching code_verifier, which never appeared in a redirect URL. Short life and single use shrink the window but do not close it: a thief who redeems first would win. The code is not described as encrypted against the browser holder, and state is checked by the client at step 4, not by the authorization server."
+    },
+    {
+      "stem": "After a release, Plannr's sign-in fails with \"redirect URI mismatch\". The developer changed the callback from https://plannr.example.com/cb to https://plannr.example.com/cb/ with a trailing slash. What is the right fix?",
+      "options": [
+        "Ask the vendor to register a wildcard such as https://plannr.example.com/* so small changes never break sign-in",
+        "Lengthen the authorization code lifetime so the new address has time to be accepted",
+        "Add PKCE to the request, since the mismatch means the challenge was rejected",
+        "Register the exact address Plannr now sends, or change the app back to the registered one"
+      ],
+      "correct_index": 3,
+      "explanation": "The authorization server compares the redirect URI to the registered value exactly, character by character, and RFC 9700 requires exact string matching. A trailing slash is a different string, so the fix is to make the two identical. Wildcards weaken the check and are the opposite of the advice in the lesson. Code lifetime and PKCE are unrelated: the request is refused before any code is issued."
+    },
+    {
+      "stem": "A nightly script on a locked-down server must read a team calendar API. No person is signed in when it runs. Which OAuth grant fits?",
+      "options": [
+        "Device authorization, so an administrator can type a code each night",
+        "Client credentials, because the app acts for itself and can keep a secret",
+        "Resource owner password, using the service account's password in the script",
+        "Implicit, because the script cannot receive a browser redirect"
+      ],
+      "correct_index": 1,
+      "explanation": "Client credentials is the grant for an app acting for itself with no person present, and it is allowed only for confidential clients such as a script on a protected server. Device authorization needs a person to type a code on another device. The resource owner password grant makes the app handle a password and RFC 9700 says it must not be used. The implicit grant puts tokens in the browser's address and clients should not use it."
+    },
+    {
+      "stem": "A vendor's sales engineer says: \"We use OAuth, so our app knows exactly which employee just signed in.\" What is the accurate response?",
+      "options": [
+        "OAuth gives the app a token for calling an API, not proof of who signed in; OpenID Connect adds login",
+        "That is correct, because the authorization server signs the employee in at step 2 and then tells the app exactly who it was",
+        "That is correct as long as the access token is long-lived and the app can read the username inside it",
+        "It is incorrect only for public clients; confidential clients receive the user's identity with the token"
+      ],
+      "correct_index": 0,
+      "explanation": "OAuth is authorization: the access token says an app may call an API. The authorization server does authenticate the person at step 2, but the client does not receive a verified statement of who it was; the lesson also says clients should treat tokens as opaque strings. Login is the job of OpenID Connect, built on top of OAuth. Client type decides whether a client can keep a secret, not whether it learns identity."
+    },
+    {
+      "stem": "A mobile app team wants to put a client secret inside the app so that only their app can request tokens. How should you respond?",
+      "options": [
+        "Approve it, provided the secret is long, random and rotated with every app release",
+        "Reject it: mobile apps are public clients, shipped secrets can be extracted, so use PKCE instead",
+        "Approve it, because the client_id is already secret and the second secret simply adds one more layer of defence",
+        "Reject it, because secrets belong only in the authorization code, not the client"
+      ],
+      "correct_index": 1,
+      "explanation": "Mobile and browser apps are public clients: they cannot keep a secret, and RFC 6749 says to assume anything shipped inside a native app can be extracted. Length and randomness do not help once the secret is on the user's device. The client_id is an identifier and not a secret. PKCE provides a fresh per-sign-in secret that never ships inside the app. The last option confuses the credential types."
+    }
+  ]
+}

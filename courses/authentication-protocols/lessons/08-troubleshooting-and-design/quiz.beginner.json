@@ -1,0 +1,72 @@
+{
+  "pass_threshold_pct": 80,
+  "passing_note": "5 of 6 correct to pass.",
+  "questions": [
+    {
+      "stem": "HR wants the accounts in a new SaaS app to be created when people join, updated when they change teams, and switched off when they leave, with nobody touching the app by hand. Which tool fits?",
+      "options": [
+        "SAML, because the signed assertion it sends at sign-in tells the app which accounts to keep or switch off",
+        "JIT provisioning, because the app builds each account itself from the details sent at the person's first sign-in",
+        "LDAP, because the app can check every person's password against the company's own directory service",
+        "SCIM, because the identity provider itself creates, updates and deactivates the accounts in the app for you"
+      ],
+      "correct_index": 3,
+      "explanation": "SCIM is the provisioning tool: it creates, updates and deactivates accounts (deactivation sets the account's active field to false). SAML only signs a person in and cannot create or remove the account. JIT provisioning creates an account at first sign-in but, per Microsoft Learn, cannot delete or deactivate it, so leavers would stay. LDAP is a way for an app to check passwords, which is a different job and leaves the app handling the password."
+    },
+    {
+      "stem": "You capture a login in Chrome's Network tab. After the redirect to the sign-in page and back to the app, the earlier requests have vanished and you cannot see what was sent. What do you do?",
+      "options": [
+        "Tick Preserve log before repeating the login, so that the redirects no longer clear the Network list",
+        "Switch off the browser's cache so each redirect is stored again as a separate request in the list",
+        "Clear the user's cookies first, so that the sign-in does not redirect and the whole login stays on one page",
+        "Decode the token offline instead, because the Network tab is not able to record a login that redirects"
+      ],
+      "correct_index": 0,
+      "explanation": "Each page load or redirect clears the Network list unless you tick Preserve log (Firefox calls the same setting Persist Logs). That is the capture step of the five-step routine. Cache settings do not control whether the list is cleared. Clearing cookies changes the login you are trying to reproduce, which breaks the first step, and decoding a token is a later step that needs the capture first."
+    },
+    {
+      "stem": "A ticket says the HR app shows 'audience not valid'. Your SAML capture shows Audience https://hr.example.com/saml/v2, while the app's setup lists its entity ID as https://hr.example.com/saml. What do you hand to the identity admin?",
+      "options": [
+        "The capture time: the assertion is valid only between two times and the clocks on the two sides probably disagree",
+        "The certificate end date: the app's stored copy of the IdP certificate has probably expired and the signature check on the assertion is failing",
+        "Both IDs: the assertion is addressed to an audience that differs from the app's own entity ID, so they must be made identical",
+        "The redirect URI: the registered return address probably differs from the one in the request by a trailing slash"
+      ],
+      "correct_index": 2,
+      "explanation": "The app accepts an assertion only if its own entity ID is listed as the audience, and the capture shows a different value. Hand over both values, change nothing yourself, and let the admin change one setting and retest. A clock problem would read 'expired' or 'not yet valid', a certificate problem would read 'signature invalid', and a redirect URI problem shows an error page at the IdP, so none of those match this message."
+    },
+    {
+      "stem": "An API answers 401 invalid_token. You decode the token offline: its exp reads 2026-09-21T14:18:20Z and today is 2026-10-06. What does that tell you?",
+      "options": [
+        "The token's scopes are too small, so the caller must ask for broader permissions before retrying the request",
+        "The token expired long ago, so the caller needs a fresh one from the identity provider; the API is not at fault",
+        "The app's own login to the identity provider failed, so its client ID and secret need checking in the setup",
+        "The token was tampered with, because a decoded token whose expiry is wrong has always had its signature altered"
+      ],
+      "correct_index": 1,
+      "explanation": "exp is the expiry time, and a 401 invalid_token means the access token is expired, revoked or malformed; here the decoded exp is two weeks old. Too-small scopes produce 403 insufficient_scope instead. A failed login of the app itself is invalid_client at the token endpoint, a different step. Decoding only reads the token and never checks its signature, so an old exp says nothing about tampering."
+    },
+    {
+      "stem": "Your provisioning tool reports 409 Conflict with scimType uniqueness when creating Bob@Example.com. A search in the app finds bob@example.com already there. What is going on?",
+      "options": [
+        "An account with that userName already exists and userName ignores capitals, so link the existing account instead",
+        "The app's server has crashed, so the request should simply be sent again after the provider has restarted it",
+        "Bob's existing account is switched off with active set to false, and the app blocks any new account for that name",
+        "The tool's login to the app has expired, so it should fetch a new bearer token and then repeat the create request"
+      ],
+      "correct_index": 0,
+      "explanation": "A 409 on create means the app refused to create a duplicate resource, and userName must be unique and ignores capital letters, so Bob@Example.com collides with bob@example.com. The right move is to find the existing account by username and link it. A crashed server would not answer with a SCIM uniqueness error, and the active field says whether a user can sign in; it is not what triggers this refusal."
+    },
+    {
+      "stem": "At 10:00 HR disables a leaver and the identity provider sets the account's active field to false in the app. At 10:20 the person still has the app open and is still working. Why?",
+      "options": [
+        "The app ignored the deactivation, because a switched-off account is only blocked at the next password change",
+        "The app decides what active false means, and many apps leave a session or token already issued working until its exp",
+        "The SAML assertion that signed the person in stays valid for ever, so no later change can end the session",
+        "The identity provider keeps the account alive for a day after deactivation, so that an HR mistake could be undone first"
+      ],
+      "correct_index": 1,
+      "explanation": "Setting active to false is only a request to the app: the app decides what it means, and many apps do not end a session or token that was already issued. A token works until its exp, which is why the architect's question 'what happens to a leaver' also asks about sessions and tokens. Nothing in this lesson says a switched-off account is blocked only at the next password change. Assertions are valid only between two times, not for ever, and nothing says accounts linger for a day, so the check that matters is how long the app's sessions last."
+    }
+  ]
+}

@@ -6,10 +6,13 @@ You have configured SAML and OIDC apps in Okta for years. This lesson is the oth
 
 The first surprise: the vendor's app is not the SAML service provider. WorkOS is. The SP Entity ID, the ACS URL and the SP metadata you paste into Okta belong to WorkOS (the docs call them "Service Provider Details" on the connection). The vendor's app is an OAuth 2.0 client of WorkOS, which the docs describe as abstracting the IdP handshakes for SAML and OIDC alike.
 
-<div style="overflow-x:auto;margin:20px 0">
-<svg class="aot-flow" viewBox="0 0 720 548" role="img" aria-labelledby="aot-saml-t aot-saml-d" style="width:100%;min-width:600px;max-width:760px;height:auto;display:block;margin:0 auto">
-<title id="aot-saml-t">SP-initiated SAML sign-in through WorkOS</title>
-<desc id="aot-saml-d">Three parties: the vendor app, WorkOS, and the identity provider. The app redirects the browser to WorkOS, WorkOS redirects to the IdP with a SAML request, the IdP posts a signed assertion to WorkOS, WorkOS redirects back to the app with a code, and the app exchanges the code for a profile server to server. The diagram highlights each step in turn and pauses when you hover over it.</desc>
+<!-- diagram:saml-sp-initiated -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="aot-pause" class="aot-cb" /><label for="aot-pause" class="aot-btn"><span class="aot-off">Pause animation</span><span class="aot-on">Play animation</span></label>
+<div class="aot-box" style="overflow-x:auto">
+<svg class="aot-flow" viewBox="0 0 760 695" role="img" aria-labelledby="aot-t aot-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="aot-t">SP-initiated SAML sign-in through WorkOS</title>
+<desc id="aot-d">Three parties: the vendor app, WorkOS, and the identity provider. The app redirects the browser to WorkOS, WorkOS redirects to the IdP with a SAML request, the IdP posts a signed assertion to WorkOS, WorkOS redirects back to the app with a code, and the app exchanges the code for a profile server to server. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
 .aot-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .aot-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
@@ -18,118 +21,115 @@ The first surprise: the vendor's app is not the SAML service provider. WorkOS is
 .aot-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .aot-front{stroke:var(--accent);stroke-width:2;fill:none}
 .aot-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.aot-bad{stroke:var(--bad);stroke-width:2;fill:none}
 .aot-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-badt{fill:var(--bad-text)}
 .aot-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .aot-badge{fill:var(--accent)}
+.aot-b-back{fill:var(--muted)}
+.aot-b-bad{fill:var(--bad)}
+.aot-b-good{fill:var(--good)}
 .aot-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .aot-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.aot-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.aot-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
 .aot-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.aot-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent))}
-.aot-pk.aot-pkb{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.aot-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+.aot-pk.aot-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.aot-pk.aot-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
 .aot-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-.aot-g .aot-badge{filter:none}
-.aot-pk{animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
 svg.aot-flow:hover .aot-g,svg.aot-flow:hover .aot-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.aot-g{animation:none;opacity:1}.aot-pk{animation:none;display:none}}
-@keyframes aot-g0{0%{opacity:1}12.5%{opacity:1}12.51%,100%{opacity:.45}}
-@keyframes aot-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12.5%{opacity:1;transform:translateX(216px)}12.51%,100%{opacity:0;transform:translateX(216px)}}
-@keyframes aot-g1{0%,12.49%{opacity:.45}12.5%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-@keyframes aot-p1{0%,12.49%{opacity:0;transform:translateX(0)}12.5%{opacity:1;transform:translateX(0)}25%{opacity:1;transform:translateX(216px)}25.01%,100%{opacity:0;transform:translateX(216px)}}
-@keyframes aot-g2{0%,24.99%{opacity:.45}25%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.45}}
-@keyframes aot-g3{0%,37.49%{opacity:.45}37.5%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-@keyframes aot-p3{0%,37.49%{opacity:0;transform:translateX(0)}37.5%{opacity:1;transform:translateX(0)}50%{opacity:1;transform:translateX(-216px)}50.01%,100%{opacity:0;transform:translateX(-216px)}}
-@keyframes aot-g4{0%,49.99%{opacity:.45}50%{opacity:1}62.5%{opacity:1}62.51%,100%{opacity:.45}}
-@keyframes aot-g5{0%,62.49%{opacity:.45}62.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-@keyframes aot-p5{0%,62.49%{opacity:0;transform:translateX(0)}62.5%{opacity:1;transform:translateX(0)}75%{opacity:1;transform:translateX(-216px)}75.01%,100%{opacity:0;transform:translateX(-216px)}}
-@keyframes aot-g6{0%,74.99%{opacity:.45}75%{opacity:1}87.5%{opacity:1}87.51%,100%{opacity:.45}}
-@keyframes aot-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87.5%{opacity:1;transform:translateX(216px)}87.51%,100%{opacity:0;transform:translateX(216px)}}
-@keyframes aot-g7{0%,87.49%{opacity:.45}87.5%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-@keyframes aot-p7{0%,87.49%{opacity:0;transform:translateX(0)}87.5%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(-220px)}100.01%,100%{opacity:0;transform:translateX(-220px)}}
-.aot-g0{animation-name:aot-g0}
-.aot-p0{animation-name:aot-p0}
-.aot-g1{animation-name:aot-g1}
-.aot-p1{animation-name:aot-p1}
+.aot-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.aot-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.aot-btn:hover{background:var(--hover)}
+.aot-cb:focus-visible + .aot-btn{outline:2px solid var(--accent);outline-offset:2px}
+.aot-cb:checked + .aot-btn .aot-off,.aot-cb:not(:checked) + .aot-btn .aot-on{display:none}
+.aot-cb:checked ~ .aot-box .aot-g,.aot-cb:checked ~ .aot-box .aot-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.aot-g{animation:none;opacity:1}.aot-pk{animation:none;display:none}.aot-btn{display:none}}
+@keyframes aot-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.45}}
+@keyframes aot-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}14.286%{opacity:1;transform:translateX(236px)}14.296%,100%{opacity:0;transform:translateX(236px)}}
+.aot-g0{animation-name:aot-g0}.aot-p0{animation-name:aot-p0}
+@keyframes aot-g1{0%,14.276%{opacity:.45}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.45}}
+@keyframes aot-p1{0%,14.276%{opacity:0;transform:translateX(0)}14.286%{opacity:1;transform:translateX(0)}28.571%{opacity:1;transform:translateX(236px)}28.581%,100%{opacity:0;transform:translateX(236px)}}
+.aot-g1{animation-name:aot-g1}.aot-p1{animation-name:aot-p1}
+@keyframes aot-g2{0%,28.561%{opacity:.45}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.45}}
 .aot-g2{animation-name:aot-g2}
-.aot-g3{animation-name:aot-g3}
-.aot-p3{animation-name:aot-p3}
+@keyframes aot-g3{0%,42.847%{opacity:.45}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.45}}
+@keyframes aot-p3{0%,42.847%{opacity:0;transform:translateX(0)}42.857%{opacity:1;transform:translateX(0)}57.143%{opacity:1;transform:translateX(-236px)}57.153%,100%{opacity:0;transform:translateX(-236px)}}
+.aot-g3{animation-name:aot-g3}.aot-p3{animation-name:aot-p3}
+@keyframes aot-g4{0%,57.133%{opacity:.45}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.45}}
 .aot-g4{animation-name:aot-g4}
-.aot-g5{animation-name:aot-g5}
-.aot-p5{animation-name:aot-p5}
-.aot-g6{animation-name:aot-g6}
-.aot-p6{animation-name:aot-p6}
-.aot-g7{animation-name:aot-g7}
-.aot-p7{animation-name:aot-p7}
+@keyframes aot-g5{0%,71.419%{opacity:.45}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.45}}
+@keyframes aot-p5{0%,71.419%{opacity:0;transform:translateX(0)}71.429%{opacity:1;transform:translateX(0)}85.714%{opacity:1;transform:translateX(-236px)}85.724%,100%{opacity:0;transform:translateX(-236px)}}
+.aot-g5{animation-name:aot-g5}.aot-p5{animation-name:aot-p5}
+@keyframes aot-g6{0%,85.704%{opacity:.45}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+@keyframes aot-p6{0%,85.704%{opacity:0;transform:translateX(0)}85.714%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(-236px)}100.01%,100%{opacity:0;transform:translateX(-236px)}}
+.aot-g6{animation-name:aot-g6}.aot-p6{animation-name:aot-p6}
 </style>
 <defs>
 <marker id="aot-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
 <marker id="aot-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="aot-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
 </defs>
-<line class="aot-life" x1="120" y1="72" x2="120" y2="498"/>
-<line class="aot-life" x1="360" y1="72" x2="360" y2="498"/>
-<line class="aot-life" x1="600" y1="72" x2="600" y2="498"/>
-<rect class="aot-box" x="30" y="10" width="180" height="62" rx="10"/>
-<text class="aot-ttl" x="120" y="36">Vendor app</text>
-<text class="aot-sub" x="120" y="56">OAuth 2.0 client of WorkOS</text>
-<rect class="aot-hot" x="270" y="10" width="180" height="62" rx="10"/>
-<text class="aot-ttl" x="360" y="36">WorkOS</text>
-<text class="aot-sub" x="360" y="56">the SAML service provider</text>
-<rect class="aot-box" x="510" y="10" width="180" height="62" rx="10"/>
-<text class="aot-ttl" x="600" y="36">Okta (any IdP)</text>
-<text class="aot-sub" x="600" y="56">the side you already run</text>
+<line class="aot-life" x1="110" y1="72" x2="110" y2="643"/>
+<line class="aot-life" x1="380" y1="72" x2="380" y2="643"/>
+<line class="aot-life" x1="650" y1="72" x2="650" y2="643"/>
+<rect class="aot-box" x="20" y="10" width="180" height="62" rx="10"/><text class="aot-ttl" x="110" y="36">Vendor app</text><text class="aot-sub" x="110" y="56">OAuth 2.0 client of WorkOS</text>
+<rect class="aot-hot" x="290" y="10" width="180" height="62" rx="10"/><text class="aot-ttl" x="380" y="36">WorkOS</text><text class="aot-sub" x="380" y="56">the SAML service provider</text>
+<rect class="aot-box" x="560" y="10" width="180" height="62" rx="10"/><text class="aot-ttl" x="650" y="36">Okta (any IdP)</text><text class="aot-sub" x="650" y="56">the side you already run</text>
 <g class="aot-g aot-g0">
-<text class="aot-main" x="240" y="112">redirect to /sso/authorize</text>
-<text class="aot-dim" x="240" y="128">organization, redirect_uri, state</text>
-<line class="aot-front" x1="134" y1="142" x2="350" y2="142" marker-end="url(#aot-m-front)"/>
-<circle class="aot-badge" cx="120" cy="142" r="12"/><text class="aot-bt" x="120" y="146.5">1</text>
+<text class="aot-main" x="245" y="108">redirect to /sso/authorize</text>
+<text class="aot-dim" x="245" y="124">organization, redirect_uri, state</text>
+<line class="aot-front" x1="124" y1="138" x2="366" y2="138" marker-end="url(#aot-m-front)"/>
+<circle class="aot-badge aot-b-front" cx="110" cy="138" r="12"/><text class="aot-bt" x="110" y="142.5">1</text>
 </g>
 <g class="aot-g aot-g1">
-<text class="aot-main" x="480" y="182">SAML request</text>
-<text class="aot-dim" x="480" y="198">HTTP-Redirect by default</text>
-<line class="aot-front" x1="374" y1="212" x2="590" y2="212" marker-end="url(#aot-m-front)"/>
-<circle class="aot-badge" cx="360" cy="212" r="12"/><text class="aot-bt" x="360" y="216.5">2</text>
+<text class="aot-main" x="515" y="178">SAML request</text>
+<text class="aot-dim" x="515" y="194">HTTP-Redirect by default</text>
+<line class="aot-front" x1="394" y1="208" x2="636" y2="208" marker-end="url(#aot-m-front)"/>
+<circle class="aot-badge aot-b-front" cx="380" cy="208" r="12"/><text class="aot-bt" x="380" y="212.5">2</text>
 </g>
 <g class="aot-g aot-g2">
-<rect class="aot-note" x="500" y="236" width="200" height="44" rx="8"/>
-<text class="aot-nt" x="600" y="255">user signs in at the IdP</text>
-<text class="aot-nt" x="600" y="271">(MFA, your policies)</text>
+<rect class="aot-note" x="556" y="242" width="188" height="48" rx="8"/>
+<text class="aot-nt" x="650" y="263">user signs in at the IdP</text>
+<text class="aot-nt" x="650" y="280">(MFA, your policies)</text>
 </g>
 <g class="aot-g aot-g3">
-<text class="aot-main" x="480" y="322">signed assertion</text>
-<text class="aot-dim" x="480" y="338">HTTP-POST to the ACS URL</text>
-<line class="aot-front" x1="586" y1="352" x2="370" y2="352" marker-end="url(#aot-m-front)"/>
-<circle class="aot-badge" cx="600" cy="352" r="14"/><text class="aot-bt" x="600" y="356.5">3a</text>
+<text class="aot-main" x="515" y="324">signed assertion</text>
+<text class="aot-dim" x="515" y="340">HTTP-POST to the ACS URL</text>
+<line class="aot-front" x1="636" y1="354" x2="394" y2="354" marker-end="url(#aot-m-front)"/>
+<circle class="aot-badge aot-b-front" cx="650" cy="354" r="12"/><text class="aot-bt" x="650" y="358.5">3a</text>
 </g>
 <g class="aot-g aot-g4">
-<rect class="aot-note" x="280" y="372" width="160" height="30" rx="8"/>
-<text class="aot-nt" x="360" y="392">WorkOS verifies it</text>
+<rect class="aot-note" x="305" y="388" width="150" height="31" rx="8"/>
+<text class="aot-nt" x="380" y="409">WorkOS verifies it</text>
 </g>
 <g class="aot-g aot-g5">
-<text class="aot-main" x="240" y="432">redirect to your redirect_uri</text>
-<text class="aot-dim" x="240" y="448">code (valid 10 min) and state</text>
-<line class="aot-front" x1="346" y1="462" x2="130" y2="462" marker-end="url(#aot-m-front)"/>
-<circle class="aot-badge" cx="360" cy="462" r="14"/><text class="aot-bt" x="360" y="466.5">3b</text>
+<text class="aot-main" x="245" y="453">redirect to your redirect_uri</text>
+<text class="aot-dim" x="245" y="469">code (valid 10 min) and state</text>
+<line class="aot-front" x1="366" y1="483" x2="124" y2="483" marker-end="url(#aot-m-front)"/>
+<circle class="aot-badge aot-b-front" cx="380" cy="483" r="12"/><text class="aot-bt" x="380" y="487.5">3b</text>
 </g>
 <g class="aot-g aot-g6">
-<text class="aot-main" x="240" y="486">POST /sso/token</text>
-<line class="aot-back" x1="134" y1="498" x2="350" y2="498" marker-end="url(#aot-m-back)"/>
-<circle class="aot-badge" cx="120" cy="498" r="12"/><text class="aot-bt" x="120" y="502.5">4</text>
+<text class="aot-main" x="245" y="523">POST /sso/token</text>
+<line class="aot-back" x1="124" y1="537" x2="366" y2="537" marker-end="url(#aot-m-back)"/>
+<circle class="aot-badge aot-b-back" cx="110" cy="537" r="12"/><text class="aot-bt" x="110" y="541.5">4</text>
+<text class="aot-main" x="245" y="577">returns the profile</text>
+<line class="aot-back" x1="366" y1="591" x2="124" y2="591" marker-end="url(#aot-m-back)"/>
 </g>
-<g class="aot-g aot-g7">
-<line class="aot-back" x1="350" y1="514" x2="130" y2="514" marker-end="url(#aot-m-back)"/>
-<text class="aot-dim" x="240" y="530">returns the profile</text>
-</g>
-<circle class="aot-pk aot-p0" cx="134" cy="142" r="5.5"/>
-<circle class="aot-pk aot-p1" cx="374" cy="212" r="5.5"/>
-<circle class="aot-pk aot-p3" cx="586" cy="352" r="5.5"/>
-<circle class="aot-pk aot-p5" cx="346" cy="462" r="5.5"/>
-<circle class="aot-pk aot-p6 aot-pkb" cx="134" cy="498" r="5.5"/>
-<circle class="aot-pk aot-p7 aot-pkb" cx="350" cy="514" r="5.5"/>
-<line class="aot-front" x1="388" y1="522" x2="420" y2="522"/>
-<text class="aot-dim" x="540" y="526">solid: through the user's browser</text>
-<line class="aot-back" x1="388" y1="538" x2="420" y2="538"/>
-<text class="aot-dim" x="540" y="542">dashed: server to server</text>
+<circle class="aot-pk aot-p0" cx="130" cy="138" r="5.5"/>
+<circle class="aot-pk aot-p1" cx="400" cy="208" r="5.5"/>
+<circle class="aot-pk aot-p3" cx="630" cy="354" r="5.5"/>
+<circle class="aot-pk aot-p5" cx="360" cy="483" r="5.5"/>
+<circle class="aot-pk aot-p6 aot-pkback" cx="360" cy="591" r="5.5"/>
+<line class="aot-front" x1="40" y1="671" x2="70" y2="671"/>
+<text class="aot-dim" x="78" y="675" style="text-anchor:start">through the user's browser</text>
+<line class="aot-back" x1="278" y1="671" x2="308" y2="671"/>
+<text class="aot-dim" x="316" y="675" style="text-anchor:start">server to server</text>
 </svg>
 </div>
+</div>
+<!-- /diagram:saml-sp-initiated -->
 
 The numbers match the steps below; step 3 covers both the assertion post (3a) and the redirect back with the code (3b).
 

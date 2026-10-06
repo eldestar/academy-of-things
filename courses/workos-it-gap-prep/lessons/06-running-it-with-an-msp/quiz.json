@@ -58,15 +58,15 @@
       "explanation": "The 10.25 guide says Change Management records the date and time, the administrator's username, object type and name, the action and details, that the option to log to a file or syslog server is only available for on-premise environments, and that in Jamf Cloud changes are displayed in the console and cannot be exported. That is version-dated documentation, so verify against current docs and your instance before relying on it. If export is not possible, your audit control may need periodic manual review or a different tool. The other options contradict the documented fields or invent retention and scope limits."
     },
     {
-      "stem": "The MSP's quarterly review shows its ticket reopen rate fell, but its ticket volume also halved after an AI agent started resolving password resets in Slack before any ticket is created. What is the sound reading?",
+      "stem": "The MSP's quarterly review shows its ticket reopen rate rose from 10 to 12 percent, while ticket volume halved after an AI agent started resolving password resets in Slack before any ticket is created. What is the sound reading?",
       "options": [
-        "Quality improved, so the MSP deserves credit for the lower reopen rate and the contract needs no change at all this year",
-        "The quarters are not comparable on reopen rate alone: easy requests left the queue, so measure deflection from request data",
-        "Reopen rate becomes meaningless once any automation exists, so drop it from the quarterly review entirely and track volume only",
-        "The MSP is gaming the metric by closing fewer tickets, so the review should apply the penalty clause for the quarter"
+        "Quality fell, so the MSP should be penalised for the higher reopen rate under the contract this quarter and asked for a remediation plan",
+        "Not comparable on reopen rate alone: easy requests left the queue, so compare like-for-like categories and use request-level deflection data",
+        "Reopen rate becomes meaningless once any automation exists, so drop it from the quarterly review entirely and track volume alone going forward",
+        "The AI agent is causing the extra reopens, so it should be switched off until the MSP's reopen rate is back to last quarter's 10 percent"
       ],
       "correct_index": 1,
-      "explanation": "Reopen rate over tickets the MSP closed is a useful quality measure, but its meaning changes when the mix changes: the agent absorbs the simple, rarely reopened requests, leaving the MSP the harder ones. Deflection is a different metric and needs request-level data from the chat channel, not just tickets (these definitions are practitioner convention, not vendor standards). Concluding that quality improved, or that the MSP cheated, both skip that mix shift. Declaring the metric meaningless throws away a signal you can still use by comparing like-for-like categories."
+      "explanation": "Reopen rate over tickets the MSP closed is a useful quality measure, but its meaning changes when the mix changes: the agent absorbs the simple, rarely reopened requests, so the MSP is left with the harder tickets and a higher rate is expected even if its quality is unchanged. Deflection is a different metric and needs request-level data from the chat channel, not just tickets (these definitions are practitioner convention, not vendor standards). Penalising the MSP, or blaming the agent, both skip that mix shift: the agent only handles requests that never became tickets. Declaring the metric meaningless throws away a signal you can still use by comparing like-for-like categories."
     }
   ]
 }

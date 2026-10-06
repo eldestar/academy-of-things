@@ -62,7 +62,7 @@ terraform {
 
 ## Environments: workspaces versus separate states
 
-CLI workspaces share one backend and one set of credentials. HashiCorp's own docs call them "not a suitable isolation mechanism" when deployments need different access controls. They suit a throwaway parallel copy for testing. For Okta production versus preview, use separate directories, separate state keys or buckets, and separate CI credentials, so a mistake in preview cannot reach prod and a prod state reader is a short list.
+CLI workspaces share one backend, so they share that backend's access controls: whoever can reach it can read and write every workspace's state. HashiCorp's own docs call them "not a suitable isolation mechanism" when deployments need different access controls. They suit a throwaway parallel copy for testing. Config is not the issue: you normally pass each workspace different input variables, and each workspace's state sits in the same configured backend (for the S3 example above, not on the runner). The lock file belongs to the working directory, so every workspace in it uses the same recorded provider versions. What workspaces cannot give you is separation of who may read and write each state. For Okta production versus preview, use separate directories, separate state keys or buckets, and separate CI credentials, so a mistake in preview cannot reach prod and a prod state reader is a short list.
 
 ## What a failed apply leaves behind
 

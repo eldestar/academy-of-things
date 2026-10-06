@@ -8,7 +8,7 @@
         "The IT admin's email was not listed in it_contact_emails, so WorkOS blocked the click when it did not recognise the visitor",
         "A dashboard setup link was already active for that organization, and only one link can be active at a time",
         "API-generated portal links expire five minutes after issuance; email a dashboard setup link (30 days) or generate the API link on click",
-        "The sso intent can only be used once per organization, and the customer completed setup over the weekend using a different link"
+        "The sso intent can only be used once per organization, and the customer completed setup over the weekend through a different link, so it was spent"
       ],
       "correct_index": 2,
       "explanation": "A portal link from the API lives five minutes and cannot be revoked. It is designed to be minted when a signed-in admin clicks a button and redirected immediately. For emailing a customer, the dashboard setup link lasts 30 days or until setup completes. it_contact_emails does not restrict who can open a link (it only enrols alert recipients), so the first option is wrong. The one-active-link rule applies to dashboard setup links, not to API links. Intents are not single-use."
@@ -49,13 +49,13 @@
     {
       "stem": "During an onboarding call, a vendor engineer creates the organization for a new customer with their email domain already marked state: 'verified' through the API, so the SSO test can proceed before the customer's DNS admin is available. What is the real risk?",
       "options": [
-        "WorkOS will refuse to activate SSO until DNS verification completes, so the call will fail and no unverified domain control is ever created",
+        "WorkOS will refuse to activate SSO until DNS verification completes, so the call fails and no unverified domain control is ever created",
         "The domain will move to failed after thirty days and take the SSO connection down with it, interrupting every login for that customer",
         "DNS ownership was never proven, yet the organization holds authentication policy for that domain, and in AuthKit its users can count as email-verified",
-        "The verification strategy becomes dns, which blocks any later manual verification of the same domain by WorkOS support or the vendor"
+        "The domain is recorded as verified but ignored for policy purposes until the customer's DNS admin completes the TXT check later"
       ],
       "correct_index": 2,
-      "explanation": "Setting verified state via the create or update API is allowed and skips the TXT check, intended for domains already proven elsewhere. The reference warns that the organization controlling a domain exerts authentication policy over it, and the AuthKit docs say a verified domain feeds the email-verified shortcut for SSO users. If the domain belongs to someone else (or is a typo), you have handed that control out unverified. The thirty-day failure applies to pending DNS verification, and the manual strategy exists precisely for domains verified without the DNS flow, so it is not something that blocks later changes."
+      "explanation": "Setting verified state via the create or update API is allowed and skips the TXT check, intended for domains already proven elsewhere. The reference warns that the organization controlling a domain exerts authentication policy over it, and the AuthKit docs say a verified domain feeds the email-verified shortcut for SSO users. If the domain belongs to someone else (or is a typo), you have handed that control out unverified. The thirty-day failure applies to pending DNS verification. Nothing re-checks DNS for you and nothing defers the policy: the domain is treated as verified from the moment you set it."
     },
     {
       "stem": "Your customer's SOC streams WorkOS audit logs to Splunk. After their HEC endpoint was down for a weekend, the stream shows Error and nothing has arrived since Saturday, although Splunk is healthy again. What do the docs tell you to do?",

@@ -43,6 +43,18 @@ intermittent expired-assertion errors — what's the classic root cause?" tests
 whether they understood it. Write distractors that a half-informed person
 would actually pick.
 
+**The lesson must contain what the quiz asks.** Every number, name, default,
+limit and distinction a question turns on has to be stated in the lesson body,
+not only in the explanation the reader sees after answering. If a reader could
+only get a question right by elimination, or by knowing something the lesson
+never said, fix the lesson (with a verified fact) or rewrite the question. Test
+it blind: `python3 scripts/quiz-coverage.py strip <slug> <outdir>` makes
+answer-key-free copies, a reviewer who sees only those and the lesson answers
+each question and quotes the sentence that supports the answer, and
+`python3 scripts/quiz-coverage.py score <slug> <answers.json>` flags wrong
+answers, outside knowledge, low confidence and quotes that are not in the
+lesson.
+
 **Put the teaching in the explanations.** They show for correct and incorrect
 answers both, so they are read more carefully than the lesson body. Never
 write "Correct!" — say why.

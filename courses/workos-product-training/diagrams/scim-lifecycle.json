@@ -1,0 +1,23 @@
+{
+  "id": "scim-lifecycle",
+  "prefix": "ds",
+  "title": "SCIM provisioning and deprovisioning through WorkOS",
+  "desc": "The IdP provisions a user to WorkOS over SCIM, and WorkOS sends user and group events to the vendor app, which upserts them. When the admin deactivates the user, Okta sets active to false. In the default secure flow WorkOS sends dsync.user.deleted; in the custom flow it sends dsync.user.updated with an inactive state plus dsync.group.user_removed. The vendor must revoke sessions and offboard. A late retry of an older active update can resurrect the user unless the handler keeps a tombstone with the deprovision time.",
+  "duration": 18,
+  "lanes": [
+    {"id": "idp", "title": "Okta (any SCIM IdP)", "sub": "pushes, on its own schedule"},
+    {"id": "wos", "title": "WorkOS", "sub": "the SCIM server, read-only API", "hot": true},
+    {"id": "app", "title": "Vendor app", "sub": "reads WorkOS, receives events"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "idp", "to": "wos", "label": ["SCIM provisions the user", "create user, push group"], "badge": "1"},
+    {"type": "arrow", "from": "wos", "to": "app", "label": ["events: dsync.user.created", "dsync.group.user_added"], "badge": "2"},
+    {"type": "note", "under": "app", "lines": ["upsert user and membership"], "with_previous": true},
+    {"type": "arrow", "from": "idp", "to": "wos", "label": ["admin deactivates the user", "Okta sets active = false"], "badge": "3"},
+    {"type": "arrow", "from": "wos", "to": "app", "label": ["secure flow (the default)", "dsync.user.deleted"], "badge": "4a"},
+    {"type": "arrow", "from": "wos", "to": "app", "label": ["custom flow (via support)", "dsync.user.updated, inactive", "+ dsync.group.user_removed"], "badge": "4b"},
+    {"type": "note", "under": "app", "lines": ["revoke sessions, offboard", "SCIM never ends a live session"], "tone": "good", "badge": "5"},
+    {"type": "arrow", "from": "wos", "to": "app", "label": ["a late retry arrives", "dsync.user.updated, state active"], "tone": "bad", "badge": "6"},
+    {"type": "note", "under": "app", "lines": ["tombstone keeps the deprovision", "time, so the old event is skipped"], "tone": "good", "badge": "7"}
+  ]
+}

@@ -60,6 +60,15 @@ Plain Markdown, rendered by marked.js. Start with a single `#` heading.
 Fenced code blocks, tables, and lists all work. There is no front matter and
 no templating — what you write is what renders.
 
+Raw HTML passes through: the engine does not sanitize lesson text, and scripts
+do not run. That is what lets a lesson carry an inline SVG diagram. Diagrams
+are inline, not `<img>` files, on purpose: an SVG loaded as an image cannot see
+the page's CSS variables, so it would not follow light and dark mode. Generate
+them with `scripts/sequence-diagram.py` rather than hand-writing the markup; the
+generator's spec lives beside the course in `courses/<slug>/diagrams/<id>.json`
+(ignored by the engine, not shipped by `package-course.sh`). A diagram must not
+be the only place a fact appears.
+
 ## quiz.json
 
 Optional. Omit the file and the lesson simply has no quiz. The engine reads

@@ -1,0 +1,23 @@
+{
+  "id": "saml-sp-initiated",
+  "prefix": "aot",
+  "title": "SP-initiated SAML sign-in through WorkOS",
+  "desc": "Three parties: the vendor app, WorkOS, and the identity provider. The app redirects the browser to WorkOS, WorkOS redirects to the IdP with a SAML request, the IdP posts a signed assertion to WorkOS, WorkOS redirects back to the app with a code, and the app exchanges the code for a profile server to server.",
+  "duration": 16,
+  "legend": {"front": "through the user's browser", "back": "server to server"},
+  "lanes": [
+    {"id": "app", "title": "Vendor app", "sub": "OAuth 2.0 client of WorkOS"},
+    {"id": "wos", "title": "WorkOS", "sub": "the SAML service provider", "hot": true},
+    {"id": "idp", "title": "Okta (any IdP)", "sub": "the side you already run"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "app", "to": "wos", "label": ["redirect to /sso/authorize", "organization, redirect_uri, state"], "badge": "1"},
+    {"type": "arrow", "from": "wos", "to": "idp", "label": ["SAML request", "HTTP-Redirect by default"], "badge": "2"},
+    {"type": "note", "under": "idp", "lines": ["user signs in at the IdP", "(MFA, your policies)"]},
+    {"type": "arrow", "from": "idp", "to": "wos", "label": ["signed assertion", "HTTP-POST to the ACS URL"], "badge": "3a"},
+    {"type": "note", "under": "wos", "lines": ["WorkOS verifies it"]},
+    {"type": "arrow", "from": "wos", "to": "app", "label": ["redirect to your redirect_uri", "code (valid 10 min) and state"], "badge": "3b"},
+    {"type": "arrow", "from": "app", "to": "wos", "label": ["POST /sso/token"], "tone": "back", "badge": "4"},
+    {"type": "arrow", "from": "wos", "to": "app", "label": ["returns the profile"], "tone": "back", "with_previous": true}
+  ]
+}

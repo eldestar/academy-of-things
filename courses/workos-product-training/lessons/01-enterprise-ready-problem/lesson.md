@@ -36,7 +36,7 @@ Published prices, pay-as-you-go, 2026-10-03:
 | Support | Standard free; Scale $1,000/mo; Enterprise custom |
 | Annual Credits | custom; adds prepay discount, 99.99% uptime SLA, guided migration |
 
-A connection is the relationship between WorkOS and one customer's identity provider, and the pricing FAQ says it is billed the same whatever the IdP or user count. Staging is free; only production bills. Admin Portal is included; custom branding and custom domains cost extra ($99/mo for the domain).
+A connection is the relationship between WorkOS and one customer's identity provider, and the pricing FAQ says it is billed the same whatever the IdP or user count. Staging is free; only production bills. The SSO launch checklist narrows it further: only enterprise connections (the SAML and OIDC ones) in Production are charged, while OAuth connections in Production, such as social sign-in through WorkOS, are free. Admin Portal is included; custom branding and custom domains cost extra ($99/mo for the domain).
 
 > **Read the fine print.** The page does not say whether a tier discount applies to every connection or only to those inside the band. It also lists SSO and Directory Sync as separate tables while its FAQ says each customer "with SSO or Directory Sync" counts as one connection. A customer using both could be one connection or two. Confirm both with sales before you model anything.
 

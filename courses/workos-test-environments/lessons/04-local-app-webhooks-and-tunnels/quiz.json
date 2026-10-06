@@ -30,7 +30,7 @@
         "WorkOS Emulate with an errorHooks entry that returns a certificate error from the SSO endpoints, which simulates the wrong-key rejection",
         "WorkOS Emulate with a seeded SSO connection whose profile carries a rotated certificate attribute, which exercises the rotation path your code must handle",
         "A local mock that returns a hand-built profile from the token endpoint, since your code never sees the SAML signature in either case",
-        "A staging connection backed by a real IdP app whose certificate you control, since Emulate fakes the IdP step and never validates a SAML signature"
+        "A staging connection backed by a real IdP app whose certificate you control, because Emulate has no IdP step and so no assertion or signature to validate"
       ],
       "correct_index": 3,
       "explanation": "Emulate is an in-memory API double: its README states there is no IdP to prove an identity and that /sso/authorize signs in whoever login_hint names. Signature validation happens inside WorkOS against the certificate stored on a real connection, so only a staging connection backed by an IdP whose certificate you control, such as your own Okta or Entra app, can show a wrong-key rejection (upload a different certificate to the connection) or a rotation (generate a new certificate in the IdP). The Dashboard Test IdP is not enough: it exposes only fixed scenarios (SP-initiated, IdP-initiated, guest domain, error response). Error hooks only force HTTP responses; they simulate the symptom, not the cryptography. A seeded profile has no certificate to rotate. A mock that hands back a profile never exercises signature validation at all. Emulate is still valuable for CI and for your own error-path code."

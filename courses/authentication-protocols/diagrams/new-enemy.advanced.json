@@ -1,0 +1,20 @@
+{
+  "id": "new-enemy",
+  "prefix": "l07h",
+  "title": "Zanzibar's new enemy problem and the zookie",
+  "desc": "Two parties: a client and Zanzibar, the ACL store. Bob is removed from the ACL. The new enemy problem is applying a stale ACL to new content, so Bob still reads it. The client requests an opaque zookie token for the new content version and stores it with that version. With the zookie, a check on that content is evaluated on ACL data no older than that version, using external consistency.",
+  "duration": 20,
+  "legend": {"front": "message", "bad": "the problem", "good": "what the zookie guarantees"},
+  "lanes": [
+    {"id": "cl", "title": "Client", "sub": "zookie kept with each version"},
+    {"id": "zan", "title": "Zanzibar", "sub": "the ACL store", "hot": true}
+  ],
+  "steps": [
+    {"type": "note", "under": "zan", "lines": ["Bob is removed from the ACL"], "badge": "1"},
+    {"type": "note", "under": "zan", "lines": ["The new enemy problem: a stale ACL", "applied to new content, so Bob", "still reads it"], "tone": "bad", "badge": "2"},
+    {"type": "arrow", "from": "cl", "to": "zan", "label": ["Client requests a zookie", "for the new content version"], "badge": "3"},
+    {"type": "note", "under": "cl", "lines": ["Stores the zookie with", "that content version"], "badge": "4"},
+    {"type": "arrow", "from": "cl", "to": "zan", "label": ["Check Bob's access", "to that content version"], "badge": "5"},
+    {"type": "note", "under": "zan", "lines": ["Evaluated on ACL data no older than", "that version (external consistency)"], "tone": "good", "badge": "6"}
+  ]
+}

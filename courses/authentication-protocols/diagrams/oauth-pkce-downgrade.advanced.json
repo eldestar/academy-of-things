@@ -1,0 +1,106 @@
+{
+  "id": "oauth-pkce-downgrade",
+  "prefix": "l03d",
+  "title": "PKCE downgrade attack (RFC 9700, section 4.8)",
+  "desc": "Three parties: the attacker, the authorization server (AS) and the victim's client. Preconditions: the AS supports PKCE but does not mandate it, and the client does not use or check state. Step 1: the attacker starts a flow on their own device with code_challenge stripped and receives an unbound code. Step 2: the attacker sends the victim's browser to the response URL carrying that unbound code. Step 3: the client sends the code and its code_verifier; the AS sees no stored challenge and ignores the verifier, so the client ends up with a token for the attacker's account. Step 4, the fix: the AS must reject a token request containing a code_verifier when no challenge was in the authorization request.",
+  "duration": 18,
+  "legend": {
+    "front": "normal event",
+    "back": "direct request, not a redirect",
+    "bad": "the attack",
+    "good": "the fix"
+  },
+  "lanes": [
+    {
+      "id": "atk",
+      "title": "Attacker",
+      "sub": "on their own device"
+    },
+    {
+      "id": "as",
+      "title": "Authorization server",
+      "sub": "supports PKCE, no mandate",
+      "hot": true
+    },
+    {
+      "id": "cl",
+      "title": "Victim's client",
+      "sub": "no use or check of state"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "atk",
+      "to": "as",
+      "label": [
+        "starts a flow,",
+        "code_challenge stripped"
+      ],
+      "tone": "bad",
+      "badge": "1"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "atk",
+      "label": [
+        "an unbound code"
+      ],
+      "tone": "bad",
+      "with_previous": true
+    },
+    {
+      "type": "arrow",
+      "from": "atk",
+      "to": "cl",
+      "label": [
+        "sends the victim's browser to the response URL",
+        "carrying that unbound code"
+      ],
+      "tone": "bad",
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "cl",
+      "to": "as",
+      "label": [
+        "the code and the code_verifier"
+      ],
+      "tone": "back",
+      "badge": "3"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "cl",
+      "label": [
+        "a token for the attacker's account"
+      ],
+      "tone": "bad",
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "no stored challenge:",
+        "the AS ignores the verifier"
+      ],
+      "tone": "bad",
+      "badge": "!"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "Fix: the AS must reject a token request with",
+        "a code_verifier when no challenge was in",
+        "the authorization request"
+      ],
+      "tone": "good",
+      "badge": "4"
+    }
+  ]
+}

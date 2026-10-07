@@ -4,6 +4,125 @@ You design or build the service-provider side of identity integrations. This cap
 
 ## The decision matrix and its edges
 
+<!-- diagram:sp-checks -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l08d-pause" class="l08d-cb" /><label for="l08d-pause" class="l08d-btn"><span class="l08d-off">Pause animation</span><span class="l08d-on">Play animation</span></label>
+<div class="l08d-box" style="overflow-x:auto">
+<svg class="l08d-flow" viewBox="0 0 760 664" role="img" aria-labelledby="l08d-t l08d-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l08d-t">SAML assertion against OIDC ID token, side by side</title>
+<desc id="l08d-d">Two columns, a SAML assertion over the POST binding and an OIDC ID token, compared across six rows. When to choose it: SAML when the SP speaks only SAML, OIDC when a client also needs API tokens. Audience: SAML checks that Audience lists the SP and that Recipient equals the ACS URL; OIDC checks that aud contains the client_id. Signature: the POST binding requires the assertion to be signed; for a JWT, verify with an algorithm allow-list set by the caller and reject none. Time: NotOnOrAfter allowing for skew, against exp. Also checked: InResponseTo and a replay set of assertion IDs for SAML; iss equal to the discovery issuer and nonce if sent for OIDC. Stable user key: IdP entity ID plus a persistent NameID for SAML, iss plus sub for OIDC. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l08d-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l08d-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l08d-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08d-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08d-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l08d-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l08d-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l08d-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l08d-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08d-badt{fill:var(--bad-text)}
+.l08d-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08d-badge{fill:var(--accent)}
+.l08d-b-back{fill:var(--muted)}
+.l08d-b-bad{fill:var(--bad)}
+.l08d-b-good{fill:var(--good)}
+.l08d-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08d-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08d-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l08d-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l08d-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08d-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08d-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
+.l08d-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08d-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08d-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08d-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l08d-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
+.l08d-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
+.l08d-hl{fill:none;stroke:var(--accent);stroke-width:3}
+.l08d-hle{stroke:var(--accent);stroke-width:3;fill:none}
+.l08d-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l08d-pk.l08d-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l08d-pk.l08d-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l08d-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l08d-flow:hover .l08d-g,svg.l08d-flow:hover .l08d-pk{animation-play-state:paused}
+.l08d-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l08d-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l08d-btn:hover{background:var(--hover)}
+.l08d-cb:focus-visible + .l08d-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l08d-cb:checked + .l08d-btn .l08d-off,.l08d-cb:not(:checked) + .l08d-btn .l08d-on{display:none}
+.l08d-cb:checked ~ .l08d-box .l08d-g,.l08d-cb:checked ~ .l08d-box .l08d-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08d-g{animation:none;opacity:1}.l08d-pk{animation:none;display:none}.l08d-btn{display:none}}
+@keyframes l08d-g0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:.45}}
+.l08d-g0{animation-name:l08d-g0}
+@keyframes l08d-g1{0%,16.657%{opacity:.45}16.667%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
+.l08d-g1{animation-name:l08d-g1}
+@keyframes l08d-g2{0%,33.323%{opacity:.45}33.333%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
+.l08d-g2{animation-name:l08d-g2}
+@keyframes l08d-g3{0%,49.99%{opacity:.45}50%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
+.l08d-g3{animation-name:l08d-g3}
+@keyframes l08d-g4{0%,66.657%{opacity:.45}66.667%{opacity:1}83.333%{opacity:1}83.343%,100%{opacity:.45}}
+.l08d-g4{animation-name:l08d-g4}
+@keyframes l08d-g5{0%,83.323%{opacity:.45}83.333%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l08d-g5{animation-name:l08d-g5}
+</style>
+<defs>
+<marker id="l08d-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l08d-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l08d-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="l08d-box" x="240" y="10" width="247" height="62" rx="10"/><text class="l08d-ttl" x="364" y="36">SAML assertion (POST)</text><text class="l08d-sub" x="364" y="56"></text>
+<rect class="l08d-box" x="495" y="10" width="247" height="62" rx="10"/><text class="l08d-ttl" x="618" y="36">OIDC ID token</text><text class="l08d-sub" x="618" y="56"></text>
+<g class="l08d-g l08d-g0">
+<rect class="l08d-row" x="10" y="86" width="740" height="71" rx="8"/>
+<text class="l08d-ttlL" x="24" y="112">Choose it when</text>
+<text class="l08d-nt" x="364" y="134">the SP speaks only SAML</text>
+<text class="l08d-nt" x="618" y="134">a client also needs API tokens</text>
+</g>
+<g class="l08d-g l08d-g1">
+<rect class="l08d-row" x="10" y="165" width="740" height="86" rx="8"/>
+<text class="l08d-ttlL" x="24" y="191">Audience</text>
+<text class="l08d-nt" x="364" y="213">Audience lists the SP;</text>
+<text class="l08d-nt" x="364" y="228">Recipient equals the ACS URL</text>
+<text class="l08d-nt" x="618" y="213">aud contains the client_id</text>
+</g>
+<g class="l08d-g l08d-g2">
+<rect class="l08d-row" x="10" y="259" width="740" height="86" rx="8"/>
+<text class="l08d-ttlL" x="24" y="285">Signature</text>
+<text class="l08d-nt" x="364" y="307">POST binding: the assertion</text>
+<text class="l08d-nt" x="364" y="322">itself MUST be signed</text>
+<text class="l08d-nt" x="618" y="307">verify with an alg allow-list</text>
+<text class="l08d-nt" x="618" y="322">set by the caller; reject none</text>
+</g>
+<g class="l08d-g l08d-g3">
+<rect class="l08d-row" x="10" y="353" width="740" height="71" rx="8"/>
+<text class="l08d-ttlL" x="24" y="379">Time</text>
+<text class="l08d-nt" x="364" y="401">NotOnOrAfter, allowing for skew</text>
+<text class="l08d-nt" x="618" y="401">exp</text>
+</g>
+<g class="l08d-g l08d-g4">
+<rect class="l08d-row" x="10" y="432" width="740" height="86" rx="8"/>
+<text class="l08d-ttlL" x="24" y="458">Also checked</text>
+<text class="l08d-nt" x="364" y="480">InResponseTo (absent when</text>
+<text class="l08d-nt" x="364" y="495">unsolicited); replay set of IDs</text>
+<text class="l08d-nt" x="618" y="480">iss equals the discovery issuer;</text>
+<text class="l08d-nt" x="618" y="495">nonce, if the SP sent one</text>
+</g>
+<g class="l08d-g l08d-g5">
+<rect class="l08d-row" x="10" y="526" width="740" height="86" rx="8"/>
+<text class="l08d-ttlL" x="24" y="552">Stable user key</text>
+<text class="l08d-nt" x="364" y="574">IdP entity ID plus a</text>
+<text class="l08d-nt" x="364" y="589">persistent NameID</text>
+<text class="l08d-nt" x="618" y="574">iss plus sub</text>
+</g>
+</svg>
+</div>
+</div>
+<!-- /diagram:sp-checks -->
+
+Read down each column to see what the SP does with each artefact. The SAML column is the POST-binding case. The table below adds the other tools and the limits of each.
+
 | Need | Tool and the spec facts that decide it | Limits |
 | --- | --- | --- |
 | Browser SSO | SAML 2.0 Web SSO, the choice when the SP speaks only SAML. With the POST binding the assertion MUST be signed. The SP verifies signatures, `Recipient` against the ACS URL, `NotOnOrAfter` (allowing for skew) and `InResponseTo` (absent when unsolicited), and keeps used assertion IDs until `NotOnOrAfter` (plus any skew allowance you accept; lesson 2) to stop replay | Bearer `SubjectConfirmationData` carries `Recipient` and `NotOnOrAfter` and must not carry `NotBefore`; no account lifecycle |
@@ -24,6 +143,242 @@ Reproduce, capture, decode, compare to config, change one thing. Instruments:
 - **Shell**: curl (`application/scim+json`), `openssl x509 -enddate -fingerprint -checkend`, dig, an NTP offset query.
 
 ## Failure catalogue
+
+<!-- diagram:mixup-defences -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l08f-pause" class="l08f-cb" /><label for="l08f-pause" class="l08f-btn"><span class="l08f-off">Pause animation</span><span class="l08f-on">Play animation</span></label>
+<div class="l08f-box" style="overflow-x:auto">
+<svg class="l08f-flow" viewBox="0 0 760 585" role="img" aria-labelledby="l08f-t l08f-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l08f-t">What stops an OAuth mix-up</title>
+<desc id="l08f-d">Five candidate defences against mix-up, where the client sends the code to the attacker's token endpoint. Storing the issuer bound to each request and comparing it with iss on return (RFC 9207) is the defence. Distinct redirect URIs are a fallback only if other options are unavailable (RFC 9700). By the lesson's own reasoning from RFC 9700 4.4.1, an aud check on a returned token comes too late, exact redirect matching passes because the shared URI is the client's own, and PKCE is not a defence because the client sends its verifier to the attacker's token endpoint with the code. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l08f-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l08f-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l08f-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08f-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08f-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l08f-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l08f-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l08f-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l08f-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08f-badt{fill:var(--bad-text)}
+.l08f-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08f-badge{fill:var(--accent)}
+.l08f-b-back{fill:var(--muted)}
+.l08f-b-bad{fill:var(--bad)}
+.l08f-b-good{fill:var(--good)}
+.l08f-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08f-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08f-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l08f-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l08f-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08f-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08f-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
+.l08f-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08f-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08f-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08f-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l08f-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
+.l08f-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
+.l08f-hl{fill:none;stroke:var(--accent);stroke-width:3}
+.l08f-hle{stroke:var(--accent);stroke-width:3;fill:none}
+.l08f-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l08f-pk.l08f-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l08f-pk.l08f-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l08f-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l08f-flow:hover .l08f-g,svg.l08f-flow:hover .l08f-pk{animation-play-state:paused}
+.l08f-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l08f-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l08f-btn:hover{background:var(--hover)}
+.l08f-cb:focus-visible + .l08f-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l08f-cb:checked + .l08f-btn .l08f-off,.l08f-cb:not(:checked) + .l08f-btn .l08f-on{display:none}
+.l08f-cb:checked ~ .l08f-box .l08f-g,.l08f-cb:checked ~ .l08f-box .l08f-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08f-g{animation:none;opacity:1}.l08f-pk{animation:none;display:none}.l08f-btn{display:none}}
+@keyframes l08f-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
+.l08f-g0{animation-name:l08f-g0}
+@keyframes l08f-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
+.l08f-g1{animation-name:l08f-g1}
+@keyframes l08f-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
+.l08f-g2{animation-name:l08f-g2}
+@keyframes l08f-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
+.l08f-g3{animation-name:l08f-g3}
+@keyframes l08f-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l08f-g4{animation-name:l08f-g4}
+</style>
+<defs>
+<marker id="l08f-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l08f-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l08f-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="l08f-box" x="240" y="10" width="502" height="62" rx="10"/><text class="l08f-ttl" x="491" y="36">Does it stop mix-up?</text><text class="l08f-sub" x="491" y="56">the client sends the code to the attacker's token endpoint</text>
+<g class="l08f-g l08f-g0">
+<rect class="l08f-row" x="10" y="86" width="740" height="86" rx="8"/>
+<text class="l08f-ttlL" x="24" y="112">Store issuer, check iss</text>
+<text class="l08f-subL" x="24" y="130">RFC 9207</text>
+<circle cx="491" cy="108" r="10" style="fill:var(--good)"/><path d="M486.8,108.0 L489.6,111.4 L495.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08f-nt" x="491" y="134">Issuer is bound to each request and compared</text>
+<text class="l08f-nt" x="491" y="149">with iss on return</text>
+</g>
+<g class="l08f-g l08f-g1">
+<rect class="l08f-row" x="10" y="180" width="740" height="86" rx="8"/>
+<text class="l08f-ttlL" x="24" y="206">Distinct redirect URIs</text>
+<text class="l08f-subL" x="24" y="224">RFC 9700</text>
+<circle cx="491" cy="202" r="10" style="fill:var(--muted)"/><path d="M486.8,202.0 L495.2,202.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08f-nt" x="491" y="228">A fallback, used only if other options</text>
+<text class="l08f-nt" x="491" y="243">are unavailable</text>
+</g>
+<g class="l08f-g l08f-g2">
+<rect class="l08f-row" x="10" y="274" width="740" height="71" rx="8"/>
+<text class="l08f-ttlL" x="24" y="300">aud check on the token</text>
+<text class="l08f-subL" x="24" y="318">our reasoning, RFC 9700 4.4.1</text>
+<circle cx="491" cy="296" r="10" style="fill:var(--bad)"/><path d="M487.6,292.6 L494.4,299.4 M494.4,292.6 L487.6,299.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08f-nt" x="491" y="322">Too late: that endpoint controls the token</text>
+</g>
+<g class="l08f-g l08f-g3">
+<rect class="l08f-row" x="10" y="353" width="740" height="86" rx="8"/>
+<text class="l08f-ttlL" x="24" y="379">Exact redirect matching</text>
+<text class="l08f-subL" x="24" y="397">our reasoning, RFC 9700 4.4.1</text>
+<circle cx="491" cy="375" r="10" style="fill:var(--bad)"/><path d="M487.6,371.6 L494.4,378.4 M494.4,371.6 L487.6,378.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08f-nt" x="491" y="401">Passes: the shared URI is the client's own</text>
+<text class="l08f-nt" x="491" y="416">registered one</text>
+</g>
+<g class="l08f-g l08f-g4">
+<rect class="l08f-row" x="10" y="447" width="740" height="86" rx="8"/>
+<text class="l08f-ttlL" x="24" y="473">PKCE</text>
+<text class="l08f-subL" x="24" y="491">our reasoning, RFC 9700 4.4.1</text>
+<circle cx="491" cy="469" r="10" style="fill:var(--bad)"/><path d="M487.6,465.6 L494.4,472.4 M494.4,465.6 L487.6,472.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08f-nt" x="491" y="495">Not a defence: the client sends its verifier</text>
+<text class="l08f-nt" x="491" y="510">to the attacker's token endpoint with the code</text>
+</g>
+<circle cx="48" cy="561" r="8" style="fill:var(--good)"/><path d="M44.6,561.0 L46.9,563.7 L51.4,558.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08f-dim" x="64" y="565" style="text-anchor:start">the defence</text>
+<circle cx="176" cy="561" r="8" style="fill:var(--muted)"/><path d="M172.6,561.0 L179.4,561.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08f-dim" x="192" y="565" style="text-anchor:start">fallback only</text>
+<circle cx="317" cy="561" r="8" style="fill:var(--bad)"/><path d="M314.3,558.3 L319.7,563.7 M319.7,558.3 L314.3,563.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08f-dim" x="333" y="565" style="text-anchor:start">does not stop it</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:mixup-defences -->
+
+The top mark is the defence and the second is a fallback. The marks on the last three rows are the lesson's own reasoning from RFC 9700 4.4.1.
+
+<!-- diagram:leaver-paths -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l08e-pause" class="l08e-cb" /><label for="l08e-pause" class="l08e-btn"><span class="l08e-off">Pause animation</span><span class="l08e-on">Play animation</span></label>
+<div class="l08e-box" style="overflow-x:auto">
+<svg class="l08e-flow" viewBox="0 0 921 323" role="img" aria-labelledby="l08e-t l08e-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l08e-t">A leaver keeps access: which path holds it</title>
+<desc id="l08e-d">A tree over places a leaver's access can live. An established SP session is the SP's own, and the SP SHOULD discard its security context at SessionNotOnOrAfter. For a JWT checked locally, local validation never asks the IdP, so the token is good until exp. Separately, introspection (RFC 7662) reports whether a token is active, and revocation (RFC 7009) invalidates tokens from a grant. After SCIM sets active to false, the service provider defines what that means. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l08e-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l08e-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l08e-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08e-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08e-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l08e-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l08e-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l08e-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l08e-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08e-badt{fill:var(--bad-text)}
+.l08e-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08e-badge{fill:var(--accent)}
+.l08e-b-back{fill:var(--muted)}
+.l08e-b-bad{fill:var(--bad)}
+.l08e-b-good{fill:var(--good)}
+.l08e-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08e-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08e-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l08e-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l08e-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08e-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08e-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
+.l08e-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08e-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08e-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08e-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l08e-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
+.l08e-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
+.l08e-hl{fill:none;stroke:var(--accent);stroke-width:3}
+.l08e-hle{stroke:var(--accent);stroke-width:3;fill:none}
+.l08e-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l08e-pk.l08e-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l08e-pk.l08e-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l08e-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l08e-h{opacity:0;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l08e-flow:hover .l08e-g,svg.l08e-flow:hover .l08e-pk,svg.l08e-flow:hover .l08e-h{animation-play-state:paused}
+.l08e-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l08e-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l08e-btn:hover{background:var(--hover)}
+.l08e-cb:focus-visible + .l08e-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l08e-cb:checked + .l08e-btn .l08e-off,.l08e-cb:not(:checked) + .l08e-btn .l08e-on{display:none}
+.l08e-cb:checked ~ .l08e-box .l08e-g,.l08e-cb:checked ~ .l08e-box .l08e-pk,.l08e-cb:checked ~ .l08e-box .l08e-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08e-g{animation:none;opacity:1}.l08e-pk{animation:none;display:none}.l08e-h{animation:none;opacity:0}.l08e-btn{display:none}}
+@keyframes l08e-h0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:0}}
+.l08e-h0{animation-name:l08e-h0}
+@keyframes l08e-h1{0%,19.99%{opacity:0}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:0}}
+.l08e-h1{animation-name:l08e-h1}
+@keyframes l08e-h2{0%,39.99%{opacity:0}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:0}}
+.l08e-h2{animation-name:l08e-h2}
+@keyframes l08e-h3{0%,59.99%{opacity:0}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:0}}
+.l08e-h3{animation-name:l08e-h3}
+@keyframes l08e-h4{0%,79.99%{opacity:0}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
+.l08e-h4{animation-name:l08e-h4}
+</style>
+<defs>
+<marker id="l08e-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l08e-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l08e-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<path class="l08e-edge" d="M460,89 L460,118 L130,118 L130,144" marker-end="url(#l08e-m-front)"/>
+<text class="l08e-dimL" x="136" y="134">SP session</text>
+<path class="l08e-edge" d="M460,89 L460,118 L300,118 L300,144" marker-end="url(#l08e-m-front)"/>
+<text class="l08e-dimL" x="308" y="134">JWT, checked locally</text>
+<path class="l08e-edge" d="M460,89 L460,144" marker-end="url(#l08e-m-front)"/>
+<text class="l08e-dimL" x="468" y="134">introspection</text>
+<path class="l08e-edge" d="M460,89 L460,118 L632,118 L632,144" marker-end="url(#l08e-m-front)"/>
+<text class="l08e-dimL" x="638" y="134">revocation</text>
+<path class="l08e-edge" d="M460,89 L460,118 L802,118 L802,144" marker-end="url(#l08e-m-front)"/>
+<text class="l08e-dimL" x="809" y="134">SCIM active false</text>
+<rect class="l08e-note" x="48" y="147" width="162" height="116" rx="8"/><text class="l08e-nt" x="130" y="168">An established SP</text><text class="l08e-nt" x="130" y="185">session is the SP's</text><text class="l08e-nt" x="130" y="202">own; the SP SHOULD</text><text class="l08e-nt" x="130" y="219">discard its security</text><text class="l08e-nt" x="130" y="236">context at</text><text class="l08e-nt" x="130" y="253">SessionNotOnOrAfter</text>
+<rect class="l08e-note" x="226" y="147" width="148" height="65" rx="8"/><text class="l08e-nt" x="300" y="168">Good until exp:</text><text class="l08e-nt" x="300" y="185">local validation</text><text class="l08e-nt" x="300" y="202">never asks the IdP</text>
+<rect class="l08e-note" x="390" y="147" width="141" height="65" rx="8"/><text class="l08e-nt" x="461" y="168">RFC 7662: reports</text><text class="l08e-nt" x="461" y="185">whether a token</text><text class="l08e-nt" x="461" y="202">is active</text>
+<rect class="l08e-note" x="548" y="147" width="168" height="48" rx="8"/><text class="l08e-nt" x="632" y="168">RFC 7009: invalidates</text><text class="l08e-nt" x="632" y="185">tokens from a grant</text>
+<rect class="l08e-note" x="732" y="147" width="141" height="65" rx="8"/><text class="l08e-nt" x="802" y="168">The SP defines</text><text class="l08e-nt" x="802" y="185">what active false</text><text class="l08e-nt" x="802" y="202">means</text>
+<rect class="l08e-box" x="400" y="24" width="121" height="65" rx="8"/><text class="l08e-main" x="460" y="45">Leaver still</text><text class="l08e-nt" x="460" y="62">has access:</text><text class="l08e-nt" x="460" y="79">what holds it?</text>
+<g class="l08e-h l08e-h0">
+<path class="l08e-hle" d="M460,89 L460,118 L130,118 L130,144" marker-end="url(#l08e-m-front)"/>
+<rect class="l08e-hl" x="400" y="24" width="121" height="65" rx="8"/>
+<rect class="l08e-hl" x="48" y="147" width="162" height="116" rx="8"/>
+</g>
+<g class="l08e-h l08e-h1">
+<path class="l08e-hle" d="M460,89 L460,118 L300,118 L300,144" marker-end="url(#l08e-m-front)"/>
+<rect class="l08e-hl" x="400" y="24" width="121" height="65" rx="8"/>
+<rect class="l08e-hl" x="226" y="147" width="148" height="65" rx="8"/>
+</g>
+<g class="l08e-h l08e-h2">
+<path class="l08e-hle" d="M460,89 L460,144" marker-end="url(#l08e-m-front)"/>
+<rect class="l08e-hl" x="400" y="24" width="121" height="65" rx="8"/>
+<rect class="l08e-hl" x="390" y="147" width="141" height="65" rx="8"/>
+</g>
+<g class="l08e-h l08e-h3">
+<path class="l08e-hle" d="M460,89 L460,118 L632,118 L632,144" marker-end="url(#l08e-m-front)"/>
+<rect class="l08e-hl" x="400" y="24" width="121" height="65" rx="8"/>
+<rect class="l08e-hl" x="548" y="147" width="168" height="48" rx="8"/>
+</g>
+<g class="l08e-h l08e-h4">
+<path class="l08e-hle" d="M460,89 L460,118 L802,118 L802,144" marker-end="url(#l08e-m-front)"/>
+<rect class="l08e-hl" x="400" y="24" width="121" height="65" rx="8"/>
+<rect class="l08e-hl" x="732" y="147" width="141" height="65" rx="8"/>
+</g>
+<line class="l08e-front" x1="40" y1="299" x2="70" y2="299"/>
+<text class="l08e-dim" x="78" y="303" style="text-anchor:start">the path being traced</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:leaver-paths -->
+
+Each branch is a place a leaver's access can live. The session branch repeats the lesson's statement about an established SP session, which sits in the IdP-down question and is not tied there to a leaver. The introspection and revocation branches say what each mechanism does; nothing here says a given SP uses them.
 
 | Symptom | Cause (the fact behind it) | First check |
 | --- | --- | --- |

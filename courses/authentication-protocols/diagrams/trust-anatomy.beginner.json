@@ -1,0 +1,33 @@
+{
+  "kind": "anatomy",
+  "id": "trust-anatomy",
+  "prefix": "l01a",
+  "title": "What an admin sets up so the app can trust the IdP",
+  "desc": "A nested diagram of the one-time setup before anyone signs in. The app is given the IdP's details: in SAML, metadata, an XML file naming the IdP by its entityID with its signing keys and sign-in URL; in OpenID Connect, a discovery document with a jwks_uri where the IdP publishes its signing keys. The IdP is told where it may send proofs: the app's Assertion Consumer Service URL in SAML, or its redirect URI in OpenID Connect. The result is that the app trusts the IdP to say who Sam is, while what he may do is still the app's decision.",
+  "duration": 20,
+  "legend": {"plain": "who gives what", "good": "what it contains"},
+  "root": {
+    "title": "Set up once by an admin", "sub": "before anyone signs in",
+    "check": ["Result: the app trusts the IdP to say", "who Sam is. What he may do is still", "the app's decision."],
+    "children": [
+      {
+        "title": "What the app is given", "sub": "the IdP's details",
+        "children": [
+          {"title": "SAML: metadata", "sub": "an XML file",
+           "check": ["names the IdP (its entityID), its", "signing keys and its sign-in URL"], "tone": "good"},
+          {"title": "OpenID Connect: discovery document", "sub": "at the issuer's address",
+           "check": ["has a jwks_uri, where the IdP", "publishes its signing keys"], "tone": "good"}
+        ]
+      },
+      {
+        "title": "What the IdP is told", "sub": "where it may send proofs",
+        "children": [
+          {"title": "SAML: the ACS URL", "sub": "Assertion Consumer Service",
+           "check": ["where the IdP may send proofs"], "tone": "good"},
+          {"title": "OpenID Connect: the redirect URI",
+           "check": ["where the IdP may send proofs"], "tone": "good"}
+        ]
+      }
+    ]
+  }
+}

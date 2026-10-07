@@ -1,0 +1,20 @@
+{
+  "kind": "matrix",
+  "id": "dbsc",
+  "prefix": "l06e",
+  "title": "What Device Bound Session Credentials do and do not cover",
+  "desc": "One column for DBSC, a W3C Editor's Draft whose own introduction calls it a very early drafting, treated as a partial control. It is aimed at cookie reuse on another device: a server can verify that the session credential, a private key the browser protects, has not been exported from the device. It does not prevent access while an attacker is resident on the device, because the signing capability stays available to programs running as the user. It does not prevent an attack if the attacker controls the browser at registration.",
+  "duration": 16,
+  "legend": {"good": "aimed at", "bad": "not covered"},
+  "columns": [
+    {"title": "DBSC, a very early draft", "sub": "treat it as a partial control"}
+  ],
+  "rows": [
+    {"title": "Cookie reuse", "sub": "on another device",
+     "cells": [{"mark": "good", "text": ["a server can verify the session key", "has not been exported from the device"]}]},
+    {"title": "Attacker on the device", "sub": "already resident",
+     "cells": [{"mark": "bad", "text": ["not prevented: the signing capability", "stays available to programs running as the user"]}]},
+    {"title": "Attacker controls browser", "sub": "at registration",
+     "cells": [{"mark": "bad", "text": ["not prevented (a stated non-goal)"]}]}
+  ]
+}

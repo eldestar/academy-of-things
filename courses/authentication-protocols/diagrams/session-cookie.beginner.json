@@ -1,0 +1,23 @@
+{
+  "id": "session-cookie",
+  "prefix": "l06b",
+  "title": "A session cookie works like a bearer ticket",
+  "desc": "Three parties: Sam's browser, the expense app, and an attacker's computer. Sam signs in, and MFA happens at sign-in. The app gives the browser a session cookie, and the browser sends the cookie with every request. The app checks only the cookie, so Sam is not asked for a password and MFA on every click. An idle timeout and an absolute timeout end the session. If malware copies the cookie, or an AitM relay captures it, the attacker sends the same cookie from another computer. The cookie works like a bearer ticket, so the attacker is treated as signed in and is not asked for MFA again.",
+  "duration": 22,
+  "legend": {"front": "Sam's browser", "bad": "the attacker", "good": "what the app does"},
+  "lanes": [
+    {"id": "br", "title": "Sam's browser", "sub": "holds the cookie"},
+    {"id": "app", "title": "Expense app", "sub": "checks only the cookie", "hot": true},
+    {"id": "atk", "title": "Attacker", "sub": "another computer"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "br", "to": "app", "label": ["Sam signs in", "MFA happens here"], "badge": "1"},
+    {"type": "arrow", "from": "app", "to": "br", "label": ["session cookie", "a random value"], "badge": "2"},
+    {"type": "arrow", "from": "br", "to": "app", "label": ["sends the cookie", "with every request"], "badge": "3"},
+    {"type": "note", "under": "app", "lines": ["no password or MFA", "on every click"], "tone": "good"},
+    {"type": "note", "under": "app", "lines": ["idle and absolute", "timeouts end the session"], "tone": "good"},
+    {"type": "note", "under": "atk", "lines": ["copied by malware, or", "captured by an AitM relay"], "tone": "bad"},
+    {"type": "arrow", "from": "atk", "to": "app", "label": ["the same cookie,", "from another computer"], "tone": "bad", "badge": "4"},
+    {"type": "note", "under": "app", "lines": ["whoever holds it is treated", "as signed in: no MFA again"], "tone": "bad"}
+  ]
+}

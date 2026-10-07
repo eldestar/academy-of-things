@@ -1,0 +1,120 @@
+{
+  "id": "oauth-device-grant",
+  "prefix": "l03c",
+  "title": "Device authorization grant (RFC 8628)",
+  "desc": "Three parties: the device, the authorization server and the user. Step 1: the device starts, which it should do only when the user asks, and receives device_code, user_code and verification_uri. Step 2: the device shows the code. Step 3: the user enters the code; the AS should show what is being authorized and ask the user to confirm the device is in their hands. Step 4: the device polls the token endpoint, by default every 5 seconds, and authorization_pending means keep polling. Step 5: slow_down means add 5 seconds to the interval for this and all later requests. Step 6: expired_token and access_denied end the session.",
+  "duration": 20,
+  "legend": {
+    "front": "request or response",
+    "back": "polling the token endpoint",
+    "bad": "the session ends",
+    "good": "what the AS should do"
+  },
+  "lanes": [
+    {
+      "id": "dev",
+      "title": "Device",
+      "sub": "shows the code, then polls"
+    },
+    {
+      "id": "as",
+      "title": "Authorization server",
+      "sub": "issues the codes",
+      "hot": true
+    },
+    {
+      "id": "user",
+      "title": "User",
+      "sub": "the person who authorizes"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "dev",
+      "to": "as",
+      "label": [
+        "start (a device should do this",
+        "only when the user asks)"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "dev",
+      "label": [
+        "device_code, user_code,",
+        "verification_uri"
+      ],
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "dev",
+      "lines": [
+        "shows the user_code"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "note",
+      "under": "user",
+      "lines": [
+        "enters the code"
+      ],
+      "badge": "3"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "should show what is being authorized and ask",
+        "the user to confirm the device is in their hands"
+      ],
+      "tone": "good",
+      "with_previous": true
+    },
+    {
+      "type": "arrow",
+      "from": "dev",
+      "to": "as",
+      "label": [
+        "polls the token endpoint",
+        "default interval: 5 seconds"
+      ],
+      "tone": "back",
+      "badge": "4"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "dev",
+      "label": [
+        "authorization_pending:",
+        "keep polling"
+      ],
+      "tone": "back",
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "dev",
+      "lines": [
+        "slow_down: add 5 seconds to the interval",
+        "(this and all later requests)"
+      ],
+      "badge": "5"
+    },
+    {
+      "type": "note",
+      "under": "dev",
+      "lines": [
+        "expired_token or access_denied:",
+        "the session ends"
+      ],
+      "tone": "bad",
+      "badge": "6"
+    }
+  ]
+}

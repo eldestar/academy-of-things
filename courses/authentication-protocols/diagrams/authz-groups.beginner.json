@@ -1,0 +1,23 @@
+{
+  "kind": "anatomy",
+  "id": "authz-groups",
+  "prefix": "l07b",
+  "title": "What a group is made of, and why its name can mislead",
+  "desc": "A nested diagram. A group, such as Finance-Readers, is a named set of people: Sam is added once instead of to each app one by one. Inside it are the members, who can be added directly or by a group rule that works from an attribute such as department; if HR enters the wrong department, the rule gives the wrong access. The group is also assigned to an app with a role in that app. If that role is administrator, every member gets administrator rights, however harmless the group name sounds, so you look at what the group is assigned to and with which role, not at the name.",
+  "duration": 20,
+  "legend": {"plain": "why use a group", "good": "where to look", "bad": "where it goes wrong"},
+  "root": {
+    "title": "Group", "sub": "a named set of people, e.g. Finance-Readers",
+    "check": ["Add Sam here once, not to ten", "apps one by one"],
+    "children": [
+      {"title": "Members", "sub": "added directly or by a group rule",
+       "check": ["A rule adds people from an attribute;", "a wrong HR department gives the", "wrong access"], "tone": "bad"},
+      {"title": "Assigned to an app", "sub": "with a role in that app",
+       "check": ["To know what a group allows, look", "at this and the role, not the name"], "tone": "good",
+       "children": [
+         {"title": "Role: administrator", "sub": "if it is administrator, every member gets it",
+          "check": ["Called Readers, but every member", "has administrator rights"], "tone": "bad"}
+       ]}
+    ]
+  }
+}

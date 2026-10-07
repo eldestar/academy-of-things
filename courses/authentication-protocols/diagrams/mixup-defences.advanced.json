@@ -1,0 +1,85 @@
+{
+  "kind": "matrix",
+  "id": "mixup-defences",
+  "prefix": "l08f",
+  "title": "What stops an OAuth mix-up",
+  "desc": "Five candidate defences against mix-up, where the client sends the code to the attacker's token endpoint. Storing the issuer bound to each request and comparing it with iss on return (RFC 9207) is the defence. Distinct redirect URIs are a fallback only if other options are unavailable (RFC 9700). By the lesson's own reasoning from RFC 9700 4.4.1, an aud check on a returned token comes too late, exact redirect matching passes because the shared URI is the client's own, and PKCE is not a defence because the client sends its verifier to the attacker's token endpoint with the code.",
+  "duration": 18,
+  "legend": {
+    "good": "the defence",
+    "partial": "fallback only",
+    "bad": "does not stop it"
+  },
+  "columns": [
+    {
+      "title": "Does it stop mix-up?",
+      "sub": "the client sends the code to the attacker's token endpoint"
+    }
+  ],
+  "rows": [
+    {
+      "title": "Store issuer, check iss",
+      "sub": "RFC 9207",
+      "cells": [
+        {
+          "mark": "good",
+          "text": [
+            "Issuer is bound to each request and compared",
+            "with iss on return"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Distinct redirect URIs",
+      "sub": "RFC 9700",
+      "cells": [
+        {
+          "mark": "partial",
+          "text": [
+            "A fallback, used only if other options",
+            "are unavailable"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "aud check on the token",
+      "sub": "our reasoning, RFC 9700 4.4.1",
+      "cells": [
+        {
+          "mark": "bad",
+          "text": [
+            "Too late: that endpoint controls the token"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Exact redirect matching",
+      "sub": "our reasoning, RFC 9700 4.4.1",
+      "cells": [
+        {
+          "mark": "bad",
+          "text": [
+            "Passes: the shared URI is the client's own",
+            "registered one"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "PKCE",
+      "sub": "our reasoning, RFC 9700 4.4.1",
+      "cells": [
+        {
+          "mark": "bad",
+          "text": [
+            "Not a defence: the client sends its verifier",
+            "to the attacker's token endpoint with the code"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "kind": "anatomy",
+  "id": "trust-anatomy",
+  "prefix": "l01a",
+  "title": "What anchors the trust agreement",
+  "desc": "A nested diagram of the trust agreement, which NIST describes as pre-established or subscriber-driven and which FAL2 requires to be pre-established. SAML metadata gives the entity ID, keys and endpoints; a root element must carry validUntil or cacheDuration, and in effect the anchor is whatever you did to obtain the file. OpenID Connect anchors on the https issuer URL you configured: discovery gives the jwks_uri, the token's iss must match the issuer exactly, and the verifier re-fetches the key set on an unfamiliar kid, with the set retaining recently retired keys. In the reverse direction the IdP must have some means to establish that an ACS location is controlled by the SP, and for OAuth a server must require public clients and implicit-grant confidential clients to register redirect endpoints, and should require all clients to.",
+  "duration": 26,
+  "legend": {"plain": "context", "good": "what anchors it"},
+  "root": {
+    "title": "Trust agreement", "sub": "NIST 63C Sec. 3.5: pre-established or subscriber-driven",
+    "check": ["FAL2 requires pre-established"],
+    "children": [
+      {"title": "SAML metadata", "sub": "entity ID, keys, endpoints",
+       "check": ["In effect, the anchor is whatever you", "did to obtain the file. validUntil or", "cacheDuration MUST be present."], "tone": "good"},
+      {
+        "title": "OIDC issuer URL", "sub": "the https URL you configured",
+        "check": ["Discovery gives jwks_uri; iss must", "match the issuer exactly"], "tone": "good",
+        "children": [
+          {"title": "jwks_uri key set", "sub": "rotation works by kid",
+           "check": ["Re-fetch on an unfamiliar kid.", "The set SHOULD retain recently", "retired keys."], "tone": "good"}
+        ]
+      },
+      {
+        "title": "Reverse direction", "sub": "where proofs may be sent",
+        "children": [
+          {"title": "SAML ACS location",
+           "check": ["The IdP MUST have some means to", "establish the SP controls it"], "tone": "good"},
+          {"title": "OAuth redirect endpoints",
+           "check": ["Server MUST require public and", "implicit-grant confidential clients", "to register; SHOULD require all", "(RFC 6749 3.1.2.2)"], "tone": "good"}
+        ]
+      }
+    ]
+  }
+}

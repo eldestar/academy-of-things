@@ -1,0 +1,93 @@
+{
+  "id": "oidc-key-lookup",
+  "prefix": "l04b",
+  "title": "How the app finds the key that checks the signature",
+  "desc": "Two parties: ExampleCRM and the OP. Step 1: ExampleCRM fetches the OP's discovery document at /.well-known/openid-configuration, which lists the jwks_uri address. Step 2: ExampleCRM fetches the JWKS from jwks_uri and gets the OP's public keys, each with a kid. Step 3: the token's header says which kid signed it. Step 4: when ExampleCRM sees a kid it does not have, it fetches the JWKS again. A note says an app with a stale or hardcoded key rejects every new token with invalid signature, usually the morning after a rotation.",
+  "duration": 20,
+  "legend": {
+    "front": "a request and its answer",
+    "bad": "what goes wrong",
+    "good": "what the app does"
+  },
+  "lanes": [
+    {
+      "id": "rp",
+      "title": "ExampleCRM",
+      "sub": "the app",
+      "hot": true
+    },
+    {
+      "id": "op",
+      "title": "Okta",
+      "sub": "the OP"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "fetch the discovery document",
+        "/.well-known/openid-configuration"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "it lists the jwks_uri address"
+      ],
+      "with_previous": true
+    },
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "fetch the JWKS from jwks_uri"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "the OP's public keys, each with a kid"
+      ],
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "rp",
+      "lines": [
+        "the token's header says which kid",
+        "signed it"
+      ],
+      "badge": "3"
+    },
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "a kid I have not got:",
+        "fetch the JWKS again"
+      ],
+      "badge": "4"
+    },
+    {
+      "type": "note",
+      "under": "rp",
+      "lines": [
+        "a stale or hardcoded key rejects every",
+        "new token as invalid signature,",
+        "usually the morning after a rotation"
+      ],
+      "tone": "bad"
+    }
+  ]
+}

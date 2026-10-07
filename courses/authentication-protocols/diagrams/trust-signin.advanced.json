@@ -1,0 +1,24 @@
+{
+  "id": "trust-signin",
+  "prefix": "tr",
+  "title": "What crosses the browser and what does not",
+  "desc": "Three parties: the relying party, the browser, and the identity provider. Step 1: the request arrives with no session, and the transaction should be RP-initiated, which NIST says SHOULD hold at FAL1 and SHALL at FAL2, with the response tied to the RP's request. Step 2: the relying party redirects the browser to the IdP with a sign-in request: a SAML AuthnRequest by Redirect, POST or Artifact binding, or an OpenID Connect authentication request. Step 3: the IdP may reuse its session and SHALL convey whatever it knows about how recent the authentication was, and the RP can force a new login with ForceAuthn or max_age. Step 4: the proof reaches the RP through the browser. With the SAML POST binding the Response goes through the browser and its assertion MUST be signed. In the OpenID Connect code flow only a code crosses the browser. A dashed back-channel arrow from the RP to the IdP shows the other path: with the SAML Artifact binding the SP fetches the Response, and in OpenID Connect the code is swapped at the token endpoint, so no token is exposed to the user agent. Step 5: a session is created only if the assertion is valid, from the expected IdP, and maps to a provisioned RP account.",
+  "duration": 24,
+  "legend": {"front": "through the browser", "back": "back channel, no browser", "good": "RP controls"},
+  "lanes": [
+    {"id": "rp", "title": "RP (SP / client)", "sub": "consumes the result"},
+    {"id": "br", "title": "Browser", "sub": "the user agent"},
+    {"id": "idp", "title": "IdP (OP)", "sub": "authenticates the user", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "br", "to": "rp", "label": ["request, no session"], "badge": "1"},
+    {"type": "note", "under": "rp", "tone": "good", "lines": ["RP-initiated: SHOULD at FAL1,", "SHALL at FAL2. Tie the", "response to its request"]},
+    {"type": "arrow", "from": "rp", "to": "br", "label": ["redirect with a sign-in request", "SAML: Redirect, POST or Artifact", "OIDC: authentication request"], "badge": "2"},
+    {"type": "arrow", "from": "br", "to": "idp", "label": ["browser carries it on"], "with_previous": true},
+    {"type": "note", "under": "idp", "lines": ["may reuse its session; SHALL convey", "whatever it knows about recency.", "RP can force: ForceAuthn, max_age"], "badge": "3"},
+    {"type": "arrow", "from": "idp", "to": "br", "label": ["SAML POST: Response, assertion", "MUST be signed", "OIDC code flow: only a code"], "badge": "4"},
+    {"type": "arrow", "from": "br", "to": "rp", "label": ["proof reaches the RP"], "with_previous": true},
+    {"type": "arrow", "from": "rp", "to": "idp", "tone": "back", "label": ["back channel, not through the browser:", "SAML Artifact binding: the SP fetches the Response", "OIDC: code swapped at the token endpoint,", "so no token is exposed to the user agent"]},
+    {"type": "note", "under": "rp", "tone": "good", "lines": ["session only if the assertion is valid,", "from the expected IdP, and maps to", "a provisioned RP account"], "badge": "5"}
+  ]
+}

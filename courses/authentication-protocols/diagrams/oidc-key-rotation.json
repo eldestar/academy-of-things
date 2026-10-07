@@ -1,0 +1,80 @@
+{
+  "kind": "stages",
+  "id": "oidc-key-rotation",
+  "prefix": "l04e",
+  "title": "A signing key rotates and the verifier's cache catches up",
+  "desc": "Four stages. First, before rotation, the OP signs with the old key, the JWKS holds the old key and the verifier's cache holds the old key. Then the OP adds a new key to the JWKS and starts signing with it, while the verifier's cache still holds only the old key; a stale cache fails with invalid signature. When the verifier sees an unfamiliar kid it goes back to jwks_uri, and its cache then holds both keys. Later the old key is retired; the OP SHOULD keep recently retired keys published for a while.",
+  "duration": 16,
+  "legend": {
+    "front": "step",
+    "good": "cache caught up",
+    "bad_state": "a stale cache fails here"
+  },
+  "stages": [
+    {
+      "title": "Before",
+      "sub": "before rotation",
+      "lines": [
+        "OP signs: old key",
+        "JWKS: old key",
+        "cache: old key"
+      ]
+    },
+    {
+      "title": "New key added",
+      "sub": "stale cache fails",
+      "lines": [
+        "OP signs: new key",
+        "JWKS: both keys",
+        "cache: old key"
+      ],
+      "tone": "bad"
+    },
+    {
+      "title": "Refetched",
+      "sub": "unfamiliar kid",
+      "lines": [
+        "OP signs: new key",
+        "JWKS: both keys",
+        "cache: both keys"
+      ],
+      "tone": "good"
+    },
+    {
+      "title": "Old key retired",
+      "sub": "OP SHOULD keep it",
+      "lines": [
+        "OP signs: new key",
+        "JWKS: old key",
+        "still published"
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from": 0,
+      "to": 1,
+      "label": [
+        "OP adds",
+        "new key"
+      ]
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "label": [
+        "unfamiliar",
+        "kid, so",
+        "refetch"
+      ]
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "label": [
+        "old key",
+        "retired"
+      ]
+    }
+  ]
+}

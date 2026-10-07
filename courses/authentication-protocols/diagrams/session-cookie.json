@@ -1,0 +1,22 @@
+{
+  "id": "session-cookie",
+  "prefix": "l06b",
+  "title": "A stolen session cookie skips MFA",
+  "desc": "Three parties: the user's browser, the real site, and an attacker. The user authenticates and the site returns a session cookie, a session secret that proves a past authentication. NIST wants a session to inherit the assurance of the authentication that created it, never higher. An AitM relay sees the cookie the real site returns, and malware can copy it from the browser. The attacker presents the stolen cookie, a bearer credential, and MFA does not help after that. Short lifetimes, ending sessions, and phishing-resistant sign-in help.",
+  "duration": 22,
+  "legend": {"front": "the user's session", "bad": "the attacker", "good": "what holds or helps"},
+  "lanes": [
+    {"id": "br", "title": "User's browser", "sub": "holds the cookie"},
+    {"id": "site", "title": "Real site", "sub": "returns the cookie", "hot": true},
+    {"id": "atk", "title": "Attacker", "sub": "relay or malware"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "br", "to": "site", "label": ["user authenticates", "MFA is satisfied here"], "badge": "1"},
+    {"type": "arrow", "from": "site", "to": "br", "label": ["session cookie", "proves a past authentication"], "badge": "2"},
+    {"type": "note", "under": "site", "lines": ["NIST wants it to inherit the", "assurance of the authentication", "that created it, never higher"], "tone": "good"},
+    {"type": "note", "under": "atk", "lines": ["an AitM relay sees the cookie;", "malware can copy it"], "tone": "bad"},
+    {"type": "arrow", "from": "atk", "to": "site", "label": ["presents the stolen cookie", "a bearer credential"], "tone": "bad", "badge": "3"},
+    {"type": "note", "under": "site", "lines": ["MFA does not help after that"], "tone": "bad"},
+    {"type": "note", "under": "br", "lines": ["what helps: short lifetimes,", "ending sessions, phishing-", "resistant sign-in"], "tone": "good"}
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "kind": "flow",
+  "id": "oidc-logout-token",
+  "prefix": "l04j",
+  "title": "Handling a back-channel logout token",
+  "desc": "A decision tree for a logout token posted to your registered URI. If it is not valid when checked like an ID token, with alg none forbidden, answer 400. If the events claim lacks the backchannel-logout event, or it has neither sub nor sid, or it carries a nonce, answer 400. If it has a sid, end that session and answer 200; a user already logged out counts as success. If it has only a sub, end all of that user's sessions at the app and answer 200.",
+  "duration": 18,
+  "legend": {
+    "front": "the path being traced",
+    "bad": "invalid",
+    "good": "success"
+  },
+  "root": {
+    "lines": [
+      "Logout token POSTed:",
+      "valid like an ID token",
+      "(none forbidden)?"
+    ],
+    "children": [
+      {
+        "edge": "no",
+        "node": {
+          "lines": [
+            "Answer 400"
+          ],
+          "tone": "bad"
+        }
+      },
+      {
+        "edge": "yes",
+        "node": {
+          "lines": [
+            "events has backchannel-",
+            "logout; sub or sid;",
+            "no nonce?"
+          ],
+          "children": [
+            {
+              "edge": "no",
+              "node": {
+                "lines": [
+                  "Answer 400"
+                ],
+                "tone": "bad"
+              }
+            },
+            {
+              "edge": "yes",
+              "node": {
+                "lines": [
+                  "sid present?"
+                ],
+                "children": [
+                  {
+                    "edge": "yes",
+                    "node": {
+                      "lines": [
+                        "End that session;",
+                        "already out is success;",
+                        "answer 200"
+                      ],
+                      "tone": "good"
+                    }
+                  },
+                  {
+                    "edge": "no, sub only",
+                    "node": {
+                      "lines": [
+                        "End all of that user's",
+                        "sessions at the app;",
+                        "answer 200"
+                      ],
+                      "tone": "good"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

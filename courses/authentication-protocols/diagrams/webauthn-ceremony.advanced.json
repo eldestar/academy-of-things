@@ -1,0 +1,20 @@
+{
+  "id": "webauthn-ceremony",
+  "prefix": "wa",
+  "title": "What the RP checks in a WebAuthn authentication",
+  "desc": "Three parties: the authenticator, the client, and the relying party (RP). The RP sends a fresh challenge. The client asks for a signature scoped to the origin's RP ID. The authenticator returns authenticatorData and a signature. The client sends clientDataJSON, authenticatorData and the signature to the RP. The RP checks that the credential ID is in allowCredentials if one was sent, identifies the user, checks type webauthn.get, the challenge, the origin and the rpIdHash, requires the UP flag, requires UV if configured, and then verifies the signature over authenticatorData concatenated with the SHA-256 hash of clientDataJSON, using the stored public key.",
+  "duration": 22,
+  "legend": {"front": "message in the ceremony", "good": "what the RP checks"},
+  "lanes": [
+    {"id": "auth", "title": "Authenticator", "sub": "returns the signature"},
+    {"id": "cl", "title": "Client", "sub": "scopes it to the RP ID"},
+    {"id": "rp", "title": "Relying party", "sub": "verifies the response", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "rp", "to": "cl", "label": ["sends a fresh challenge"], "badge": "A1"},
+    {"type": "arrow", "from": "cl", "to": "auth", "label": ["asks for a signature", "scoped to the origin's RP ID"], "badge": "A2"},
+    {"type": "arrow", "from": "auth", "to": "cl", "label": ["authenticatorData", "+ signature"], "badge": "A3"},
+    {"type": "arrow", "from": "cl", "to": "rp", "label": ["clientDataJSON,", "authenticatorData, signature"], "badge": "A4"},
+    {"type": "note", "under": "rp", "lines": ["credential ID in allowCredentials,", "if one was sent; identifies the user", "type webauthn.get, challenge,", "origin, rpIdHash", "UP required; UV if configured", "then the signature over", "authenticatorData + SHA-256 of", "clientDataJSON, with the stored key"], "tone": "good"}
+  ]
+}

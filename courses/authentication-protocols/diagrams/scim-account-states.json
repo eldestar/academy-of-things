@@ -1,0 +1,19 @@
+{
+  "kind": "stages",
+  "id": "scim-account-states",
+  "prefix": "l05b",
+  "title": "The app-side account: active, deactivated, deleted",
+  "desc": "Three states of the account in the app, not the user in the IdP. Active: active is true, which typically means the user can sign in. Deactivated: active is false, which typically means suspended; Okta flips it back to true on reprovisioning, and Entra expects an inactive user to still be returned. Deleted: the provider may keep the data but must return 404 for the old id and omit it from queries; Okta sends no DELETE for users, and Entra by default sends DELETE only when the user is hard-deleted. Setting active false moves the account to deactivated, reprovisioning returns it to active, and DELETE moves it to deleted.",
+  "duration": 16,
+  "legend": {"front": "step forward", "back": "step back", "good": "can sign in"},
+  "stages": [
+    {"title": "Active", "sub": "active = true", "lines": ["typically: the user", "can sign in"], "tone": "good"},
+    {"title": "Deactivated", "sub": "active = false", "lines": ["typically: suspended", "Entra: still returned"]},
+    {"title": "Deleted", "sub": "DELETE", "lines": ["must return 404", "may keep the data", "Okta: no DELETE sent"]}
+  ],
+  "links": [
+    {"from": 0, "to": 1, "label": ["active = false"]},
+    {"from": 1, "to": 0, "label": ["Okta: set true", "on reprovision"], "tone": "back"},
+    {"from": 1, "to": 2, "label": ["Entra default:", "hard delete"]}
+  ]
+}

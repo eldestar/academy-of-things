@@ -1,0 +1,18 @@
+{
+  "kind": "stages",
+  "id": "identity-lifecycle",
+  "prefix": "l07d",
+  "title": "Joiner, mover, leaver: one person's access over time",
+  "desc": "Three phases in order. Joiner: Sam is hired and receives birthright access, the baseline everyone in that job gets from day one. Mover: Sam goes from Sales to Support; the risk is privilege accumulation, because Sam keeps the Sales access, so you review and confirm that the old access is still needed. Leaver: disabling the main account is not the whole job.",
+  "duration": 14,
+  "legend": {"front": "person moves on", "bad_state": "main risk"},
+  "stages": [
+    {"title": "Joiner", "sub": "Sam is hired", "lines": ["Birthright access:", "the baseline for the job", "from day one"]},
+    {"title": "Mover", "sub": "Sales to Support", "tone": "bad", "lines": ["Risk: privilege", "accumulation. Confirm", "old access is needed"]},
+    {"title": "Leaver", "sub": "leaves the scope", "lines": ["Disabling the main", "account is not the", "whole job"]}
+  ],
+  "links": [
+    {"from": 0, "to": 1, "label": ["Sam moves"]},
+    {"from": 1, "to": 2, "label": ["Sam leaves"]}
+  ]
+}

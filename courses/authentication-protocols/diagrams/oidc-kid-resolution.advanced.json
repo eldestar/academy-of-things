@@ -1,0 +1,85 @@
+{
+  "kind": "flow",
+  "id": "oidc-kid-resolution",
+  "prefix": "l04i",
+  "title": "Resolving a kid: the lesson's cache design",
+  "desc": "A decision tree for a token that arrives with a kid. If the kid is in the cache, verify with that key. If not, check whether the refresh-on-miss cooldown is still running; if it is, reject because the kid cannot be resolved. If the cooldown is not running, refetch from the configured issuer's jwks_uri; if the kid is now listed, verify with the new key, and if it is not listed or the refresh failed, reject.",
+  "duration": 18,
+  "legend": {
+    "front": "the path being traced",
+    "bad": "reject",
+    "good": "verify"
+  },
+  "root": {
+    "lines": [
+      "Token arrives",
+      "with a kid"
+    ],
+    "children": [
+      {
+        "edge": "in the cache",
+        "node": {
+          "lines": [
+            "Verify with",
+            "that key"
+          ],
+          "tone": "good"
+        }
+      },
+      {
+        "edge": "not in the cache",
+        "node": {
+          "lines": [
+            "Refresh-on-miss",
+            "cooldown still",
+            "running?"
+          ],
+          "children": [
+            {
+              "edge": "yes",
+              "node": {
+                "lines": [
+                  "Reject: cannot",
+                  "resolve the kid"
+                ],
+                "tone": "bad"
+              }
+            },
+            {
+              "edge": "no",
+              "node": {
+                "lines": [
+                  "Refetch the configured",
+                  "issuer's jwks_uri;",
+                  "kid listed now?"
+                ],
+                "children": [
+                  {
+                    "edge": "yes",
+                    "node": {
+                      "lines": [
+                        "Verify with",
+                        "the new key"
+                      ],
+                      "tone": "good"
+                    }
+                  },
+                  {
+                    "edge": "no, or refresh failed",
+                    "node": {
+                      "lines": [
+                        "Reject: cannot",
+                        "resolve the kid"
+                      ],
+                      "tone": "bad"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

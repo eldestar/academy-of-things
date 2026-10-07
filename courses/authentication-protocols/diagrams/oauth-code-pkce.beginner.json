@@ -1,0 +1,118 @@
+{
+  "id": "oauth-code-pkce",
+  "prefix": "oa",
+  "title": "How Plannr gets read access to Priya's calendar",
+  "desc": "Three parties: Plannr, the client; Example Cloud's sign-in, the authorization server; and the calendar API, the resource server. Step 1: Plannr sends Priya's browser to the authorization server, carrying its client_id, redirect URI, scope, state and code_challenge. Step 2: Priya signs in and approves, and the server remembers the fingerprint. Step 3: the browser goes back to Plannr's redirect URI with a code and the same state. Step 4: Plannr checks the state is the one it stored; RFC 9700 lets a client skip this check only if it knows the server supports PKCE. Step 5: Plannr contacts the server directly, sending the code, the code_verifier, its client_id and the same redirect URI; if the verifier matches the fingerprint, it receives an access token. Step 6: Plannr calls the calendar API, sending the access token. Step 7: the calendar API checks the token: genuine, meant for it, unexpired, and its scope covers the request.",
+  "duration": 22,
+  "legend": {
+    "front": "through the user's browser",
+    "back": "direct request, not a redirect",
+    "good": "a check to perform"
+  },
+  "lanes": [
+    {
+      "id": "client",
+      "title": "Plannr",
+      "sub": "the client"
+    },
+    {
+      "id": "as",
+      "title": "Authorization server",
+      "sub": "Example Cloud's sign-in",
+      "hot": true
+    },
+    {
+      "id": "rs",
+      "title": "Resource server",
+      "sub": "the calendar API"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "send Priya's browser to sign in",
+        "client_id, redirect URI, scope,",
+        "state, code_challenge"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "Priya signs in and approves;",
+        "the server remembers the fingerprint"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "client",
+      "label": [
+        "back to Plannr's redirect URI",
+        "with a code and the same state"
+      ],
+      "badge": "3"
+    },
+    {
+      "type": "note",
+      "under": "client",
+      "lines": [
+        "Plannr checks the state is the one",
+        "it stored (RFC 9700 lets it skip this",
+        "only if PKCE is known to be supported)"
+      ],
+      "tone": "good",
+      "badge": "4"
+    },
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "contact the server directly:",
+        "code, code_verifier, client_id,",
+        "the same redirect URI as step 1"
+      ],
+      "tone": "back",
+      "badge": "5"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "client",
+      "label": [
+        "access token, if the verifier",
+        "matches the fingerprint"
+      ],
+      "tone": "back",
+      "with_previous": true
+    },
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "rs",
+      "label": [
+        "calendar request,",
+        "sending the access token"
+      ],
+      "tone": "back",
+      "badge": "6"
+    },
+    {
+      "type": "note",
+      "under": "rs",
+      "lines": [
+        "the API checks the token: genuine,",
+        "meant for it, unexpired, scope covers",
+        "what is being asked"
+      ],
+      "tone": "good",
+      "badge": "7"
+    }
+  ]
+}

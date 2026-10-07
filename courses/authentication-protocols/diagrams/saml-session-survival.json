@@ -1,0 +1,18 @@
+{
+  "kind": "stages",
+  "id": "saml-session-survival",
+  "prefix": "l02c",
+  "title": "Why deactivating a user may not end their SP session",
+  "desc": "Three stages over time. First the user has signed in: the SP has started its own session. Then the user is deactivated at the IdP: none of the sources read says a logout is sent to every SP, which is not verified, so do not rely on it for offboarding. Then the SP session can live on until it expires: the assertion's NotOnOrAfter only bounds when the assertion may be delivered, not how long the SP session lasts, so keep SP sessions short.",
+  "duration": 14,
+  "legend": {"bad": "the session can survive", "front": "what happens next"},
+  "stages": [
+    {"title": "Signed in", "sub": "SP starts a session", "lines": ["SP session: its own", "mechanism"]},
+    {"title": "User deactivated", "sub": "at the IdP", "lines": ["None of the sources read", "says every SP is sent", "a logout (not verified)"]},
+    {"title": "SP session can live on", "sub": "until it expires", "lines": ["NotOnOrAfter bounds", "delivery, not this;", "keep SP sessions short"], "tone": "bad"}
+  ],
+  "links": [
+    {"from": 0, "to": 1, "label": ["deactivate"]},
+    {"from": 1, "to": 2, "label": ["SP session", "may stay open"], "tone": "bad"}
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "kind": "stages",
+  "id": "oidc-logout-sessions",
+  "prefix": "l04c",
+  "title": "Signing out of the app is not signing out of the OP",
+  "desc": "Three stages. First Priya is signed in at ExampleCRM and at the OP, two separate sessions. When ExampleCRM's Sign out button only clears its own session cookie, ExampleCRM's session ends but the OP session is still there, and if she signs in again the OP may sign her straight back in. When the app sends the browser to the OP's logout address, that is how the OP session is ended, though the OP may still ask her whether to log out there too.",
+  "duration": 14,
+  "legend": {
+    "front": "step",
+    "back": "what can happen next",
+    "good": "OP asked to end it"
+  },
+  "stages": [
+    {
+      "title": "Signed in",
+      "sub": "two separate sessions",
+      "lines": [
+        "ExampleCRM: signed in",
+        "OP: signed in"
+      ]
+    },
+    {
+      "title": "App signed out",
+      "sub": "OP session is separate",
+      "lines": [
+        "ExampleCRM: ended",
+        "OP: still signed in"
+      ]
+    },
+    {
+      "title": "Sent to OP logout",
+      "sub": "the OP may ask her",
+      "lines": [
+        "ExampleCRM: ended",
+        "OP: asked to end it"
+      ],
+      "tone": "good"
+    }
+  ],
+  "links": [
+    {
+      "from": 0,
+      "to": 1,
+      "label": [
+        "Sign out button:",
+        "clears cookie"
+      ]
+    },
+    {
+      "from": 1,
+      "to": 2,
+      "label": [
+        "browser sent to",
+        "OP's logout",
+        "address"
+      ]
+    },
+    {
+      "from": 1,
+      "to": 0,
+      "label": [
+        "sign in again:",
+        "OP may sign her",
+        "straight in"
+      ],
+      "tone": "back"
+    }
+  ]
+}

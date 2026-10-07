@@ -1,0 +1,23 @@
+{
+  "kind": "flow",
+  "id": "rp-id-scope",
+  "prefix": "l06c",
+  "title": "Can a page on another origin use your credential?",
+  "desc": "A decision tree that starts with where the page runs. A page on another domain is stopped by the client, which scopes credentials by RP ID. A page on a subdomain may legitimately request the parent RP ID, so the question is whether the RP accepts subdomain origins: by default it should not, and its origin validation rejects the unexpected origin; if it does allow subdomains and untrusted code runs on one, that code can relay valid assertions. A page on an origin listed in the RP's related origins is the opt-in exception, where RP ID scoping does not hold, so list only origins you control.",
+  "duration": 20,
+  "legend": {"plain": "first check", "good": "stopped", "bad": "gets through"},
+  "root": {
+    "lines": ["A page asks to use", "a credential for", "your RP ID: which", "origin is it on?"],
+    "children": [
+      {"edge": "another domain", "node": {"lines": ["Client scoping", "by RP ID", "stops it"], "tone": "good"}},
+      {"edge": "a subdomain", "node": {
+        "lines": ["Does the RP", "allow subdomain", "origins?"],
+        "children": [
+          {"edge": "no (default)", "node": {"lines": ["Origin check", "rejects the", "unexpected origin"], "tone": "good"}},
+          {"edge": "yes", "node": {"lines": ["If untrusted code", "runs there, it can", "relay valid", "assertions"], "tone": "bad"}}
+        ]
+      }},
+      {"edge": "a related origin", "node": {"lines": ["RP ID scoping", "does not hold;", "list only origins", "you control"], "tone": "bad"}}
+    ]
+  }
+}

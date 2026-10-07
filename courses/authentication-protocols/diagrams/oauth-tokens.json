@@ -1,0 +1,32 @@
+{
+  "kind": "anatomy",
+  "id": "oauth-tokens",
+  "prefix": "l03a",
+  "title": "Who has to understand an access token",
+  "desc": "A nested diagram. The access token is opaque to the client, which must not inspect it because the AS or RS may change its format. The resource server must understand it in one of two ways. In the JWT form (RFC 9068) it checks that typ is at+jwt, which marks an access token rather than an ID token; the signature, never alg none; iss and exp; and that aud names this resource server, the only claim that says which API a token is for. In the introspection form (RFC 7662) it POSTs the token to an endpoint that must itself require authorization, and the JSON answer has a required boolean active; answers may be cached at the cost of freshness.",
+  "duration": 24,
+  "legend": {"plain": "a rule for the client", "good": "what the RS does or checks"},
+  "root": {
+    "title": "Access token", "sub": "opaque to the client, understood by the RS",
+    "check": ["Client: must not inspect it (RFC 9068)", "The AS or RS may change its format"],
+    "children": [
+      {
+        "title": "JWT form (RFC 9068)", "sub": "one way for the RS to understand it",
+        "children": [
+          {"title": "typ", "sub": "at+jwt", "check": ["Must be at+jwt: marks an access", "token, not an ID token"], "tone": "good"},
+          {"title": "Signature", "check": ["Check it (never alg none)"], "tone": "good"},
+          {"title": "iss, exp", "check": ["Check both"], "tone": "good"},
+          {"title": "aud", "sub": "which API the token is for", "check": ["Must name this RS: the only claim", "that says which API it is for"], "tone": "good"}
+        ]
+      },
+      {
+        "title": "Introspection (RFC 7662)", "sub": "the other way for the RS",
+        "check": ["POST the token; the endpoint must", "itself require authorization"], "tone": "good",
+        "children": [
+          {"title": "active", "sub": "required boolean in the JSON answer",
+           "check": ["Required in the JSON answer; answers", "may be cached, at a cost in freshness"], "tone": "good"}
+        ]
+      }
+    ]
+  }
+}

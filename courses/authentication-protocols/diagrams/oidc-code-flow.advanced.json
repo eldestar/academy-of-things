@@ -1,0 +1,113 @@
+{
+  "id": "oidc-code-flow",
+  "prefix": "oi",
+  "title": "The code flow with the obligations the spec and RFC 9700 put on each hop",
+  "desc": "Two parties: the client on the relying-party side and the OP. Step 1: the authentication request, where redirect_uri is compared by simple string comparison, nonce is optional, and a public client uses PKCE with S256. Step 2: the callback carries code and state, and the client checks state. Step 3: the token request, where a confidential client authenticates or a public client sends the PKCE code_verifier; the OP must enforce the verifier against the challenge when one was sent, and the response carries id_token and access_token and must send Cache-Control no-store. Step 4: ID token validation under section 3.1.3.7; for a token received directly from the token endpoint, TLS may replace the signature check, for that one hop only. Step 5, optional: UserInfo, where sub must equal the ID token's sub or the response is discarded, because the ID token is the authority.",
+  "duration": 24,
+  "legend": {
+    "front": "through the user agent",
+    "back": "token endpoint and UserInfo",
+    "good": "obligation or permission"
+  },
+  "lanes": [
+    {
+      "id": "rp",
+      "title": "Client",
+      "sub": "relying-party side",
+      "hot": true
+    },
+    {
+      "id": "op",
+      "title": "OP",
+      "sub": "authorization, token endpoints"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "authentication request",
+        "redirect_uri: simple string comparison",
+        "nonce optional; public client: PKCE, S256"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "callback: code and state",
+        "client checks state"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "token request",
+        "confidential: client authentication",
+        "public: PKCE code_verifier"
+      ],
+      "tone": "back",
+      "badge": "3"
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "token response: id_token, access_token",
+        "MUST carry Cache-Control: no-store"
+      ],
+      "tone": "back",
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "op",
+      "lines": [
+        "OP MUST enforce the verifier against",
+        "the challenge when one was sent"
+      ],
+      "tone": "good",
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "rp",
+      "lines": [
+        "ID token validation (3.1.3.7)",
+        "direct from the token endpoint, TLS MAY",
+        "replace the signature check: that hop only"
+      ],
+      "tone": "good",
+      "badge": "4"
+    },
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "UserInfo request (optional)"
+      ],
+      "tone": "back",
+      "badge": "5"
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "sub MUST equal the ID token's sub,",
+        "else discard: the ID token is the authority"
+      ],
+      "tone": "back",
+      "with_previous": true
+    }
+  ]
+}

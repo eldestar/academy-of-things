@@ -2,23 +2,24 @@
   "id": "oidc-code-flow",
   "prefix": "oi",
   "title": "OpenID Connect authorization code flow, ending in ID token validation",
-  "desc": "Two parties: the relying party (your app) and the OpenID Provider. Step 1: the app sends the user's browser to the provider's authorization endpoint with scope openid, a state, an optional nonce and, for a public client, a PKCE code_challenge with method S256. The user signs in at the provider. Step 2: the provider redirects the browser back to the app's redirect URI with an authorization code and the state. Step 3: the app, server to server, posts the code to the token endpoint, with the PKCE code_verifier if it is a public client or with client authentication if it is a confidential client, and receives an ID token and an access token. Step 4: the app validates the ID token: signature using the provider's published keys, then iss, aud, exp and, if it sent a nonce, nonce. Step 5, optional: the app calls the UserInfo endpoint with the access token and checks that sub matches the ID token's sub.",
+  "desc": "Two parties: the app, which is the client, and the OP. Step 1: the app redirects the browser to the authorization endpoint with scope openid, a state, an optional nonce and, for a public client, a PKCE code_challenge with method S256. The user signs in at the OP. Step 2: the OP redirects to the redirect_uri with a code and the state, and the app verifies state first. Step 3: the app posts the code to the token endpoint, server to server, with client authentication if it is a confidential client or the PKCE code_verifier if it is a public client, and receives an id_token and an access_token with Cache-Control no-store. Step 4: the app validates the ID token, then starts its own session. Step 5, optional: the app calls UserInfo with the access token as a Bearer token, and the sub must equal the ID token's sub or the response is not used.",
   "duration": 22,
   "legend": {
     "front": "through the user's browser",
-    "back": "server to server"
+    "back": "server to server",
+    "good": "what your app must do"
   },
   "lanes": [
     {
       "id": "rp",
-      "title": "Relying party",
-      "sub": "your app (the OAuth client)",
+      "title": "App (the client)",
+      "sub": "has a client_id",
       "hot": true
     },
     {
       "id": "op",
-      "title": "OpenID Provider",
-      "sub": "Okta, Entra ID, any OP"
+      "title": "OP",
+      "sub": "the issuer: Okta, Entra ID"
     }
   ],
   "steps": [
@@ -37,8 +38,7 @@
       "type": "note",
       "under": "op",
       "lines": [
-        "user signs in at the provider",
-        "(MFA, policy, consent)"
+        "user signs in at the OP"
       ]
     },
     {
@@ -47,7 +47,7 @@
       "to": "rp",
       "label": [
         "redirect to redirect_uri",
-        "code and state"
+        "code and state (verify state first)"
       ],
       "badge": "2"
     },
@@ -69,7 +69,8 @@
       "to": "rp",
       "label": [
         "token response",
-        "id_token and access_token"
+        "id_token and access_token",
+        "Cache-Control: no-store"
       ],
       "tone": "back",
       "with_previous": true
@@ -78,34 +79,21 @@
       "type": "note",
       "under": "rp",
       "lines": [
-        "validate the ID token:",
-        "signature (provider's JWKS), iss, aud, exp,",
-        "nonce if one was sent"
+        "validate the ID token,",
+        "then start the app's own session"
       ],
       "tone": "good",
       "badge": "4"
     },
     {
-      "type": "arrow",
-      "from": "rp",
-      "to": "op",
-      "label": [
-        "optional: GET UserInfo",
-        "access token as Bearer"
+      "type": "note",
+      "under": "rp",
+      "lines": [
+        "optional: call UserInfo, access token as Bearer;",
+        "sub must equal the ID token's sub,",
+        "or discard"
       ],
-      "tone": "back",
       "badge": "5"
-    },
-    {
-      "type": "arrow",
-      "from": "op",
-      "to": "rp",
-      "label": [
-        "claims; sub must equal",
-        "the ID token's sub"
-      ],
-      "tone": "back",
-      "with_previous": true
     }
   ]
 }

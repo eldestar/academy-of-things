@@ -1,0 +1,20 @@
+{
+  "kind": "anatomy",
+  "id": "decision-places",
+  "prefix": "l07e",
+  "title": "The three places an authorization decision can live",
+  "desc": "A nested diagram. An authorization decision can live in three places. IdP claims are decided at token issue and trusted by the app, but group information in a token is current only when you receive the token. App-side checks map a claim or the app's own data to permissions. A policy engine follows NIST's ABAC architecture: the policy decision point computes the decision, the policy enforcement point enforces it, the policy information point supplies attributes and the policy administration point manages policy. The rule of thumb is to put coarse, slow-changing facts in claims and to make a live check before high-impact actions.",
+  "duration": 18,
+  "legend": {"plain": "the four NIST roles", "good": "rule of thumb", "bad": "where it goes wrong"},
+  "root": {
+    "title": "An authorization decision", "sub": "three places it can live",
+    "check": ["Rule of thumb: coarse, slow-changing", "facts in claims; a live check before", "high-impact actions"], "tone": "good",
+    "children": [
+      {"title": "IdP claims", "sub": "decided at token issue, trusted by the app",
+       "check": ["Snapshot: group data is current only", "when you receive the token"], "tone": "bad"},
+      {"title": "App-side checks", "sub": "map a claim or the app's own data to permissions"},
+      {"title": "Policy engine", "sub": "in NIST's ABAC architecture",
+       "check": ["PDP computes the decision; PEP", "enforces it; PIP supplies attributes;", "PAP manages policy"]}
+    ]
+  }
+}

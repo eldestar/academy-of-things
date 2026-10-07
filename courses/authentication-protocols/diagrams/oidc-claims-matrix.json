@@ -1,0 +1,94 @@
+{
+  "kind": "matrix",
+  "id": "oidc-claims-matrix",
+  "prefix": "l04f",
+  "title": "Which identity claims can identify or link a user",
+  "desc": "One column asks whether a claim is safe to identify or link a user by. sub is locally unique and never reassigned, but only within one issuer. iss plus sub is the only guaranteed unique identifier. In Entra, sub is pairwise per application, so Microsoft's guidance is tid plus oid. email must not be used as a unique identifier because an issuer may reuse it for a different person, and Entra says it is mutable. email_verified true means the OP took steps to confirm control at that time, so do not link or merge accounts on it without knowing how. preferred_username and name must not be used as unique identifiers.",
+  "duration": 20,
+  "legend": {
+    "good": "use it",
+    "partial": "with care",
+    "bad": "do not"
+  },
+  "columns": [
+    {
+      "title": "Safe to identify or link a user by?"
+    }
+  ],
+  "rows": [
+    {
+      "title": "sub",
+      "sub": "within one issuer",
+      "cells": [
+        {
+          "mark": "partial",
+          "text": [
+            "locally unique and never reassigned,",
+            "but only within one issuer"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "iss + sub",
+      "cells": [
+        {
+          "mark": "good",
+          "text": [
+            "the only guaranteed unique identifier",
+            "(Core section 5.7)"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "sub in Entra",
+      "sub": "pairwise per application",
+      "cells": [
+        {
+          "mark": "partial",
+          "text": [
+            "differs per application, so Microsoft's",
+            "guidance is tid plus oid"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "email",
+      "cells": [
+        {
+          "mark": "bad",
+          "text": [
+            "MUST NOT: an issuer may reuse it for a",
+            "different person later; in Entra it is mutable"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "email_verified: true",
+      "cells": [
+        {
+          "mark": "partial",
+          "text": [
+            "the OP took steps to confirm control at that",
+            "time; do not link or merge accounts on it",
+            "without knowing how"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "preferred_username, name",
+      "cells": [
+        {
+          "mark": "bad",
+          "text": [
+            "MUST NOT be used as unique identifiers"
+          ]
+        }
+      ]
+    }
+  ]
+}

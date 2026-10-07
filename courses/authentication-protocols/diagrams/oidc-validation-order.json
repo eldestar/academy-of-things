@@ -1,0 +1,128 @@
+{
+  "kind": "flow",
+  "id": "oidc-validation-order",
+  "prefix": "l04d",
+  "title": "Validating an ID token in teaching order",
+  "desc": "A chain of checks, each with one way out. First the algorithm must be one you configured and the signature must be valid; if not, reject and trust no claim. Then iss must equal the configured issuer. Then aud must contain your client_id and no audience you distrust; otherwise it is rejected as another app or an untrusted audience. Then the current time must be before exp, with a small leeway. Then, if you sent a nonce, it must be present and equal; otherwise it is rejected as a nonce mismatch. A token that passes all of these is accepted, optionally checking acr and auth_time.",
+  "duration": 22,
+  "legend": {
+    "front": "the path being traced",
+    "bad": "reject",
+    "good": "accept"
+  },
+  "root": {
+    "lines": [
+      "ID token arrives:",
+      "alg you configured,",
+      "signature valid?"
+    ],
+    "children": [
+      {
+        "edge": "no",
+        "node": {
+          "lines": [
+            "Reject: trust",
+            "no claim"
+          ],
+          "tone": "bad"
+        }
+      },
+      {
+        "edge": "yes",
+        "node": {
+          "lines": [
+            "iss exactly equal",
+            "to the configured",
+            "issuer?"
+          ],
+          "children": [
+            {
+              "edge": "no",
+              "node": {
+                "lines": [
+                  "Reject: wrong",
+                  "issuer"
+                ],
+                "tone": "bad"
+              }
+            },
+            {
+              "edge": "yes",
+              "node": {
+                "lines": [
+                  "aud has your",
+                  "client_id and no",
+                  "untrusted audience?"
+                ],
+                "children": [
+                  {
+                    "edge": "no",
+                    "node": {
+                      "lines": [
+                        "Reject: another",
+                        "app or untrusted",
+                        "audience"
+                      ],
+                      "tone": "bad"
+                    }
+                  },
+                  {
+                    "edge": "yes",
+                    "node": {
+                      "lines": [
+                        "now before exp",
+                        "(small leeway)?"
+                      ],
+                      "children": [
+                        {
+                          "edge": "no",
+                          "node": {
+                            "lines": [
+                              "Reject: expired"
+                            ],
+                            "tone": "bad"
+                          }
+                        },
+                        {
+                          "edge": "yes",
+                          "node": {
+                            "lines": [
+                              "nonce: if you sent",
+                              "one, present and equal?"
+                            ],
+                            "children": [
+                              {
+                                "edge": "no",
+                                "node": {
+                                  "lines": [
+                                    "Reject: nonce",
+                                    "mismatch"
+                                  ],
+                                  "tone": "bad"
+                                }
+                              },
+                              {
+                                "edge": "yes",
+                                "node": {
+                                  "lines": [
+                                    "Accept; optionally",
+                                    "check acr, auth_time"
+                                  ],
+                                  "tone": "good"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

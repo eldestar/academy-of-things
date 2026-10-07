@@ -1,0 +1,24 @@
+{
+  "kind": "anatomy",
+  "id": "scim-identifiers",
+  "prefix": "l05a",
+  "title": "Identifier and membership rules in the SCIM User resource",
+  "desc": "A User resource and the rules the RFCs set for each part. id (RFC 7643 section 3.1) is issued by the server, unique across all its resources, stable, non-reassignable and never set by the client. externalId is issued by the client and the server does not enforce uniqueness. userName (section 4.1.1) is required, unique across all Users, case-insensitive and readWrite, so a rename keeps the id; before comparing for uniqueness a provider MUST apply the PRECIS rules of RFC 7613. active (section 4.1.1) is a boolean administrative status whose definitive meaning the provider decides. The groups attribute on a User is readOnly, so membership changes go through the Group resource, where members[].value holds the member's id.",
+  "duration": 24,
+  "legend": {"plain": "left to the provider", "good": "set by the RFC"},
+  "root": {
+    "title": "User", "sub": "RFC 7643",
+    "children": [
+      {"title": "id", "sub": "section 3.1", "tone": "good",
+       "check": ["Server-issued, unique across all its", "resources, stable, non-reassignable,", "never set by the client"]},
+      {"title": "externalId", "sub": "issued by the client", "tone": "good",
+       "check": ["Scoped to its provisioning domain;", "the server does not enforce", "uniqueness"]},
+      {"title": "userName", "sub": "section 4.1.1", "tone": "good",
+       "check": ["Required, unique, case-insensitive,", "readWrite, so a rename keeps the id.", "Apply PRECIS (RFC 7613) before", "comparing for uniqueness"]},
+      {"title": "active", "sub": "section 4.1.1",
+       "check": ["Boolean administrative status; the", "provider decides its definitive", "meaning"]},
+      {"title": "groups", "sub": "readOnly on a User", "tone": "good",
+       "check": ["Change membership through the Group", "resource: members[].value holds the", "member's id"]}
+    ]
+  }
+}

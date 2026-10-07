@@ -1,0 +1,23 @@
+{
+  "id": "trust-signin",
+  "prefix": "tr",
+  "title": "Sam's first sign-in, in five steps",
+  "desc": "Three parties: the app, Sam's browser, and the identity provider. Step 1: Sam opens the app and has no session with it yet. Step 2: the app redirects his browser to the identity provider, carrying a sign-in request. Step 3: Sam signs in at the identity provider with his password, MFA and company rules, and the identity provider starts its own session for him. Step 4: the identity provider returns a signed proof for the app, the assertion in SAML or a one-time code in OpenID Connect, and the browser carries it to the app. Step 5: the app checks the proof's signature, that it came from the expected identity provider, that it was addressed to this app and that it has not expired, then creates its own session, normally a cookie.",
+  "duration": 15,
+  "legend": {"front": "message through Sam's browser", "good": "what the app checks"},
+  "lanes": [
+    {"id": "app", "title": "The app", "sub": "what Sam wants to use"},
+    {"id": "br", "title": "Sam's browser", "sub": "carries the messages shown"},
+    {"id": "idp", "title": "The IdP", "sub": "checks his password and MFA", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "br", "to": "app", "label": ["Sam opens the app", "he has no session yet"], "badge": "1"},
+    {"type": "arrow", "from": "app", "to": "br", "label": ["redirect to the IdP", "carrying a sign-in request"], "badge": "2"},
+    {"type": "arrow", "from": "br", "to": "idp", "label": ["browser goes to the IdP"], "with_previous": true},
+    {"type": "note", "under": "idp", "lines": ["Sam signs in: password,", "MFA, company rules", "IdP starts its own session"], "badge": "3"},
+    {"type": "arrow", "from": "idp", "to": "br", "label": ["a signed proof for the app", "SAML: the assertion", "OIDC: a one-time code"], "badge": "4"},
+    {"type": "arrow", "from": "br", "to": "app", "label": ["browser carries it to the app"], "with_previous": true},
+    {"type": "note", "under": "app", "tone": "good", "lines": ["checks: signature, expected IdP,", "addressed to this app,", "not expired"], "badge": "5"},
+    {"type": "arrow", "from": "app", "to": "br", "label": ["its own session,", "normally a cookie"], "with_previous": true}
+  ]
+}

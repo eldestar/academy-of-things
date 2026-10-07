@@ -1,0 +1,97 @@
+{
+  "id": "oauth-mix-up",
+  "prefix": "l03e",
+  "title": "Mix-up attack (RFC 9700, section 4.4)",
+  "desc": "Three parties: a client that talks to two or more authorization servers, a hostile AS and an honest AS. Step 1: the client starts a flow with the hostile AS. Step 2: the hostile AS redirects the user to the honest AS using the honest client's ID. Step 3: the code returns to the client, which believes it came from the hostile AS. Step 4: the client redeems it at the hostile token endpoint. Defences: the client stores, per request, the issuer it sent the request to, bound to the user agent, because storing only the AS URL is insufficient; and with issuer identification (RFC 9207) it compares the iss in the response with the stored issuer and aborts on a mismatch.",
+  "duration": 20,
+  "legend": {
+    "front": "normal event",
+    "back": "direct request, not a redirect",
+    "bad": "the attack",
+    "good": "defences"
+  },
+  "lanes": [
+    {
+      "id": "cl",
+      "title": "Client",
+      "sub": "uses two or more ASes"
+    },
+    {
+      "id": "hos",
+      "title": "Hostile AS",
+      "sub": "the one that is hostile"
+    },
+    {
+      "id": "hon",
+      "title": "Honest AS",
+      "sub": "the other AS",
+      "hot": true
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "cl",
+      "to": "hos",
+      "label": [
+        "starts a flow with",
+        "the hostile AS"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "arrow",
+      "from": "hos",
+      "to": "hon",
+      "label": [
+        "redirects the user to the honest AS",
+        "using the honest client's ID"
+      ],
+      "tone": "bad",
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "hon",
+      "to": "cl",
+      "label": [
+        "the code returns to the client, which",
+        "believes it came from the hostile AS"
+      ],
+      "tone": "bad",
+      "badge": "3"
+    },
+    {
+      "type": "arrow",
+      "from": "cl",
+      "to": "hos",
+      "label": [
+        "redeems the code at the",
+        "hostile token endpoint"
+      ],
+      "tone": "bad",
+      "badge": "4"
+    },
+    {
+      "type": "note",
+      "under": "cl",
+      "lines": [
+        "Store, per request, the issuer it was sent",
+        "to, bound to the user agent. The AS URL",
+        "alone is insufficient"
+      ],
+      "tone": "good",
+      "badge": "5"
+    },
+    {
+      "type": "note",
+      "under": "cl",
+      "lines": [
+        "RFC 9207: compare iss in the response with",
+        "the stored issuer; a mismatch means abort"
+      ],
+      "tone": "good",
+      "badge": "6"
+    }
+  ]
+}

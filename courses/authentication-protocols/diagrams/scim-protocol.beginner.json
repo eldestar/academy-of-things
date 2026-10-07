@@ -1,0 +1,28 @@
+{
+  "id": "scim-protocol",
+  "prefix": "sc",
+  "title": "SCIM lifecycle: create, group change, deactivate, delete",
+  "desc": "Eight steps between an identity provider acting as SCIM client and your app acting as SCIM server, with Dana's already-open browser session as a third lane. Step 1: the IdP sends POST /Users with her userName, externalId and active true. Step 2: the app answers 201 Created and includes the id it assigned. Step 3: the IdP sends PATCH /Groups/{id} to add her to the group's member list; removing her uses the same request; some Okta apps get a PUT of the whole group instead. Step 4: the IdP deactivates her by setting active to false, by PATCH /Users/{id}; some Okta apps get a PUT instead. Step 5, a failure mode: her browser still has a session from before, and unless the app acts her old session still works. Step 6: your app must end her sessions itself when it sees active false. Step 7: DELETE /Users/{id}, removed for good; Okta never sends it. Step 8: the app answers 404 Not Found for every later request about that id.",
+  "duration": 24,
+  "legend": {
+    "front": "request",
+    "back": "response",
+    "bad": "failure mode",
+    "good": "what your app must do"
+  },
+  "lanes": [
+    {"id": "idp", "title": "Identity provider", "sub": "SCIM client (Okta, Entra)"},
+    {"id": "app", "title": "Your app", "sub": "SCIM server", "hot": true},
+    {"id": "br", "title": "Dana's browser", "sub": "already signed in"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["POST /Users", "userName, externalId, active=true"], "badge": "1"},
+    {"type": "arrow", "from": "app", "to": "idp", "label": ["201 Created + id", "the IdP stores the id"], "tone": "back", "badge": "2"},
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["PATCH /Groups/{id}", "add or remove her as a member", "some Okta apps: PUT instead"], "badge": "3"},
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["PATCH /Users/{id}", "active = false: deactivate her", "some Okta apps: PUT instead"], "badge": "4"},
+    {"type": "arrow", "from": "br", "to": "app", "label": ["request on her old session", "still works unless the app acts"], "tone": "bad", "badge": "5"},
+    {"type": "note", "under": "app", "lines": ["on active = false, your app", "ends her sessions itself"], "tone": "good", "badge": "6"},
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["DELETE /Users/{id}", "removed for good; Okta never sends it"], "badge": "7"},
+    {"type": "arrow", "from": "app", "to": "idp", "label": ["404 Not Found", "for every later request on that id"], "tone": "back", "badge": "8"}
+  ]
+}

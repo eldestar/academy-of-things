@@ -1,0 +1,25 @@
+{
+  "kind": "sequence",
+  "id": "priya-ticket",
+  "prefix": "l08b",
+  "title": "Ticket 4821, step by step",
+  "desc": "Five numbered steps for Priya's ticket. One: Priya retries in a private window and gets the same error, so it is not her browser. Two: three users and one app point at the app's setup, not at people. Three: you capture the login and decode it, and the Audience is https://app.example.com/saml/metadata. Four: the app's setup says its entity ID is https://app.example.com/saml, and the two differ. Five: you change nothing and hand the identity admin the decoded Audience, the entity ID and the time, with personal details removed; the admin changes one setting and retests.",
+  "duration": 24,
+  "legend": {"bad": "the mismatch", "good": "what you do"},
+  "lanes": [
+    {"id": "priya", "title": "Priya", "sub": "employee"},
+    {"id": "you", "title": "You", "sub": "help desk"},
+    {"id": "setup", "title": "App setup", "sub": "the app's side"},
+    {"id": "admin", "title": "Identity admin", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "priya", "to": "you", "label": ["Reproduce: same error", "in a private window"], "badge": "1"},
+    {"type": "note", "under": "you", "lines": ["Scope: three users, one app", "points at the app's setup,", "not at people"], "badge": "2"},
+    {"type": "note", "under": "you", "lines": ["Capture and decode: Audience is", "https://app.example.com/saml/metadata"], "badge": "3"},
+    {"type": "arrow", "from": "setup", "to": "you", "label": ["Compare: entity ID is", "https://app.example.com/saml"], "badge": "4"},
+    {"type": "note", "under": "you", "lines": ["They differ"], "tone": "bad", "with_previous": true},
+    {"type": "arrow", "from": "you", "to": "admin", "label": ["Hand over: decoded Audience,", "entity ID and time, no personal details"], "badge": "5"},
+    {"type": "note", "under": "you", "lines": ["You change nothing"], "tone": "good", "with_previous": true},
+    {"type": "note", "under": "admin", "lines": ["Changes one setting,", "then retests"], "with_previous": true}
+  ]
+}

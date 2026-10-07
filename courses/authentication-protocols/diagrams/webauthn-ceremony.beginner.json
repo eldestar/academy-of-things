@@ -1,0 +1,27 @@
+{
+  "id": "webauthn-ceremony",
+  "prefix": "wa",
+  "title": "Creating a passkey and signing in with it",
+  "desc": "Three parties: the authenticator that holds the private key, the browser, and the site. Creating the passkey, R1 to R4: the site sends a challenge and its RP ID, the browser asks the authenticator to create a key pair and Sam approves with a PIN or fingerprint, the authenticator returns the public key and an ID for the credential, and the browser sends these to the site, which checks them and stores the public key. Using the passkey later, A1 to A4: the site sends a new challenge, the browser asks the authenticator to sign it for the real RP ID, the authenticator returns a signature plus supporting data, and the browser sends these to the site, which checks the signature with the stored public key. On a look-alike domain the browser cannot ask for the real RP ID, so there is nothing to sign.",
+  "duration": 32,
+  "legend": {"front": "one step", "good": "what the site does"},
+  "lanes": [
+    {"id": "auth", "title": "Authenticator", "sub": "the private key stays here"},
+    {"id": "br", "title": "Browser", "sub": "knows the real domain"},
+    {"id": "site", "title": "The site", "sub": "keeps the public key", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "site", "to": "br", "label": ["challenge + RP ID"], "badge": "R1"},
+    {"type": "arrow", "from": "br", "to": "auth", "label": ["create a key pair"], "badge": "R2"},
+    {"type": "note", "under": "auth", "lines": ["Sam approves with", "a PIN or fingerprint"], "with_previous": true},
+    {"type": "arrow", "from": "auth", "to": "br", "label": ["public key + ID for the credential"], "badge": "R3"},
+    {"type": "arrow", "from": "br", "to": "site", "label": ["sends these on"], "badge": "R4"},
+    {"type": "note", "under": "site", "lines": ["checks them and", "stores the public key"], "tone": "good"},
+    {"type": "arrow", "from": "site", "to": "br", "label": ["new challenge"], "badge": "A1"},
+    {"type": "arrow", "from": "br", "to": "auth", "label": ["sign it for the real RP ID"], "badge": "A2"},
+    {"type": "note", "under": "br", "lines": ["look-alike domain: the browser", "cannot ask for the real RP ID"], "tone": "bad", "with_previous": true},
+    {"type": "arrow", "from": "auth", "to": "br", "label": ["signature + supporting data"], "badge": "A3"},
+    {"type": "arrow", "from": "br", "to": "site", "label": ["sends these on"], "badge": "A4"},
+    {"type": "note", "under": "site", "lines": ["checks the signature with", "the stored public key"], "tone": "good"}
+  ]
+}

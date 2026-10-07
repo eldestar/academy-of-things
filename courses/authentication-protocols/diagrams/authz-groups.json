@@ -1,0 +1,25 @@
+{
+  "kind": "anatomy",
+  "id": "authz-groups",
+  "prefix": "l07b",
+  "title": "What a group hides: the rule, the app role and the token",
+  "desc": "A nested diagram of a group. The group is assigned to an app instead of assigning users one by one. A group rule fills it from attributes; a wrong HR department silently grants or removes access, and our inference is that the rule governs only the groups it targets, so direct assignments, app-local roles and API keys sit outside it. The group is assigned to an app with a role, and a group called Finance-Readers that holds the admin role inside an app grants more than its name says, so audit what it is assigned to and with which app role. Entra recommends assigning groups to app roles so the token carries a roles claim, with a baseline role that has no elevated rights. In an Entra token, groups are capped at 200 for a JWT, 150 for SAML and 6 for the implicit flow; beyond the cap there is no groups claim, only an overage indicator, and the app must call Microsoft Graph. A group used for a new purpose is a trigger to re-review it.",
+  "duration": 26,
+  "legend": {"plain": "context", "good": "what to do", "bad": "where it goes wrong"},
+  "root": {
+    "title": "Group", "sub": "e.g. Finance-Readers; assigned to an app, not user by user",
+    "check": ["Used for a new purpose? Entra lists", "that as a trigger to re-review it"],
+    "children": [
+      {"title": "Group rule", "sub": "fills the group from attributes such as department",
+       "check": ["A wrong HR department silently grants", "or removes access. Our inference: it", "governs only the groups it targets"], "tone": "bad"},
+      {"title": "Assigned to an app", "sub": "can hold an admin role in the app (our reading)",
+       "check": ["Name versus grant: audit what it is", "assigned to, with which app role,", "not its label"], "tone": "bad",
+       "children": [
+         {"title": "App role", "sub": "token then carries a roles claim",
+          "check": ["Entra's better mapping. Always define", "a baseline role with no elevated", "rights"], "tone": "good"}
+       ]},
+      {"title": "Token claim", "sub": "Entra caps: 200 JWT, 150 SAML, 6 implicit",
+       "check": ["Past the cap: no groups claim, only", "an overage indicator; the app must", "call Graph, not read it as no groups"], "tone": "bad"}
+    ]
+  }
+}

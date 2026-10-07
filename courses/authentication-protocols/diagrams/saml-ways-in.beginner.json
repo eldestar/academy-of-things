@@ -1,0 +1,31 @@
+{
+  "kind": "matrix",
+  "id": "saml-ways-in",
+  "prefix": "l02a",
+  "title": "Two ways in: starting at the app or at the IdP",
+  "desc": "A comparison of SP-initiated and IdP-initiated sign-in in four rows. Where Priya starts: at the app, or at the IdP, for example an app tile in the Okta dashboard. The sign-in request: the app creates one when sign-in starts at the app, and there is none when it starts at the IdP. Matching the Response to a request: the app can match it when it sent a request, and has nothing to match it to when it did not. The app's checks: all the checks above when sign-in starts at the app, and one fewer, a weaker position, when it starts at the IdP.",
+  "duration": 16,
+  "legend": {"good": "present", "partial": "weaker", "bad": "missing"},
+  "columns": [
+    {"title": "SP-initiated", "sub": "starts at the app"},
+    {"title": "IdP-initiated", "sub": "starts at the IdP"}
+  ],
+  "rows": [
+    {"title": "Where Priya starts", "cells": [
+      {"text": ["The app (the flow above)"]},
+      {"text": ["For example an app tile in", "the Okta dashboard"]}
+    ]},
+    {"title": "The sign-in request", "cells": [
+      {"mark": "good", "text": ["The app creates one"]},
+      {"mark": "bad", "text": ["There is none"]}
+    ]},
+    {"title": "Response matches a request", "sub": "the InResponseTo check", "cells": [
+      {"mark": "good", "text": ["The app can match it"]},
+      {"mark": "bad", "text": ["Nothing to match it to"]}
+    ]},
+    {"title": "The app's checks", "cells": [
+      {"mark": "good", "text": ["All of the checks above"]},
+      {"mark": "partial", "text": ["One fewer: a weaker position"]}
+    ]}
+  ]
+}

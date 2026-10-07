@@ -1,0 +1,18 @@
+{
+  "kind": "stages",
+  "id": "identity-lifecycle",
+  "prefix": "l07d",
+  "title": "Joiner, mover, leaver and what each phase needs",
+  "desc": "Three phases in order. A joiner enters the scope of needing access and gets birthright access: the baseline from attributes such as department and location, kept small. A mover moves between boundaries that need different access, such as Sales to Marketing; the quiet risk is that old access stays and privilege accumulates, so NIST SP 800-53 PS-5 requires reviewing the ongoing need on reassignment. A leaver leaves the scope, and every surface needs checking, not one status flipped. Treating the HR event as the trigger for all three is the usual design, not Microsoft's rule.",
+  "duration": 14,
+  "legend": {"front": "role change or exit", "bad_state": "quiet risk"},
+  "stages": [
+    {"title": "Joiner", "sub": "enters the scope", "lines": ["Birthright access:", "baseline from attributes", "(department, location)"]},
+    {"title": "Mover", "sub": "e.g. Sales to Marketing", "tone": "bad", "lines": ["Quiet risk: old access", "stays, so privilege", "accumulates; PS-5 review"]},
+    {"title": "Leaver", "sub": "leaves the scope", "lines": ["Check every surface,", "not one status flipped"]}
+  ],
+  "links": [
+    {"from": 0, "to": 1, "label": ["role change"]},
+    {"from": 1, "to": 2, "label": ["leaves scope"]}
+  ]
+}

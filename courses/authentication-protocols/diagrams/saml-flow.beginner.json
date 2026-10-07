@@ -1,0 +1,24 @@
+{
+  "id": "saml-flow",
+  "prefix": "sm",
+  "title": "One SAML sign-in, one click at a time",
+  "desc": "Three parties: the app (Acme Tracker), Priya's browser, and the identity provider. Priya opens the app and it finds no session. The app tells her browser to go and sign in at the identity provider, passing a sign-in request and a RelayState note. The browser follows that instruction. The identity provider signs her in, or sees she is already signed in. It sends back a signed assertion inside a web form, and the browser submits that form to the app's ACS URL. The app checks the signature, the audience, the address, the time window and that the response has not been used before, then creates its own session and sends her to the page. A final note says that when sign-in starts at the identity provider there is no sign-in request, so the app loses one check.",
+  "duration": 16,
+  "legend": {"front": "the browser carries every message", "good": "what the app checks"},
+  "lanes": [
+    {"id": "sp", "title": "Acme Tracker", "sub": "the app (SP)", "hot": true},
+    {"id": "br", "title": "Priya's browser", "sub": "the courier"},
+    {"id": "idp", "title": "Identity provider", "sub": "Okta, Entra ID (IdP)"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "br", "to": "sp", "label": ["Priya opens the app", "it sees no session"], "badge": "1"},
+    {"type": "arrow", "from": "sp", "to": "br", "label": ["\"Go sign in at the IdP\"", "sign-in request + RelayState"], "badge": "2"},
+    {"type": "arrow", "from": "br", "to": "idp", "label": ["Browser asks the IdP", "same request, same RelayState"], "badge": "3"},
+    {"type": "note", "under": "idp", "lines": ["IdP identifies Priya:", "signs her in, or sees she already is"]},
+    {"type": "arrow", "from": "idp", "to": "br", "label": ["Signed assertion in a web form", "RelayState handed back unchanged"], "badge": "4"},
+    {"type": "arrow", "from": "br", "to": "sp", "label": ["Browser submits the form", "to the app's ACS URL"], "badge": "5"},
+    {"type": "note", "under": "sp", "lines": ["App checks: signature, audience,", "right address, time window,", "not used before"], "tone": "good"},
+    {"type": "arrow", "from": "sp", "to": "br", "label": ["App creates its own session", "and sends her to the page"], "badge": "6"},
+    {"type": "note", "under": "idp", "lines": ["Starting at the IdP instead:", "no sign-in request, one fewer check"]}
+  ]
+}

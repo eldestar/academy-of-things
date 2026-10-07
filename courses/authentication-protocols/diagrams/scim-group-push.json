@@ -1,0 +1,34 @@
+{
+  "kind": "flow",
+  "id": "scim-group-push",
+  "prefix": "l05c",
+  "title": "Okta group membership: the three conditions and the shared-group trap",
+  "desc": "A chain of checks for an Okta group change that does not arrive. Okta group membership needs all three: the user is in the Okta group, is assigned to the app, and the group is pushed. If the user is not in the group, not assigned, or the group is not pushed, no membership change is sent. If all three hold but the same group is used for both assignment and Group Push, that is not supported, so make a separate push group. If all three hold and the groups are separate, Okta can send the change.",
+  "duration": 16,
+  "legend": {"front": "the path being traced", "good": "the change can be sent", "bad": "nothing is sent"},
+  "root": {
+    "lines": ["User in the", "Okta group?"],
+    "children": [
+      {"edge": "no", "node": {"lines": ["Not sent:", "user not in", "the group"], "tone": "bad"}},
+      {"edge": "yes", "node": {
+        "lines": ["User assigned", "to the app?"],
+        "children": [
+          {"edge": "no", "node": {"lines": ["Not sent:", "user not", "assigned"], "tone": "bad"}},
+          {"edge": "yes", "node": {
+            "lines": ["Group pushed?"],
+            "children": [
+              {"edge": "no", "node": {"lines": ["Not sent:", "group not", "pushed"], "tone": "bad"}},
+              {"edge": "yes", "node": {
+                "lines": ["Same group for", "assignment and", "Group Push?"],
+                "children": [
+                  {"edge": "yes", "node": {"lines": ["Unsupported:", "make a separate", "push group"], "tone": "bad"}},
+                  {"edge": "no", "node": {"lines": ["Okta can send", "the change"], "tone": "good"}}
+                ]
+              }}
+            ]
+          }}
+        ]
+      }}
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "kind": "stages",
+  "id": "session-gap",
+  "prefix": "l01b",
+  "title": "What happens to Sam's sessions when an admin disables him",
+  "desc": "Three stages. First Sam is signed in, with an IdP session and an app session open. Then an admin disables Sam's account at the IdP, which stops new sign-ins; this is not necessarily passed on to the app. The third stage is the app session, already open, which may carry on, and the app must revoke access itself.",
+  "duration": 14,
+  "legend": {"front": "what happens next", "good": "what disabling does", "bad_state": "what may carry on"},
+  "stages": [
+    {"title": "Signed in", "sub": "Sam is working", "lines": ["IdP session: open", "App session: open"]},
+    {"title": "Sam disabled", "sub": "at the IdP", "lines": ["Stops new sign-ins"], "tone": "good"},
+    {"title": "App session", "sub": "already open", "lines": ["May carry on", "The app must revoke", "access itself"], "tone": "bad"}
+  ],
+  "links": [
+    {"from": 0, "to": 1, "label": ["admin disables", "his account"]},
+    {"from": 1, "to": 2, "label": ["not necessarily", "passed on"]}
+  ]
+}

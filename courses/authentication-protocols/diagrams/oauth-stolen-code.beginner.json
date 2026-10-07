@@ -1,0 +1,103 @@
+{
+  "id": "oauth-stolen-code",
+  "prefix": "l03h",
+  "title": "Why a stolen code is no use without the code_verifier",
+  "desc": "Three parties: Plannr, the authorization server and a thief. At step 1 Plannr sends the fingerprint, the code_challenge, and the server remembers it. At step 3 the server sends the code back through the browser, and the thief steals it. The thief tries step 5 without the code_verifier, because it never saw the code_verifier, so cannot use the code. At step 5 Plannr sends the code and the code_verifier, the verifier matches the fingerprint, and Plannr gets an access token.",
+  "duration": 18,
+  "legend": {
+    "front": "through the user's browser",
+    "back": "direct request, not a redirect",
+    "bad": "the thief's attempt",
+    "good": "what works"
+  },
+  "lanes": [
+    {
+      "id": "client",
+      "title": "Plannr",
+      "sub": "keeps the code_verifier"
+    },
+    {
+      "id": "as",
+      "title": "Authorization server",
+      "sub": "remembers the fingerprint",
+      "hot": true
+    },
+    {
+      "id": "thief",
+      "title": "Thief",
+      "sub": "has the stolen code"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "step 1: the fingerprint",
+        "(code_challenge)"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "client",
+      "label": [
+        "step 3: the code"
+      ],
+      "badge": "3"
+    },
+    {
+      "type": "note",
+      "under": "thief",
+      "lines": [
+        "steals the code at step 3,",
+        "never sees the code_verifier"
+      ],
+      "tone": "bad",
+      "badge": "!",
+      "with_previous": true
+    },
+    {
+      "type": "arrow",
+      "from": "thief",
+      "to": "as",
+      "label": [
+        "step 5 without the code_verifier"
+      ],
+      "tone": "bad",
+      "badge": "5"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "the thief cannot use the code:",
+        "it never saw the code_verifier"
+      ],
+      "tone": "bad",
+      "badge": "!"
+    },
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "step 5 with the code",
+        "and the code_verifier"
+      ],
+      "tone": "back",
+      "badge": "5"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "the verifier matches the fingerprint:",
+        "Plannr receives an access token"
+      ],
+      "tone": "good"
+    }
+  ]
+}

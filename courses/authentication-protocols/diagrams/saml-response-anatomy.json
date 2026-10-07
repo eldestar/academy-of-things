@@ -1,0 +1,28 @@
+{
+  "kind": "anatomy",
+  "id": "saml-response-anatomy",
+  "prefix": "smr",
+  "title": "Anatomy of a SAML Response and what the SP checks in each part",
+  "desc": "A nested diagram. The Response, which carries an ID, Status, Issuer, Destination and InResponseTo, contains the Assertion on success. The Assertion contains the Issuer, a Signature, the Subject with its NameID, the bearer SubjectConfirmationData, the Conditions, the AuthnStatement and the AttributeStatement. Numbered callouts say what the service provider verifies in each part. The Response holds one or more Assertions on success and none on error. Accepted assertion IDs are remembered until they expire, which the POST binding makes a MUST. The issuer is the IdP it holds metadata for. The signature is valid with a key from the IdP's metadata. The NameID maps to exactly one local account. Recipient equals the ACS URL, the assertion has not expired, and InResponseTo equals the request's ID when the Response answers a request. The time window holds, with the skew allowance the SP chooses, and the SP's own entity ID is one of the Audience values. SessionIndex is needed only for Single Logout. The attributes the SP needs are present.",
+  "duration": 24,
+  "legend": {"plain": "context", "good": "what the SP verifies"},
+  "root": {
+    "title": "Response", "sub": "ID, Status, Issuer, Destination, InResponseTo",
+    "check": ["On success it holds one or more", "Assertions; an error holds none"],
+    "children": [{
+      "title": "Assertion", "sub": "the part that matters",
+      "check": ["Keep accepted IDs until they expire", "(POST binding: MUST, 4.1.4.5)"], "tone": "good",
+      "children": [
+        {"title": "Issuer", "sub": "the IdP's entity ID", "check": ["It is the IdP I hold metadata for"], "tone": "good"},
+        {"title": "Signature", "sub": "enveloped, URI=\"#ID\"", "check": ["Valid with a key from the IdP's", "metadata"], "tone": "good"},
+        {"title": "Subject / NameID", "sub": "who the user is", "check": ["Maps to exactly one local account"], "tone": "good"},
+        {"title": "SubjectConfirmationData", "sub": "Recipient, NotOnOrAfter, InResponseTo",
+         "check": ["Recipient = ACS URL it arrived at;", "not expired; InResponseTo = request", "ID, when it answers a request"], "tone": "good"},
+        {"title": "Conditions", "sub": "NotBefore, NotOnOrAfter, AudienceRestriction",
+         "check": ["Now is inside the window (plus skew);", "my entity ID is an Audience"], "tone": "good"},
+        {"title": "AuthnStatement", "sub": "when and how; SessionIndex", "check": ["SessionIndex is needed only for", "Single Logout"]},
+        {"title": "AttributeStatement", "sub": "name/value pairs", "check": ["The attributes I need are present"], "tone": "good"}
+      ]
+    }]
+  }
+}

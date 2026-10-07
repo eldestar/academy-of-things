@@ -1,0 +1,22 @@
+{
+  "id": "enrolment-race",
+  "prefix": "l06d",
+  "title": "The enrolment race: binding the first authenticator",
+  "desc": "Three parties: the new hire, an attacker who holds the temporary password, and the identity provider. NIST requires authentication at the lower of the account's maximum AAL and the new authenticator's AAL, so an account that currently has only AAL1 capability can be bound to an AAL2 authenticator after a password alone. The attacker enrols with the temporary password. A binding code sent to an already-authenticated endpoint does not close this, because the attacker holding the temporary password is that endpoint. NIST makes a notification mandatory; this lesson's reading of SP 800-63A is to send it through an independent channel, which makes a rogue enrolment noticeable but does not prevent one, and to bind the first authenticator only on return of a single-use code sent to contact details the hire controls.",
+  "duration": 22,
+  "legend": {"front": "notification", "bad": "the attacker's step", "good": "control"},
+  "lanes": [
+    {"id": "hire", "title": "New hire", "sub": "the real user"},
+    {"id": "atk", "title": "Attacker", "sub": "holds the temporary password"},
+    {"id": "idp", "title": "IdP", "sub": "binds the authenticator", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "atk", "to": "idp", "label": ["authenticates with the", "temporary password alone"], "tone": "bad", "badge": "1"},
+    {"type": "note", "under": "idp", "lines": ["lower of the account's maximum", "AAL and the new authenticator's:", "an account with only AAL1", "capability can bind an AAL2", "authenticator after a password", "alone"], "tone": "bad"},
+    {"type": "arrow", "from": "atk", "to": "idp", "label": ["enrols its own", "authenticator"], "tone": "bad", "badge": "2"},
+    {"type": "note", "under": "atk", "lines": ["a binding code to an already", "authenticated endpoint does not", "close this: the attacker is", "that endpoint"], "tone": "bad"},
+    {"type": "arrow", "from": "idp", "to": "hire", "label": ["notification", "independent channel (lesson's reading)"], "badge": "3"},
+    {"type": "note", "under": "hire", "lines": ["makes a rogue enrolment", "noticeable; does not", "prevent one"]},
+    {"type": "note", "under": "idp", "lines": ["this lesson's reading: bind only", "on return of a single-use code", "sent to contact details the", "hire controls"], "tone": "good"}
+  ]
+}

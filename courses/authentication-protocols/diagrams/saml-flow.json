@@ -2,7 +2,7 @@
   "id": "saml-flow",
   "prefix": "sm",
   "title": "SAML 2.0 Web Browser SSO, SP-initiated",
-  "desc": "Three parties: the service provider (the app), the user's browser, and the identity provider. Every message travels through the browser. The browser asks the app for a page and has no session. The app answers with a redirect carrying an authentication request and a RelayState value. The browser sends that request to the identity provider, which identifies the user either by a new sign-in or an existing session. The identity provider returns an HTML form carrying the signed SAML Response and the RelayState, which the browser posts to the app's assertion consumer service URL. The app validates the Response and redirects the browser to the original page with its own session. A final note says IdP-initiated sign-in starts at the form step, with no authentication request and therefore no InResponseTo value.",
+  "desc": "Three parties: the service provider (the app), the user's browser, and the identity provider. Every message travels through the browser. The browser asks the app for a page and has no session. The app answers with a redirect carrying an authentication request and optionally a RelayState value. The browser sends that request to the identity provider, which identifies the user either by a new sign-in or an existing session. The identity provider returns an HTML form carrying the signed SAML Response and the RelayState, which the browser posts to the app's assertion consumer service URL. The app validates the Response and redirects the browser to the original page with its own session. A final note says IdP-initiated sign-in starts at the form step, with no authentication request and therefore no InResponseTo value.",
   "duration": 20,
   "legend": {"front": "every hop goes through the user's browser", "good": "what the SP checks"},
   "lanes": [
@@ -11,14 +11,14 @@
     {"id": "idp", "title": "Identity provider", "sub": "Okta, Entra ID (IdP)"}
   ],
   "steps": [
-    {"type": "arrow", "from": "br", "to": "sp", "label": ["GET the protected page", "no session yet"], "badge": "1"},
-    {"type": "arrow", "from": "sp", "to": "br", "label": ["302: AuthnRequest, RelayState", "HTTP-Redirect binding"], "badge": "2"},
-    {"type": "arrow", "from": "br", "to": "idp", "label": ["GET the SSO URL", "SAMLRequest, RelayState"], "badge": "3"},
+    {"type": "arrow", "from": "br", "to": "sp", "label": ["Request the protected page", "no session yet"], "badge": "1"},
+    {"type": "arrow", "from": "sp", "to": "br", "label": ["302 or 303: AuthnRequest", "HTTP-Redirect binding"], "badge": "2"},
+    {"type": "arrow", "from": "br", "to": "idp", "label": ["GET the SSO URL", "SAMLRequest, optional RelayState"], "badge": "3"},
     {"type": "note", "under": "idp", "lines": ["IdP identifies the user:", "new sign-in or existing session"]},
     {"type": "arrow", "from": "idp", "to": "br", "label": ["HTML form: SAMLResponse", "RelayState, HTTP-POST binding"], "badge": "4"},
     {"type": "arrow", "from": "br", "to": "sp", "label": ["POST to the ACS URL", "SAMLResponse, RelayState"], "badge": "5"},
     {"type": "note", "under": "sp", "lines": ["SP validates signature, Audience,", "Recipient, InResponseTo, times,", "and replay check (POST)"], "tone": "good"},
-    {"type": "arrow", "from": "sp", "to": "br", "label": ["302 back to the page", "SP starts its own session"], "badge": "6"},
+    {"type": "arrow", "from": "sp", "to": "br", "label": ["Redirect back to the page", "SP starts its own session"], "badge": "6"},
     {"type": "note", "under": "idp", "lines": ["IdP-initiated starts at step 4:", "no AuthnRequest, no InResponseTo"]}
   ]
 }

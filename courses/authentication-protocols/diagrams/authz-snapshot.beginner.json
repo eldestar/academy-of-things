@@ -1,0 +1,19 @@
+{
+  "id": "authz-snapshot",
+  "prefix": "l07c",
+  "title": "The snapshot problem: a signed note goes stale",
+  "desc": "Two parties: the identity provider and the app. When Sam signs in, the identity provider hands the app a signed note issued at 09:30 that can include Sam's groups. The app trusts the note and often keeps its own session built from it. At 10:00 Sam is removed from a group. The app can keep treating Sam as a member, a stale claim, until the note expires, the app's session ends, or a new note is issued. To end access sooner, the app can check live, or an admin can revoke the user's sessions.",
+  "duration": 18,
+  "legend": {"front": "message", "bad": "the problem", "good": "ends access sooner"},
+  "lanes": [
+    {"id": "idp", "title": "Identity provider", "sub": ""},
+    {"id": "app", "title": "The app", "sub": "the CRM", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["Signed note, issued 09:30", "can include Sam's groups"], "badge": "1"},
+    {"type": "note", "under": "app", "lines": ["App trusts the note and often", "keeps a session built from it"], "badge": "2"},
+    {"type": "note", "under": "idp", "lines": ["10:00: Sam is removed", "from a group"], "badge": "3"},
+    {"type": "note", "under": "app", "lines": ["Can keep treating Sam as a member", "(a stale claim) until the note expires,", "the session ends, or a new note is issued"], "tone": "bad", "badge": "4"},
+    {"type": "note", "under": "app", "lines": ["To end access sooner: the app checks live,", "or an admin revokes the user's sessions"], "tone": "good", "badge": "5"}
+  ]
+}

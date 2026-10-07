@@ -1,0 +1,22 @@
+{
+  "kind": "anatomy",
+  "id": "policy-points",
+  "prefix": "l07i",
+  "title": "Externalized authorization: NIST's four points and their pitfalls",
+  "desc": "A nested diagram mapping NIST's ABAC architecture onto real components, with the pitfalls the text names. Two pitfalls the text ties to no one point are attribute inputs the caller can forge and no decision logging. The policy enforcement point is the app or gateway and enforces the decision; whether it fails open or closed when the decision point is unreachable is not prescribed by these sources, so decide and document it. The policy decision point is the engine, for example OPA or Cedar, and computes the decision. The policy information point is directory, HR and token data and supplies attributes; a pitfall is stale attributes. The policy administration point is a repository with CI that tests policy; a pitfall is unreviewed rights to change policy, which we would treat as a privileged role under AC-5, our inference.",
+  "duration": 24,
+  "legend": {"bad": "pitfall"},
+  "root": {
+    "title": "Externalized authorization", "sub": "NIST's ABAC architecture mapped to real components",
+    "check": ["Text ties these to no one point:", "attribute inputs the caller can", "forge; no decision logging"], "tone": "bad",
+    "children": [
+      {"title": "PEP: policy enforcement point", "sub": "the app or gateway: enforces the decision",
+       "check": ["Fail open or closed if the PDP is", "unreachable? These sources do not", "prescribe it: decide and document it"], "tone": "bad"},
+      {"title": "PDP: policy decision point", "sub": "the engine, e.g. OPA or Cedar: computes the decision"},
+      {"title": "PIP: policy information point", "sub": "directory, HR and token data: supplies attributes",
+       "check": ["Stale attributes (PIP freshness,", "section 3.3.1)"], "tone": "bad"},
+      {"title": "PAP: policy administration point", "sub": "a repository with CI that tests policy: manages policy",
+       "check": ["Unreviewed rights to change policy;", "we would treat them as a privileged", "role (AC-5, our inference)"], "tone": "bad"}
+    ]
+  }
+}

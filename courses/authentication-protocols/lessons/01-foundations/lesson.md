@@ -25,6 +25,158 @@ The SAML glossary defines an IdP as "a kind of service provider that creates, ma
 
 The app trusts the IdP's *signature* and what the signed statement says: who (issuer plus subject), attributes (email, groups), and how and when. For the last one, SAML's `AuthnStatement` has required `AuthnInstant` and `AuthnContext`; OIDC's `auth_time`, `acr` and `amr` are optional, and `auth_time` becomes required only when you send `max_age` or request it as essential. NIST says the IdP SHALL pass the RP whatever it knows about how recent the authentication was. What the subject may do inside the app is never part of that trust.
 
+<!-- diagram:trust-anatomy -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l01a-pause" class="l01a-cb" /><label for="l01a-pause" class="l01a-btn"><span class="l01a-off">Pause animation</span><span class="l01a-on">Play animation</span></label>
+<div class="l01a-box" style="overflow-x:auto">
+<svg class="l01a-flow" viewBox="0 0 760 506" role="img" aria-labelledby="l01a-t l01a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l01a-t">What the app relies on the IdP for</title>
+<desc id="l01a-d">A nested diagram of the IdP's signed statement, an assertion or an ID token. The app trusts the signature, checked with the signing key from metadata or from the jwks_uri. It trusts who the subject is, the issuer plus subject that NIST calls the federated identifier. It trusts the attributes, such as email and groups, though mapping them to roles is the app's logic. It trusts how and when the user authenticated: SAML AuthnStatement has required AuthnInstant and AuthnContext, while OpenID Connect auth_time, acr and amr are optional, and auth_time becomes required only with max_age or an essential request. What the subject may do inside the app is never part of that trust. The diagram highlights each part in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l01a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l01a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l01a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l01a-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l01a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l01a-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l01a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01a-badt{fill:var(--bad-text)}
+.l01a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01a-badge{fill:var(--accent)}
+.l01a-b-back{fill:var(--muted)}
+.l01a-b-bad{fill:var(--bad)}
+.l01a-b-good{fill:var(--good)}
+.l01a-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l01a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l01a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l01a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l01a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
+.l01a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l01a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l01a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l01a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l01a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
+.l01a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
+.l01a-hl{fill:none;stroke:var(--accent);stroke-width:3}
+.l01a-hle{stroke:var(--accent);stroke-width:3;fill:none}
+.l01a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l01a-pk.l01a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l01a-pk.l01a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l01a-g{opacity:.45;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l01a-h{opacity:0;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l01a-flow:hover .l01a-g,svg.l01a-flow:hover .l01a-pk,svg.l01a-flow:hover .l01a-h{animation-play-state:paused}
+.l01a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l01a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l01a-btn:hover{background:var(--hover)}
+.l01a-cb:focus-visible + .l01a-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l01a-cb:checked + .l01a-btn .l01a-off,.l01a-cb:not(:checked) + .l01a-btn .l01a-on{display:none}
+.l01a-cb:checked ~ .l01a-box .l01a-g,.l01a-cb:checked ~ .l01a-box .l01a-pk,.l01a-cb:checked ~ .l01a-box .l01a-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l01a-g{animation:none;opacity:1}.l01a-pk{animation:none;display:none}.l01a-h{animation:none;opacity:0}.l01a-btn{display:none}}
+@keyframes l01a-g0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:.45}}
+@keyframes l01a-h0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:0}}
+.l01a-g0{animation-name:l01a-g0}.l01a-h0{animation-name:l01a-h0}
+@keyframes l01a-g1{0%,16.657%{opacity:.45}16.667%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
+@keyframes l01a-h1{0%,16.657%{opacity:0}16.667%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:0}}
+.l01a-g1{animation-name:l01a-g1}.l01a-h1{animation-name:l01a-h1}
+@keyframes l01a-g2{0%,33.323%{opacity:.45}33.333%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
+@keyframes l01a-h2{0%,33.323%{opacity:0}33.333%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}
+.l01a-g2{animation-name:l01a-g2}.l01a-h2{animation-name:l01a-h2}
+@keyframes l01a-g3{0%,49.99%{opacity:.45}50%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
+@keyframes l01a-h3{0%,49.99%{opacity:0}50%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:0}}
+.l01a-g3{animation-name:l01a-g3}.l01a-h3{animation-name:l01a-h3}
+@keyframes l01a-g4{0%,66.657%{opacity:.45}66.667%{opacity:1}83.333%{opacity:1}83.343%,100%{opacity:.45}}
+@keyframes l01a-h4{0%,66.657%{opacity:0}66.667%{opacity:1}83.333%{opacity:1}83.343%,100%{opacity:0}}
+.l01a-g4{animation-name:l01a-g4}.l01a-h4{animation-name:l01a-h4}
+@keyframes l01a-g5{0%,83.323%{opacity:.45}83.333%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+@keyframes l01a-h5{0%,83.323%{opacity:0}83.333%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
+.l01a-g5{animation-name:l01a-g5}.l01a-h5{animation-name:l01a-h5}
+</style>
+<defs>
+<marker id="l01a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l01a-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l01a-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="l01a-box" x="14" y="16" width="440" height="432" rx="9"/><text class="l01a-ttlL" x="28" y="37">The IdP's signed statement</text><text class="l01a-subL" x="28" y="54">assertion or ID token</text>
+<rect class="l01a-nest" x="26" y="62" width="416" height="46" rx="9"/><text class="l01a-ttlL" x="40" y="83">Signature</text><text class="l01a-subL" x="40" y="100">the IdP's</text>
+<rect class="l01a-nest" x="26" y="116" width="416" height="46" rx="9"/><text class="l01a-ttlL" x="40" y="137">Who</text><text class="l01a-subL" x="40" y="154">issuer plus subject</text>
+<rect class="l01a-nest" x="26" y="170" width="416" height="46" rx="9"/><text class="l01a-ttlL" x="40" y="191">Attributes</text><text class="l01a-subL" x="40" y="208">email, groups</text>
+<rect class="l01a-nest" x="26" y="224" width="416" height="158" rx="9"/><text class="l01a-ttlL" x="40" y="245">How and when</text><text class="l01a-subL" x="40" y="262">the authentication facts</text>
+<rect class="l01a-nest" x="38" y="270" width="392" height="46" rx="9"/><text class="l01a-ttlL" x="52" y="291">SAML AuthnStatement</text><text class="l01a-subL" x="52" y="308">AuthnInstant, AuthnContext</text>
+<rect class="l01a-nest" x="38" y="324" width="392" height="46" rx="9"/><text class="l01a-ttlL" x="52" y="345">OIDC claims</text><text class="l01a-subL" x="52" y="362">auth_time, acr, amr</text>
+<rect class="l01a-nest" x="26" y="390" width="416" height="46" rx="9"/><text class="l01a-ttlL" x="40" y="411">What the subject may do in the app</text><text class="l01a-subL" x="40" y="428">never part of that trust</text>
+<g class="l01a-g l01a-g0">
+<path class="l01a-conn" d="M442,79 L462,79 L462,79 L470,79" marker-end="url(#l01a-m-front)"/>
+<rect class="l01a-note-good" x="484" y="55" width="262" height="48" rx="8"/>
+<text class="l01a-nt" x="615" y="76">Checked with the signing key from</text>
+<text class="l01a-nt" x="615" y="93">metadata, or from jwks_uri in OIDC</text>
+<circle class="l01a-badge l01a-b-good" cx="484" cy="79" r="12"/><text class="l01a-bt" x="484" y="83.5">1</text>
+</g>
+<g class="l01a-g l01a-g1">
+<path class="l01a-conn" d="M442,133 L466,133 L466,137 L470,137" marker-end="url(#l01a-m-front)"/>
+<rect class="l01a-note-good" x="484" y="113" width="262" height="48" rx="8"/>
+<text class="l01a-nt" x="615" y="134">OIDC iss plus sub; NIST calls it</text>
+<text class="l01a-nt" x="615" y="151">the federated identifier</text>
+<circle class="l01a-badge l01a-b-good" cx="484" cy="137" r="12"/><text class="l01a-bt" x="484" y="141.5">2</text>
+</g>
+<g class="l01a-g l01a-g2">
+<path class="l01a-conn" d="M442,187 L470,187 L470,195 L470,195" marker-end="url(#l01a-m-front)"/>
+<rect class="l01a-note-good" x="484" y="171" width="262" height="48" rx="8"/>
+<text class="l01a-nt" x="615" y="192">Mapping them to roles is the</text>
+<text class="l01a-nt" x="615" y="209">app's logic</text>
+<circle class="l01a-badge l01a-b-good" cx="484" cy="195" r="12"/><text class="l01a-bt" x="484" y="199.5">3</text>
+</g>
+<g class="l01a-g l01a-g3">
+<path class="l01a-conn" d="M430,287 L474,287 L474,287 L470,287" marker-end="url(#l01a-m-front)"/>
+<rect class="l01a-note-good" x="484" y="272" width="262" height="31" rx="8"/>
+<text class="l01a-nt" x="615" y="292">Both required</text>
+<circle class="l01a-badge l01a-b-good" cx="484" cy="287" r="12"/><text class="l01a-bt" x="484" y="291.5">4</text>
+</g>
+<g class="l01a-g l01a-g4">
+<path class="l01a-conn" d="M430,341 L462,341 L462,341 L470,341" marker-end="url(#l01a-m-front)"/>
+<rect class="l01a-note-good" x="484" y="317" width="262" height="48" rx="8"/>
+<text class="l01a-nt" x="615" y="338">Optional. auth_time is required only</text>
+<text class="l01a-nt" x="615" y="355">with max_age or as an essential claim</text>
+<circle class="l01a-badge l01a-b-good" cx="484" cy="341" r="12"/><text class="l01a-bt" x="484" y="345.5">5</text>
+</g>
+<g class="l01a-g l01a-g5">
+<path class="l01a-conn" d="M442,407 L466,407 L466,407 L470,407" marker-end="url(#l01a-m-front)"/>
+<rect class="l01a-note-bad" x="484" y="392" width="262" height="31" rx="8"/>
+<text class="l01a-nt" x="615" y="412">SSO does not authorize</text>
+<circle class="l01a-badge l01a-b-bad" cx="484" cy="407" r="12"/><text class="l01a-bt" x="484" y="411.5">6</text>
+</g>
+<g class="l01a-h l01a-h0">
+<rect class="l01a-hl" x="26" y="62" width="416" height="46" rx="9"/>
+</g>
+<g class="l01a-h l01a-h1">
+<rect class="l01a-hl" x="26" y="116" width="416" height="46" rx="9"/>
+</g>
+<g class="l01a-h l01a-h2">
+<rect class="l01a-hl" x="26" y="170" width="416" height="46" rx="9"/>
+</g>
+<g class="l01a-h l01a-h3">
+<rect class="l01a-hl" x="38" y="270" width="392" height="46" rx="9"/>
+</g>
+<g class="l01a-h l01a-h4">
+<rect class="l01a-hl" x="38" y="324" width="392" height="46" rx="9"/>
+</g>
+<g class="l01a-h l01a-h5">
+<rect class="l01a-hl" x="26" y="390" width="416" height="46" rx="9"/>
+</g>
+<rect class="l01a-note-good" x="40" y="474" width="22" height="16" rx="4"/>
+<text class="l01a-dim" x="70" y="486" style="text-anchor:start">what the app relies on</text>
+<rect class="l01a-note-bad" x="244" y="474" width="22" height="16" rx="4"/>
+<text class="l01a-dim" x="274" y="486" style="text-anchor:start">outside the trust</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:trust-anatomy -->
+
+Read the tree from the signed statement down: each green part is something the app relies on the IdP for, and the red part is never part of that trust. The callouts are numbered in reading order.
+
 | Direction | SAML | OIDC and OAuth |
 | --- | --- | --- |
 | App learns the IdP | IdP metadata: `entityID`, `KeyDescriptor use="signing"`, `SingleSignOnService` | discovery document at `{issuer}/.well-known/openid-configuration`: `issuer` and `jwks_uri`, the signing keys |
@@ -41,9 +193,9 @@ A rotation of the *signing* key breaks signature verification and nothing else. 
 <div style="position:relative;margin:20px 0">
 <input type="checkbox" id="tr-pause" class="tr-cb" /><label for="tr-pause" class="tr-btn"><span class="tr-off">Pause animation</span><span class="tr-on">Play animation</span></label>
 <div class="tr-box" style="overflow-x:auto">
-<svg class="tr-flow" viewBox="0 0 760 712" role="img" aria-labelledby="tr-t tr-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
-<title id="tr-t">A first federated sign-in, end to end</title>
-<desc id="tr-d">Three parties: the app, the user's browser, and the identity provider. Step 1: the user opens the app through the browser and has no session. Step 2: the app redirects the browser to the identity provider with a sign-in request. Step 3: the user authenticates at the identity provider. Step 4: the identity provider returns a signed proof for the app, a SAML assertion or an OpenID Connect code that the app swaps for an ID token, and the browser delivers it to the app. Step 5: the app checks the proof's signature, issuer, audience and expiry, then sets its own session cookie in the browser. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<svg class="tr-flow" viewBox="0 0 760 827" role="img" aria-labelledby="tr-t tr-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="tr-t">The first sign-in with SAML and OpenID Connect names</title>
+<desc id="tr-d">Three parties: the app (SP or RP), the user's browser, and the identity provider (IdP or OP). Step 1: the user reaches the app with no session. Step 2: the app redirects the browser to the IdP, with a SAML AuthnRequest or an OpenID Connect request to the authorization endpoint. Step 3: the IdP may reuse its own session, and the app can force a new login with ForceAuthn in SAML or max_age in OpenID Connect. Step 4: the IdP returns the proof through the browser. In SAML it is a Response holding the assertion, POSTed to the ACS. In OpenID Connect it is a code; the app swaps it for the ID token in a direct call. Step 5: the app validates the proof. SAML checks the signature, AudienceRestriction, Recipient, NotOnOrAfter and InResponseTo, which is absent if the response is unsolicited. OpenID Connect checks iss, aud, signature and exp. The app then creates its own session, most often a cookie. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
 .tr-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .tr-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
@@ -65,10 +217,10 @@ A rotation of the *signing* key breaks signature verification and nothing else. 
 .tr-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .tr-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
 .tr-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.tr-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:15s;animation-timing-function:linear;animation-iteration-count:infinite}
+.tr-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .tr-pk.tr-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .tr-pk.tr-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.tr-g{opacity:.45;animation-duration:15s;animation-timing-function:linear;animation-iteration-count:infinite}
+.tr-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 svg.tr-flow:hover .tr-g,svg.tr-flow:hover .tr-pk{animation-play-state:paused}
 .tr-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .tr-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
@@ -97,55 +249,64 @@ svg.tr-flow:hover .tr-g,svg.tr-flow:hover .tr-pk{animation-play-state:paused}
 <marker id="tr-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
 <marker id="tr-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
 </defs>
-<line class="tr-life" x1="110" y1="72" x2="110" y2="660"/>
-<line class="tr-life" x1="380" y1="72" x2="380" y2="660"/>
-<line class="tr-life" x1="650" y1="72" x2="650" y2="660"/>
-<rect class="tr-box" x="20" y="10" width="180" height="62" rx="10"/><text class="tr-ttl" x="110" y="36">App (SP / RP)</text><text class="tr-sub" x="110" y="56">trusts the IdP's signing keys</text>
-<rect class="tr-box" x="290" y="10" width="180" height="62" rx="10"/><text class="tr-ttl" x="380" y="36">Browser</text><text class="tr-sub" x="380" y="56">carries every message</text>
+<line class="tr-life" x1="110" y1="72" x2="110" y2="775"/>
+<line class="tr-life" x1="380" y1="72" x2="380" y2="775"/>
+<line class="tr-life" x1="650" y1="72" x2="650" y2="775"/>
+<rect class="tr-box" x="20" y="10" width="180" height="62" rx="10"/><text class="tr-ttl" x="110" y="36">App (SP / RP)</text><text class="tr-sub" x="110" y="56">consumes the result</text>
+<rect class="tr-box" x="290" y="10" width="180" height="62" rx="10"/><text class="tr-ttl" x="380" y="36">Browser</text><text class="tr-sub" x="380" y="56">carries the messages shown</text>
 <rect class="tr-hot" x="560" y="10" width="180" height="62" rx="10"/><text class="tr-ttl" x="650" y="36">IdP (OP)</text><text class="tr-sub" x="650" y="56">authenticates the user</text>
 <g class="tr-g tr-g0">
-<text class="tr-main" x="245" y="108">open the app</text>
-<text class="tr-dim" x="245" y="124">no session cookie yet</text>
+<text class="tr-main" x="245" y="108">user reaches the app</text>
+<text class="tr-dim" x="245" y="124">no session</text>
 <line class="tr-front" x1="366" y1="138" x2="124" y2="138" marker-end="url(#tr-m-front)"/>
 <circle class="tr-badge tr-b-front" cx="380" cy="138" r="12"/><text class="tr-bt" x="380" y="142.5">1</text>
 </g>
 <g class="tr-g tr-g1">
-<text class="tr-main" x="245" y="178">redirect to the IdP</text>
-<text class="tr-dim" x="245" y="194">with a sign-in request</text>
-<line class="tr-front" x1="124" y1="208" x2="366" y2="208" marker-end="url(#tr-m-front)"/>
-<circle class="tr-badge tr-b-front" cx="110" cy="208" r="12"/><text class="tr-bt" x="110" y="212.5">2</text>
-<text class="tr-main" x="515" y="248">browser follows the redirect</text>
-<line class="tr-front" x1="394" y1="262" x2="636" y2="262" marker-end="url(#tr-m-front)"/>
+<text class="tr-main" x="245" y="178">redirect to the IdP:</text>
+<text class="tr-dim" x="245" y="194">SAML AuthnRequest, or</text>
+<text class="tr-dim" x="245" y="210">OIDC authorization endpoint</text>
+<line class="tr-front" x1="124" y1="224" x2="366" y2="224" marker-end="url(#tr-m-front)"/>
+<circle class="tr-badge tr-b-front" cx="110" cy="224" r="12"/><text class="tr-bt" x="110" y="228.5">2</text>
+<text class="tr-main" x="515" y="264">browser is sent on to the IdP</text>
+<line class="tr-front" x1="394" y1="278" x2="636" y2="278" marker-end="url(#tr-m-front)"/>
 </g>
 <g class="tr-g tr-g2">
-<rect class="tr-note" x="536" y="296" width="214" height="48" rx="8"/>
-<text class="tr-nt" x="643" y="317">user signs in at the IdP</text>
-<text class="tr-nt" x="643" y="334">password, MFA, policy checks</text>
-<circle class="tr-badge tr-b-plain" cx="536" cy="320" r="12"/><text class="tr-bt" x="536" y="324.5">3</text>
+<rect class="tr-note" x="529" y="312" width="221" height="65" rx="8"/>
+<text class="tr-nt" x="640" y="333">may reuse its own session;</text>
+<text class="tr-nt" x="640" y="350">app can force a login:</text>
+<text class="tr-nt" x="640" y="367">SAML ForceAuthn, OIDC max_age</text>
+<circle class="tr-badge tr-b-plain" cx="529" cy="344" r="12"/><text class="tr-bt" x="529" y="349.0">3</text>
 </g>
 <g class="tr-g tr-g3">
-<text class="tr-main" x="515" y="378">signed proof for the app</text>
-<text class="tr-dim" x="515" y="394">SAML: the assertion itself</text>
-<text class="tr-dim" x="515" y="410">OIDC: a code to swap for the ID token</text>
-<line class="tr-front" x1="636" y1="424" x2="394" y2="424" marker-end="url(#tr-m-front)"/>
-<circle class="tr-badge tr-b-front" cx="650" cy="424" r="12"/><text class="tr-bt" x="650" y="428.5">4</text>
-<text class="tr-main" x="245" y="464">browser delivers it to the app</text>
-<line class="tr-front" x1="366" y1="478" x2="124" y2="478" marker-end="url(#tr-m-front)"/>
+<text class="tr-main" x="515" y="411">proof for the app</text>
+<text class="tr-dim" x="515" y="427">SAML: Response with the assertion</text>
+<text class="tr-dim" x="515" y="443">OIDC: a code</text>
+<line class="tr-front" x1="636" y1="457" x2="394" y2="457" marker-end="url(#tr-m-front)"/>
+<circle class="tr-badge tr-b-front" cx="650" cy="457" r="12"/><text class="tr-bt" x="650" y="461.5">4</text>
+<text class="tr-main" x="245" y="497">SAML: POSTed to the ACS</text>
+<text class="tr-dim" x="245" y="513">OIDC: the code; the app swaps it</text>
+<text class="tr-dim" x="245" y="529">for the ID token in a direct call</text>
+<line class="tr-front" x1="366" y1="543" x2="124" y2="543" marker-end="url(#tr-m-front)"/>
 </g>
 <g class="tr-g tr-g4">
-<rect class="tr-note" x="12" y="512" width="195" height="48" rx="8"/>
-<text class="tr-nt" x="110" y="533">checks signature, issuer,</text>
-<text class="tr-nt" x="110" y="550">audience and expiry</text>
-<circle class="tr-badge tr-b-plain" cx="12" cy="536" r="12"/><text class="tr-bt" x="12" y="540.5">5</text>
-<text class="tr-main" x="245" y="594">sets its own session cookie</text>
-<line class="tr-front" x1="124" y1="608" x2="366" y2="608" marker-end="url(#tr-m-front)"/>
+<rect class="tr-note-good" x="10" y="577" width="274" height="82" rx="8"/>
+<text class="tr-nt" x="147" y="598">SAML: signature, AudienceRestriction,</text>
+<text class="tr-nt" x="147" y="615">Recipient, NotOnOrAfter,</text>
+<text class="tr-nt" x="147" y="632">InResponseTo (absent if unsolicited)</text>
+<text class="tr-nt" x="147" y="649">OIDC: iss, aud, signature, exp</text>
+<circle class="tr-badge tr-b-good" cx="10" cy="618" r="12"/><text class="tr-bt" x="10" y="622.5">5</text>
+<text class="tr-main" x="245" y="693">app creates its own session,</text>
+<text class="tr-dim" x="245" y="709">most often a cookie</text>
+<line class="tr-front" x1="124" y1="723" x2="366" y2="723" marker-end="url(#tr-m-front)"/>
 </g>
 <circle class="tr-pk tr-p0" cx="360" cy="138" r="5.5"/>
-<circle class="tr-pk tr-p1" cx="400" cy="262" r="5.5"/>
-<circle class="tr-pk tr-p3" cx="360" cy="478" r="5.5"/>
-<circle class="tr-pk tr-p4" cx="130" cy="608" r="5.5"/>
-<line class="tr-front" x1="40" y1="688" x2="70" y2="688"/>
-<text class="tr-dim" x="78" y="692" style="text-anchor:start">message through the user's browser</text>
+<circle class="tr-pk tr-p1" cx="400" cy="278" r="5.5"/>
+<circle class="tr-pk tr-p3" cx="360" cy="543" r="5.5"/>
+<circle class="tr-pk tr-p4" cx="130" cy="723" r="5.5"/>
+<line class="tr-front" x1="40" y1="803" x2="70" y2="803"/>
+<text class="tr-dim" x="78" y="807" style="text-anchor:start">message through the user's browser</text>
+<rect class="tr-note-good" x="329" y="795" width="22" height="16" rx="4"/>
+<text class="tr-dim" x="359" y="807" style="text-anchor:start">what the app validates</text>
 </svg>
 </div>
 </div>
@@ -172,6 +333,118 @@ The badges 1 to 5 match the numbered steps below. Every arrow shown passes throu
 NIST: the assertion's validity window "does not indicate the lifetime of the authenticated session at the IdP or RP", and the RP session will usually far outlive it. SAML's `SessionNotOnOrAfter` is the time when the session between the principal and the issuing SAML authority "MUST be considered ended". It describes the IdP session, with no required relationship to `NotOnOrAfter`. The Web SSO profile adds only that an SP SHOULD discard the security context it built from that assertion when the time passes (lesson 2); the attribute is optional and fixed at issuance, so it is a hint the IdP may send, not a control over your app's session.
 
 **When the IdP session ends, the app session lives on.** NIST: ending the IdP session "will not necessarily terminate" RP sessions. Entra: "Microsoft Entra ID can't directly revoke a session token issued by an application", so the app must revoke it, and revoking refresh tokens leaves access tokens valid until they expire. Okta Single Logout is initiated only by the SP, only for apps that support it, and SWA apps don't support it. Okta Universal Logout and Entra Continuous Access Evaluation can end sessions or tokens, but only for supported apps.
+
+<!-- diagram:session-gap -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l01b-pause" class="l01b-cb" /><label for="l01b-pause" class="l01b-btn"><span class="l01b-off">Pause animation</span><span class="l01b-on">Play animation</span></label>
+<div class="l01b-box" style="overflow-x:auto">
+<svg class="l01b-flow" viewBox="0 0 760 227" role="img" aria-labelledby="l01b-t l01b-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l01b-t">Proof, IdP session and app session over time</title>
+<desc id="l01b-d">Four stages, in an order that is only for reading. Signed in: the proof is used once, the IdP session is open and the app session is open. Proof expires, at NotOnOrAfter or exp, which is not the session's lifetime. IdP session end: app sessions are not necessarily terminated. App session: it may live on, and for Entra the app must revoke it. The diagram highlights each stage in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l01b-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l01b-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l01b-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01b-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01b-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l01b-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l01b-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l01b-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l01b-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01b-badt{fill:var(--bad-text)}
+.l01b-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01b-badge{fill:var(--accent)}
+.l01b-b-back{fill:var(--muted)}
+.l01b-b-bad{fill:var(--bad)}
+.l01b-b-good{fill:var(--good)}
+.l01b-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01b-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l01b-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l01b-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l01b-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l01b-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l01b-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
+.l01b-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l01b-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l01b-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l01b-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l01b-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
+.l01b-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
+.l01b-hl{fill:none;stroke:var(--accent);stroke-width:3}
+.l01b-hle{stroke:var(--accent);stroke-width:3;fill:none}
+.l01b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l01b-pk.l01b-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l01b-pk.l01b-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l01b-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l01b-flow:hover .l01b-g,svg.l01b-flow:hover .l01b-pk{animation-play-state:paused}
+.l01b-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l01b-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l01b-btn:hover{background:var(--hover)}
+.l01b-cb:focus-visible + .l01b-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l01b-cb:checked + .l01b-btn .l01b-off,.l01b-cb:not(:checked) + .l01b-btn .l01b-on{display:none}
+.l01b-cb:checked ~ .l01b-box .l01b-g,.l01b-cb:checked ~ .l01b-box .l01b-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l01b-g{animation:none;opacity:1}.l01b-pk{animation:none;display:none}.l01b-btn{display:none}}
+@keyframes l01b-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
+@keyframes l01b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}25%{opacity:1;transform:translateX(58px)}25.01%,100%{opacity:0;transform:translateX(58px)}}
+.l01b-g0{animation-name:l01b-g0}.l01b-p0{animation-name:l01b-p0}
+@keyframes l01b-g1{0%,24.99%{opacity:.45}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
+@keyframes l01b-p1{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}50%{opacity:1;transform:translateX(58px)}50.01%,100%{opacity:0;transform:translateX(58px)}}
+.l01b-g1{animation-name:l01b-g1}.l01b-p1{animation-name:l01b-p1}
+@keyframes l01b-g2{0%,49.99%{opacity:.45}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
+@keyframes l01b-p2{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}75%{opacity:1;transform:translateX(58px)}75.01%,100%{opacity:0;transform:translateX(58px)}}
+.l01b-g2{animation-name:l01b-g2}.l01b-p2{animation-name:l01b-p2}
+@keyframes l01b-g3{0%,74.99%{opacity:.45}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l01b-g3{animation-name:l01b-g3}
+</style>
+<defs>
+<marker id="l01b-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l01b-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l01b-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<g class="l01b-g l01b-g0">
+<rect class="l01b-box" x="14" y="40" width="123" height="127" rx="10"/>
+<text class="l01b-ttl" x="76" y="67">Signed in</text>
+<text class="l01b-nt" x="76" y="114">Proof: used once</text>
+<text class="l01b-nt" x="76" y="131">IdP session: open</text>
+<text class="l01b-nt" x="76" y="148">App session: open</text>
+<line class="l01b-front" x1="145" y1="70" x2="209" y2="70" marker-end="url(#l01b-m-front)"/>
+</g>
+<g class="l01b-g l01b-g1">
+<rect class="l01b-box" x="217" y="40" width="123" height="127" rx="10"/>
+<text class="l01b-ttl" x="278" y="67">Proof expires</text>
+<text class="l01b-sub" x="278" y="87">NotOnOrAfter, exp</text>
+<text class="l01b-nt" x="278" y="114">Not the session's</text>
+<text class="l01b-nt" x="278" y="131">lifetime</text>
+<line class="l01b-front" x1="348" y1="70" x2="412" y2="70" marker-end="url(#l01b-m-front)"/>
+</g>
+<g class="l01b-g l01b-g2">
+<rect class="l01b-box" x="420" y="40" width="123" height="127" rx="10"/>
+<text class="l01b-ttl" x="482" y="67">IdP session end</text>
+<text class="l01b-nt" x="482" y="114">App sessions are</text>
+<text class="l01b-nt" x="482" y="131">not necessarily</text>
+<text class="l01b-nt" x="482" y="148">terminated</text>
+<line class="l01b-front" x1="551" y1="70" x2="615" y2="70" marker-end="url(#l01b-m-front)"/>
+</g>
+<g class="l01b-g l01b-g3">
+<rect class="l01b-note-bad" x="623" y="40" width="123" height="127" rx="10"/>
+<text class="l01b-ttl" x="684" y="67">App session</text>
+<text class="l01b-sub" x="684" y="87">may live on</text>
+<text class="l01b-nt" x="684" y="114">Entra: the app</text>
+<text class="l01b-nt" x="684" y="131">must revoke it</text>
+</g>
+<circle class="l01b-pk l01b-p0" cx="151" cy="70" r="5.5"/>
+<circle class="l01b-pk l01b-p1" cx="354" cy="70" r="5.5"/>
+<circle class="l01b-pk l01b-p2" cx="557" cy="70" r="5.5"/>
+<line class="l01b-front" x1="40" y1="203" x2="70" y2="203"/>
+<text class="l01b-dim" x="78" y="207" style="text-anchor:start">next stage</text>
+<rect class="l01b-note-bad" x="176" y="195" width="22" height="16" rx="4"/>
+<text class="l01b-dim" x="206" y="207" style="text-anchor:start">the gap to close</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:session-gap -->
+
+Read left to right. The proof's expiry and the IdP session have no required relationship, so the order of the first three stages is only for reading. The proof's expiry is not the session's lifetime, and when the IdP session ends the app session may still be open; Entra says the app has to revoke it itself.
 
 ## What SSO buys, and where it stops
 

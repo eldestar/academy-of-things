@@ -1,0 +1,28 @@
+{
+  "id": "scim-protocol",
+  "prefix": "sc",
+  "title": "SCIM lifecycle on the server: where Okta and Entra differ",
+  "desc": "Eight steps between an identity provider and your SCIM server, with a session or token issued before the update as a third lane. Step 1: Okta first runs a GET with a filter on userName, then POSTs the profile. Step 2: the server answers 201 with Location and meta.location, both SHALL, and the id comes back in that 201; Entra caches it. Step 3, group change: Okta PATCHes either a remove plus an add on members or a replace of the whole members list, or PUTs the group for Wizard apps, while Entra sends Add and Remove on members with the ids in value. Step 4, leaver: Okta sends a path-less replace of an object holding active false by PATCH, or a full PUT for Wizard apps; Entra sends op Replace with path active. Step 5, a failure mode: the PATCH succeeds but a session or token issued before it still validates. Step 6: no operation or endpoint in RFC 7644 ends a session, so revoke sessions, refresh tokens and API tokens when the update lands, or check active on every authenticated use. Step 7: Okta never sends DELETE for users; by default Entra sends DELETE only for a hard delete, 30 days after a soft delete. Step 8: return 204 for the DELETE, then 404 with the Error schema for every later request on that id.",
+  "duration": 26,
+  "legend": {
+    "front": "request",
+    "back": "response",
+    "bad": "failure mode",
+    "good": "what your server must do"
+  },
+  "lanes": [
+    {"id": "idp", "title": "Identity provider", "sub": "Okta or Entra"},
+    {"id": "app", "title": "Your SCIM server", "sub": "service provider", "hot": true},
+    {"id": "tok", "title": "Session or token", "sub": "issued before the PATCH"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["GET filter, then POST", "Okta: lookup on userName first"], "badge": "1"},
+    {"type": "arrow", "from": "app", "to": "idp", "label": ["201 + Location + meta.location", "the id comes back; Entra caches it"], "tone": "back", "badge": "2"},
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["Group change (PATCH; Wizard: PUT)", "Okta: remove + add, or replace", "Entra: Add and Remove, ids in value"], "badge": "3"},
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["Leaver: PATCH active = false", "Okta: replace, no path (Wizard: PUT)", "Entra: Replace with path active"], "badge": "4"},
+    {"type": "arrow", "from": "tok", "to": "app", "label": ["use of that credential", "still validates"], "tone": "bad", "badge": "5"},
+    {"type": "note", "under": "app", "lines": ["no RFC 7644 operation ends a session:", "revoke on the update, or check active", "on every authenticated use"], "tone": "good", "badge": "6"},
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["DELETE", "Okta: never sent for users", "Entra: default, hard delete only"], "badge": "7"},
+    {"type": "arrow", "from": "app", "to": "idp", "label": ["204, then 404 + Error schema", "for every later request on that id"], "tone": "back", "badge": "8"}
+  ]
+}

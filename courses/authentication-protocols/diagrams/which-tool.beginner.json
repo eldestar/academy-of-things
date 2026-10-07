@@ -1,0 +1,86 @@
+{
+  "kind": "matrix",
+  "id": "which-tool",
+  "prefix": "l08a",
+  "title": "Signing in is not the same as managing accounts",
+  "desc": "A table of three tools against three jobs. SAML or OIDC signs Priya in but cannot create or remove her account. SCIM signs nobody in, creates accounts automatically, and sets them inactive by setting the active field to false, though what the app does with that is up to the app. JIT provisioning creates the account from the details sent at sign-in but cannot delete or deactivate it.",
+  "duration": 14,
+  "legend": {
+    "good": "does this",
+    "partial": "does this, with a catch",
+    "bad": "cannot do this"
+  },
+  "columns": [
+    {
+      "title": "Signs a user in"
+    },
+    {
+      "title": "Creates accounts"
+    },
+    {
+      "title": "Removes",
+      "sub": "the account"
+    }
+  ],
+  "rows": [
+    {
+      "title": "SAML or OIDC",
+      "cells": [
+        {
+          "mark": "good",
+          "text": [
+            "opens the app"
+          ]
+        },
+        {
+          "mark": "bad"
+        },
+        {
+          "mark": "bad"
+        }
+      ]
+    },
+    {
+      "title": "SCIM",
+      "cells": [
+        {
+          "mark": "bad"
+        },
+        {
+          "mark": "good",
+          "text": [
+            "automatically"
+          ]
+        },
+        {
+          "mark": "partial",
+          "text": [
+            "sets active to false;",
+            "the app decides the rest"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "First sign-in",
+      "cells": [
+        {},
+        {
+          "mark": "good",
+          "text": [
+            "from the details sent",
+            "at sign-in"
+          ]
+        },
+        {
+          "mark": "bad",
+          "text": [
+            "cannot delete or",
+            "deactivate"
+          ]
+        }
+      ],
+      "sub": "JIT provisioning"
+    }
+  ]
+}

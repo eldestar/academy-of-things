@@ -1,0 +1,20 @@
+{
+  "id": "aitm-relay",
+  "prefix": "l06a",
+  "title": "A fake page passes Sam's code to the real site",
+  "desc": "Three parties: Sam, a fake sign-in page that sits in the middle, and the real site. Sam types the password and the six-digit code into the fake page. The fake page instantly passes both to the real site, which accepts them. The attacker is signed in as Sam. A final note says that typing a code does not tie it to the one site it was meant for.",
+  "duration": 14,
+  "legend": {"front": "Sam's step", "bad": "the fake page relays", "good": "why it works"},
+  "lanes": [
+    {"id": "sam", "title": "Sam", "sub": "types into the page"},
+    {"id": "fake", "title": "Fake page", "sub": "sits in the middle"},
+    {"id": "real", "title": "Real site", "sub": "the expense app"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "sam", "to": "fake", "label": ["password and", "six-digit code"], "badge": "1"},
+    {"type": "arrow", "from": "fake", "to": "real", "label": ["passes both on", "instantly"], "tone": "bad", "badge": "2"},
+    {"type": "note", "under": "real", "lines": ["accepts them"]},
+    {"type": "note", "under": "fake", "lines": ["the attacker is", "signed in as Sam"], "tone": "bad"},
+    {"type": "note", "under": "sam", "lines": ["typing a code does not tie", "it to the one site it was", "meant for"], "tone": "good"}
+  ]
+}

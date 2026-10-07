@@ -1,0 +1,83 @@
+{
+  "kind": "matrix",
+  "id": "oidc-logout-matrix",
+  "prefix": "l04g",
+  "title": "Three logout mechanisms compared",
+  "desc": "Two columns, path and limits, for three mechanisms. RP-initiated logout: the app sends the browser to the OP's end_session_endpoint with id_token_hint, post_logout_redirect_uri and state; it asks the OP to end its session only when someone signs out, the OP should ask whether to log out there too, and informing other apps is left to front-channel or back-channel logout. Front-channel: the OP renders each app's registered logout URI in an iframe, and browsers that block third-party content can stop it. Back-channel: the OP posts a signed Logout Token to the app's registered URI, which does not depend on the browser but must be reachable from the OP; whether an admin action makes the OP send it is OP-specific and not verified.",
+  "duration": 20,
+  "columns": [
+    {
+      "title": "Path"
+    },
+    {
+      "title": "Limits"
+    }
+  ],
+  "rows": [
+    {
+      "title": "RP-initiated",
+      "sub": "the app starts it",
+      "cells": [
+        {
+          "text": [
+            "browser sent to the OP's",
+            "end_session_endpoint with",
+            "id_token_hint (recommended),",
+            "post_logout_redirect_uri, state"
+          ]
+        },
+        {
+          "text": [
+            "asks the OP to end its session,",
+            "only when someone signs out; the",
+            "OP SHOULD ask whether to log out",
+            "there too; other apps: front- or",
+            "back-channel"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Front-channel",
+      "sub": "the OP starts it",
+      "cells": [
+        {
+          "text": [
+            "OP renders each app's registered",
+            "logout URI in an iframe"
+          ]
+        },
+        {
+          "text": [
+            "browsers that block third-party",
+            "content can stop it working;",
+            "the spec recommends defensive",
+            "code to detect that"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Back-channel",
+      "sub": "the OP starts it",
+      "cells": [
+        {
+          "text": [
+            "OP POSTs a signed Logout Token to",
+            "the app's registered URI; the app must",
+            "end the session named by sub or sid"
+          ]
+        },
+        {
+          "text": [
+            "does not depend on the browser, but",
+            "the endpoint must be reachable from",
+            "the OP; whether an admin action makes",
+            "the OP send it is OP-specific (not",
+            "verified here for Okta or Entra)"
+          ]
+        }
+      ]
+    }
+  ]
+}

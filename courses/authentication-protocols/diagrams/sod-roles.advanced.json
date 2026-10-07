@@ -1,0 +1,26 @@
+{
+  "kind": "anatomy",
+  "id": "sod-roles",
+  "prefix": "l07g",
+  "title": "Separation of duty in NIST RBAC: assigned roles versus active roles",
+  "desc": "A nested diagram. A user is assigned roles; staff who cover for each other may hold both invoice-creator and invoice-approver. Static separation of duty is a pair of a role set and n: no user is assigned n or more roles from the set. With role hierarchies, in which senior roles acquire the permissions of their juniors, static constraints must count inherited roles as well. A session activates some subset of the assigned roles. Dynamic separation of duty constrains which roles may be active within or across a user's sessions. A role is active when the user has activated it in a session, so in the example both roles are assigned but never both active together.",
+  "duration": 24,
+  "legend": {"plain": "what it means", "good": "what a constraint limits"},
+  "root": {
+    "title": "User", "sub": "staff who cover for each other (the example)",
+    "children": [
+      {"title": "Assigned roles", "sub": "may hold both invoice-creator and invoice-approver",
+       "check": ["Static SoD is a pair (role set, n):", "no user is assigned n or more", "roles from the set"], "tone": "good",
+       "children": [
+         {"title": "Inherited roles", "sub": "seniors acquire juniors' permissions",
+          "check": ["With hierarchies, static constraints", "must count inherited roles as well"], "tone": "good"}
+       ]},
+      {"title": "Session", "sub": "activates some subset of the assigned roles",
+       "check": ["Dynamic SoD constrains which roles", "may be active within or across a", "user's sessions"], "tone": "good",
+       "children": [
+         {"title": "Active roles", "sub": "in the example: never both active",
+          "check": ["A role is active when the user has", "activated it in a session. Example:", "both assigned, never both active"]}
+       ]}
+    ]
+  }
+}

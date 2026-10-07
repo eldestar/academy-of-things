@@ -1,0 +1,25 @@
+{
+  "kind": "anatomy",
+  "id": "saml-xsw",
+  "prefix": "l02d",
+  "title": "A wrapped Response: what the signature proves and what the code reads",
+  "desc": "A nested diagram of the wrapped copy of the sample Response, which holds two Assertions. The first, ID _evil, is unsigned and carries a forged NameID, admin@example.com; a naive first-assertion lookup reads it. The second, ID _assert1, is the genuine one the signature's Reference points at; the verifier finds it by the Reference ID. Inside it the Signature has a Reference with URI _assert1, which shows that some element still matches a signed digest but not that the element the code reads next is that element. Its NameID, u-7f3a9c21, is the value the control reads, by resolving the verified Reference and reading every security-relevant value from that node. The Response callout adds the control of rejecting a document whose Assertion count is not what you expect.",
+  "duration": 22,
+  "legend": {"plain": "context", "good": "the signed element", "bad": "forged, unsigned"},
+  "root": {
+    "title": "Response", "sub": "the wrapped copy: two Assertions",
+    "check": ["Control: reject a document whose", "Assertion count is not what you expect"],
+    "children": [
+      {"title": "Assertion ID=\"_evil\"", "sub": "unsigned, forged NameID", "tone": "bad",
+       "check": ["A \"first assertion\" lookup reads this", "one: admin@example.com"]},
+      {"title": "Assertion ID=\"_assert1\"", "sub": "the genuine one the Reference points at", "tone": "good",
+       "check": ["The verifier finds this one by the", "Reference's ID"],
+       "children": [
+        {"title": "Signature", "sub": "Reference URI=\"#_assert1\"", "tone": "good",
+         "check": ["Shows some element matches a signed", "digest, not that your code reads it"]},
+        {"title": "NameID", "sub": "u-7f3a9c21", "tone": "good",
+         "check": ["Control: resolve the verified", "Reference; read every security-", "relevant value from it"]}
+      ]}
+    ]
+  }
+}

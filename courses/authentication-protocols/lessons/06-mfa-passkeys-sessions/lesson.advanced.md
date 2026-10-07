@@ -20,9 +20,9 @@ At AAL2, after an inactivity timeout and before the overall timeout, the verifie
 <div style="position:relative;margin:20px 0">
 <input type="checkbox" id="wa-pause" class="wa-cb" /><label for="wa-pause" class="wa-btn"><span class="wa-off">Pause animation</span><span class="wa-on">Play animation</span></label>
 <div class="wa-box" style="overflow-x:auto">
-<svg class="wa-flow" viewBox="0 0 760 1037" role="img" aria-labelledby="wa-t wa-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
-<title id="wa-t">WebAuthn registration and authentication ceremonies</title>
-<desc id="wa-d">Three parties: the user with an authenticator, the browser, and the relying party. Registration: the relying party sends creation options with a challenge and its RP ID, the browser asks the authenticator to create a key pair if the RP ID fits the page origin, the user approves with a gesture, the authenticator returns the public key and credential ID, and the browser sends the registration response to the relying party, which checks the challenge, origin and RP ID hash and stores the public key. Authentication: the relying party sends a fresh challenge, the browser asks the authenticator to sign it for the RP ID of the real origin, the user approves, the authenticator returns a signature and authenticator data, and the browser sends the assertion response (client data, authenticator data and signature) to the relying party, which verifies the signature with the stored public key and checks the challenge, origin, RP ID hash and user presence flag. On a look-alike domain the browser cannot request the real RP ID, so no credential signs. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<svg class="wa-flow" viewBox="0 0 760 614" role="img" aria-labelledby="wa-t wa-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="wa-t">What the RP checks in a WebAuthn authentication</title>
+<desc id="wa-d">Three parties: the authenticator, the client, and the relying party (RP). The RP sends a fresh challenge. The client asks for a signature scoped to the origin's RP ID. The authenticator returns authenticatorData and a signature. The client sends clientDataJSON, authenticatorData and the signature to the RP. The RP checks that the credential ID is in allowCredentials if one was sent, identifies the user, checks type webauthn.get, the challenge, the origin and the rpIdHash, requires the UP flag, requires UV if configured, and then verifies the signature over authenticatorData concatenated with the SHA-256 hash of clientDataJSON, using the stored public key. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
 .wa-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .wa-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
@@ -44,10 +44,10 @@ At AAL2, after an inactivity timeout and before the overall timeout, the verifie
 .wa-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .wa-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
 .wa-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.wa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:32s;animation-timing-function:linear;animation-iteration-count:infinite}
+.wa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
 .wa-pk.wa-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .wa-pk.wa-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.wa-g{opacity:.45;animation-duration:32s;animation-timing-function:linear;animation-iteration-count:infinite}
+.wa-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
 svg.wa-flow:hover .wa-g,svg.wa-flow:hover .wa-pk{animation-play-state:paused}
 .wa-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .wa-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
@@ -56,134 +56,202 @@ svg.wa-flow:hover .wa-g,svg.wa-flow:hover .wa-pk{animation-play-state:paused}
 .wa-cb:checked + .wa-btn .wa-off,.wa-cb:not(:checked) + .wa-btn .wa-on{display:none}
 .wa-cb:checked ~ .wa-box .wa-g,.wa-cb:checked ~ .wa-box .wa-pk{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.wa-g{animation:none;opacity:1}.wa-pk{animation:none;display:none}.wa-btn{display:none}}
-@keyframes wa-g0{0%{opacity:1}10%{opacity:1}10.01%,100%{opacity:.45}}
-@keyframes wa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}10%{opacity:1;transform:translateX(-236px)}10.01%,100%{opacity:0;transform:translateX(-236px)}}
+@keyframes wa-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
+@keyframes wa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(-236px)}20.01%,100%{opacity:0;transform:translateX(-236px)}}
 .wa-g0{animation-name:wa-g0}.wa-p0{animation-name:wa-p0}
-@keyframes wa-g1{0%,9.99%{opacity:.45}10%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
-@keyframes wa-p1{0%,9.99%{opacity:0;transform:translateX(0)}10%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(-236px)}20.01%,100%{opacity:0;transform:translateX(-236px)}}
+@keyframes wa-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
+@keyframes wa-p1{0%,19.99%{opacity:0;transform:translateX(0)}20%{opacity:1;transform:translateX(0)}40%{opacity:1;transform:translateX(-236px)}40.01%,100%{opacity:0;transform:translateX(-236px)}}
 .wa-g1{animation-name:wa-g1}.wa-p1{animation-name:wa-p1}
-@keyframes wa-g2{0%,19.99%{opacity:.45}20%{opacity:1}30%{opacity:1}30.01%,100%{opacity:.45}}
-@keyframes wa-p2{0%,19.99%{opacity:0;transform:translateX(0)}20%{opacity:1;transform:translateX(0)}30%{opacity:1;transform:translateX(236px)}30.01%,100%{opacity:0;transform:translateX(236px)}}
+@keyframes wa-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
+@keyframes wa-p2{0%,39.99%{opacity:0;transform:translateX(0)}40%{opacity:1;transform:translateX(0)}60%{opacity:1;transform:translateX(236px)}60.01%,100%{opacity:0;transform:translateX(236px)}}
 .wa-g2{animation-name:wa-g2}.wa-p2{animation-name:wa-p2}
-@keyframes wa-g3{0%,29.99%{opacity:.45}30%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
-@keyframes wa-p3{0%,29.99%{opacity:0;transform:translateX(0)}30%{opacity:1;transform:translateX(0)}40%{opacity:1;transform:translateX(236px)}40.01%,100%{opacity:0;transform:translateX(236px)}}
+@keyframes wa-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
+@keyframes wa-p3{0%,59.99%{opacity:0;transform:translateX(0)}60%{opacity:1;transform:translateX(0)}80%{opacity:1;transform:translateX(236px)}80.01%,100%{opacity:0;transform:translateX(236px)}}
 .wa-g3{animation-name:wa-g3}.wa-p3{animation-name:wa-p3}
-@keyframes wa-g4{0%,39.99%{opacity:.45}40%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
+@keyframes wa-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
 .wa-g4{animation-name:wa-g4}
-@keyframes wa-g5{0%,49.99%{opacity:.45}50%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
-@keyframes wa-p5{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}60%{opacity:1;transform:translateX(-236px)}60.01%,100%{opacity:0;transform:translateX(-236px)}}
-.wa-g5{animation-name:wa-g5}.wa-p5{animation-name:wa-p5}
-@keyframes wa-g6{0%,59.99%{opacity:.45}60%{opacity:1}70%{opacity:1}70.01%,100%{opacity:.45}}
-@keyframes wa-p6{0%,59.99%{opacity:0;transform:translateX(0)}60%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(-236px)}70.01%,100%{opacity:0;transform:translateX(-236px)}}
-.wa-g6{animation-name:wa-g6}.wa-p6{animation-name:wa-p6}
-@keyframes wa-g7{0%,69.99%{opacity:.45}70%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
-@keyframes wa-p7{0%,69.99%{opacity:0;transform:translateX(0)}70%{opacity:1;transform:translateX(0)}80%{opacity:1;transform:translateX(236px)}80.01%,100%{opacity:0;transform:translateX(236px)}}
-.wa-g7{animation-name:wa-g7}.wa-p7{animation-name:wa-p7}
-@keyframes wa-g8{0%,79.99%{opacity:.45}80%{opacity:1}90%{opacity:1}90.01%,100%{opacity:.45}}
-@keyframes wa-p8{0%,79.99%{opacity:0;transform:translateX(0)}80%{opacity:1;transform:translateX(0)}90%{opacity:1;transform:translateX(236px)}90.01%,100%{opacity:0;transform:translateX(236px)}}
-.wa-g8{animation-name:wa-g8}.wa-p8{animation-name:wa-p8}
-@keyframes wa-g9{0%,89.99%{opacity:.45}90%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.wa-g9{animation-name:wa-g9}
 </style>
 <defs>
 <marker id="wa-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
 <marker id="wa-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
 <marker id="wa-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
 </defs>
-<line class="wa-life" x1="110" y1="72" x2="110" y2="985"/>
-<line class="wa-life" x1="380" y1="72" x2="380" y2="985"/>
-<line class="wa-life" x1="650" y1="72" x2="650" y2="985"/>
-<rect class="wa-box" x="20" y="10" width="180" height="62" rx="10"/><text class="wa-ttl" x="110" y="36">User + authenticator</text><text class="wa-sub" x="110" y="56">the key pair lives here</text>
-<rect class="wa-box" x="290" y="10" width="180" height="62" rx="10"/><text class="wa-ttl" x="380" y="36">Browser</text><text class="wa-sub" x="380" y="56">knows the real origin</text>
-<rect class="wa-hot" x="560" y="10" width="180" height="62" rx="10"/><text class="wa-ttl" x="650" y="36">Relying party</text><text class="wa-sub" x="650" y="56">the site or the IdP</text>
+<line class="wa-life" x1="110" y1="72" x2="110" y2="562"/>
+<line class="wa-life" x1="380" y1="72" x2="380" y2="562"/>
+<line class="wa-life" x1="650" y1="72" x2="650" y2="562"/>
+<rect class="wa-box" x="20" y="10" width="180" height="62" rx="10"/><text class="wa-ttl" x="110" y="36">Authenticator</text><text class="wa-sub" x="110" y="56">returns the signature</text>
+<rect class="wa-box" x="290" y="10" width="180" height="62" rx="10"/><text class="wa-ttl" x="380" y="36">Client</text><text class="wa-sub" x="380" y="56">scopes it to the RP ID</text>
+<rect class="wa-hot" x="560" y="10" width="180" height="62" rx="10"/><text class="wa-ttl" x="650" y="36">Relying party</text><text class="wa-sub" x="650" y="56">verifies the response</text>
 <g class="wa-g wa-g0">
-<text class="wa-main" x="515" y="108">creation options</text>
-<text class="wa-dim" x="515" y="124">challenge, RP ID, user</text>
-<line class="wa-front" x1="636" y1="138" x2="394" y2="138" marker-end="url(#wa-m-front)"/>
-<circle class="wa-badge wa-b-front" cx="650" cy="138" r="12"/><text class="wa-bt" x="650" y="142.5">R1</text>
+<text class="wa-main" x="515" y="108">sends a fresh challenge</text>
+<line class="wa-front" x1="636" y1="122" x2="394" y2="122" marker-end="url(#wa-m-front)"/>
+<circle class="wa-badge wa-b-front" cx="650" cy="122" r="12"/><text class="wa-bt" x="650" y="126.5">A1</text>
 </g>
 <g class="wa-g wa-g1">
-<text class="wa-main" x="245" y="178">create a key pair</text>
-<text class="wa-dim" x="245" y="194">only if the RP ID fits the origin</text>
-<line class="wa-front" x1="366" y1="208" x2="124" y2="208" marker-end="url(#wa-m-front)"/>
-<circle class="wa-badge wa-b-front" cx="380" cy="208" r="12"/><text class="wa-bt" x="380" y="212.5">R2</text>
-<rect class="wa-note" x="10" y="226" width="214" height="48" rx="8"/>
-<text class="wa-nt" x="117" y="247">user approves with a gesture</text>
-<text class="wa-nt" x="117" y="264">(touch, PIN, biometric)</text>
+<text class="wa-main" x="245" y="162">asks for a signature</text>
+<text class="wa-dim" x="245" y="178">scoped to the origin's RP ID</text>
+<line class="wa-front" x1="366" y1="192" x2="124" y2="192" marker-end="url(#wa-m-front)"/>
+<circle class="wa-badge wa-b-front" cx="380" cy="192" r="12"/><text class="wa-bt" x="380" y="196.5">A2</text>
 </g>
 <g class="wa-g wa-g2">
-<text class="wa-main" x="245" y="308">public key + credential ID</text>
-<text class="wa-dim" x="245" y="324">plus an attestation object</text>
-<line class="wa-front" x1="124" y1="338" x2="366" y2="338" marker-end="url(#wa-m-front)"/>
-<circle class="wa-badge wa-b-front" cx="110" cy="338" r="12"/><text class="wa-bt" x="110" y="342.5">R3</text>
+<text class="wa-main" x="245" y="232">authenticatorData</text>
+<text class="wa-dim" x="245" y="248">+ signature</text>
+<line class="wa-front" x1="124" y1="262" x2="366" y2="262" marker-end="url(#wa-m-front)"/>
+<circle class="wa-badge wa-b-front" cx="110" cy="262" r="12"/><text class="wa-bt" x="110" y="266.5">A3</text>
 </g>
 <g class="wa-g wa-g3">
-<text class="wa-main" x="515" y="378">registration response</text>
-<text class="wa-dim" x="515" y="394">clientDataJSON, attestationObject</text>
-<line class="wa-front" x1="394" y1="408" x2="636" y2="408" marker-end="url(#wa-m-front)"/>
-<circle class="wa-badge wa-b-front" cx="380" cy="408" r="12"/><text class="wa-bt" x="380" y="412.5">R4</text>
+<text class="wa-main" x="515" y="302">clientDataJSON,</text>
+<text class="wa-dim" x="515" y="318">authenticatorData, signature</text>
+<line class="wa-front" x1="394" y1="332" x2="636" y2="332" marker-end="url(#wa-m-front)"/>
+<circle class="wa-badge wa-b-front" cx="380" cy="332" r="12"/><text class="wa-bt" x="380" y="336.5">A4</text>
 </g>
 <g class="wa-g wa-g4">
-<rect class="wa-note-good" x="516" y="442" width="234" height="48" rx="8"/>
-<text class="wa-nt" x="633" y="463">checks type, challenge, origin,</text>
-<text class="wa-nt" x="633" y="480">rpIdHash; stores the public key</text>
+<rect class="wa-note-good" x="483" y="366" width="267" height="150" rx="8"/>
+<text class="wa-nt" x="616" y="387">credential ID in allowCredentials,</text>
+<text class="wa-nt" x="616" y="404">if one was sent; identifies the user</text>
+<text class="wa-nt" x="616" y="421">type webauthn.get, challenge,</text>
+<text class="wa-nt" x="616" y="438">origin, rpIdHash</text>
+<text class="wa-nt" x="616" y="455">UP required; UV if configured</text>
+<text class="wa-nt" x="616" y="472">then the signature over</text>
+<text class="wa-nt" x="616" y="489">authenticatorData + SHA-256 of</text>
+<text class="wa-nt" x="616" y="506">clientDataJSON, with the stored key</text>
 </g>
-<g class="wa-g wa-g5">
-<text class="wa-main" x="515" y="524">request options</text>
-<text class="wa-dim" x="515" y="540">fresh challenge, RP ID</text>
-<line class="wa-front" x1="636" y1="554" x2="394" y2="554" marker-end="url(#wa-m-front)"/>
-<circle class="wa-badge wa-b-front" cx="650" cy="554" r="12"/><text class="wa-bt" x="650" y="558.5">A1</text>
-</g>
-<g class="wa-g wa-g6">
-<text class="wa-main" x="245" y="594">sign this challenge</text>
-<text class="wa-dim" x="245" y="610">for the RP ID of this origin</text>
-<line class="wa-front" x1="366" y1="624" x2="124" y2="624" marker-end="url(#wa-m-front)"/>
-<circle class="wa-badge wa-b-front" cx="380" cy="624" r="12"/><text class="wa-bt" x="380" y="628.5">A2</text>
-<rect class="wa-note-bad" x="266" y="642" width="228" height="48" rx="8"/>
-<text class="wa-nt" x="380" y="663">look-alike domain: the browser</text>
-<text class="wa-nt" x="380" y="680">cannot request the real RP ID</text>
-</g>
-<g class="wa-g wa-g7">
-<text class="wa-main" x="245" y="724">assertion</text>
-<text class="wa-dim" x="245" y="740">signature + authenticatorData</text>
-<line class="wa-front" x1="124" y1="754" x2="366" y2="754" marker-end="url(#wa-m-front)"/>
-<circle class="wa-badge wa-b-front" cx="110" cy="754" r="12"/><text class="wa-bt" x="110" y="758.5">A3</text>
-</g>
-<g class="wa-g wa-g8">
-<text class="wa-main" x="515" y="794">assertion response</text>
-<text class="wa-dim" x="515" y="810">clientDataJSON, authenticatorData,</text>
-<text class="wa-dim" x="515" y="826">signature</text>
-<line class="wa-front" x1="394" y1="840" x2="636" y2="840" marker-end="url(#wa-m-front)"/>
-<circle class="wa-badge wa-b-front" cx="380" cy="840" r="12"/><text class="wa-bt" x="380" y="844.5">A4</text>
-</g>
-<g class="wa-g wa-g9">
-<rect class="wa-note-good" x="476" y="874" width="274" height="65" rx="8"/>
-<text class="wa-nt" x="613" y="895">verifies the signature with the</text>
-<text class="wa-nt" x="613" y="912">stored public key; checks challenge,</text>
-<text class="wa-nt" x="613" y="929">origin, rpIdHash, UP (UV if required)</text>
-</g>
-<circle class="wa-pk wa-p0" cx="630" cy="138" r="5.5"/>
-<circle class="wa-pk wa-p1" cx="360" cy="208" r="5.5"/>
-<circle class="wa-pk wa-p2" cx="130" cy="338" r="5.5"/>
-<circle class="wa-pk wa-p3" cx="400" cy="408" r="5.5"/>
-<circle class="wa-pk wa-p5" cx="630" cy="554" r="5.5"/>
-<circle class="wa-pk wa-p6" cx="360" cy="624" r="5.5"/>
-<circle class="wa-pk wa-p7" cx="130" cy="754" r="5.5"/>
-<circle class="wa-pk wa-p8" cx="400" cy="840" r="5.5"/>
-<line class="wa-front" x1="40" y1="1013" x2="70" y2="1013"/>
-<text class="wa-dim" x="78" y="1017" style="text-anchor:start">message in the ceremony</text>
-<rect class="wa-note-good" x="259" y="1005" width="22" height="16" rx="4"/>
-<text class="wa-dim" x="289" y="1017" style="text-anchor:start">what the relying party checks</text>
+<circle class="wa-pk wa-p0" cx="630" cy="122" r="5.5"/>
+<circle class="wa-pk wa-p1" cx="360" cy="192" r="5.5"/>
+<circle class="wa-pk wa-p2" cx="130" cy="262" r="5.5"/>
+<circle class="wa-pk wa-p3" cx="400" cy="332" r="5.5"/>
+<line class="wa-front" x1="40" y1="590" x2="70" y2="590"/>
+<text class="wa-dim" x="78" y="594" style="text-anchor:start">message in the ceremony</text>
+<rect class="wa-note-good" x="259" y="582" width="22" height="16" rx="4"/>
+<text class="wa-dim" x="289" y="594" style="text-anchor:start">what the RP checks</text>
 </svg>
 </div>
 </div>
 <!-- /diagram:webauthn-ceremony -->
 
-R1 to R4 register a credential; A1 to A4 authenticate with it. The numbers match the text below. Here a credential is a WebAuthn public-key credential (the spec's glossary lists passkey as a term for a discoverable one); a session cookie is a bearer credential, whose holder is accepted without proving anything else (NIST calls session secrets used this way bearer tokens).
+R1 to R4 register a credential; A1 to A4 authenticate with it. The diagram zooms in on authentication, A1 to A4, and on what the RP checks when the response arrives; its badges match the A1 to A4 text below, and registration is in the R1 to R4 text. Here a credential is a WebAuthn public-key credential (the spec's glossary lists passkey as a term for a discoverable one); a session cookie is a bearer credential, whose holder is accepted without proving anything else (NIST calls session secrets used this way bearer tokens).
 
 **Registration (R1 to R4).** R1: the RP creates options with a challenge (at least 16 bytes recommended) and an RP ID. R2: the client rejects an RP ID that is not the origin's effective domain or a registrable domain suffix of it, and asks the authenticator to create a key pair after a gesture. R3: the authenticator returns the credential ID, public key and attestation. R4: the RP verifies, in order, client data type webauthn.create, the challenge, an expected origin, rpIdHash equal to the SHA-256 of its RP ID, the UP flag (unless the ceremony used conditional mediation), and UV if it requires it, the BE and BS consistency rule, the algorithm against the requested list, and the attestation per its policy.
 
 **Authentication (A1 to A4).** A1: the RP sends a fresh challenge. A2: the client asks for a signature scoped to the origin's RP ID. A3: the authenticator returns authenticatorData and a signature. A4: the browser sends clientDataJSON, authenticatorData and the signature, and the RP checks that the credential ID is in allowCredentials if one was sent, identifies the user, checks type webauthn.get, challenge, origin and rpIdHash, requires UP, requires UV if configured, then verifies the signature over authenticatorData concatenated with the SHA-256 hash of clientDataJSON, using the stored public key.
+
+<!-- diagram:rp-id-scope -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l06c-pause" class="l06c-cb" /><label for="l06c-pause" class="l06c-btn"><span class="l06c-off">Pause animation</span><span class="l06c-on">Play animation</span></label>
+<div class="l06c-box" style="overflow-x:auto">
+<svg class="l06c-flow" viewBox="0 0 760 446" role="img" aria-labelledby="l06c-t l06c-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l06c-t">Can a page on another origin use your credential?</title>
+<desc id="l06c-d">A decision tree that starts with where the page runs. A page on another domain is stopped by the client, which scopes credentials by RP ID. A page on a subdomain may legitimately request the parent RP ID, so the question is whether the RP accepts subdomain origins: by default it should not, and its origin validation rejects the unexpected origin; if it does allow subdomains and untrusted code runs on one, that code can relay valid assertions. A page on an origin listed in the RP's related origins is the opt-in exception, where RP ID scoping does not hold, so list only origins you control. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l06c-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l06c-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l06c-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l06c-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l06c-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l06c-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l06c-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-badt{fill:var(--bad-text)}
+.l06c-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-badge{fill:var(--accent)}
+.l06c-b-back{fill:var(--muted)}
+.l06c-b-bad{fill:var(--bad)}
+.l06c-b-good{fill:var(--good)}
+.l06c-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l06c-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l06c-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l06c-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l06c-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
+.l06c-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06c-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06c-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06c-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l06c-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
+.l06c-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
+.l06c-hl{fill:none;stroke:var(--accent);stroke-width:3}
+.l06c-hle{stroke:var(--accent);stroke-width:3;fill:none}
+.l06c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l06c-pk.l06c-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l06c-pk.l06c-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l06c-g{opacity:.45;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l06c-h{opacity:0;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l06c-flow:hover .l06c-g,svg.l06c-flow:hover .l06c-pk,svg.l06c-flow:hover .l06c-h{animation-play-state:paused}
+.l06c-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l06c-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l06c-btn:hover{background:var(--hover)}
+.l06c-cb:focus-visible + .l06c-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l06c-cb:checked + .l06c-btn .l06c-off,.l06c-cb:not(:checked) + .l06c-btn .l06c-on{display:none}
+.l06c-cb:checked ~ .l06c-box .l06c-g,.l06c-cb:checked ~ .l06c-box .l06c-pk,.l06c-cb:checked ~ .l06c-box .l06c-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l06c-g{animation:none;opacity:1}.l06c-pk{animation:none;display:none}.l06c-h{animation:none;opacity:0}.l06c-btn{display:none}}
+@keyframes l06c-h0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:0}}
+.l06c-h0{animation-name:l06c-h0}
+@keyframes l06c-h1{0%,24.99%{opacity:0}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}
+.l06c-h1{animation-name:l06c-h1}
+@keyframes l06c-h2{0%,49.99%{opacity:0}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:0}}
+.l06c-h2{animation-name:l06c-h2}
+@keyframes l06c-h3{0%,74.99%{opacity:0}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
+.l06c-h3{animation-name:l06c-h3}
+</style>
+<defs>
+<marker id="l06c-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l06c-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l06c-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<path class="l06c-edge" d="M380,106 L380,135 L141,135 L141,161" marker-end="url(#l06c-m-front)"/>
+<text class="l06c-dimL" x="148" y="151">another domain</text>
+<path class="l06c-edge" d="M380,106 L380,135 L370,135 L370,161" marker-end="url(#l06c-m-front)"/>
+<text class="l06c-dimL" x="377" y="151">a subdomain</text>
+<path class="l06c-edge" d="M370,229 L370,258 L288,258 L288,301" marker-end="url(#l06c-m-front)"/>
+<text class="l06c-dimL" x="295" y="291">no (default)</text>
+<path class="l06c-edge" d="M370,229 L370,258 L448,258 L448,301" marker-end="url(#l06c-m-front)"/>
+<text class="l06c-dimL" x="456" y="291">yes</text>
+<path class="l06c-edge" d="M380,106 L380,135 L609,135 L609,161" marker-end="url(#l06c-m-front)"/>
+<text class="l06c-dimL" x="616" y="151">a related origin</text>
+<rect class="l06c-note-good" x="80" y="164" width="121" height="65" rx="8"/><text class="l06c-nt" x="141" y="185">Client scoping</text><text class="l06c-nt" x="141" y="202">by RP ID</text><text class="l06c-nt" x="141" y="219">stops it</text>
+<rect class="l06c-note-good" x="218" y="304" width="141" height="65" rx="8"/><text class="l06c-nt" x="288" y="325">Origin check</text><text class="l06c-nt" x="288" y="342">rejects the</text><text class="l06c-nt" x="288" y="359">unexpected origin</text>
+<rect class="l06c-note-bad" x="374" y="304" width="148" height="82" rx="8"/><text class="l06c-nt" x="448" y="325">If untrusted code</text><text class="l06c-nt" x="448" y="342">runs there, it can</text><text class="l06c-nt" x="448" y="359">relay valid</text><text class="l06c-nt" x="448" y="376">assertions</text>
+<rect class="l06c-box" x="306" y="164" width="128" height="65" rx="8"/><text class="l06c-main" x="370" y="185">Does the RP</text><text class="l06c-nt" x="370" y="202">allow subdomain</text><text class="l06c-nt" x="370" y="219">origins?</text>
+<rect class="l06c-note-bad" x="538" y="164" width="141" height="82" rx="8"/><text class="l06c-nt" x="609" y="185">RP ID scoping</text><text class="l06c-nt" x="609" y="202">does not hold;</text><text class="l06c-nt" x="609" y="219">list only origins</text><text class="l06c-nt" x="609" y="236">you control</text>
+<rect class="l06c-box" x="306" y="24" width="148" height="82" rx="8"/><text class="l06c-main" x="380" y="45">A page asks to use</text><text class="l06c-nt" x="380" y="62">a credential for</text><text class="l06c-nt" x="380" y="79">your RP ID: which</text><text class="l06c-nt" x="380" y="96">origin is it on?</text>
+<g class="l06c-h l06c-h0">
+<path class="l06c-hle" d="M380,106 L380,135 L141,135 L141,161" marker-end="url(#l06c-m-front)"/>
+<rect class="l06c-hl" x="306" y="24" width="148" height="82" rx="8"/>
+<rect class="l06c-hl" x="80" y="164" width="121" height="65" rx="8"/>
+</g>
+<g class="l06c-h l06c-h1">
+<path class="l06c-hle" d="M380,106 L380,135 L370,135 L370,161" marker-end="url(#l06c-m-front)"/>
+<path class="l06c-hle" d="M370,229 L370,258 L288,258 L288,301" marker-end="url(#l06c-m-front)"/>
+<rect class="l06c-hl" x="306" y="24" width="148" height="82" rx="8"/>
+<rect class="l06c-hl" x="306" y="164" width="128" height="65" rx="8"/>
+<rect class="l06c-hl" x="218" y="304" width="141" height="65" rx="8"/>
+</g>
+<g class="l06c-h l06c-h2">
+<path class="l06c-hle" d="M380,106 L380,135 L370,135 L370,161" marker-end="url(#l06c-m-front)"/>
+<path class="l06c-hle" d="M370,229 L370,258 L448,258 L448,301" marker-end="url(#l06c-m-front)"/>
+<rect class="l06c-hl" x="306" y="24" width="148" height="82" rx="8"/>
+<rect class="l06c-hl" x="306" y="164" width="128" height="65" rx="8"/>
+<rect class="l06c-hl" x="374" y="304" width="148" height="82" rx="8"/>
+</g>
+<g class="l06c-h l06c-h3">
+<path class="l06c-hle" d="M380,106 L380,135 L609,135 L609,161" marker-end="url(#l06c-m-front)"/>
+<rect class="l06c-hl" x="306" y="24" width="148" height="82" rx="8"/>
+<rect class="l06c-hl" x="538" y="164" width="141" height="82" rx="8"/>
+</g>
+<line class="l06c-front" x1="40" y1="422" x2="70" y2="422"/>
+<text class="l06c-dim" x="78" y="426" style="text-anchor:start">the path being traced</text>
+<rect class="l06c-note-good" x="246" y="414" width="22" height="16" rx="4"/>
+<text class="l06c-dim" x="276" y="426" style="text-anchor:start">stopped</text>
+<rect class="l06c-note-bad" x="354" y="414" width="22" height="16" rx="4"/>
+<text class="l06c-dim" x="384" y="426" style="text-anchor:start">gets through</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:rp-id-scope -->
+
+The tree sorts the attacker's page by where it runs: another domain is stopped by the client's RP ID scoping, a subdomain by the RP's origin validation unless you allow subdomain origins, and a related origin is the opt-in exception. The two leaves marked as getting through are the ones you control.
 
 **Origin validation is a separate check from the RP ID.** An RP ID may be a registrable domain suffix, so sub.example.org may legitimately request RP ID example.org. The RP MUST validate origin and MUST NOT accept unexpected values. By default it SHOULD NOT allow a subdomain origin. The spec's example is user content hosted on usercontent.example.org, which could exercise credentials scoped to example.org and relay valid assertions. If you do allow subdomains, you MUST NOT serve untrusted code on any of them. Related origin requests (section 5.11) are the opt-in exception to RP ID scoping: the RP lists other origins at /.well-known/webauthn so they may use its RP ID, so list only origins you control.
 
@@ -218,6 +286,103 @@ In federation the IdP session and each RP session end independently, so an RP th
 
 **Device Bound Session Credentials (DBSC)** is a W3C Editor's Draft (8 September 2026) whose own introduction calls it a very early drafting. It lets a server verify that a session credential, a private key the browser protects (for example in a TPM), has not been exported from the device. Its stated non-goals: it does not prevent access while an attacker is resident on the device, because the signing capability remains available to programs running as the user, nor an attack if the attacker controls the browser at registration. NIST mentions DBSC as emerging and still requires lifetime limits to be enforced. Google says DBSC is generally available in Chrome on Windows and on by default for Google Workspace users (Google Workspace Updates, 28 May 2026); support in other browsers was not verified. Treat it as a partial control: it aims at cookie reuse on another device, not at an attacker on the device, and it does not replace session lifetime limits.
 
+<!-- diagram:dbsc -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l06e-pause" class="l06e-cb" /><label for="l06e-pause" class="l06e-btn"><span class="l06e-off">Pause animation</span><span class="l06e-on">Play animation</span></label>
+<div class="l06e-box" style="overflow-x:auto">
+<svg class="l06e-flow" viewBox="0 0 760 397" role="img" aria-labelledby="l06e-t l06e-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l06e-t">What Device Bound Session Credentials do and do not cover</title>
+<desc id="l06e-d">One column for DBSC, a W3C Editor's Draft whose own introduction calls it a very early drafting, treated as a partial control. It is aimed at cookie reuse on another device: a server can verify that the session credential, a private key the browser protects, has not been exported from the device. It does not prevent access while an attacker is resident on the device, because the signing capability stays available to programs running as the user. It does not prevent an attack if the attacker controls the browser at registration. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l06e-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l06e-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l06e-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l06e-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l06e-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l06e-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l06e-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-badt{fill:var(--bad-text)}
+.l06e-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-badge{fill:var(--accent)}
+.l06e-b-back{fill:var(--muted)}
+.l06e-b-bad{fill:var(--bad)}
+.l06e-b-good{fill:var(--good)}
+.l06e-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l06e-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l06e-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l06e-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l06e-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
+.l06e-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06e-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06e-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06e-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l06e-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
+.l06e-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
+.l06e-hl{fill:none;stroke:var(--accent);stroke-width:3}
+.l06e-hle{stroke:var(--accent);stroke-width:3;fill:none}
+.l06e-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l06e-pk.l06e-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l06e-pk.l06e-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l06e-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l06e-flow:hover .l06e-g,svg.l06e-flow:hover .l06e-pk{animation-play-state:paused}
+.l06e-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l06e-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l06e-btn:hover{background:var(--hover)}
+.l06e-cb:focus-visible + .l06e-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l06e-cb:checked + .l06e-btn .l06e-off,.l06e-cb:not(:checked) + .l06e-btn .l06e-on{display:none}
+.l06e-cb:checked ~ .l06e-box .l06e-g,.l06e-cb:checked ~ .l06e-box .l06e-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l06e-g{animation:none;opacity:1}.l06e-pk{animation:none;display:none}.l06e-btn{display:none}}
+@keyframes l06e-g0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
+.l06e-g0{animation-name:l06e-g0}
+@keyframes l06e-g1{0%,33.323%{opacity:.45}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
+.l06e-g1{animation-name:l06e-g1}
+@keyframes l06e-g2{0%,66.657%{opacity:.45}66.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l06e-g2{animation-name:l06e-g2}
+</style>
+<defs>
+<marker id="l06e-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l06e-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l06e-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="l06e-box" x="240" y="10" width="502" height="62" rx="10"/><text class="l06e-ttl" x="491" y="36">DBSC, a very early draft</text><text class="l06e-sub" x="491" y="56">treat it as a partial control</text>
+<g class="l06e-g l06e-g0">
+<rect class="l06e-row" x="10" y="86" width="740" height="86" rx="8"/>
+<text class="l06e-ttlL" x="24" y="112">Cookie reuse</text>
+<text class="l06e-subL" x="24" y="130">on another device</text>
+<circle cx="491" cy="108" r="10" style="fill:var(--good)"/><path d="M486.8,108.0 L489.6,111.4 L495.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l06e-nt" x="491" y="134">a server can verify the session key</text>
+<text class="l06e-nt" x="491" y="149">has not been exported from the device</text>
+</g>
+<g class="l06e-g l06e-g1">
+<rect class="l06e-row" x="10" y="180" width="740" height="86" rx="8"/>
+<text class="l06e-ttlL" x="24" y="206">Attacker on the device</text>
+<text class="l06e-subL" x="24" y="224">already resident</text>
+<circle cx="491" cy="202" r="10" style="fill:var(--bad)"/><path d="M487.6,198.6 L494.4,205.4 M494.4,198.6 L487.6,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l06e-nt" x="491" y="228">not prevented: the signing capability</text>
+<text class="l06e-nt" x="491" y="243">stays available to programs running as the user</text>
+</g>
+<g class="l06e-g l06e-g2">
+<rect class="l06e-row" x="10" y="274" width="740" height="71" rx="8"/>
+<text class="l06e-ttlL" x="24" y="300">Attacker controls browser</text>
+<text class="l06e-subL" x="24" y="318">at registration</text>
+<circle cx="491" cy="296" r="10" style="fill:var(--bad)"/><path d="M487.6,292.6 L494.4,299.4 M494.4,292.6 L487.6,299.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l06e-nt" x="491" y="322">not prevented (a stated non-goal)</text>
+</g>
+<circle cx="48" cy="373" r="8" style="fill:var(--good)"/><path d="M44.6,373.0 L46.9,375.7 L51.4,370.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l06e-dim" x="64" y="377" style="text-anchor:start">aimed at</text>
+<circle cx="157" cy="373" r="8" style="fill:var(--bad)"/><path d="M154.3,370.3 L159.7,375.7 M159.7,370.3 L154.3,375.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l06e-dim" x="173" y="377" style="text-anchor:start">not covered</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:dbsc -->
+
+Each row is one threat compared with DBSC: only cookie reuse on another device is what it is aimed at, and the draft leaves the other two open. DBSC also does not replace session lifetime limits, which NIST still requires to be enforced.
+
 ## Attack classes and the four failure modes
 
 - **Relay (AitM) phishing.** OTP and push outputs are relayed; WebAuthn fails twice for the attacker, once because the client scopes credentials by RP ID and once because the RP validates origin. After a successful relay of a weaker factor, the stolen cookie is a bearer credential. (The RP-ID scoping holds unless the phishing origin is on your related-origins list.)
@@ -226,6 +391,138 @@ In federation the IdP session and each RP session end independently, so an RP th
 - **Enrolment race.** NIST requires authentication at the lower of the account's maximum AAL and the new authenticator's AAL, so an account that currently has only AAL1 capability can be bound to an AAL2 authenticator after a password alone. A binding code requested from an already-authenticated endpoint (NIST's binding-across-endpoints method) does not close this: that method only needs the same lower-AAL authentication, and an attacker holding the temporary password is that endpoint. Initial binding is governed by SP 800-63A: outside a single protected session with the proofed user, the CSP SHALL confirm the intended subscriber, for example by return of a continuation code (single use, at least 64 bits, delivered in session or out of band to a mailing address, phone number or email address). Applying that to a workforce account is this lesson's reading, not a quoted rule: bind the first authenticator only on return of a single-use code sent to contact details the hire controls, and send the mandatory notification through an independent channel. The notification makes a rogue enrolment noticeable; it does not prevent one.
 - **Synced passkey in a personal account on a corporate device.** BE equals 1 means the credential copies to an account you do not manage. Record BE and BS and require BE equal to 0 where policy demands device-bound keys, but trust the flag only as far as you trust the authenticator reporting it: with none attestation the statement is empty and nothing signs the registration's authenticator data, and Entra says that without enforced attestation it cannot guarantee any attribute of a passkey, including whether it is synced or device-bound.
 - **Fatigue.** Rate-limit pushes (NIST SHOULD) and use number matching, then move high-value apps to phishing-resistant methods.
+
+<!-- diagram:enrolment-race -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l06d-pause" class="l06d-cb" /><label for="l06d-pause" class="l06d-btn"><span class="l06d-off">Pause animation</span><span class="l06d-on">Play animation</span></label>
+<div class="l06d-box" style="overflow-x:auto">
+<svg class="l06d-flow" viewBox="0 0 760 839" role="img" aria-labelledby="l06d-t l06d-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l06d-t">The enrolment race: binding the first authenticator</title>
+<desc id="l06d-d">Three parties: the new hire, an attacker who holds the temporary password, and the identity provider. NIST requires authentication at the lower of the account's maximum AAL and the new authenticator's AAL, so an account that currently has only AAL1 capability can be bound to an AAL2 authenticator after a password alone. The attacker enrols with the temporary password. A binding code sent to an already-authenticated endpoint does not close this, because the attacker holding the temporary password is that endpoint. NIST makes a notification mandatory; this lesson's reading of SP 800-63A is to send it through an independent channel, which makes a rogue enrolment noticeable but does not prevent one, and to bind the first authenticator only on return of a single-use code sent to contact details the hire controls. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l06d-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l06d-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l06d-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l06d-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l06d-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l06d-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l06d-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-badt{fill:var(--bad-text)}
+.l06d-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-badge{fill:var(--accent)}
+.l06d-b-back{fill:var(--muted)}
+.l06d-b-bad{fill:var(--bad)}
+.l06d-b-good{fill:var(--good)}
+.l06d-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l06d-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l06d-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l06d-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l06d-pk.l06d-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l06d-pk.l06d-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l06d-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l06d-flow:hover .l06d-g,svg.l06d-flow:hover .l06d-pk{animation-play-state:paused}
+.l06d-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l06d-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l06d-btn:hover{background:var(--hover)}
+.l06d-cb:focus-visible + .l06d-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l06d-cb:checked + .l06d-btn .l06d-off,.l06d-cb:not(:checked) + .l06d-btn .l06d-on{display:none}
+.l06d-cb:checked ~ .l06d-box .l06d-g,.l06d-cb:checked ~ .l06d-box .l06d-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l06d-g{animation:none;opacity:1}.l06d-pk{animation:none;display:none}.l06d-btn{display:none}}
+@keyframes l06d-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.45}}
+@keyframes l06d-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}14.286%{opacity:1;transform:translateX(236px)}14.296%,100%{opacity:0;transform:translateX(236px)}}
+.l06d-g0{animation-name:l06d-g0}.l06d-p0{animation-name:l06d-p0}
+@keyframes l06d-g1{0%,14.276%{opacity:.45}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.45}}
+.l06d-g1{animation-name:l06d-g1}
+@keyframes l06d-g2{0%,28.561%{opacity:.45}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.45}}
+@keyframes l06d-p2{0%,28.561%{opacity:0;transform:translateX(0)}28.571%{opacity:1;transform:translateX(0)}42.857%{opacity:1;transform:translateX(236px)}42.867%,100%{opacity:0;transform:translateX(236px)}}
+.l06d-g2{animation-name:l06d-g2}.l06d-p2{animation-name:l06d-p2}
+@keyframes l06d-g3{0%,42.847%{opacity:.45}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.45}}
+.l06d-g3{animation-name:l06d-g3}
+@keyframes l06d-g4{0%,57.133%{opacity:.45}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.45}}
+@keyframes l06d-p4{0%,57.133%{opacity:0;transform:translateX(0)}57.143%{opacity:1;transform:translateX(0)}71.429%{opacity:1;transform:translateX(-506px)}71.439%,100%{opacity:0;transform:translateX(-506px)}}
+.l06d-g4{animation-name:l06d-g4}.l06d-p4{animation-name:l06d-p4}
+@keyframes l06d-g5{0%,71.419%{opacity:.45}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.45}}
+.l06d-g5{animation-name:l06d-g5}
+@keyframes l06d-g6{0%,85.704%{opacity:.45}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l06d-g6{animation-name:l06d-g6}
+</style>
+<defs>
+<marker id="l06d-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l06d-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l06d-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<line class="l06d-life" x1="110" y1="72" x2="110" y2="787"/>
+<line class="l06d-life" x1="380" y1="72" x2="380" y2="787"/>
+<line class="l06d-life" x1="650" y1="72" x2="650" y2="787"/>
+<rect class="l06d-box" x="20" y="10" width="180" height="62" rx="10"/><text class="l06d-ttl" x="110" y="36">New hire</text><text class="l06d-sub" x="110" y="56">the real user</text>
+<rect class="l06d-box" x="290" y="10" width="180" height="62" rx="10"/><text class="l06d-ttl" x="380" y="36">Attacker</text><text class="l06d-sub" x="380" y="56">holds the temporary password</text>
+<rect class="l06d-hot" x="560" y="10" width="180" height="62" rx="10"/><text class="l06d-ttl" x="650" y="36">IdP</text><text class="l06d-sub" x="650" y="56">binds the authenticator</text>
+<g class="l06d-g l06d-g0">
+<text class="l06d-main l06d-badt" x="515" y="108">authenticates with the</text>
+<text class="l06d-dim" x="515" y="124">temporary password alone</text>
+<line class="l06d-bad" x1="394" y1="138" x2="636" y2="138" marker-end="url(#l06d-m-bad)"/>
+<circle class="l06d-badge l06d-b-bad" cx="380" cy="138" r="12"/><text class="l06d-bt" x="380" y="142.5">1</text>
+</g>
+<g class="l06d-g l06d-g1">
+<rect class="l06d-note-bad" x="509" y="172" width="241" height="116" rx="8"/>
+<text class="l06d-nt" x="630" y="193">lower of the account's maximum</text>
+<text class="l06d-nt" x="630" y="210">AAL and the new authenticator's:</text>
+<text class="l06d-nt" x="630" y="227">an account with only AAL1</text>
+<text class="l06d-nt" x="630" y="244">capability can bind an AAL2</text>
+<text class="l06d-nt" x="630" y="261">authenticator after a password</text>
+<text class="l06d-nt" x="630" y="278">alone</text>
+</g>
+<g class="l06d-g l06d-g2">
+<text class="l06d-main l06d-badt" x="515" y="322">enrols its own</text>
+<text class="l06d-dim" x="515" y="338">authenticator</text>
+<line class="l06d-bad" x1="394" y1="352" x2="636" y2="352" marker-end="url(#l06d-m-bad)"/>
+<circle class="l06d-badge l06d-b-bad" cx="380" cy="352" r="12"/><text class="l06d-bt" x="380" y="356.5">2</text>
+</g>
+<g class="l06d-g l06d-g3">
+<rect class="l06d-note-bad" x="263" y="386" width="234" height="82" rx="8"/>
+<text class="l06d-nt" x="380" y="407">a binding code to an already</text>
+<text class="l06d-nt" x="380" y="424">authenticated endpoint does not</text>
+<text class="l06d-nt" x="380" y="441">close this: the attacker is</text>
+<text class="l06d-nt" x="380" y="458">that endpoint</text>
+</g>
+<g class="l06d-g l06d-g4">
+<text class="l06d-main" x="380" y="502">notification</text>
+<text class="l06d-dim" x="380" y="518">independent channel (lesson's reading)</text>
+<line class="l06d-front" x1="636" y1="532" x2="124" y2="532" marker-end="url(#l06d-m-front)"/>
+<circle class="l06d-badge l06d-b-front" cx="650" cy="532" r="12"/><text class="l06d-bt" x="650" y="536.5">3</text>
+</g>
+<g class="l06d-g l06d-g5">
+<rect class="l06d-note" x="20" y="566" width="181" height="65" rx="8"/>
+<text class="l06d-nt" x="110" y="587">makes a rogue enrolment</text>
+<text class="l06d-nt" x="110" y="604">noticeable; does not</text>
+<text class="l06d-nt" x="110" y="621">prevent one</text>
+</g>
+<g class="l06d-g l06d-g6">
+<rect class="l06d-note-good" x="509" y="659" width="241" height="82" rx="8"/>
+<text class="l06d-nt" x="630" y="680">this lesson's reading: bind only</text>
+<text class="l06d-nt" x="630" y="697">on return of a single-use code</text>
+<text class="l06d-nt" x="630" y="714">sent to contact details the</text>
+<text class="l06d-nt" x="630" y="731">hire controls</text>
+</g>
+<circle class="l06d-pk l06d-p0 l06d-pkbad" cx="400" cy="138" r="5.5"/>
+<circle class="l06d-pk l06d-p2 l06d-pkbad" cx="400" cy="352" r="5.5"/>
+<circle class="l06d-pk l06d-p4" cx="630" cy="532" r="5.5"/>
+<line class="l06d-front" x1="40" y1="815" x2="70" y2="815"/>
+<text class="l06d-dim" x="78" y="819" style="text-anchor:start">notification</text>
+<line class="l06d-bad" x1="188" y1="815" x2="218" y2="815"/>
+<text class="l06d-dim" x="226" y="819" style="text-anchor:start">the attacker's step</text>
+<rect class="l06d-note-good" x="381" y="807" width="22" height="16" rx="4"/>
+<text class="l06d-dim" x="411" y="819" style="text-anchor:start">control</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:enrolment-race -->
+
+This diagram expands the enrolment race bullet above. Badges 1 to 3 number its own hops; the last note and the independent channel on hop 3 are this lesson's reading of SP 800-63A, not a quoted rule.
 
 **Where sources disagree or leave it open.**
 

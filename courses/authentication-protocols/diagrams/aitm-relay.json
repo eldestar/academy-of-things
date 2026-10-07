@@ -1,0 +1,20 @@
+{
+  "id": "aitm-relay",
+  "prefix": "l06a",
+  "title": "Why a relay beats manual-entry factors",
+  "desc": "Three parties: the user, an impostor verifier, and the real verifier. The user types a one-time code into the impostor, which relays the output to the real verifier. The real site returns a session cookie that the relay sees. A note says manual-entry authenticators such as OTP and out-of-band codes are never phishing-resistant, because an impostor can relay the output to the real verifier. A final note says that with a passkey, a page on another domain can neither request your RP ID nor get a signature for it.",
+  "duration": 18,
+  "legend": {"front": "the user's step", "bad": "relay (AitM)", "good": "phishing-resistant"},
+  "lanes": [
+    {"id": "user", "title": "User", "sub": "types the code"},
+    {"id": "imp", "title": "Impostor verifier", "sub": "the relay page"},
+    {"id": "real", "title": "Real verifier", "sub": "the real site"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "user", "to": "imp", "label": ["user types the OTP", "manual entry"], "badge": "1"},
+    {"type": "arrow", "from": "imp", "to": "real", "label": ["relays the output", "to the real verifier"], "tone": "bad", "badge": "2"},
+    {"type": "arrow", "from": "real", "to": "imp", "label": ["session cookie", "the relay sees it"], "tone": "bad", "badge": "3"},
+    {"type": "note", "under": "imp", "lines": ["OTP and out-of-band codes are", "never phishing-resistant: an", "impostor can relay the output"], "tone": "bad"},
+    {"type": "note", "under": "imp", "lines": ["passkey: a page on another domain", "can neither request your RP ID", "nor get a signature for it"], "tone": "good"}
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "saml-metadata",
+  "prefix": "l02b",
+  "title": "What each side's metadata lists, and where those values show up",
+  "desc": "Two parties: the service provider and the identity provider. The IdP's metadata, uploaded or fetched from a URL, carries its entityID, its SingleSignOnService locations and its signing KeyDescriptor. At the SP the entityID is the Issuer it must recognise and the signing key is a key the signature must be valid with. A manual upload never refreshes; a metadata URL can, and validUntil or cacheDuration says when to refetch. The SP's metadata carries its entityID and its AssertionConsumerService, the ACS URL. At the IdP the SP entity ID feeds the Audience URI field and the ACS URL is the Single sign-on URL, from which Recipient and Destination default.",
+  "duration": 18,
+  "legend": {"front": "metadata moving", "good": "where it ends up"},
+  "lanes": [
+    {"id": "sp", "title": "Service provider", "sub": "the app (SP)", "hot": true},
+    {"id": "idp", "title": "Identity provider", "sub": "Okta, Entra ID (IdP)"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "idp", "to": "sp", "label": ["IdP metadata (an upload, or fetched from a URL)", "entityID, SingleSignOnService, KeyDescriptor use=\"signing\""]},
+    {"type": "note", "under": "sp", "lines": ["Issuer: it is the IdP I hold metadata for", "Signature: valid with a key from this metadata"], "tone": "good"},
+    {"type": "note", "under": "sp", "lines": ["A manual upload never refreshes; a URL can", "validUntil or cacheDuration: when to refetch"]},
+    {"type": "arrow", "from": "sp", "to": "idp", "label": ["SP metadata", "entityID, AssertionConsumerService (the ACS URL)"]},
+    {"type": "note", "under": "idp", "lines": ["Audience URI (SP Entity ID) feeds Audience", "Single sign-on URL is the ACS URL", "Recipient and Destination default to it"], "tone": "good"}
+  ]
+}

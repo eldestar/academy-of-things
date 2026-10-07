@@ -1,0 +1,34 @@
+{
+  "kind": "matrix",
+  "id": "step5-checks",
+  "prefix": "l01c",
+  "title": "What the RP validates in step 5, SAML against OpenID Connect",
+  "desc": "A table with one row per question and one column per protocol. Signature: a SAML assertion must be signed with the POST binding; an OpenID Connect ID token needs its signature checked, except that TLS may stand in for a token received directly from the token endpoint. Right issuer: SAML relies on the expected IdP; OpenID Connect needs an exact iss match. Meant for me: SAML checks AudienceRestriction and that Recipient equals the ACS URL; OpenID Connect needs aud to contain your client_id and rejects untrusted extra audiences. Still valid: SAML checks that the bearer NotOnOrAfter has not passed; OpenID Connect checks exp, with small clock-skew leeway. Answers my request: SAML checks InResponseTo equals the request's ID unless the response is unsolicited; OpenID Connect must check the nonce if one was sent.",
+  "duration": 20,
+  "columns": [
+    {"title": "SAML", "sub": "assertion"},
+    {"title": "OpenID Connect", "sub": "ID token"}
+  ],
+  "rows": [
+    {"title": "Signature", "cells": [
+      {"text": ["Assertion MUST be signed", "(POST binding)"]},
+      {"text": ["Signature checked; TLS may", "stand in for a token from", "the token endpoint"]}
+    ]},
+    {"title": "Right issuer", "cells": [
+      {"text": ["The expected IdP (NIST)"]},
+      {"text": ["iss: exact match"]}
+    ]},
+    {"title": "Meant for me", "cells": [
+      {"text": ["AudienceRestriction;", "Recipient = ACS URL"]},
+      {"text": ["aud contains your client_id;", "reject untrusted extra", "audiences"]}
+    ]},
+    {"title": "Still valid", "cells": [
+      {"text": ["Bearer NotOnOrAfter", "has not passed"]},
+      {"text": ["exp (small clock-skew", "leeway allowed)"]}
+    ]},
+    {"title": "Answers my request", "cells": [
+      {"text": ["InResponseTo = request ID,", "unless unsolicited"]},
+      {"text": ["nonce: MUST check it if", "you sent one"]}
+    ]}
+  ]
+}

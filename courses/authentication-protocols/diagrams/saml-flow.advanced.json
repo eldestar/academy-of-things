@@ -1,0 +1,25 @@
+{
+  "id": "saml-flow",
+  "prefix": "sm",
+  "title": "Inside the SP when the Response arrives",
+  "desc": "Four parts: the browser, the service provider's signature verifier, its assertion logic, and its ID cache. The browser posts the SAMLResponse to the ACS URL; if the message is signed, Destination must be present and equal that URL. The verifier checks the signature; the author's rule, not the spec's, is to use a key from pinned IdP metadata and never one from the message. Verification shows that some element matches a signed digest, not that the element the logic reads next is that element. A wrapping gap appears when the assertion logic then looks up the Assertion with a fresh whole-document query instead of reading the element the verified Reference points to. The control, a design recommendation and not a spec rule, is to read every security-relevant value from the verified node, use one parser, and reject a duplicate ID or an unexpected Assertion count. The logic then keeps the assertion ID in the cache. The profile requires keeping used IDs for as long as NotOnOrAfter would keep the assertion valid; the author's reasoning adds any skew allowance and one cache shared by every node. The service provider then may start its session by any mechanism it chooses. A final note says that stored AuthnRequest IDs cover only SP-initiated Responses, so the ID cache is still required.",
+  "duration": 22,
+  "legend": {"front": "the Response in transit", "bad": "the wrapping gap", "good": "controls (recommendations, not spec rules)"},
+  "lanes": [
+    {"id": "br", "title": "Browser", "sub": "or an attacker's replay"},
+    {"id": "sig", "title": "Signature check", "sub": "XML-DSig verifier", "hot": true},
+    {"id": "app", "title": "Assertion logic", "sub": "reads NameID, Audience"},
+    {"id": "ca", "title": "ID cache", "sub": "keeps used IDs"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "br", "to": "sig", "label": ["POST SAMLResponse", "if signed: Destination = ACS URL"], "badge": "1"},
+    {"type": "note", "under": "sig", "lines": ["Author's rule, not the spec's:", "verify with a key from pinned", "IdP metadata, not the message"], "tone": "good"},
+    {"type": "arrow", "from": "sig", "to": "app", "label": ["Verified: some element", "matches a signed digest"], "badge": "2"},
+    {"type": "note", "under": "app", "lines": ["Gap: a fresh whole-document", "lookup can read a forged,", "unsigned Assertion (XSW)"], "tone": "bad"},
+    {"type": "note", "under": "app", "lines": ["Control: read values from the", "verified node; one parser;", "reject duplicate ID or extra Assertion"], "tone": "good"},
+    {"type": "arrow", "from": "app", "to": "ca", "label": ["Keep the used", "assertion ID"], "badge": "3"},
+    {"type": "note", "under": "ca", "lines": ["Keep ID while NotOnOrAfter would", "keep it valid; my reasoning: also", "the skew allowance, one shared cache"], "tone": "good"},
+    {"type": "arrow", "from": "app", "to": "br", "label": ["SP may start its session", "any mechanism it chooses"], "badge": "4"},
+    {"type": "note", "under": "ca", "lines": ["Stored AuthnRequest IDs cover only", "SP-initiated; the ID cache is", "still required"]}
+  ]
+}

@@ -1,23 +1,23 @@
 {
   "id": "trust-signin",
   "prefix": "tr",
-  "title": "A first federated sign-in, end to end",
-  "desc": "Three parties: the app, the user's browser, and the identity provider. Step 1: the user opens the app through the browser and has no session. Step 2: the app redirects the browser to the identity provider with a sign-in request. Step 3: the user authenticates at the identity provider. Step 4: the identity provider returns a signed proof for the app, a SAML assertion or an OpenID Connect code that the app swaps for an ID token, and the browser delivers it to the app. Step 5: the app checks the proof's signature, issuer, audience and expiry, then sets its own session cookie in the browser.",
-  "duration": 15,
-  "legend": {"front": "message through the user's browser"},
+  "title": "The first sign-in with SAML and OpenID Connect names",
+  "desc": "Three parties: the app (SP or RP), the user's browser, and the identity provider (IdP or OP). Step 1: the user reaches the app with no session. Step 2: the app redirects the browser to the IdP, with a SAML AuthnRequest or an OpenID Connect request to the authorization endpoint. Step 3: the IdP may reuse its own session, and the app can force a new login with ForceAuthn in SAML or max_age in OpenID Connect. Step 4: the IdP returns the proof through the browser. In SAML it is a Response holding the assertion, POSTed to the ACS. In OpenID Connect it is a code; the app swaps it for the ID token in a direct call. Step 5: the app validates the proof. SAML checks the signature, AudienceRestriction, Recipient, NotOnOrAfter and InResponseTo, which is absent if the response is unsolicited. OpenID Connect checks iss, aud, signature and exp. The app then creates its own session, most often a cookie.",
+  "duration": 18,
+  "legend": {"front": "message through the user's browser", "good": "what the app validates"},
   "lanes": [
-    {"id": "app", "title": "App (SP / RP)", "sub": "trusts the IdP's signing keys"},
-    {"id": "br", "title": "Browser", "sub": "carries every message"},
+    {"id": "app", "title": "App (SP / RP)", "sub": "consumes the result"},
+    {"id": "br", "title": "Browser", "sub": "carries the messages shown"},
     {"id": "idp", "title": "IdP (OP)", "sub": "authenticates the user", "hot": true}
   ],
   "steps": [
-    {"type": "arrow", "from": "br", "to": "app", "label": ["open the app", "no session cookie yet"], "badge": "1"},
-    {"type": "arrow", "from": "app", "to": "br", "label": ["redirect to the IdP", "with a sign-in request"], "badge": "2"},
-    {"type": "arrow", "from": "br", "to": "idp", "label": ["browser follows the redirect"], "with_previous": true},
-    {"type": "note", "under": "idp", "lines": ["user signs in at the IdP", "password, MFA, policy checks"], "badge": "3"},
-    {"type": "arrow", "from": "idp", "to": "br", "label": ["signed proof for the app", "SAML: the assertion itself", "OIDC: a code to swap for the ID token"], "badge": "4"},
-    {"type": "arrow", "from": "br", "to": "app", "label": ["browser delivers it to the app"], "with_previous": true},
-    {"type": "note", "under": "app", "lines": ["checks signature, issuer,", "audience and expiry"], "badge": "5"},
-    {"type": "arrow", "from": "app", "to": "br", "label": ["sets its own session cookie"], "with_previous": true}
+    {"type": "arrow", "from": "br", "to": "app", "label": ["user reaches the app", "no session"], "badge": "1"},
+    {"type": "arrow", "from": "app", "to": "br", "label": ["redirect to the IdP:", "SAML AuthnRequest, or", "OIDC authorization endpoint"], "badge": "2"},
+    {"type": "arrow", "from": "br", "to": "idp", "label": ["browser is sent on to the IdP"], "with_previous": true},
+    {"type": "note", "under": "idp", "lines": ["may reuse its own session;", "app can force a login:", "SAML ForceAuthn, OIDC max_age"], "badge": "3"},
+    {"type": "arrow", "from": "idp", "to": "br", "label": ["proof for the app", "SAML: Response with the assertion", "OIDC: a code"], "badge": "4"},
+    {"type": "arrow", "from": "br", "to": "app", "label": ["SAML: POSTed to the ACS", "OIDC: the code; the app swaps it", "for the ID token in a direct call"], "with_previous": true},
+    {"type": "note", "under": "app", "tone": "good", "lines": ["SAML: signature, AudienceRestriction,", "Recipient, NotOnOrAfter,", "InResponseTo (absent if unsolicited)", "OIDC: iss, aud, signature, exp"], "badge": "5"},
+    {"type": "arrow", "from": "app", "to": "br", "label": ["app creates its own session,", "most often a cookie"], "with_previous": true}
   ]
 }

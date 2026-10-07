@@ -1,0 +1,96 @@
+{
+  "id": "oidc-code-flow",
+  "prefix": "oi",
+  "title": "How a sign-in with OpenID Connect works, in five steps",
+  "desc": "Two parties: ExampleCRM, the relying party, and the OpenID Provider such as Okta. Step 1: ExampleCRM sends Priya's browser to the OP with scope openid, a nonce and a state. Priya signs in at the OP, including any MFA. Step 2: the OP sends the browser back to ExampleCRM with a code and the state. Step 3: ExampleCRM, server to server, trades the code at the token endpoint for the ID token and the access token. Step 4: ExampleCRM checks the ID token with the five checks, and only then logs Priya in. Step 5, optional: ExampleCRM calls UserInfo with the access token, and the sub in the answer must match the ID token's sub or the answer is discarded.",
+  "duration": 22,
+  "legend": {
+    "front": "through Priya's browser",
+    "back": "server to server",
+    "good": "the check the app must do"
+  },
+  "lanes": [
+    {
+      "id": "rp",
+      "title": "ExampleCRM",
+      "sub": "the relying party (RP)",
+      "hot": true
+    },
+    {
+      "id": "op",
+      "title": "Okta",
+      "sub": "the OpenID Provider (OP)"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "send Priya's browser to the OP",
+        "scope=openid, a nonce, a state"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "note",
+      "under": "op",
+      "lines": [
+        "Priya signs in at the OP",
+        "(including any MFA)"
+      ]
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "send the browser back to ExampleCRM",
+        "a code and the state"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "rp",
+      "to": "op",
+      "label": [
+        "trade the code at the token endpoint",
+        "server to server"
+      ],
+      "tone": "back",
+      "badge": "3"
+    },
+    {
+      "type": "arrow",
+      "from": "op",
+      "to": "rp",
+      "label": [
+        "the ID token and the access token"
+      ],
+      "tone": "back",
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "rp",
+      "lines": [
+        "check the ID token (the five checks)",
+        "only then log Priya in"
+      ],
+      "tone": "good",
+      "badge": "4"
+    },
+    {
+      "type": "note",
+      "under": "rp",
+      "lines": [
+        "optional: call UserInfo with the access token;",
+        "its sub must match the ID token's sub,",
+        "else the answer is discarded"
+      ],
+      "badge": "5"
+    }
+  ]
+}

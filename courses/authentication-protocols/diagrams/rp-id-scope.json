@@ -1,0 +1,25 @@
+{
+  "kind": "anatomy",
+  "id": "rp-id-scope",
+  "prefix": "l06c",
+  "title": "Which RP IDs a page can use",
+  "desc": "Nested domains for a page at the origin https://login.example.com. The outermost box is com, which is not a valid RP ID. Inside it, example.com is a valid RP ID. Inside that, login.example.com, the page's own domain, is a valid RP ID. Inside that, m.login.example.com is not a valid RP ID. The valid RP IDs are login.example.com and example.com, not m.login.example.com and not com.",
+  "duration": 14,
+  "legend": {"good": "valid RP ID", "bad": "not valid"},
+  "root": {
+    "title": "com",
+    "check": ["Not a valid RP ID"], "tone": "bad",
+    "children": [{
+      "title": "example.com", "sub": "a registrable domain suffix of the page's domain",
+      "check": ["Valid RP ID"], "tone": "good",
+      "children": [{
+        "title": "login.example.com", "sub": "the page's own domain (origin https://login.example.com)",
+        "check": ["Valid RP ID"], "tone": "good",
+        "children": [{
+          "title": "m.login.example.com",
+          "check": ["Not a valid RP ID"], "tone": "bad"
+        }]
+      }]
+    }]
+  }
+}

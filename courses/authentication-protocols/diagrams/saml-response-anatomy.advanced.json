@@ -1,0 +1,29 @@
+{
+  "kind": "anatomy",
+  "id": "saml-response-anatomy",
+  "prefix": "smr",
+  "title": "What the SP must check, part by part (profile and signature profile)",
+  "desc": "A nested diagram of a Response and its Assertion, with callouts for what the profile requires. On the Response, if the message is signed Destination must be present and must equal the receiving URL; InResponseTo must equal the request's ID, or be absent when the response is unsolicited. The Assertion must be signed with the POST binding, and with POST the SP must not accept a bearer assertion twice, keeping used IDs for as long as NotOnOrAfter would keep it valid. The signature is enveloped with a single same-document Reference of the form URI equals hash ID, and should use exclusive canonicalization and not contain transforms beyond that and enveloped-signature. The bearer SubjectConfirmationData Recipient must equal the ACS URL the message reached and its NotOnOrAfter must not have passed, subject to allowable clock skew. The Conditions AudienceRestriction is one respect in which the assertion must be valid; the IdP must include it. A SessionNotOnOrAfter in the AuthnStatement means the SP should discard its security context at that time.",
+  "duration": 26,
+  "legend": {"plain": "SHOULD", "good": "obligation"},
+  "root": {
+    "title": "Response", "sub": "Destination, InResponseTo", "tone": "good",
+    "check": ["If signed: Destination MUST be present", "and MUST equal the receiving URL"],
+    "children": [
+      {"title": "InResponseTo", "sub": "the request's ID", "tone": "good",
+       "check": ["Equals the request's ID; MUST be", "absent if the response is unsolicited"]},
+      {"title": "Assertion", "sub": "with POST: MUST be signed", "tone": "good",
+       "check": ["POST: MUST NOT accept a bearer", "assertion twice; keep used IDs while", "NotOnOrAfter would keep it valid"],
+       "children": [
+        {"title": "Signature", "sub": "enveloped, one Reference", "tone": "good",
+         "check": ["Verify it. Same-document Reference", "URI=\"#ID\"; SHOULD use exclusive c14n,", "SHOULD NOT add transforms beyond", "that and enveloped-signature"]},
+        {"title": "SubjectConfirmationData", "sub": "bearer: Recipient, NotOnOrAfter", "tone": "good",
+         "check": ["Recipient = the ACS URL it reached;", "NotOnOrAfter not passed, subject to", "allowable clock skew"]},
+        {"title": "Conditions", "sub": "AudienceRestriction", "tone": "good",
+         "check": ["Assertion must be valid in other", "respects: the IdP MUST include it,", "the SP checks it names the SP"]},
+        {"title": "AuthnStatement", "sub": "SessionNotOnOrAfter",
+         "check": ["If present, the SP SHOULD discard", "its security context at that time"]}
+      ]}
+    ]
+  }
+}

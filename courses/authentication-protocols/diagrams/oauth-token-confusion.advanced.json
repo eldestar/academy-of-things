@@ -1,0 +1,35 @@
+{
+  "kind": "matrix",
+  "id": "oauth-token-confusion",
+  "prefix": "l03f",
+  "title": "Which controls check the token type",
+  "desc": "A matrix of five controls against two questions: what the control tells the resource server, and whether it checks the token type. The typ value at+jwt checks the type, because ID tokens must not be accepted as access tokens. A distinct aud for access tokens issued for distinct resources checks it too. Introspection active: true only means the AS issued the token, has not revoked it and it is within its validity window. DPoP binds a token to a key, which says who may present it, not what kind of token it is. Separate signing keys for ID tokens and access tokens neither contain a leaked key nor make the RS reject an ID-token signature.",
+  "duration": 20,
+  "legend": {"good": "checks the token type", "bad": "does not check the type"},
+  "columns": [
+    {"title": "What it tells the RS"},
+    {"title": "Checks the token type?"}
+  ],
+  "rows": [
+    {"title": "typ: at+jwt", "cells": [
+      {"text": ["ID tokens must not be accepted as", "access tokens, hence typ"]},
+      {"mark": "good", "text": ["Yes: checked by typ"]}
+    ]},
+    {"title": "aud", "cells": [
+      {"text": ["The AS must use a distinct aud for", "access tokens for distinct resources"]},
+      {"mark": "good", "text": ["Yes: checked by aud"]}
+    ]},
+    {"title": "Introspection active: true", "cells": [
+      {"text": ["Only that the AS issued the token,", "has not revoked it and it is within", "its validity window"]},
+      {"mark": "bad", "text": ["No"]}
+    ]},
+    {"title": "DPoP key binding", "cells": [
+      {"text": ["Who may present the token,", "not what kind of token it is"]},
+      {"mark": "bad", "text": ["No"]}
+    ]},
+    {"title": "Separate signing keys", "cells": [
+      {"text": ["Neither contains a leaked key nor", "makes the RS reject an ID-token", "signature"]},
+      {"mark": "bad", "text": ["No"]}
+    ]}
+  ]
+}

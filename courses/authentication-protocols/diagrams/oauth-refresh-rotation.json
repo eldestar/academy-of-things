@@ -1,0 +1,99 @@
+{
+  "id": "oauth-refresh-rotation",
+  "prefix": "l03b",
+  "title": "Refresh token rotation (RFC 9700) and reuse detection",
+  "desc": "Three parties: the client, the authorization server and whoever presents an old refresh token, who may be a thief or the real client. This is RFC 9700's rotation. Step 1: the client sends its refresh token with grant_type=refresh_token and the AS returns a new access token and a new refresh token. Step 2: the AS invalidates the old refresh token and remembers the relationship. Step 3: the old refresh token is presented again. Step 4: the AS cannot tell the thief from the real client, so it revokes the active token. Step 5: the client must obtain a new grant. In Okta the log event for reuse is app.oauth2.as.token.detect_reuse for a custom authorization server.",
+  "duration": 20,
+  "legend": {
+    "front": "refresh request or response",
+    "bad": "the old token reused",
+    "good": "where to look in the logs"
+  },
+  "lanes": [
+    {
+      "id": "client",
+      "title": "Client",
+      "sub": "holds a refresh token"
+    },
+    {
+      "id": "as",
+      "title": "Authorization server",
+      "sub": "remembers the relationship",
+      "hot": true
+    },
+    {
+      "id": "old",
+      "title": "Old token holder",
+      "sub": "thief or the real client"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "grant_type=refresh_token",
+        "sends the current refresh token"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "client",
+      "label": [
+        "a new access token and",
+        "a new refresh token"
+      ],
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "the old refresh token is invalidated;",
+        "the AS remembers the relationship"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "old",
+      "to": "as",
+      "label": [
+        "presents the old",
+        "refresh token again"
+      ],
+      "tone": "bad",
+      "badge": "3"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "cannot tell the thief from the real",
+        "client: revokes the active token"
+      ],
+      "tone": "bad",
+      "badge": "4"
+    },
+    {
+      "type": "note",
+      "under": "client",
+      "lines": [
+        "must obtain a new grant"
+      ],
+      "badge": "5"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "Okta log event on reuse (custom AS):",
+        "app.oauth2.as.token.detect_reuse"
+      ],
+      "tone": "good"
+    }
+  ]
+}

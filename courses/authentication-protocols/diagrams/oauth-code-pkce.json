@@ -2,7 +2,7 @@
   "id": "oauth-code-pkce",
   "prefix": "oa",
   "title": "OAuth 2.0 authorization code flow with PKCE",
-  "desc": "Three parties: the client app, the authorization server and the resource server. Step 1: the client redirects the user's browser to the authorization server with a code_challenge. Step 2: the user signs in and consents at the authorization server. Step 3: the authorization server redirects the browser back to the client's redirect URI with a code and the state value. Step 4: the client checks that the state matches the stored value, or relies on PKCE for CSRF protection where the authorization server is known to support it. Step 5: as a direct request rather than a browser redirect, the client posts the code and the code_verifier (and the redirect_uri if it was sent at step 1) to the token endpoint and receives an access token. A code stolen at step 3 is useless without the code_verifier. Step 6: the client calls the resource server with the access token. Step 7: the resource server checks that the token is genuine, meant for it, within its scope and not expired before serving the request.",
+  "desc": "Three parties: the client app, the authorization server (AS) and the resource server (RS). Step 1: the client redirects the user's browser to the AS with client_id, redirect_uri, scope, state and a code_challenge using method S256. Step 2: the AS authenticates the user, obtains consent and binds the challenge to the code. Step 3: the AS redirects the browser to the redirect_uri with a code and state. Step 4: the client checks the state against the stored one, or relies on PKCE for CSRF protection if it knows the AS supports PKCE. Step 5: as a direct request rather than a browser redirect, the client posts the code, the code_verifier, the client_id (or client authentication) and the redirect_uri if it was sent at step 1 to the token endpoint, and receives an access token. If the recomputed challenge does not match, the AS returns invalid_grant. Step 6: the client calls the RS with Authorization: Bearer and the token. Step 7: the RS validates the token, by JWT checks or by introspection.",
   "duration": 22,
   "legend": {
     "front": "through the user's browser",
@@ -13,7 +13,7 @@
     {
       "id": "client",
       "title": "Client app",
-      "sub": "keeps the code_verifier"
+      "sub": "the app asking for access"
     },
     {
       "id": "as",
@@ -33,7 +33,7 @@
       "from": "client",
       "to": "as",
       "label": [
-        "redirect to /authorize",
+        "redirect to the AS",
         "client_id, redirect_uri, scope, state",
         "code_challenge, method S256"
       ],
@@ -43,8 +43,8 @@
       "type": "note",
       "under": "as",
       "lines": [
-        "user signs in and consents",
-        "AS binds the challenge to the code"
+        "AS authenticates the user and obtains",
+        "consent; binds the challenge to the code"
       ],
       "badge": "2"
     },
@@ -53,7 +53,7 @@
       "from": "as",
       "to": "client",
       "label": [
-        "redirect to your redirect_uri",
+        "redirect to the redirect_uri",
         "code and state"
       ],
       "badge": "3"
@@ -62,8 +62,8 @@
       "type": "note",
       "under": "client",
       "lines": [
-        "check state matches",
-        "(or rely on PKCE)"
+        "check state matches (or rely on PKCE",
+        "if the AS is known to support it)"
       ],
       "tone": "good",
       "badge": "4"
@@ -73,8 +73,8 @@
       "from": "client",
       "to": "as",
       "label": [
-        "POST /token",
-        "code, code_verifier, client_id",
+        "POST to the token endpoint",
+        "code, code_verifier, client_id or client auth",
         "redirect_uri if sent at step 1"
       ],
       "tone": "back",
@@ -85,8 +85,7 @@
       "from": "as",
       "to": "client",
       "label": [
-        "access token (maybe refresh token)",
-        "or an error if the verifier differs"
+        "access token"
       ],
       "tone": "back",
       "with_previous": true
@@ -95,8 +94,8 @@
       "type": "note",
       "under": "as",
       "lines": [
-        "a code stolen at step 3 fails:",
-        "the thief has no code_verifier"
+        "AS recomputes the challenge and compares:",
+        "a mismatch returns invalid_grant"
       ],
       "tone": "bad",
       "badge": "!"
@@ -116,8 +115,8 @@
       "type": "note",
       "under": "rs",
       "lines": [
-        "check the token:",
-        "genuine, audience, scope, expiry"
+        "the RS validates the token",
+        "(JWT checks or introspection)"
       ],
       "tone": "good",
       "badge": "7"

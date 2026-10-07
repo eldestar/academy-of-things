@@ -1,0 +1,34 @@
+{
+  "kind": "flow",
+  "id": "saml-triage",
+  "prefix": "smt",
+  "title": "Triage for a failing SAML app",
+  "desc": "A decision tree that starts with who is affected. If NotBefore or NotOnOrAfter errors hit only one node or one user, the first check is clocks. If everyone fails, ask whether it started on a date: yes means the signing certificate expired or the IdP rotated it and the SP holds the old one. If it did not start on a date, ask whether only SP-initiated sign-in fails, which points at NameIDPolicy against the configured Name ID format. If both flows fail, read the error name: an Audience error means comparing the Audience with the SP entity ID, and a Recipient or Destination error means comparing the ACS URL the POST reached with both fields.",
+  "duration": 20,
+  "legend": {"plain": "first check"},
+  "root": {
+    "lines": ["Sign-in fails:", "everyone, or one", "node or user?"],
+    "children": [
+      {"edge": "NotBefore/NotOnOrAfter error, one node or user", "node": {"lines": ["Clocks:", "NotBefore or", "NotOnOrAfter"]}},
+      {"edge": "everyone", "node": {
+        "lines": ["Started on a", "date?"],
+        "children": [
+          {"edge": "yes", "node": {"lines": ["Cert expired,", "or IdP rotated", "and SP has old"]}},
+          {"edge": "no", "node": {
+            "lines": ["SP-initiated", "only?"],
+            "children": [
+              {"edge": "yes", "node": {"lines": ["NameIDPolicy vs", "Name ID format"]}},
+              {"edge": "no, both fail", "node": {
+                "lines": ["Which error", "name?"],
+                "children": [
+                  {"edge": "Audience", "node": {"lines": ["Audience vs SP", "entityID"]}},
+                  {"edge": "Recipient", "node": {"lines": ["ACS URL vs", "Recipient and", "Destination"]}}
+                ]
+              }}
+            ]
+          }}
+        ]
+      }}
+    ]
+  }
+}

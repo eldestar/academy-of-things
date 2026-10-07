@@ -1,0 +1,90 @@
+{
+  "id": "oidc-alg-confusion",
+  "prefix": "l04h",
+  "title": "Algorithm confusion: a verifier that believes the header versus one that does not",
+  "desc": "Three parties: a verifier that trusts the header's alg, a forger, and a validator whose caller specifies the allowed algorithms. Step 1: the forger sends a token with alg none, or RS256 relabelled HS256 so the RSA public key is the HMAC secret; the forger writes the whole token, claims included, so iss and aud checks cannot compensate. The verifier that trusts the header accepts both forgeries, confirmed by the author with an unshown verifier. Step 2: the same token goes to the validator, which rejects it because its algorithm is not allowed; RFC 7515 says such a token should be treated as invalid even if its signature validates. The controls are that the caller lists the allowed algorithms, the library uses no others, and each key is used with exactly one algorithm.",
+  "duration": 22,
+  "legend": {
+    "front": "the same token",
+    "bad": "the forgery",
+    "good": "controls"
+  },
+  "lanes": [
+    {
+      "id": "nv",
+      "title": "Verifier",
+      "sub": "trusts the header's alg"
+    },
+    {
+      "id": "fg",
+      "title": "Forger",
+      "sub": "writes the whole token",
+      "hot": true
+    },
+    {
+      "id": "vd",
+      "title": "Validator",
+      "sub": "caller sets the algorithms"
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "fg",
+      "to": "nv",
+      "label": [
+        "alg none, or RS256 relabelled",
+        "HS256, public key as secret"
+      ],
+      "tone": "bad",
+      "badge": "1"
+    },
+    {
+      "type": "note",
+      "under": "nv",
+      "lines": [
+        "accepts both forgeries",
+        "(author's unshown check)"
+      ],
+      "tone": "bad"
+    },
+    {
+      "type": "note",
+      "under": "fg",
+      "lines": [
+        "iss and aud checks cannot",
+        "compensate: the forger",
+        "writes the claims too"
+      ]
+    },
+    {
+      "type": "arrow",
+      "from": "fg",
+      "to": "vd",
+      "label": [
+        "the same token"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "note",
+      "under": "vd",
+      "lines": [
+        "rejects: alg not allowed;",
+        "RFC 7515 5.2: should be invalid",
+        "even if the signature validates"
+      ],
+      "tone": "good"
+    },
+    {
+      "type": "note",
+      "under": "vd",
+      "lines": [
+        "caller lists the algs; library",
+        "uses no others; one alg per key",
+        "(RFC 8725 3.1, 3.2)"
+      ],
+      "tone": "good"
+    }
+  ]
+}

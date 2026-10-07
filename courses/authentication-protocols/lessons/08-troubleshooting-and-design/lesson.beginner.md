@@ -12,6 +12,113 @@ You are on the help desk. This lesson answers two questions you will hear every 
 
 ## Which tool for which job
 
+<!-- diagram:which-tool -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l08a-pause" class="l08a-cb" /><label for="l08a-pause" class="l08a-btn"><span class="l08a-off">Pause animation</span><span class="l08a-on">Play animation</span></label>
+<div class="l08a-box" style="overflow-x:auto">
+<svg class="l08a-flow" viewBox="0 0 760 397" role="img" aria-labelledby="l08a-t l08a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l08a-t">Signing in is not the same as managing accounts</title>
+<desc id="l08a-d">A table of three tools against three jobs. SAML or OIDC signs Priya in but cannot create or remove her account. SCIM signs nobody in, creates accounts automatically, and sets them inactive by setting the active field to false, though what the app does with that is up to the app. JIT provisioning creates the account from the details sent at sign-in but cannot delete or deactivate it. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l08a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l08a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l08a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l08a-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l08a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l08a-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l08a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-badt{fill:var(--bad-text)}
+.l08a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-badge{fill:var(--accent)}
+.l08a-b-back{fill:var(--muted)}
+.l08a-b-bad{fill:var(--bad)}
+.l08a-b-good{fill:var(--good)}
+.l08a-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l08a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l08a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
+.l08a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l08a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
+.l08a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
+.l08a-hl{fill:none;stroke:var(--accent);stroke-width:3}
+.l08a-hle{stroke:var(--accent);stroke-width:3;fill:none}
+.l08a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l08a-pk.l08a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l08a-pk.l08a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l08a-g{opacity:.45;animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l08a-flow:hover .l08a-g,svg.l08a-flow:hover .l08a-pk{animation-play-state:paused}
+.l08a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l08a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l08a-btn:hover{background:var(--hover)}
+.l08a-cb:focus-visible + .l08a-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l08a-cb:checked + .l08a-btn .l08a-off,.l08a-cb:not(:checked) + .l08a-btn .l08a-on{display:none}
+.l08a-cb:checked ~ .l08a-box .l08a-g,.l08a-cb:checked ~ .l08a-box .l08a-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08a-g{animation:none;opacity:1}.l08a-pk{animation:none;display:none}.l08a-btn{display:none}}
+@keyframes l08a-g0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
+.l08a-g0{animation-name:l08a-g0}
+@keyframes l08a-g1{0%,33.323%{opacity:.45}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
+.l08a-g1{animation-name:l08a-g1}
+@keyframes l08a-g2{0%,66.657%{opacity:.45}66.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l08a-g2{animation-name:l08a-g2}
+</style>
+<defs>
+<marker id="l08a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l08a-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l08a-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<rect class="l08a-box" x="240" y="10" width="162" height="62" rx="10"/><text class="l08a-ttl" x="321" y="36">Signs a user in</text><text class="l08a-sub" x="321" y="56"></text>
+<rect class="l08a-box" x="410" y="10" width="162" height="62" rx="10"/><text class="l08a-ttl" x="491" y="36">Creates accounts</text><text class="l08a-sub" x="491" y="56"></text>
+<rect class="l08a-box" x="580" y="10" width="162" height="62" rx="10"/><text class="l08a-ttl" x="661" y="36">Removes</text><text class="l08a-sub" x="661" y="56">the account</text>
+<g class="l08a-g l08a-g0">
+<rect class="l08a-row" x="10" y="86" width="740" height="71" rx="8"/>
+<text class="l08a-ttlL" x="24" y="112">SAML or OIDC</text>
+<circle cx="321" cy="108" r="10" style="fill:var(--good)"/><path d="M316.8,108.0 L319.6,111.4 L325.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08a-nt" x="321" y="134">opens the app</text>
+<circle cx="491" cy="108" r="10" style="fill:var(--bad)"/><path d="M487.6,104.6 L494.4,111.4 M494.4,104.6 L487.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="661" cy="108" r="10" style="fill:var(--bad)"/><path d="M657.6,104.6 L664.4,111.4 M664.4,104.6 L657.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+</g>
+<g class="l08a-g l08a-g1">
+<rect class="l08a-row" x="10" y="165" width="740" height="86" rx="8"/>
+<text class="l08a-ttlL" x="24" y="191">SCIM</text>
+<circle cx="321" cy="187" r="10" style="fill:var(--bad)"/><path d="M317.6,183.6 L324.4,190.4 M324.4,183.6 L317.6,190.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="187" r="10" style="fill:var(--good)"/><path d="M486.8,187.0 L489.6,190.4 L495.2,183.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08a-nt" x="491" y="213">automatically</text>
+<circle cx="661" cy="187" r="10" style="fill:var(--muted)"/><path d="M656.8,187.0 L665.2,187.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08a-nt" x="661" y="213">sets active to false;</text>
+<text class="l08a-nt" x="661" y="228">the app decides the rest</text>
+</g>
+<g class="l08a-g l08a-g2">
+<rect class="l08a-row" x="10" y="259" width="740" height="86" rx="8"/>
+<text class="l08a-ttlL" x="24" y="285">First sign-in</text>
+<text class="l08a-subL" x="24" y="303">JIT provisioning</text>
+<circle cx="491" cy="281" r="10" style="fill:var(--good)"/><path d="M486.8,281.0 L489.6,284.4 L495.2,277.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08a-nt" x="491" y="307">from the details sent</text>
+<text class="l08a-nt" x="491" y="322">at sign-in</text>
+<circle cx="661" cy="281" r="10" style="fill:var(--bad)"/><path d="M657.6,277.6 L664.4,284.4 M664.4,277.6 L657.6,284.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08a-nt" x="661" y="307">cannot delete or</text>
+<text class="l08a-nt" x="661" y="322">deactivate</text>
+</g>
+<circle cx="48" cy="373" r="8" style="fill:var(--good)"/><path d="M44.6,373.0 L46.9,375.7 L51.4,370.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08a-dim" x="64" y="377" style="text-anchor:start">does this</text>
+<circle cx="163" cy="373" r="8" style="fill:var(--muted)"/><path d="M159.6,373.0 L166.4,373.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08a-dim" x="179" y="377" style="text-anchor:start">does this, with a catch</text>
+<circle cx="368" cy="373" r="8" style="fill:var(--bad)"/><path d="M365.3,370.3 L370.7,375.7 M370.7,370.3 L365.3,375.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<text class="l08a-dim" x="384" y="377" style="text-anchor:start">cannot do this</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:which-tool -->
+
+Read across each row: signing in and managing accounts are different jobs. SAML or OIDC signs her in but does not create or remove her account, and SCIM manages accounts but signs no one in. SCIM's last cell carries a catch, because what the app does when active is set to false is up to the app. The empty cell means this lesson does not rate the first-sign-in row on signing in. The table below adds OAuth 2.0, LDAP and Kerberos.
+
 | Job | Tool | What it cannot do |
 | --- | --- | --- |
 | Priya opens a business app from her dashboard | SAML or OIDC | Create or remove her account in the app |
@@ -62,6 +169,127 @@ Tools you will meet:
 ## Triage walkthrough: Priya's ticket
 
 Ticket 4821: "Priya clicks the Expense tile and gets: audience not valid. Two other finance users see it too; Marcus in Sales is fine in his own app."
+
+<!-- diagram:priya-ticket -->
+<div style="position:relative;margin:20px 0">
+<input type="checkbox" id="l08b-pause" class="l08b-cb" /><label for="l08b-pause" class="l08b-btn"><span class="l08b-off">Pause animation</span><span class="l08b-on">Play animation</span></label>
+<div class="l08b-box" style="overflow-x:auto">
+<svg class="l08b-flow" viewBox="0 0 760 654" role="img" aria-labelledby="l08b-t l08b-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<title id="l08b-t">Ticket 4821, step by step</title>
+<desc id="l08b-d">Five numbered steps for Priya's ticket. One: Priya retries in a private window and gets the same error, so it is not her browser. Two: three users and one app point at the app's setup, not at people. Three: you capture the login and decode it, and the Audience is https://app.example.com/saml/metadata. Four: the app's setup says its entity ID is https://app.example.com/saml, and the two differ. Five: you change nothing and hand the identity admin the decoded Audience, the entity ID and the time, with personal details removed; the admin changes one setting and retests. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
+<style>
+.l08b-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
+.l08b-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
+.l08b-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
+.l08b-front{stroke:var(--accent);stroke-width:2;fill:none}
+.l08b-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
+.l08b-bad{stroke:var(--bad);stroke-width:2;fill:none}
+.l08b-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-badt{fill:var(--bad-text)}
+.l08b-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-badge{fill:var(--accent)}
+.l08b-b-back{fill:var(--muted)}
+.l08b-b-bad{fill:var(--bad)}
+.l08b-b-good{fill:var(--good)}
+.l08b-bt{fill:var(--on-accent);font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
+.l08b-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
+.l08b-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+.l08b-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l08b-pk.l08b-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
+.l08b-pk.l08b-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
+.l08b-g{opacity:.45;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l08b-flow:hover .l08b-g,svg.l08b-flow:hover .l08b-pk{animation-play-state:paused}
+.l08b-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.l08b-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
+.l08b-btn:hover{background:var(--hover)}
+.l08b-cb:focus-visible + .l08b-btn{outline:2px solid var(--accent);outline-offset:2px}
+.l08b-cb:checked + .l08b-btn .l08b-off,.l08b-cb:not(:checked) + .l08b-btn .l08b-on{display:none}
+.l08b-cb:checked ~ .l08b-box .l08b-g,.l08b-cb:checked ~ .l08b-box .l08b-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08b-g{animation:none;opacity:1}.l08b-pk{animation:none;display:none}.l08b-btn{display:none}}
+@keyframes l08b-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
+@keyframes l08b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(146px)}20.01%,100%{opacity:0;transform:translateX(146px)}}
+.l08b-g0{animation-name:l08b-g0}.l08b-p0{animation-name:l08b-p0}
+@keyframes l08b-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
+.l08b-g1{animation-name:l08b-g1}
+@keyframes l08b-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
+.l08b-g2{animation-name:l08b-g2}
+@keyframes l08b-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
+@keyframes l08b-p3{0%,59.99%{opacity:0;transform:translateX(0)}60%{opacity:1;transform:translateX(0)}80%{opacity:1;transform:translateX(-146px)}80.01%,100%{opacity:0;transform:translateX(-146px)}}
+.l08b-g3{animation-name:l08b-g3}.l08b-p3{animation-name:l08b-p3}
+@keyframes l08b-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+@keyframes l08b-p4{0%,79.99%{opacity:0;transform:translateX(0)}80%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(326px)}100.01%,100%{opacity:0;transform:translateX(326px)}}
+.l08b-g4{animation-name:l08b-g4}.l08b-p4{animation-name:l08b-p4}
+</style>
+<defs>
+<marker id="l08b-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
+<marker id="l08b-m-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+<marker id="l08b-m-bad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--bad)"/></marker>
+</defs>
+<line class="l08b-life" x1="110" y1="72" x2="110" y2="602"/>
+<line class="l08b-life" x1="290" y1="72" x2="290" y2="602"/>
+<line class="l08b-life" x1="470" y1="72" x2="470" y2="602"/>
+<line class="l08b-life" x1="650" y1="72" x2="650" y2="602"/>
+<rect class="l08b-box" x="30" y="10" width="160" height="62" rx="10"/><text class="l08b-ttl" x="110" y="36">Priya</text><text class="l08b-sub" x="110" y="56">employee</text>
+<rect class="l08b-box" x="210" y="10" width="160" height="62" rx="10"/><text class="l08b-ttl" x="290" y="36">You</text><text class="l08b-sub" x="290" y="56">help desk</text>
+<rect class="l08b-box" x="390" y="10" width="160" height="62" rx="10"/><text class="l08b-ttl" x="470" y="36">App setup</text><text class="l08b-sub" x="470" y="56">the app's side</text>
+<rect class="l08b-hot" x="570" y="10" width="160" height="62" rx="10"/><text class="l08b-ttl" x="650" y="36">Identity admin</text><text class="l08b-sub" x="650" y="56"></text>
+<g class="l08b-g l08b-g0">
+<text class="l08b-main" x="200" y="108">Reproduce: same error</text>
+<text class="l08b-dim" x="200" y="124">in a private window</text>
+<line class="l08b-front" x1="124" y1="138" x2="276" y2="138" marker-end="url(#l08b-m-front)"/>
+<circle class="l08b-badge l08b-b-front" cx="110" cy="138" r="12"/><text class="l08b-bt" x="110" y="142.5">1</text>
+</g>
+<g class="l08b-g l08b-g1">
+<rect class="l08b-note" x="186" y="172" width="208" height="65" rx="8"/>
+<text class="l08b-nt" x="290" y="193">Scope: three users, one app</text>
+<text class="l08b-nt" x="290" y="210">points at the app's setup,</text>
+<text class="l08b-nt" x="290" y="227">not at people</text>
+<circle class="l08b-badge l08b-b-plain" cx="186" cy="204" r="12"/><text class="l08b-bt" x="186" y="209.0">2</text>
+</g>
+<g class="l08b-g l08b-g2">
+<rect class="l08b-note" x="153" y="265" width="274" height="48" rx="8"/>
+<text class="l08b-nt" x="290" y="286">Capture and decode: Audience is</text>
+<text class="l08b-nt" x="290" y="303">https://app.example.com/saml/metadata</text>
+<circle class="l08b-badge l08b-b-plain" cx="153" cy="289" r="12"/><text class="l08b-bt" x="153" y="293.5">3</text>
+</g>
+<g class="l08b-g l08b-g3">
+<text class="l08b-main" x="380" y="347">Compare: entity ID is</text>
+<text class="l08b-dim" x="380" y="363">https://app.example.com/saml</text>
+<line class="l08b-front" x1="456" y1="377" x2="304" y2="377" marker-end="url(#l08b-m-front)"/>
+<circle class="l08b-badge l08b-b-front" cx="470" cy="377" r="12"/><text class="l08b-bt" x="470" y="381.5">4</text>
+<rect class="l08b-note-bad" x="215" y="395" width="150" height="31" rx="8"/>
+<text class="l08b-nt" x="290" y="416">They differ</text>
+</g>
+<g class="l08b-g l08b-g4">
+<text class="l08b-main" x="470" y="460">Hand over: decoded Audience,</text>
+<text class="l08b-dim" x="470" y="476">entity ID and time, no personal details</text>
+<line class="l08b-front" x1="304" y1="490" x2="636" y2="490" marker-end="url(#l08b-m-front)"/>
+<circle class="l08b-badge l08b-b-front" cx="290" cy="490" r="12"/><text class="l08b-bt" x="290" y="494.5">5</text>
+<rect class="l08b-note-good" x="215" y="508" width="150" height="31" rx="8"/>
+<text class="l08b-nt" x="290" y="529">You change nothing</text>
+<rect class="l08b-note" x="569" y="508" width="162" height="48" rx="8"/>
+<text class="l08b-nt" x="650" y="529">Changes one setting,</text>
+<text class="l08b-nt" x="650" y="546">then retests</text>
+</g>
+<circle class="l08b-pk l08b-p0" cx="130" cy="138" r="5.5"/>
+<circle class="l08b-pk l08b-p3" cx="450" cy="377" r="5.5"/>
+<circle class="l08b-pk l08b-p4" cx="310" cy="490" r="5.5"/>
+<line class="l08b-front" x1="40" y1="630" x2="70" y2="630"/>
+<text class="l08b-dim" x="78" y="634" style="text-anchor:start">normal event</text>
+<rect class="l08b-note-bad" x="188" y="622" width="22" height="16" rx="4"/>
+<text class="l08b-dim" x="218" y="634" style="text-anchor:start">the mismatch</text>
+<rect class="l08b-note-good" x="328" y="622" width="22" height="16" rx="4"/>
+<text class="l08b-dim" x="358" y="634" style="text-anchor:start">what you do</text>
+</svg>
+</div>
+</div>
+<!-- /diagram:priya-ticket -->
+
+The numbers match the numbered steps below, so each badge is one step of ticket 4821. Notice that you change nothing yourself: you hand the admin the two values that differ, plus the time, and the admin makes the one change.
 
 1. **Reproduce**: Priya retries in a private window and gets the same error, so it is not her browser.
 2. **Scope**: three users, one app. That points at the app's setup, not at people.

@@ -95,21 +95,31 @@ Plain Markdown, rendered via marked.js.
 
 ### Diagrams
 
-Add a diagram only when a flow, lifecycle or state change is hard to hold in your head from prose: a protocol handshake, a provisioning and deprovisioning sequence, a pipeline with an approval gate, a failure that crosses systems. A diagram earns its place by showing something the paragraph cannot: the order, who talks to whom, which hops go through the browser and which are server to server, where the failure enters. Do not add one to decorate a lesson. Two or three per lesson at most, and most lessons need none.
+A course should be a full learning experience, not a wall of text. Run the **diagram test** on every `##` section of every level: a section gets a diagram when it describes
 
-The engine does not sanitize lesson text, so raw HTML and inline SVG render inside Markdown; scripts do not run. Use `scripts/sequence-diagram.py`, which turns a small JSON spec into an animated sequence diagram and inserts it into one or more lesson files:
+1. a multi-party exchange or ordered protocol (`sequence`),
+2. a structure whose parts relate, such as a message, token or object and what reads each part (`anatomy`),
+3. a branching decision or diagnosis (`flow`),
+4. something that changes state or over time, such as a lifecycle or a rotation (`stages`), or
+5. things compared across attributes (`matrix`).
+
+It gets none when it is a settings list, a table that already says everything, or prose a diagram would only restate. A diagram earns its place by showing what the paragraph cannot: the order, the structure, the branch, the change, the comparison. Never decorate. A rich lesson has several; a section that fails the test gets none, and the report says which sections were rejected and why.
+
+The engine does not sanitize lesson text, so raw HTML and inline SVG render inside Markdown; scripts do not run. Use `scripts/diagram.py`, which turns a small JSON spec (`kind`: `sequence`, `anatomy`, `flow`, `stages` or `matrix`; the docstring lists every field and limit) into an animated diagram and inserts it into a lesson file:
 
 ```bash
-python3 scripts/sequence-diagram.py spec.json --insert courses/<slug>/lessons/<id>/lesson.md --after "## Section heading" --caption "One sentence tying the numbers to the text."
+python3 scripts/diagram.py courses/<slug>/diagrams/<id>.json --insert courses/<slug>/lessons/<id>/lesson.md --after "## Section heading" --caption "One sentence saying what to look at."
 ```
 
-Keep each diagram's spec in the course as `courses/<slug>/diagrams/<id>.json` (the engine ignores it and `package-course.sh` does not ship it), so the diagram can be edited and regenerated later. `courses/workos-product-training/diagrams/` holds two complete worked specs: `saml-sp-initiated.json` (browser hops plus a server-to-server exchange) and `scim-lifecycle.json` (a failure mode and a fix). The output uses the engine's CSS variables (light and dark mode), tours the steps with a spotlight and a travelling dot, pauses on hover and through a keyboard-operable "Pause animation" control (moving content must be pausable without a mouse), shows every step statically under `prefers-reduced-motion`, scrolls inside its own box on narrow screens, and carries a title and description for screen readers. Re-running with the same spec replaces the block between its `<!-- diagram:ID -->` markers, so edit the spec, not the generated markup.
+**One spec per level.** A diagram levels up with the reader. Keep `courses/<slug>/diagrams/<id>.json` for the intermediate file and add `<id>.beginner.json` and `<id>.advanced.json`. Beginner: plain words, one idea, only terms the beginner text has defined, badges matching its numbered steps. Intermediate: the mechanics, names and checks an admin meets in config and logs. Advanced: internals, attack paths and design decisions, aimed at different parts than the other levels (zoom in; do not just add boxes). The same `id` and `prefix` are used at every level; different diagrams in one lesson need different prefixes (the course convention is `l<NN><letter>`). A diagram may exist at only some levels. The engine ignores the specs and `package-course.sh` does not ship them. `courses/workos-product-training/diagrams/` and `courses/authentication-protocols/diagrams/` hold worked specs of every kind.
 
-- Every label must be a fact the lesson already states and has verified. A diagram is not a place to introduce new claims. Use the lesson's own names (event names, endpoints) and keep the numbers in the diagram matching the numbered text.
-- Pass all of a lesson's level files to one `--insert` so every copy is identical. The engine has no include mechanism, and a level file replaces the whole lesson, so the block is duplicated per level by design.
+The output uses the engine's CSS variables (light and dark mode), tours its steps with a spotlight (and a travelling dot on arrows), pauses on hover and through a keyboard-operable "Pause animation" control (moving content must be pausable without a mouse), shows everything statically under `prefers-reduced-motion`, scrolls inside its own box on narrow screens, and carries a title and description for screen readers. Re-running with the same spec replaces the block between its `<!-- diagram:ID -->` markers, so edit the spec, not the generated markup. `python3 scripts/check-diagrams.py` regenerates every diagram from its spec and reports any block that drifted, a missing spec, a duplicate id or prefix, or an unused spec; `--fix` rewrites drifted blocks. Run it before you call a course done.
+
+- Every label must be a fact that level's lesson text already states and has verified. A diagram is not a place to introduce new claims; keep a hedge the text hedges, or leave the claim out. Use the lesson's own names and keep any numbers in the diagram matching the numbered text.
+- Write a caption under each diagram saying what to look at. If the diagram numbers its own hops rather than the list below it, say so; a sentence like "the numbers match the diagram" must be true at every level.
 - Diagrams do not replace the text. The paragraph still has to carry the facts a quiz needs, because a reader on a screen reader, with reduced motion, or skimming past it must not lose them.
-- Check it rendered: view the lesson in dark and light, at a narrow width, confirm the steps advance in order and hover pauses, and check the browser console is clean. State in your report anything you could not test, for example the real reduced-motion setting.
-- Other diagram shapes (state machines, layered architecture) have no generator yet. Hand-write them in the same style (inline SVG, theme variables, a title and desc, no scripts), keep them small, and say in the report that they are hand-built.
+- Check it rendered: view each level in dark and light, at a narrow width, confirm the steps advance in order and hover pauses, check for overlapping or clipped text, and check the browser console is clean. State in your report anything you could not test, for example the real reduced-motion setting.
+- A shape none of the five kinds can draw may be hand-written in the same style (inline SVG, theme variables, a title and desc, no scripts); keep it small and say in the report that it is hand-built. If it recurs, add a kind to the generator instead.
 
 ### Quiz coverage: the lesson must contain the answers
 

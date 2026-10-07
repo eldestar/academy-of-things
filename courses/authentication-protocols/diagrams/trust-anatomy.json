@@ -1,0 +1,31 @@
+{
+  "kind": "anatomy",
+  "id": "trust-anatomy",
+  "prefix": "l01a",
+  "title": "What the app relies on the IdP for",
+  "desc": "A nested diagram of the IdP's signed statement, an assertion or an ID token. The app trusts the signature, checked with the signing key from metadata or from the jwks_uri. It trusts who the subject is, the issuer plus subject that NIST calls the federated identifier. It trusts the attributes, such as email and groups, though mapping them to roles is the app's logic. It trusts how and when the user authenticated: SAML AuthnStatement has required AuthnInstant and AuthnContext, while OpenID Connect auth_time, acr and amr are optional, and auth_time becomes required only with max_age or an essential request. What the subject may do inside the app is never part of that trust.",
+  "duration": 24,
+  "legend": {"plain": "context", "good": "what the app relies on", "bad": "outside the trust"},
+  "root": {
+    "title": "The IdP's signed statement", "sub": "assertion or ID token",
+    "children": [
+      {"title": "Signature", "sub": "the IdP's",
+       "check": ["Checked with the signing key from", "metadata, or from jwks_uri in OIDC"], "tone": "good"},
+      {"title": "Who", "sub": "issuer plus subject",
+       "check": ["OIDC iss plus sub; NIST calls it", "the federated identifier"], "tone": "good"},
+      {"title": "Attributes", "sub": "email, groups",
+       "check": ["Mapping them to roles is the", "app's logic"], "tone": "good"},
+      {
+        "title": "How and when", "sub": "the authentication facts",
+        "children": [
+          {"title": "SAML AuthnStatement", "sub": "AuthnInstant, AuthnContext",
+           "check": ["Both required"], "tone": "good"},
+          {"title": "OIDC claims", "sub": "auth_time, acr, amr",
+           "check": ["Optional. auth_time is required only", "with max_age or as an essential claim"], "tone": "good"}
+        ]
+      },
+      {"title": "What the subject may do in the app", "sub": "never part of that trust",
+       "check": ["SSO does not authorize"], "tone": "bad"}
+    ]
+  }
+}

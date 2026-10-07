@@ -1,0 +1,20 @@
+{
+  "kind": "stages",
+  "id": "session-gap",
+  "prefix": "l01b",
+  "title": "Proof, IdP session and app session over time",
+  "desc": "Four stages, in an order that is only for reading. Signed in: the proof is used once, the IdP session is open and the app session is open. Proof expires, at NotOnOrAfter or exp, which is not the session's lifetime. IdP session end: app sessions are not necessarily terminated. App session: it may live on, and for Entra the app must revoke it.",
+  "duration": 16,
+  "legend": {"front": "next stage", "bad_state": "the gap to close"},
+  "stages": [
+    {"title": "Signed in", "lines": ["Proof: used once", "IdP session: open", "App session: open"]},
+    {"title": "Proof expires", "sub": "NotOnOrAfter, exp", "lines": ["Not the session's", "lifetime"]},
+    {"title": "IdP session end", "lines": ["App sessions are", "not necessarily", "terminated"]},
+    {"title": "App session", "sub": "may live on", "lines": ["Entra: the app", "must revoke it"], "tone": "bad"}
+  ],
+  "links": [
+    {"from": 0, "to": 1},
+    {"from": 1, "to": 2},
+    {"from": 2, "to": 3}
+  ]
+}

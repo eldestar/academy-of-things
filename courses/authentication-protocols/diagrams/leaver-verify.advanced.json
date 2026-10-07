@@ -1,0 +1,19 @@
+{
+  "id": "leaver-verify",
+  "prefix": "l07j",
+  "title": "Deactivated is a claim, not evidence",
+  "desc": "Three parties: the offboarding runbook, the identity provider and an app that is a SCIM service provider. The runbook deactivates the user at the identity provider, which sends the app a SCIM update of active. In RFC 7643, active is administrative status and its definitive meaning is determined by the service provider. A successful SCIM update therefore proves little about sessions, keys or tokens, so the runbook verifies each surface against its expected state.",
+  "duration": 18,
+  "legend": {"front": "message", "bad": "the gap", "good": "what to do about it"},
+  "lanes": [
+    {"id": "off", "title": "Offboarding", "sub": "your runbook"},
+    {"id": "idp", "title": "IdP", "sub": "e.g. Okta"},
+    {"id": "app", "title": "App", "sub": "SCIM service provider", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "off", "to": "idp", "label": ["Deactivate", "the user"], "badge": "1"},
+    {"type": "arrow", "from": "idp", "to": "app", "label": ["SCIM update", "of active"], "badge": "2"},
+    {"type": "note", "under": "app", "lines": ["active is administrative status; its", "definitive meaning is determined by", "the service provider"], "tone": "bad", "badge": "3"},
+    {"type": "note", "under": "off", "lines": ["A successful SCIM update proves little", "about sessions, keys or tokens: verify", "each surface against its expected state"], "tone": "good", "badge": "4"}
+  ]
+}

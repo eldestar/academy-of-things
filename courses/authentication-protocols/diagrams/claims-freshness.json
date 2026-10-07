@@ -1,0 +1,30 @@
+{
+  "kind": "matrix",
+  "id": "claims-freshness",
+  "prefix": "l07f",
+  "title": "Token lifetime and how fast a change reaches Microsoft's resource providers",
+  "desc": "A table of four timings from Microsoft, each with what it applies to. Access tokens last about an hour by default, and up to 28 hours with CAE. Critical events, such as a user being disabled or a password reset, are meant to take effect within about 15 minutes, and only by resource providers that subscribe to those events. Group or Conditional Access changes can still take up to a day to reach Microsoft's resource providers under CAE. Revoke Session applies those changes at once.",
+  "duration": 18,
+  "columns": [
+    {"title": "How long"},
+    {"title": "Applies to"}
+  ],
+  "rows": [
+    {"title": "Token lifetime", "cells": [
+      {"text": ["about an hour by default", "up to 28 hours with CAE"]},
+      {"text": ["access tokens"]}
+    ]},
+    {"title": "Critical event", "sub": "user disabled, password reset", "cells": [
+      {"text": ["meant to take effect within", "about 15 minutes (Microsoft)"]},
+      {"text": ["only by resource providers that", "subscribe to those events"]}
+    ]},
+    {"title": "Group or Conditional Access", "sub": "change, under CAE", "cells": [
+      {"text": ["can still take up to a day"]},
+      {"text": ["to reach Microsoft's", "resource providers"]}
+    ]},
+    {"title": "Revoke Session", "cells": [
+      {"text": ["at once"]},
+      {"text": ["applies the group or Conditional", "Access changes"]}
+    ]}
+  ]
+}

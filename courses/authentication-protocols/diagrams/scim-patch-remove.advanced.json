@@ -1,0 +1,18 @@
+{
+  "kind": "flow",
+  "id": "scim-patch-remove",
+  "prefix": "l05d",
+  "title": "Handling a remove operation on a Group",
+  "desc": "A decision on what a PATCH remove carries, matching the op without regard to case because Entra sends Remove. A remove with no path is a 400 noTarget. A remove whose path is members with a filter on one value, the form Okta sends, removes that member. A remove whose path is members with the ids in a value list, Entra's form, is outside what RFC 7644 specifies: honour the ids in value. A remove whose path is members with no value is the RFC's path-only rule and empties the group, so decide which clients may reach it.",
+  "duration": 18,
+  "legend": {"front": "the path being traced", "plain": "removes only what is named", "bad": "the problem"},
+  "root": {
+    "lines": ["PATCH remove on a", "Group (op in any", "case): what path?"],
+    "children": [
+      {"edge": "no path", "node": {"lines": ["400 noTarget"], "tone": "bad"}},
+      {"edge": "members[value eq ...]", "node": {"lines": ["Remove that id", "(Okta's form)"]}},
+      {"edge": "members + value list", "node": {"lines": ["Remove the ids", "in value (Entra's", "form; outside RFC)"]}},
+      {"edge": "members, no value", "node": {"lines": ["Empties the group", "(RFC path-only", "rule): who may?"], "tone": "bad"}}
+    ]
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "kind": "matrix",
+  "id": "sp-checks",
+  "prefix": "l08d",
+  "title": "SAML assertion against OIDC ID token, side by side",
+  "desc": "Two columns, a SAML assertion over the POST binding and an OIDC ID token, compared across six rows. When to choose it: SAML when the SP speaks only SAML, OIDC when a client also needs API tokens. Audience: SAML checks that Audience lists the SP and that Recipient equals the ACS URL; OIDC checks that aud contains the client_id. Signature: the POST binding requires the assertion to be signed; for a JWT, verify with an algorithm allow-list set by the caller and reject none. Time: NotOnOrAfter allowing for skew, against exp. Also checked: InResponseTo and a replay set of assertion IDs for SAML; iss equal to the discovery issuer and nonce if sent for OIDC. Stable user key: IdP entity ID plus a persistent NameID for SAML, iss plus sub for OIDC.",
+  "duration": 22,
+  "columns": [
+    {
+      "title": "SAML assertion (POST)"
+    },
+    {
+      "title": "OIDC ID token"
+    }
+  ],
+  "rows": [
+    {
+      "title": "Choose it when",
+      "cells": [
+        {
+          "text": [
+            "the SP speaks only SAML"
+          ]
+        },
+        {
+          "text": [
+            "a client also needs API tokens"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Audience",
+      "cells": [
+        {
+          "text": [
+            "Audience lists the SP;",
+            "Recipient equals the ACS URL"
+          ]
+        },
+        {
+          "text": [
+            "aud contains the client_id"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Signature",
+      "cells": [
+        {
+          "text": [
+            "POST binding: the assertion",
+            "itself MUST be signed"
+          ]
+        },
+        {
+          "text": [
+            "verify with an alg allow-list",
+            "set by the caller; reject none"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Time",
+      "cells": [
+        {
+          "text": [
+            "NotOnOrAfter, allowing for skew"
+          ]
+        },
+        {
+          "text": [
+            "exp"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Also checked",
+      "cells": [
+        {
+          "text": [
+            "InResponseTo (absent when",
+            "unsolicited); replay set of IDs"
+          ]
+        },
+        {
+          "text": [
+            "iss equals the discovery issuer;",
+            "nonce, if the SP sent one"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Stable user key",
+      "cells": [
+        {
+          "text": [
+            "IdP entity ID plus a",
+            "persistent NameID"
+          ]
+        },
+        {
+          "text": [
+            "iss plus sub"
+          ]
+        }
+      ]
+    }
+  ]
+}

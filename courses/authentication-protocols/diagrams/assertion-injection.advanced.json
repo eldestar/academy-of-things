@@ -1,0 +1,20 @@
+{
+  "id": "assertion-injection",
+  "prefix": "l01d",
+  "title": "Assertion injection: why the signature checks pass",
+  "desc": "Three parties: the IdP, an attacker, and the relying party. Step 1: the attacker obtains an assertion for their own account. Step 2: the IdP returns a fresh, genuine assertion, signed and addressed to the relying party's SP. Step 3: the attacker forces that assertion into a session at the relying party. The relying party's signature, audience and validity-window checks all pass. What fails is the binding to a transaction the relying party started, and the mitigations NIST lists include tracked state, nonces, back-channel presentation and refusing unsolicited IdP-initiated responses.",
+  "duration": 18,
+  "legend": {"front": "genuine message", "bad": "the injection", "good": "what fails and what helps"},
+  "lanes": [
+    {"id": "idp", "title": "IdP", "sub": "signs genuinely"},
+    {"id": "at", "title": "Attacker", "sub": "has their own account"},
+    {"id": "rp", "title": "RP (your SP)", "sub": "checks the response", "hot": true}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "at", "to": "idp", "label": ["obtains an assertion", "for their own account"], "badge": "1"},
+    {"type": "arrow", "from": "idp", "to": "at", "label": ["fresh, genuine assertion:", "signed, addressed to your SP"], "badge": "2"},
+    {"type": "arrow", "from": "at", "to": "rp", "tone": "bad", "label": ["assertion forced", "into a session"], "badge": "3"},
+    {"type": "note", "under": "rp", "tone": "bad", "lines": ["Signature, audience and", "validity window all pass"]},
+    {"type": "note", "under": "rp", "tone": "good", "lines": ["What fails: the binding to a transaction", "the RP started. Mitigations NIST lists include", "tracked state, nonces, back-channel", "presentation, no unsolicited IdP-initiated responses"]}
+  ]
+}

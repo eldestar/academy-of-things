@@ -1,0 +1,121 @@
+{
+  "kind": "matrix",
+  "id": "which-tool",
+  "prefix": "l08a",
+  "title": "SSO and lifecycle are separate problems",
+  "desc": "Four tools against three jobs. SAML 2.0 signs a user in and cannot manage the account lifecycle. OIDC signs a user in through an ID token and cannot create or remove accounts. SCIM 2.0 signs no one in, provisions accounts over HTTP and JSON, and deactivates by setting active to false, though the service provider decides what that means. JIT provisioning creates the user from the claims in the SAML token but cannot delete or deactivate.",
+  "duration": 16,
+  "legend": {
+    "good": "does this",
+    "partial": "does this, with a catch",
+    "bad": "cannot do this"
+  },
+  "columns": [
+    {
+      "title": "Signs a user in"
+    },
+    {
+      "title": "Creates accounts"
+    },
+    {
+      "title": "Removes",
+      "sub": "or deactivates"
+    }
+  ],
+  "rows": [
+    {
+      "title": "SAML 2.0",
+      "cells": [
+        {
+          "mark": "good",
+          "text": [
+            "POST binding: the",
+            "assertion must be signed"
+          ]
+        },
+        {
+          "mark": "bad",
+          "text": [
+            "cannot manage the",
+            "account lifecycle"
+          ]
+        },
+        {
+          "mark": "bad"
+        }
+      ]
+    },
+    {
+      "title": "OIDC",
+      "cells": [
+        {
+          "mark": "good",
+          "text": [
+            "the app validates an",
+            "ID token (a JWT)"
+          ]
+        },
+        {
+          "mark": "bad",
+          "text": [
+            "cannot create or",
+            "remove accounts"
+          ]
+        },
+        {
+          "mark": "bad",
+          "text": [
+            "cannot remove",
+            "accounts"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "SCIM 2.0",
+      "cells": [
+        {
+          "mark": "bad",
+          "text": [
+            "signs no one in"
+          ]
+        },
+        {
+          "mark": "good",
+          "text": [
+            "HTTP/JSON",
+            "provisioning"
+          ]
+        },
+        {
+          "mark": "partial",
+          "text": [
+            "sets active to false;",
+            "the SP defines what",
+            "that means"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "JIT provisioning",
+      "cells": [
+        {},
+        {
+          "mark": "good",
+          "text": [
+            "from the claims in",
+            "the SAML token"
+          ]
+        },
+        {
+          "mark": "bad",
+          "text": [
+            "cannot delete or",
+            "deactivate"
+          ]
+        }
+      ]
+    }
+  ]
+}

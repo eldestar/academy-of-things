@@ -1,0 +1,27 @@
+{
+  "kind": "anatomy",
+  "id": "oauth-dpop-proof",
+  "prefix": "l03g",
+  "title": "A DPoP request and what the server does with each part",
+  "desc": "A nested diagram. A request presents the token as Authorization: DPoP followed by the token, and carries a DPoP header holding a JWT with typ dpop+jwt. The JWT holds the public key in jwk, the claims jti, htm, htu and iat, ath (a hash of the access token) at the RS, and nonce where the server supplied one. In the token response token_type is DPoP, and a JWT token is bound through cnf jkt, the key's JWK thumbprint. A server must accept a proof only for a limited time after its creation, can store jti values for that window to make proofs single-use, which may not be feasible without shared state, and may demand a nonce with use_dpop_nonce.",
+  "duration": 24,
+  "legend": {"plain": "context", "good": "what the server does"},
+  "root": {
+    "title": "Request to the RS", "sub": "Authorization: DPoP <token>",
+    "check": ["token_type DPoP in the token response;", "a JWT token is bound by cnf jkt"],
+    "children": [
+      {
+        "title": "DPoP header", "sub": "a JWT with typ dpop+jwt",
+        "check": ["Accept a proof only for a limited time", "after its creation (RFC 9449, 11.1)"], "tone": "good",
+        "children": [
+          {"title": "jwk", "sub": "the public key", "check": ["jkt in the token's cnf is the", "key's JWK thumbprint"], "tone": "good"},
+          {"title": "jti, htm, htu, iat", "sub": "claims in the proof",
+           "check": ["Can store jti for that window to make", "proofs single-use; may not be feasible", "without shared state"], "tone": "good"},
+          {"title": "ath", "sub": "hash of the access token, at the RS"},
+          {"title": "nonce", "sub": "where the server supplied one",
+           "check": ["The server may demand one with", "use_dpop_nonce"], "tone": "good"}
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "kind": "matrix",
+  "id": "authz-models",
+  "prefix": "l07a",
+  "title": "Four ways to decide what a person may do",
+  "desc": "A table with one row per way of deciding and three columns: what it decides on, what speaks for it, and how it goes wrong. ACL decides on a list of names on each thing; it is easy to understand, but names are rarely removed so people pile up access. RBAC decides on a role such as Support agent; it is good when jobs are stable, and goes wrong by role explosion, hundreds of roles with a handful of people each. ABAC decides on attributes such as department, device or location; it handles rules like Sales staff on a managed laptop, and goes wrong by attribute drift when the HR department field is wrong or late. ReBAC decides on relationships, such as being a member of the team that owns a folder; it is good for sharing and folders inside folders, and goes wrong because relationships multiply quietly.",
+  "duration": 20,
+  "columns": [
+    {"title": "Decides on"},
+    {"title": "In its favour"},
+    {"title": "Goes wrong by"}
+  ],
+  "rows": [
+    {"title": "ACL", "sub": "access control list", "cells": [
+      {"text": ["a list of names on", "each thing"]},
+      {"text": ["easy to understand"]},
+      {"text": ["names rarely removed, so", "people pile up access"]}
+    ]},
+    {"title": "RBAC", "sub": "role-based", "cells": [
+      {"text": ["a role such as", "\"Support agent\""]},
+      {"text": ["good when jobs are", "stable"]},
+      {"text": ["role explosion: hundreds", "of roles, a handful of", "people each"]}
+    ]},
+    {"title": "ABAC", "sub": "attribute-based", "cells": [
+      {"text": ["attributes such as", "department, device or", "location"]},
+      {"text": ["rules like \"Sales staff", "on a managed laptop\""]},
+      {"text": ["attribute drift (informal", "name): a wrong or late", "department field"]}
+    ]},
+    {"title": "ReBAC", "sub": "relationship-based", "cells": [
+      {"text": ["relationships, such as", "member of the team that", "owns this folder"]},
+      {"text": ["sharing, and folders", "inside folders"]},
+      {"text": ["relationships multiply", "quietly (our own", "inference)"]}
+    ]}
+  ]
+}

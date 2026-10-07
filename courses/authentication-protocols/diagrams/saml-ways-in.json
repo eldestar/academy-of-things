@@ -1,0 +1,22 @@
+{
+  "id": "saml-ways-in",
+  "prefix": "l02a",
+  "title": "IdP-initiated sign-in: steps 1 to 3 never happen",
+  "desc": "Three parties: the service provider, the browser and the identity provider. The user clicks the app tile in the IdP dashboard. There is no AuthnRequest, so there is nothing to answer and no NameIDPolicy to satisfy. The IdP returns an unsolicited Response in an HTML form, which must not carry InResponseTo, and RelayState carries the target page by prior agreement. The browser POSTs the form to the SP's default ACS. At the SP, the Response cannot be tied to a request the SP made, so the SP loses its strongest tie; every other check still applies: signature, Recipient, Audience, times and replay. RelayState is untrusted input and is checked against an allowlist before redirecting.",
+  "duration": 18,
+  "legend": {"front": "every hop goes through the user's browser", "bad": "the check that is lost", "good": "what still applies"},
+  "lanes": [
+    {"id": "sp", "title": "Service provider", "sub": "the app (SP)", "hot": true},
+    {"id": "br", "title": "Browser", "sub": "the user agent"},
+    {"id": "idp", "title": "Identity provider", "sub": "Okta, Entra ID (IdP)"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "br", "to": "idp", "label": ["User clicks the app tile", "in the IdP dashboard"]},
+    {"type": "note", "under": "idp", "lines": ["No AuthnRequest: nothing to answer,", "no NameIDPolicy to satisfy"]},
+    {"type": "arrow", "from": "idp", "to": "br", "label": ["Unsolicited Response in an HTML form", "no InResponseTo; RelayState by prior agreement"], "badge": "4"},
+    {"type": "arrow", "from": "br", "to": "sp", "label": ["Browser POSTs the form", "to the SP's default ACS"], "badge": "5"},
+    {"type": "note", "under": "sp", "lines": ["Cannot tie it to a request the SP made:", "its strongest tie is gone"], "tone": "bad"},
+    {"type": "note", "under": "sp", "lines": ["Still applies: signature, Recipient,", "Audience, times, replay"], "tone": "good"},
+    {"type": "note", "under": "sp", "lines": ["RelayState is untrusted input: check an", "allowlist before redirecting"]}
+  ]
+}

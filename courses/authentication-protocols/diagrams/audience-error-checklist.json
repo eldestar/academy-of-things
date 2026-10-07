@@ -1,0 +1,68 @@
+{
+  "kind": "flow",
+  "id": "audience-error-checklist",
+  "prefix": "l08c",
+  "title": "The Okta admin's first two checks after an audience error",
+  "desc": "A decision tree for the incident in the lesson, where thirty users get an audience error after a SAML app is edited. Start with the System Log and read outcome.result and outcome.reason. If Okta issued the assertion successfully, the SP raised the audience error, so ask the SP owner for the SP's log. Otherwise, compare the decoded response with the app's fields, using one failing login captured with SAML-tracer: Destination and Recipient against the Single sign-on URL, Audience against the Audience URI (SP Entity ID), and NameID against the Name ID format. Written from the docs, not run against a live tenant.",
+  "duration": 18,
+  "legend": {
+    "plain": "where to look"
+  },
+  "root": {
+    "lines": [
+      "Audience error",
+      "after an app edit:",
+      "what does the",
+      "System Log show?"
+    ],
+    "children": [
+      {
+        "edge": "assertion issued",
+        "node": {
+          "lines": [
+            "The SP raised it:",
+            "ask the SP owner",
+            "for the SP's log"
+          ]
+        }
+      },
+      {
+        "edge": "otherwise",
+        "node": {
+          "lines": [
+            "Compare the decoded",
+            "response with the",
+            "app's fields"
+          ],
+          "children": [
+            {
+              "edge": "Destination, Recipient",
+              "node": {
+                "lines": [
+                  "Single sign-on URL"
+                ]
+              }
+            },
+            {
+              "edge": "Audience",
+              "node": {
+                "lines": [
+                  "Audience URI",
+                  "(SP Entity ID)"
+                ]
+              }
+            },
+            {
+              "edge": "NameID",
+              "node": {
+                "lines": [
+                  "Name ID format"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "kind": "anatomy",
+  "id": "scim-identifiers",
+  "prefix": "l05a",
+  "title": "One person, three names in a SCIM user record",
+  "desc": "A user record at /Users, with the three names one person has. userName is the login name: the app requires it to be unique and does not treat it as case-sensitive, and it can be edited, so it can change. externalId is a label the IdP chooses for her, and the app does not enforce that it is unique. id is assigned by the app, never changes and is never reused; the IdP stores it and uses it in later requests.",
+  "duration": 14,
+  "root": {
+    "title": "Dana's user record",
+    "sub": "a User, at /Users",
+    "children": [
+      {"title": "userName", "sub": "the login name",
+       "check": ["Must be unique; the app does not", "treat it as case-sensitive. It can be", "edited, so it can change"]},
+      {"title": "externalId", "sub": "a label the IdP chooses",
+       "check": ["The app does not enforce that", "it is unique"]},
+      {"title": "id", "sub": "assigned by the app",
+       "check": ["Never changes and is never reused.", "The IdP stores it and uses it in", "later requests"]}
+    ]
+  }
+}

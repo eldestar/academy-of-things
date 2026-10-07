@@ -1,0 +1,74 @@
+{
+  "kind": "anatomy",
+  "id": "oidc-id-token-anatomy",
+  "prefix": "l04a",
+  "title": "What is inside an ID token, and which check reads which part",
+  "desc": "An ID token is a JWT in three parts: a header that names the key that signed it, a payload of claims, and a signature. The payload holds iss, who issued the token; sub, who the user is; aud, which app it is for; exp, when it expires; and nonce, if the app sent one. Callouts say what the app checks in each part: iss is exactly the OP the app is configured to use, aud includes the app's own client ID, exp has not passed, nonce matches the value the app created, and the signature was made by a key the OP published. The payload is only encoded, so anyone holding the token can read it.",
+  "duration": 20,
+  "legend": {
+    "plain": "what it carries",
+    "good": "what the app checks"
+  },
+  "root": {
+    "title": "ID token",
+    "sub": "a JWT: header.payload.signature",
+    "children": [
+      {
+        "title": "Header",
+        "sub": "names the key that signed it"
+      },
+      {
+        "title": "Payload",
+        "sub": "the claims; encoded, not secret",
+        "children": [
+          {
+            "title": "iss",
+            "sub": "who issued the token",
+            "check": [
+              "Exactly the OP the app is",
+              "configured to use"
+            ],
+            "tone": "good"
+          },
+          {
+            "title": "sub",
+            "sub": "who the user is"
+          },
+          {
+            "title": "aud",
+            "sub": "which app it is for",
+            "check": [
+              "Includes this app's own client ID"
+            ],
+            "tone": "good"
+          },
+          {
+            "title": "exp",
+            "sub": "when it expires",
+            "check": [
+              "The time has not passed"
+            ],
+            "tone": "good"
+          },
+          {
+            "title": "nonce",
+            "sub": "only if the app sent one",
+            "check": [
+              "Matches the value this app created",
+              "for this browser's sign-in"
+            ],
+            "tone": "good"
+          }
+        ]
+      },
+      {
+        "title": "Signature",
+        "sub": "what makes it trustworthy",
+        "check": [
+          "Made by a key the OP published"
+        ],
+        "tone": "good"
+      }
+    ]
+  }
+}

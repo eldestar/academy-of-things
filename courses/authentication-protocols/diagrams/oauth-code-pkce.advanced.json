@@ -1,0 +1,108 @@
+{
+  "id": "oauth-code-pkce",
+  "prefix": "oa",
+  "title": "Code flow at spec level: what the AS records and decides",
+  "desc": "Two parties: the client and the authorization server (AS), steps 1 to 5 of the flow. Step 1: through the browser, the client sends response_type=code, client_id, redirect_uri, scope, state, code_challenge and code_challenge_method. The method is optional and defaults to plain, so a client that omits it has put its verifier in the authorization URL. Step 2: the AS authenticates the user, obtains consent, and records the challenge and method with the code. Step 3: through the browser, the AS redirects to the redirect_uri with code and state. Step 4: the client verifies state, or relies on PKCE for CSRF where the AS is known to support it. Step 5: directly, the client sends code, code_verifier, the redirect_uri if it was sent at step 1, and client authentication or client_id; a mismatch returns invalid_grant. A code used twice must be denied, and the tokens issued from it should be revoked. Steps 6 and 7 are not drawn.",
+  "duration": 22,
+  "legend": {
+    "front": "through the user's browser",
+    "back": "direct request, not a redirect",
+    "good": "a check to perform"
+  },
+  "lanes": [
+    {
+      "id": "client",
+      "title": "Client",
+      "sub": "public or confidential"
+    },
+    {
+      "id": "as",
+      "title": "Authorization server",
+      "sub": "records challenge and method",
+      "hot": true
+    }
+  ],
+  "steps": [
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "response_type=code, client_id, redirect_uri,",
+        "scope, state, code_challenge,",
+        "code_challenge_method"
+      ],
+      "badge": "1"
+    },
+    {
+      "type": "note",
+      "under": "client",
+      "lines": [
+        "method omitted means plain: the verifier",
+        "is in the authorization URL"
+      ],
+      "tone": "bad",
+      "badge": "!"
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "authenticates the user, obtains consent,",
+        "records the challenge and method with the code"
+      ],
+      "badge": "2"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "client",
+      "label": [
+        "redirect to redirect_uri",
+        "code and state"
+      ],
+      "badge": "3"
+    },
+    {
+      "type": "note",
+      "under": "client",
+      "lines": [
+        "verify state, or rely on PKCE for CSRF",
+        "where the AS is known to support it"
+      ],
+      "tone": "good",
+      "badge": "4"
+    },
+    {
+      "type": "arrow",
+      "from": "client",
+      "to": "as",
+      "label": [
+        "code, code_verifier, redirect_uri if sent at step 1,",
+        "client authentication or client_id"
+      ],
+      "tone": "back",
+      "badge": "5"
+    },
+    {
+      "type": "arrow",
+      "from": "as",
+      "to": "client",
+      "label": [
+        "a mismatch returns invalid_grant"
+      ],
+      "tone": "back",
+      "with_previous": true
+    },
+    {
+      "type": "note",
+      "under": "as",
+      "lines": [
+        "a code used twice: the AS must deny the request",
+        "and should revoke tokens issued from the code"
+      ],
+      "tone": "bad",
+      "badge": "!"
+    }
+  ]
+}

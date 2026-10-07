@@ -1,0 +1,20 @@
+{
+  "kind": "stages",
+  "id": "saml-cert-rotation",
+  "prefix": "smc",
+  "title": "Rotating a SAML signing certificate safely",
+  "desc": "Four stages in a safe order. First only the old certificate exists: the IdP signs with it and the SP trusts it. Then the new certificate is generated while inactive and the SP learns it from metadata, so the SP knows both. Then the new certificate is activated: the IdP signs with the new one and the SP still knows both. Finally the old certificate is retired.",
+  "duration": 14,
+  "legend": {"front": "step in the safe order", "good": "SP knows both"},
+  "stages": [
+    {"title": "Old cert only", "sub": "steady state", "lines": ["IdP signs: old", "SP knows: old"]},
+    {"title": "New inactive", "sub": "SP learns it", "lines": ["IdP signs: old", "SP knows: both"], "tone": "good"},
+    {"title": "New active", "sub": "old still known", "lines": ["IdP signs: new", "SP knows: both"], "tone": "good"},
+    {"title": "Old retired", "sub": "last step", "lines": ["IdP signs: new", "old one retired"]}
+  ],
+  "links": [
+    {"from": 0, "to": 1, "label": ["generate"]},
+    {"from": 1, "to": 2, "label": ["activate"]},
+    {"from": 2, "to": 3, "label": ["retire old"]}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "kind": "anatomy",
+  "id": "scim-identifiers",
+  "prefix": "l05a",
+  "title": "Identifiers on a SCIM user, and how they differ from the SSO account key",
+  "desc": "A User resource at /Users carries three identifiers. id is issued by the server, must be stable and never reassigned, and the client must not set it. userName is required, unique across the server's users and case-insensitive. externalId is issued by the client and the server does not enforce uniqueness. Separate from the resource, the match attribute is userName or externalId and is where mapping matters: Okta's Profile Editor maps attributes, and in Entra the setting Match objects using this attribute picks the matching property. The SSO account key is a different thing: a persistent NameID in SAML, iss plus sub in OIDC, and tid plus oid in Entra. The app must link the SCIM account and the SSO key explicitly and never link a sign-in to an account on the email claim or attribute.",
+  "duration": 24,
+  "legend": {"plain": "SCIM side", "good": "what your app must do"},
+  "root": {
+    "title": "Identifying one user", "sub": "provisioning side and sign-in side",
+    "children": [
+      {"title": "User resource", "sub": "at /Users",
+       "children": [
+         {"title": "id", "sub": "issued by the server",
+          "check": ["Stable and never reassigned;", "the client must not set it"]},
+         {"title": "userName", "sub": "required",
+          "check": ["Unique across the server's users,", "case-insensitive"]},
+         {"title": "externalId", "sub": "issued by the client",
+          "check": ["The server does not enforce", "uniqueness"]}
+       ]},
+      {"title": "Match attribute", "sub": "userName or externalId",
+       "check": ["Mapping is your lever. Okta: Profile", "Editor maps attributes. Entra: Match", "objects using this attribute"]},
+      {"title": "SSO account key", "sub": "a separate thing", "tone": "good",
+       "check": ["SAML: persistent NameID. OIDC: iss", "plus sub. Entra: tid plus oid.", "Link it to the account explicitly,", "never on the email claim"]}
+    ]
+  }
+}

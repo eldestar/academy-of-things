@@ -1,0 +1,22 @@
+{
+  "kind": "anatomy",
+  "id": "saml-response-anatomy",
+  "prefix": "smr",
+  "title": "The envelope and the letter: what the app checks in each part",
+  "desc": "A nested diagram. The Response is the envelope and the Assertion inside it is the letter. Numbered callouts say what the app checks in each part. On the envelope, the Response must arrive at the right address and must answer the request the app sent. On the Assertion, the app checks it has not been used before. Inside the Assertion: the signature must be valid for the certificate the app holds for this IdP; the audience must equal the app's own entity ID; and the time now must be inside the valid window, allowing a small tolerance for clocks.",
+  "duration": 18,
+  "legend": {"good": "what the app checks"},
+  "root": {
+    "title": "Response", "sub": "the envelope", "tone": "good",
+    "check": ["Right address (Recipient), and it", "answers my request (InResponseTo)"],
+    "children": [{
+      "title": "Assertion", "sub": "the signed letter: who she is, which app, how long",
+      "check": ["Not used before: the app remembers", "the IDs it has accepted"], "tone": "good",
+      "children": [
+        {"title": "Signature", "sub": "made with the IdP's private key", "check": ["Valid for the certificate the app", "holds for this IdP"], "tone": "good"},
+        {"title": "Audience", "sub": "which app it is for", "check": ["Equals the app's own entity ID"], "tone": "good"},
+        {"title": "Valid window", "sub": "NotBefore to NotOnOrAfter", "check": ["Now is inside it, allowing a small", "tolerance for clocks"], "tone": "good"}
+      ]
+    }]
+  }
+}

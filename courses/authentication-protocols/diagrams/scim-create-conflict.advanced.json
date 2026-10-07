@@ -1,0 +1,22 @@
+{
+  "kind": "flow",
+  "id": "scim-create-conflict",
+  "prefix": "l05e",
+  "title": "What a POST /Users with an existing userName should get",
+  "desc": "A decision for a create request. userName is unique across all Users and case-insensitive. If no record matches the userName, the create succeeds with 201 and a Location header. If a record matches but it was deleted, a POST with the deleted userName SHOULD NOT get 409, because a deleted resource should not count in conflict calculation. If a record matches and it is still there, the create MUST get 409 with the uniqueness rule; a replayed create after a lost 201 lands here.",
+  "duration": 16,
+  "legend": {"front": "the path being traced", "good": "no conflict", "bad": "conflict"},
+  "root": {
+    "lines": ["POST /Users: does a", "record match the", "userName?"],
+    "children": [
+      {"edge": "no", "node": {"lines": ["201 Created", "with Location"], "tone": "good"}},
+      {"edge": "yes", "node": {
+        "lines": ["Was that", "record deleted?"],
+        "children": [
+          {"edge": "yes", "node": {"lines": ["SHOULD NOT", "get a 409"], "tone": "good"}},
+          {"edge": "no", "node": {"lines": ["409 (uniqueness).", "A replay after a", "lost 201 lands here"], "tone": "bad"}}
+        ]
+      }}
+    ]
+  }
+}

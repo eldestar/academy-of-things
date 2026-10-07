@@ -1,0 +1,18 @@
+{
+  "kind": "stages",
+  "id": "session-gap",
+  "prefix": "l01b",
+  "title": "How the RP session can end",
+  "desc": "Three stages. First the sign-in: the assertion is valid and the relying party creates its own session, which is its to design. Then the IdP session ends or the account is disabled: the RP session is independent of IdP state and SessionNotOnOrAfter does not move. Finally the RP session can end by three routes: the IdP signals (SHOULD), the RP ends it (MAY), or SessionNotOnOrAfter passes, if it was sent (SHOULD).",
+  "duration": 18,
+  "legend": {"front": "time passes", "good": "ways it can end", "bad_state": "independent of IdP state"},
+  "stages": [
+    {"title": "Sign-in", "sub": "step 5", "lines": ["Assertion valid", "RP creates its session", "(yours to design)"]},
+    {"title": "IdP session ends", "sub": "or account disabled", "lines": ["RP session is", "independent of IdP state", "SessionNotOnOrAfter", "does not move"], "tone": "bad"},
+    {"title": "RP session ends", "sub": "what can end it", "lines": ["IdP signals (SHOULD)", "RP ends it (MAY)", "SessionNotOnOrAfter", "passes, if sent (SHOULD)"], "tone": "good"}
+  ],
+  "links": [
+    {"from": 0, "to": 1},
+    {"from": 1, "to": 2, "label": ["can end by"]}
+  ]
+}

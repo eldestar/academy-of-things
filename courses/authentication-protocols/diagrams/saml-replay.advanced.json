@@ -1,0 +1,23 @@
+{
+  "id": "saml-replay",
+  "prefix": "l02e",
+  "title": "Replay: why the ID cache should be shared by every node (my reasoning)",
+  "desc": "The shared, atomic cache shown here is the lesson's reasoning, not a profile requirement. Four parts: the client, SP node A, SP node B, and the ID cache. The client POSTs a Response to node A, which does an atomic check-and-insert of the assertion ID in the shared cache; the ID is new, so it is accepted and held for as long as NotOnOrAfter would keep the assertion valid. An attacker then replays the same Response to node B, which does the same check-and-insert; the ID is already stored, so the replay is not accepted. A per-node cache would fail here, even with sticky sessions, because the attacker, not the SP, chooses which node receives the Response.",
+  "duration": 20,
+  "legend": {"front": "the Response", "bad": "the replay", "good": "what stops it"},
+  "lanes": [
+    {"id": "cl", "title": "Client", "sub": "user, then attacker"},
+    {"id": "a", "title": "SP node A", "sub": "behind the balancer", "hot": true},
+    {"id": "b", "title": "SP node B", "sub": "behind the balancer"},
+    {"id": "ca", "title": "ID cache", "sub": "shared by every node"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "cl", "to": "a", "label": ["POST the Response", "to node A"], "badge": "1"},
+    {"type": "arrow", "from": "a", "to": "ca", "label": ["check-and-insert", "ID (atomic)"], "badge": "2"},
+    {"type": "note", "under": "ca", "lines": ["ID is new: accepted;", "held while NotOnOrAfter", "would keep it valid"], "tone": "good"},
+    {"type": "arrow", "from": "cl", "to": "b", "label": ["Replay the same", "Response to node B"], "tone": "bad", "badge": "3"},
+    {"type": "arrow", "from": "b", "to": "ca", "label": ["check-and-insert", "ID (atomic)"], "badge": "4"},
+    {"type": "note", "under": "ca", "lines": ["ID already stored:", "not accepted again"], "tone": "good"},
+    {"type": "note", "under": "b", "lines": ["A per-node cache fails: the", "attacker, not the SP, picks", "the node, even with sticky", "sessions"], "tone": "bad"}
+  ]
+}

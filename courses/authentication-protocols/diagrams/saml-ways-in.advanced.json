@@ -1,0 +1,28 @@
+{
+  "kind": "flow",
+  "id": "saml-ways-in",
+  "prefix": "l02a",
+  "title": "What InResponseTo decides: bound to a request, or unsolicited",
+  "desc": "A decision tree that starts with whether the Response carries InResponseTo. If it does, ask whether it matches an outstanding AuthnRequest ID. If it matches, consume the stored ID on first use; the ID cache is still required. If it matches nothing, the check fails and the assertion should be discarded. If it carries none, the Response is unsolicited, as with IdP-initiated SSO, and the request-binding control is gone. Ask whether the integration needs it. If so, compensate with a replay cache, short validity, only the registered IdP and ACS, and a RelayState allowlist; if not, the leaf says off by default, which the text also lists with the compensations.",
+  "duration": 20,
+  "legend": {"plain": "only with compensation", "good": "outcome that holds", "bad": "fails the check"},
+  "root": {
+    "lines": ["Response arrives:", "does it carry", "InResponseTo?"],
+    "children": [
+      {"edge": "yes", "node": {
+        "lines": ["Does it match an", "outstanding", "AuthnRequest ID?"],
+        "children": [
+          {"edge": "yes", "node": {"lines": ["Consume the ID", "on first use; the", "ID cache is still", "required"], "tone": "good"}},
+          {"edge": "no", "node": {"lines": ["Fails the check:", "SHOULD be", "discarded"], "tone": "bad"}}
+        ]
+      }},
+      {"edge": "none (unsolicited)", "node": {
+        "lines": ["No request to", "bind it to. Does", "the integration", "need it?"],
+        "children": [
+          {"edge": "no", "node": {"lines": ["Off by default"], "tone": "good"}},
+          {"edge": "yes", "node": {"lines": ["Compensate:", "replay cache,", "short validity,", "registered IdP", "and ACS only,", "RelayState", "allowlist"]}}
+        ]
+      }}
+    ]
+  }
+}

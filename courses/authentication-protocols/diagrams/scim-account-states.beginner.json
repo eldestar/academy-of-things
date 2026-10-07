@@ -1,0 +1,19 @@
+{
+  "kind": "stages",
+  "id": "scim-account-states",
+  "prefix": "l05b",
+  "title": "An account in the app: active, deactivated, deleted",
+  "desc": "Three states of the app's copy of an account. Active: active is true, which typically means the user can sign in. Deactivated: active is false, which typically means the account is suspended; it still exists, so it can be switched back on. Deleted: the account is gone, and the app must answer 404 for every later request about it, though the standard lets an app keep the data privately. Setting active to false moves the account to deactivated, switching it back on returns it to active, and an account removed for good moves to deleted.",
+  "duration": 14,
+  "legend": {"front": "step forward", "back": "step back", "good": "can sign in"},
+  "stages": [
+    {"title": "Active", "sub": "active = true", "lines": ["typically: the user", "can sign in"], "tone": "good"},
+    {"title": "Deactivated", "sub": "active = false", "lines": ["typically: suspended", "the account still exists"]},
+    {"title": "Deleted", "sub": "the account is gone", "lines": ["404 for every later", "request about it"]}
+  ],
+  "links": [
+    {"from": 0, "to": 1, "label": ["active = false"]},
+    {"from": 1, "to": 0, "label": ["switched back on"], "tone": "back"},
+    {"from": 1, "to": 2, "label": ["removed for", "good"]}
+  ]
+}

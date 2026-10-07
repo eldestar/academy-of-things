@@ -1,0 +1,72 @@
+{
+  "kind": "flow",
+  "id": "leaver-paths",
+  "prefix": "l08e",
+  "title": "A leaver keeps access: which path holds it",
+  "desc": "A tree over places a leaver's access can live. An established SP session is the SP's own, and the SP SHOULD discard its security context at SessionNotOnOrAfter. For a JWT checked locally, local validation never asks the IdP, so the token is good until exp. Separately, introspection (RFC 7662) reports whether a token is active, and revocation (RFC 7009) invalidates tokens from a grant. After SCIM sets active to false, the service provider defines what that means.",
+  "duration": 18,
+  "legend": {
+    "plain": "what the text says"
+  },
+  "root": {
+    "lines": [
+      "Leaver still",
+      "has access:",
+      "what holds it?"
+    ],
+    "children": [
+      {
+        "edge": "SP session",
+        "node": {
+          "lines": [
+            "An established SP",
+            "session is the SP's",
+            "own; the SP SHOULD",
+            "discard its security",
+            "context at",
+            "SessionNotOnOrAfter"
+          ]
+        }
+      },
+      {
+        "edge": "JWT, checked locally",
+        "node": {
+          "lines": [
+            "Good until exp:",
+            "local validation",
+            "never asks the IdP"
+          ]
+        }
+      },
+      {
+        "edge": "introspection",
+        "node": {
+          "lines": [
+            "RFC 7662: reports",
+            "whether a token",
+            "is active"
+          ]
+        }
+      },
+      {
+        "edge": "revocation",
+        "node": {
+          "lines": [
+            "RFC 7009: invalidates",
+            "tokens from a grant"
+          ]
+        }
+      },
+      {
+        "edge": "SCIM active false",
+        "node": {
+          "lines": [
+            "The SP defines",
+            "what active false",
+            "means"
+          ]
+        }
+      }
+    ]
+  }
+}

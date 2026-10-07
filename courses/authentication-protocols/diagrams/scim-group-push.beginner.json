@@ -1,0 +1,28 @@
+{
+  "kind": "flow",
+  "id": "scim-group-push",
+  "prefix": "l05c",
+  "title": "Why an Okta group change does not arrive in the app",
+  "desc": "A chain of three checks. Okta only sends a membership change when the user is in the Okta group, is assigned to the app, and the group is pushed on the Push Groups tab. If the user is not in the group, nothing is sent. If the user is in the group but not assigned to the app, nothing is sent. If the user is in the group and assigned but the group is not pushed, nothing is sent. If all three hold, Okta can send the change.",
+  "duration": 14,
+  "legend": {"front": "the path being traced", "good": "the change can be sent", "bad": "nothing is sent"},
+  "root": {
+    "lines": ["Is the user in", "the Okta group?"],
+    "children": [
+      {"edge": "no", "node": {"lines": ["Not sent: user", "not in the group"], "tone": "bad"}},
+      {"edge": "yes", "node": {
+        "lines": ["Is the user assigned", "to the app?"],
+        "children": [
+          {"edge": "no", "node": {"lines": ["Not sent: user not", "assigned to the app"], "tone": "bad"}},
+          {"edge": "yes", "node": {
+            "lines": ["Is the group pushed", "on Push Groups?"],
+            "children": [
+              {"edge": "no", "node": {"lines": ["Not sent: group", "is not pushed"], "tone": "bad"}},
+              {"edge": "yes", "node": {"lines": ["All three hold:", "Okta can send it"], "tone": "good"}}
+            ]
+          }}
+        ]
+      }}
+    ]
+  }
+}

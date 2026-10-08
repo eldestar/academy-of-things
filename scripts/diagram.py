@@ -54,7 +54,9 @@ import xml.dom.minidom as minidom
 
 W = 760
 FONT = '-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif'
-LO = ".45"
+LO = ".5"
+DOT_SECONDS = 6.0    # a step with a travelling dot: slow enough to follow the dot and read its label
+PLAIN_SECONDS = 4.0  # a step with no dot (a note, a callout, a leaf, a row)
 WORD = {  # estimated px per character at the diagram's text sizes
     "label": 6.6, "note": 6.6, "small": 6.2, "title": 7.2,
 }
@@ -86,7 +88,7 @@ def glyph(P, kind, cx, cy, r=10):
             "bad": f"M{cx - s * .8:.1f},{cy - s * .8:.1f} L{cx + s * .8:.1f},{cy + s * .8:.1f} M{cx + s * .8:.1f},{cy - s * .8:.1f} L{cx - s * .8:.1f},{cy + s * .8:.1f}",
             "partial": f"M{cx - s:.1f},{cy:.1f} L{cx + s:.1f},{cy:.1f}"}[kind]
     return (f'<circle cx="{cx:.0f}" cy="{cy:.0f}" r="{r}" style="fill:var(--{fill})"/>'
-            f'<path d="{mark}" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>')
+            f'<path class="{P}-gl" d="{mark}" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>')
 
 
 def words_for(spec, defaults):
@@ -477,36 +479,43 @@ NOUN = {"sequence": "step", "anatomy": "part", "flow": "path", "stages": "stage"
 
 # ------------------------------------------------------------------- shell
 
-def kf(name, i, N, lo):
-    s, e = i / N * 100, (i + 1) / N * 100
-    if i == 0:
+def kf(name, s, e, lo, first):
+    if first:
         return f"@keyframes {name}{{0%{{opacity:1}}{pct(e)}%{{opacity:1}}{pct(e + .01)}%,100%{{opacity:{lo}}}}}"
     return f"@keyframes {name}{{0%,{pct(s - .01)}%{{opacity:{lo}}}{pct(s)}%{{opacity:1}}{pct(e)}%{{opacity:1}}{pct(e + .01)}%,100%{{opacity:{lo}}}}}"
 
 
 def build(spec):
     P = spec["prefix"]
-    dur = spec.get("duration", 18)
     kind = spec.get("kind", "sequence")
     assert kind in LAYOUTS, f"unknown kind {kind!r}; one of {', '.join(LAYOUTS)}"
     L = LAYOUTS[kind](spec, P)
     slots, H, Wd = L["slots"], L["H"], L.get("W", W)
     N = len(slots)
+    secs = [DOT_SECONDS if s["dot"] else PLAIN_SECONDS for s in slots]
+    dur = max(spec.get("duration", 18), round(sum(secs)))  # the spec's duration is a floor, never a ceiling on readability
+    bounds, acc = [], 0.0
+    for x in secs:
+        bounds.append((acc / sum(secs) * 100, (acc + x) / sum(secs) * 100))
+        acc += x
     has_hl = any(s["hl"] for s in slots)
-    anim = f".{P}-g,.{P}-pk" + (f",.{P}-h" if has_hl else "")
+    # Only shapes fade. Text and badges stay at full opacity, so every label is readable at every moment.
+    shapes = lambda pre: ",".join(f"{pre} {tag}" for tag in ("rect", "line", f"path:not(.{P}-gl)"))
+    anim = f"{shapes(f'.{P}-g')},.{P}-pk" + (f",.{P}-h" if has_hl else "")
 
     css = [f"""<style>
+svg.{P}-flow{{--ink:light-dark(#000000,#ffffff)}}
 .{P}-box{{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}}
 .{P}-hot{{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}}
-.{P}-ttl{{fill:var(--text);font:600 15px {FONT};text-anchor:middle}}
-.{P}-sub{{fill:var(--muted);font:12px {FONT};text-anchor:middle}}
+.{P}-ttl{{fill:var(--ink);font:600 15px {FONT};text-anchor:middle}}
+.{P}-sub{{fill:var(--ink);font:500 12px {FONT};text-anchor:middle}}
 .{P}-life{{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}}
 .{P}-front{{stroke:var(--accent);stroke-width:2;fill:none}}
 .{P}-back{{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}}
 .{P}-bad{{stroke:var(--bad);stroke-width:2;fill:none}}
-.{P}-main{{fill:var(--text);font:600 13px {FONT};text-anchor:middle}}
-.{P}-badt{{fill:var(--bad-text)}}
-.{P}-dim{{fill:var(--muted);font:12px {FONT};text-anchor:middle}}
+.{P}-main{{fill:var(--ink);font:600 13px {FONT};text-anchor:middle}}
+.{P}-badt{{fill:var(--ink)}}
+.{P}-dim{{fill:var(--ink);font:500 12px {FONT};text-anchor:middle}}
 .{P}-badge{{fill:var(--accent)}}
 .{P}-b-back{{fill:var(--muted)}}
 .{P}-b-bad{{fill:var(--bad)}}
@@ -515,14 +524,14 @@ def build(spec):
 .{P}-note{{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}}
 .{P}-note-good{{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}}
 .{P}-note-bad{{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}}
-.{P}-nt{{fill:var(--body);font:12.5px {FONT};text-anchor:middle}}"""]
+.{P}-nt{{fill:var(--ink);font:500 12.5px {FONT};text-anchor:middle}}"""]
     if kind != "sequence":
         css.append(f""".{P}-nest{{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}}
 .{P}-row{{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}}
-.{P}-ttlL{{fill:var(--text);font:600 14px {FONT};text-anchor:start}}
-.{P}-subL{{fill:var(--muted);font:12px {FONT};text-anchor:start}}
-.{P}-dimL{{fill:var(--muted);font:12px {FONT};text-anchor:start}}
-.{P}-dimR{{fill:var(--muted);font:12px {FONT};text-anchor:end}}
+.{P}-ttlL{{fill:var(--ink);font:600 14px {FONT};text-anchor:start}}
+.{P}-subL{{fill:var(--ink);font:500 12px {FONT};text-anchor:start}}
+.{P}-dimL{{fill:var(--ink);font:500 12px {FONT};text-anchor:start}}
+.{P}-dimR{{fill:var(--ink);font:500 12px {FONT};text-anchor:end}}
 .{P}-conn{{stroke:var(--accent);stroke-width:1.5;fill:none}}
 .{P}-edge{{stroke:var(--border-strong);stroke-width:1.75;fill:none}}
 .{P}-hl{{fill:none;stroke:var(--accent);stroke-width:3}}
@@ -530,10 +539,12 @@ def build(spec):
     css.append(f""".{P}-pk{{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:{dur}s;animation-timing-function:linear;animation-iteration-count:infinite}}
 .{P}-pk.{P}-pkback{{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}}
 .{P}-pk.{P}-pkbad{{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}}
-.{P}-g{{opacity:{LO};animation-duration:{dur}s;animation-timing-function:linear;animation-iteration-count:infinite}}""")
+.{P}-wrap{{margin:20px 0}}
+@media (min-width:801px){{.{P}-wrap{{margin-left:-44px;margin-right:-44px}}}}
+{shapes(f".{P}-g")}{{opacity:{LO};animation-duration:{dur}s;animation-timing-function:linear;animation-iteration-count:infinite}}""")
     if has_hl:
         css.append(f".{P}-h{{opacity:0;animation-duration:{dur}s;animation-timing-function:linear;animation-iteration-count:infinite}}")
-    hover = f"svg.{P}-flow:hover .{P}-g,svg.{P}-flow:hover .{P}-pk" + (f",svg.{P}-flow:hover .{P}-h" if has_hl else "")
+    hover = shapes(f"svg.{P}-flow:hover .{P}-g") + f",svg.{P}-flow:hover .{P}-pk" + (f",svg.{P}-flow:hover .{P}-h" if has_hl else "")
     paused = ",".join(f".{P}-cb:checked ~ .{P}-box {sel}" for sel in anim.split(","))
     css.append(f"""{hover}{{animation-play-state:paused}}
 .{P}-cb{{position:absolute;opacity:0;width:1px;height:1px;margin:0}}
@@ -542,19 +553,20 @@ def build(spec):
 .{P}-cb:focus-visible + .{P}-btn{{outline:2px solid var(--accent);outline-offset:2px}}
 .{P}-cb:checked + .{P}-btn .{P}-off,.{P}-cb:not(:checked) + .{P}-btn .{P}-on{{display:none}}
 {paused}{{animation-play-state:paused}}
-@media (prefers-reduced-motion:reduce){{.{P}-g{{animation:none;opacity:1}}.{P}-pk{{animation:none;display:none}}{f".{P}-h{{animation:none;opacity:0}}" if has_hl else ""}.{P}-btn{{display:none}}}}""")
+@media (prefers-reduced-motion:reduce){{{shapes(f".{P}-g")}{{animation:none;opacity:1}}.{P}-pk{{animation:none;display:none}}{f".{P}-h{{animation:none;opacity:0}}" if has_hl else ""}.{P}-btn{{display:none}}}}""")
     for i, s in enumerate(slots):
         rule = ""
         if s["dim"]:
-            css.append(kf(f"{P}-g{i}", i, N, LO))
-            rule += f".{P}-g{i}{{animation-name:{P}-g{i}}}"
+            css.append(kf(f"{P}-g{i}", *bounds[i], LO, i == 0))
+            rule += f"{shapes(f'.{P}-g{i}')}{{animation-name:{P}-g{i}}}"
         if s["dot"]:
-            sx, ex = i / N * 100, (i + 1) / N * 100
+            sx, ex = bounds[i]
+            tx = sx + (ex - sx) * 0.8  # travel for 80% of the step, then rest at the tip
             dx = s["dot"][1]
-            css.append(f"@keyframes {P}-p{i}{{0%,{pct(sx - .01)}%{{opacity:0;transform:translateX(0)}}{pct(sx)}%{{opacity:1;transform:translateX(0)}}{pct(ex)}%{{opacity:1;transform:translateX({dx:.0f}px)}}{pct(ex + .01)}%,100%{{opacity:0;transform:translateX({dx:.0f}px)}}}}")
+            css.append(f"@keyframes {P}-p{i}{{0%,{pct(sx - .01)}%{{opacity:0;transform:translateX(0)}}{pct(sx)}%{{opacity:1;transform:translateX(0)}}{pct(tx)}%{{opacity:1;transform:translateX({dx:.0f}px)}}{pct(ex)}%{{opacity:1;transform:translateX({dx:.0f}px)}}{pct(ex + .01)}%,100%{{opacity:0;transform:translateX({dx:.0f}px)}}}}")
             rule += f".{P}-p{i}{{animation-name:{P}-p{i}}}"
         if s["hl"]:
-            css.append(kf(f"{P}-h{i}", i, N, "0"))
+            css.append(kf(f"{P}-h{i}", *bounds[i], "0", i == 0))
             rule += f".{P}-h{i}{{animation-name:{P}-h{i}}}"
         css.append(rule)
     css.append("</style>")
@@ -603,12 +615,12 @@ def build(spec):
     # A real checkbox styled as a button: keyboard operable (Tab, Space) with no script, so a
     # keyboard user can pause moving content (WCAG 2.2.2). Hover still pauses as well.
     svg = (
-        '<div style="position:relative;margin:20px 0">\n'
+        f'<div class="{P}-wrap" style="position:relative">\n'
         f'<input type="checkbox" id="{P}-pause" class="{P}-cb" />'
         f'<label for="{P}-pause" class="{P}-btn"><span class="{P}-off">Pause animation</span><span class="{P}-on">Play animation</span></label>\n'
         f'<div class="{P}-box" style="overflow-x:auto">\n'
         f'<svg class="{P}-flow" viewBox="0 0 {Wd} {H}" role="img" aria-labelledby="{P}-t {P}-d" '
-        'style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">\n'
+        f'style="width:{Wd}px;max-width:100%;min-width:{int(min(Wd * 0.92, 760))}px;height:auto;display:block;margin:0 auto">\n'
         f'<title id="{P}-t">{esc(spec["title"])}</title>\n'
         f'<desc id="{P}-d">{esc(desc)} The diagram highlights each {noun} in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>\n'
         + "\n".join(css) + "\n" + "\n".join(body) + "\n</svg>\n</div>\n</div>"

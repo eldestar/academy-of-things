@@ -25,24 +25,25 @@ The documented events are `dsync.activated`, `dsync.deleted`, `dsync.user.create
 ## Deprovisioning is three different events
 
 <!-- diagram:scim-lifecycle -->
-<div style="position:relative;margin:20px 0">
+<div class="ds-wrap" style="position:relative">
 <input type="checkbox" id="ds-pause" class="ds-cb" /><label for="ds-pause" class="ds-btn"><span class="ds-off">Pause animation</span><span class="ds-on">Play animation</span></label>
 <div class="ds-box" style="overflow-x:auto">
-<svg class="ds-flow" viewBox="0 0 760 803" role="img" aria-labelledby="ds-t ds-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="ds-flow" viewBox="0 0 760 803" role="img" aria-labelledby="ds-t ds-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="ds-t">SCIM provisioning and deprovisioning through WorkOS</title>
 <desc id="ds-d">The IdP provisions a user to WorkOS over SCIM, and WorkOS sends user and group events to the vendor app, which upserts them. When the admin deactivates the user, Okta sets active to false. In the default secure flow WorkOS sends dsync.user.deleted; in the custom flow it sends dsync.user.updated with an inactive state plus dsync.group.user_removed. The vendor must revoke sessions and offboard. A late retry of an older active update can resurrect the user unless the handler keeps a tombstone with the deprovision time. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.ds-flow{--ink:light-dark(#000000,#ffffff)}
 .ds-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .ds-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.ds-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.ds-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .ds-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .ds-front{stroke:var(--accent);stroke-width:2;fill:none}
 .ds-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .ds-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.ds-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.ds-badt{fill:var(--bad-text)}
-.ds-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-badt{fill:var(--ink)}
+.ds-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .ds-badge{fill:var(--accent)}
 .ds-b-back{fill:var(--muted)}
 .ds-b-bad{fill:var(--bad)}
@@ -51,41 +52,43 @@ The documented events are `dsync.activated`, `dsync.deleted`, `dsync.user.create
 .ds-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .ds-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .ds-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.ds-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.ds-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.ds-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.ds-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:44s;animation-timing-function:linear;animation-iteration-count:infinite}
 .ds-pk.ds-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .ds-pk.ds-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.ds-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.ds-flow:hover .ds-g,svg.ds-flow:hover .ds-pk{animation-play-state:paused}
+.ds-wrap{margin:20px 0}
+@media (min-width:801px){.ds-wrap{margin-left:-44px;margin-right:-44px}}
+.ds-g rect,.ds-g line,.ds-g path:not(.ds-gl){opacity:.5;animation-duration:44s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.ds-flow:hover .ds-g rect,svg.ds-flow:hover .ds-g line,svg.ds-flow:hover .ds-g path:not(.ds-gl),svg.ds-flow:hover .ds-pk{animation-play-state:paused}
 .ds-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .ds-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .ds-btn:hover{background:var(--hover)}
 .ds-cb:focus-visible + .ds-btn{outline:2px solid var(--accent);outline-offset:2px}
 .ds-cb:checked + .ds-btn .ds-off,.ds-cb:not(:checked) + .ds-btn .ds-on{display:none}
-.ds-cb:checked ~ .ds-box .ds-g,.ds-cb:checked ~ .ds-box .ds-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.ds-g{animation:none;opacity:1}.ds-pk{animation:none;display:none}.ds-btn{display:none}}
-@keyframes ds-g0{0%{opacity:1}12.5%{opacity:1}12.51%,100%{opacity:.45}}
-@keyframes ds-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12.5%{opacity:1;transform:translateX(236px)}12.51%,100%{opacity:0;transform:translateX(236px)}}
-.ds-g0{animation-name:ds-g0}.ds-p0{animation-name:ds-p0}
-@keyframes ds-g1{0%,12.49%{opacity:.45}12.5%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-@keyframes ds-p1{0%,12.49%{opacity:0;transform:translateX(0)}12.5%{opacity:1;transform:translateX(0)}25%{opacity:1;transform:translateX(236px)}25.01%,100%{opacity:0;transform:translateX(236px)}}
-.ds-g1{animation-name:ds-g1}.ds-p1{animation-name:ds-p1}
-@keyframes ds-g2{0%,24.99%{opacity:.45}25%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.45}}
-@keyframes ds-p2{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}37.5%{opacity:1;transform:translateX(236px)}37.51%,100%{opacity:0;transform:translateX(236px)}}
-.ds-g2{animation-name:ds-g2}.ds-p2{animation-name:ds-p2}
-@keyframes ds-g3{0%,37.49%{opacity:.45}37.5%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-@keyframes ds-p3{0%,37.49%{opacity:0;transform:translateX(0)}37.5%{opacity:1;transform:translateX(0)}50%{opacity:1;transform:translateX(236px)}50.01%,100%{opacity:0;transform:translateX(236px)}}
-.ds-g3{animation-name:ds-g3}.ds-p3{animation-name:ds-p3}
-@keyframes ds-g4{0%,49.99%{opacity:.45}50%{opacity:1}62.5%{opacity:1}62.51%,100%{opacity:.45}}
-@keyframes ds-p4{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}62.5%{opacity:1;transform:translateX(236px)}62.51%,100%{opacity:0;transform:translateX(236px)}}
-.ds-g4{animation-name:ds-g4}.ds-p4{animation-name:ds-p4}
-@keyframes ds-g5{0%,62.49%{opacity:.45}62.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-.ds-g5{animation-name:ds-g5}
-@keyframes ds-g6{0%,74.99%{opacity:.45}75%{opacity:1}87.5%{opacity:1}87.51%,100%{opacity:.45}}
-@keyframes ds-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87.5%{opacity:1;transform:translateX(236px)}87.51%,100%{opacity:0;transform:translateX(236px)}}
-.ds-g6{animation-name:ds-g6}.ds-p6{animation-name:ds-p6}
-@keyframes ds-g7{0%,87.49%{opacity:.45}87.5%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.ds-g7{animation-name:ds-g7}
+.ds-cb:checked ~ .ds-box .ds-g rect,.ds-cb:checked ~ .ds-box .ds-g line,.ds-cb:checked ~ .ds-box .ds-g path:not(.ds-gl),.ds-cb:checked ~ .ds-box .ds-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.ds-g rect,.ds-g line,.ds-g path:not(.ds-gl){animation:none;opacity:1}.ds-pk{animation:none;display:none}.ds-btn{display:none}}
+@keyframes ds-g0{0%{opacity:1}13.636%{opacity:1}13.646%,100%{opacity:.5}}
+@keyframes ds-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}10.909%{opacity:1;transform:translateX(236px)}13.636%{opacity:1;transform:translateX(236px)}13.646%,100%{opacity:0;transform:translateX(236px)}}
+.ds-g0 rect,.ds-g0 line,.ds-g0 path:not(.ds-gl){animation-name:ds-g0}.ds-p0{animation-name:ds-p0}
+@keyframes ds-g1{0%,13.626%{opacity:.5}13.636%{opacity:1}27.273%{opacity:1}27.283%,100%{opacity:.5}}
+@keyframes ds-p1{0%,13.626%{opacity:0;transform:translateX(0)}13.636%{opacity:1;transform:translateX(0)}24.545%{opacity:1;transform:translateX(236px)}27.273%{opacity:1;transform:translateX(236px)}27.283%,100%{opacity:0;transform:translateX(236px)}}
+.ds-g1 rect,.ds-g1 line,.ds-g1 path:not(.ds-gl){animation-name:ds-g1}.ds-p1{animation-name:ds-p1}
+@keyframes ds-g2{0%,27.263%{opacity:.5}27.273%{opacity:1}40.909%{opacity:1}40.919%,100%{opacity:.5}}
+@keyframes ds-p2{0%,27.263%{opacity:0;transform:translateX(0)}27.273%{opacity:1;transform:translateX(0)}38.182%{opacity:1;transform:translateX(236px)}40.909%{opacity:1;transform:translateX(236px)}40.919%,100%{opacity:0;transform:translateX(236px)}}
+.ds-g2 rect,.ds-g2 line,.ds-g2 path:not(.ds-gl){animation-name:ds-g2}.ds-p2{animation-name:ds-p2}
+@keyframes ds-g3{0%,40.899%{opacity:.5}40.909%{opacity:1}54.545%{opacity:1}54.555%,100%{opacity:.5}}
+@keyframes ds-p3{0%,40.899%{opacity:0;transform:translateX(0)}40.909%{opacity:1;transform:translateX(0)}51.818%{opacity:1;transform:translateX(236px)}54.545%{opacity:1;transform:translateX(236px)}54.555%,100%{opacity:0;transform:translateX(236px)}}
+.ds-g3 rect,.ds-g3 line,.ds-g3 path:not(.ds-gl){animation-name:ds-g3}.ds-p3{animation-name:ds-p3}
+@keyframes ds-g4{0%,54.535%{opacity:.5}54.545%{opacity:1}68.182%{opacity:1}68.192%,100%{opacity:.5}}
+@keyframes ds-p4{0%,54.535%{opacity:0;transform:translateX(0)}54.545%{opacity:1;transform:translateX(0)}65.455%{opacity:1;transform:translateX(236px)}68.182%{opacity:1;transform:translateX(236px)}68.192%,100%{opacity:0;transform:translateX(236px)}}
+.ds-g4 rect,.ds-g4 line,.ds-g4 path:not(.ds-gl){animation-name:ds-g4}.ds-p4{animation-name:ds-p4}
+@keyframes ds-g5{0%,68.172%{opacity:.5}68.182%{opacity:1}77.273%{opacity:1}77.283%,100%{opacity:.5}}
+.ds-g5 rect,.ds-g5 line,.ds-g5 path:not(.ds-gl){animation-name:ds-g5}
+@keyframes ds-g6{0%,77.263%{opacity:.5}77.273%{opacity:1}90.909%{opacity:1}90.919%,100%{opacity:.5}}
+@keyframes ds-p6{0%,77.263%{opacity:0;transform:translateX(0)}77.273%{opacity:1;transform:translateX(0)}88.182%{opacity:1;transform:translateX(236px)}90.909%{opacity:1;transform:translateX(236px)}90.919%,100%{opacity:0;transform:translateX(236px)}}
+.ds-g6 rect,.ds-g6 line,.ds-g6 path:not(.ds-gl){animation-name:ds-g6}.ds-p6{animation-name:ds-p6}
+@keyframes ds-g7{0%,90.899%{opacity:.5}90.909%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.ds-g7 rect,.ds-g7 line,.ds-g7 path:not(.ds-gl){animation-name:ds-g7}
 </style>
 <defs>
 <marker id="ds-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>

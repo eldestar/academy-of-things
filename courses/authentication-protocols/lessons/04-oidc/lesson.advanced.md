@@ -7,24 +7,25 @@ You are building or reviewing the relying-party side: a login callback, an API g
 The code flow is: authentication request (`openid` scope, `state`, optional `nonce`, and `code_challenge` with `code_challenge_method=S256` for a public client), redirect with `code`, direct token request (client authentication, or `code_verifier` for a public client), token response with `id_token` and `access_token`, ID token validation, optional UserInfo.
 
 <!-- diagram:oidc-code-flow -->
-<div style="position:relative;margin:20px 0">
+<div class="oi-wrap" style="position:relative">
 <input type="checkbox" id="oi-pause" class="oi-cb" /><label for="oi-pause" class="oi-btn"><span class="oi-off">Pause animation</span><span class="oi-on">Play animation</span></label>
 <div class="oi-box" style="overflow-x:auto">
-<svg class="oi-flow" viewBox="0 0 760 761" role="img" aria-labelledby="oi-t oi-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="oi-flow" viewBox="0 0 760 761" role="img" aria-labelledby="oi-t oi-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="oi-t">The code flow with the obligations the spec and RFC 9700 put on each hop</title>
 <desc id="oi-d">Two parties: the client on the relying-party side and the OP. Step 1: the authentication request, where redirect_uri is compared by simple string comparison, nonce is optional, and a public client uses PKCE with S256. Step 2: the callback carries code and state, and the client checks state. Step 3: the token request, where a confidential client authenticates or a public client sends the PKCE code_verifier; the OP must enforce the verifier against the challenge when one was sent, and the response carries id_token and access_token and must send Cache-Control no-store. Step 4: ID token validation under section 3.1.3.7; for a token received directly from the token endpoint, TLS may replace the signature check, for that one hop only. Step 5, optional: UserInfo, where sub must equal the ID token's sub or the response is discarded, because the ID token is the authority. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.oi-flow{--ink:light-dark(#000000,#ffffff)}
 .oi-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .oi-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.oi-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oi-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oi-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oi-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .oi-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .oi-front{stroke:var(--accent);stroke-width:2;fill:none}
 .oi-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .oi-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.oi-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oi-badt{fill:var(--bad-text)}
-.oi-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oi-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oi-badt{fill:var(--ink)}
+.oi-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .oi-badge{fill:var(--accent)}
 .oi-b-back{fill:var(--muted)}
 .oi-b-bad{fill:var(--bad)}
@@ -33,33 +34,35 @@ The code flow is: authentication request (`openid` scope, `state`, optional `non
 .oi-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .oi-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .oi-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.oi-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oi-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.oi-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oi-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
 .oi-pk.oi-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .oi-pk.oi-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.oi-g{opacity:.45;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.oi-flow:hover .oi-g,svg.oi-flow:hover .oi-pk{animation-play-state:paused}
+.oi-wrap{margin:20px 0}
+@media (min-width:801px){.oi-wrap{margin-left:-44px;margin-right:-44px}}
+.oi-g rect,.oi-g line,.oi-g path:not(.oi-gl){opacity:.5;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.oi-flow:hover .oi-g rect,svg.oi-flow:hover .oi-g line,svg.oi-flow:hover .oi-g path:not(.oi-gl),svg.oi-flow:hover .oi-pk{animation-play-state:paused}
 .oi-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .oi-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .oi-btn:hover{background:var(--hover)}
 .oi-cb:focus-visible + .oi-btn{outline:2px solid var(--accent);outline-offset:2px}
 .oi-cb:checked + .oi-btn .oi-off,.oi-cb:not(:checked) + .oi-btn .oi-on{display:none}
-.oi-cb:checked ~ .oi-box .oi-g,.oi-cb:checked ~ .oi-box .oi-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.oi-g{animation:none;opacity:1}.oi-pk{animation:none;display:none}.oi-btn{display:none}}
-@keyframes oi-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
-@keyframes oi-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(506px)}20.01%,100%{opacity:0;transform:translateX(506px)}}
-.oi-g0{animation-name:oi-g0}.oi-p0{animation-name:oi-p0}
-@keyframes oi-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
-@keyframes oi-p1{0%,19.99%{opacity:0;transform:translateX(0)}20%{opacity:1;transform:translateX(0)}40%{opacity:1;transform:translateX(-506px)}40.01%,100%{opacity:0;transform:translateX(-506px)}}
-.oi-g1{animation-name:oi-g1}.oi-p1{animation-name:oi-p1}
-@keyframes oi-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
-@keyframes oi-p2{0%,39.99%{opacity:0;transform:translateX(0)}40%{opacity:1;transform:translateX(0)}60%{opacity:1;transform:translateX(-506px)}60.01%,100%{opacity:0;transform:translateX(-506px)}}
-.oi-g2{animation-name:oi-g2}.oi-p2{animation-name:oi-p2}
-@keyframes oi-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
-.oi-g3{animation-name:oi-g3}
-@keyframes oi-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-@keyframes oi-p4{0%,79.99%{opacity:0;transform:translateX(0)}80%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(-506px)}100.01%,100%{opacity:0;transform:translateX(-506px)}}
-.oi-g4{animation-name:oi-g4}.oi-p4{animation-name:oi-p4}
+.oi-cb:checked ~ .oi-box .oi-g rect,.oi-cb:checked ~ .oi-box .oi-g line,.oi-cb:checked ~ .oi-box .oi-g path:not(.oi-gl),.oi-cb:checked ~ .oi-box .oi-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.oi-g rect,.oi-g line,.oi-g path:not(.oi-gl){animation:none;opacity:1}.oi-pk{animation:none;display:none}.oi-btn{display:none}}
+@keyframes oi-g0{0%{opacity:1}21.429%{opacity:1}21.439%,100%{opacity:.5}}
+@keyframes oi-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}17.143%{opacity:1;transform:translateX(506px)}21.429%{opacity:1;transform:translateX(506px)}21.439%,100%{opacity:0;transform:translateX(506px)}}
+.oi-g0 rect,.oi-g0 line,.oi-g0 path:not(.oi-gl){animation-name:oi-g0}.oi-p0{animation-name:oi-p0}
+@keyframes oi-g1{0%,21.419%{opacity:.5}21.429%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.5}}
+@keyframes oi-p1{0%,21.419%{opacity:0;transform:translateX(0)}21.429%{opacity:1;transform:translateX(0)}38.571%{opacity:1;transform:translateX(-506px)}42.857%{opacity:1;transform:translateX(-506px)}42.867%,100%{opacity:0;transform:translateX(-506px)}}
+.oi-g1 rect,.oi-g1 line,.oi-g1 path:not(.oi-gl){animation-name:oi-g1}.oi-p1{animation-name:oi-p1}
+@keyframes oi-g2{0%,42.847%{opacity:.5}42.857%{opacity:1}64.286%{opacity:1}64.296%,100%{opacity:.5}}
+@keyframes oi-p2{0%,42.847%{opacity:0;transform:translateX(0)}42.857%{opacity:1;transform:translateX(0)}60%{opacity:1;transform:translateX(-506px)}64.286%{opacity:1;transform:translateX(-506px)}64.296%,100%{opacity:0;transform:translateX(-506px)}}
+.oi-g2 rect,.oi-g2 line,.oi-g2 path:not(.oi-gl){animation-name:oi-g2}.oi-p2{animation-name:oi-p2}
+@keyframes oi-g3{0%,64.276%{opacity:.5}64.286%{opacity:1}78.571%{opacity:1}78.581%,100%{opacity:.5}}
+.oi-g3 rect,.oi-g3 line,.oi-g3 path:not(.oi-gl){animation-name:oi-g3}
+@keyframes oi-g4{0%,78.561%{opacity:.5}78.571%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+@keyframes oi-p4{0%,78.561%{opacity:0;transform:translateX(0)}78.571%{opacity:1;transform:translateX(0)}95.714%{opacity:1;transform:translateX(-506px)}100%{opacity:1;transform:translateX(-506px)}100.01%,100%{opacity:0;transform:translateX(-506px)}}
+.oi-g4 rect,.oi-g4 line,.oi-g4 path:not(.oi-gl){animation-name:oi-g4}.oi-p4{animation-name:oi-p4}
 </style>
 <defs>
 <marker id="oi-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -148,24 +151,25 @@ Left to you: the `iat` window ("client specific"), how to detect nonce replay, c
 
 - **Algorithm confusion.** RFC 8725 section 2.1: `alg` can be changed to `none`, or RS256 changed to HS256 so the RSA public key is used as the HMAC secret. Mitigation (sections 3.1 and 3.2): the caller specifies the allowed algorithms, the library uses no others, and each key is used with exactly one algorithm. RFC 7515 section 5.2: a JWS whose algorithm is not acceptable to the application should be treated as invalid even if its signature validates. The forger writes the whole token, claims included, so `iss` and `aud` checks cannot compensate. Core makes RS256 the default `alg` (Discovery requires OPs to list it), but a default does not stop a verifier believing the header.
 <!-- diagram:oidc-alg-confusion -->
-<div style="position:relative;margin:20px 0">
+<div class="l04h-wrap" style="position:relative">
 <input type="checkbox" id="l04h-pause" class="l04h-cb" /><label for="l04h-pause" class="l04h-btn"><span class="l04h-off">Pause animation</span><span class="l04h-on">Play animation</span></label>
 <div class="l04h-box" style="overflow-x:auto">
-<svg class="l04h-flow" viewBox="0 0 760 651" role="img" aria-labelledby="l04h-t l04h-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l04h-flow" viewBox="0 0 760 651" role="img" aria-labelledby="l04h-t l04h-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l04h-t">Algorithm confusion: a verifier that believes the header versus one that does not</title>
 <desc id="l04h-d">Three parties: a verifier that trusts the header's alg, a forger, and a validator whose caller specifies the allowed algorithms. Step 1: the forger sends a token with alg none, or RS256 relabelled HS256 so the RSA public key is the HMAC secret; the forger writes the whole token, claims included, so iss and aud checks cannot compensate. The verifier that trusts the header accepts both forgeries, confirmed by the author with an unshown verifier. Step 2: the same token goes to the validator, which rejects it because its algorithm is not allowed; RFC 7515 says such a token should be treated as invalid even if its signature validates. The controls are that the caller lists the allowed algorithms, the library uses no others, and each key is used with exactly one algorithm. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l04h-flow{--ink:light-dark(#000000,#ffffff)}
 .l04h-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l04h-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l04h-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l04h-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04h-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04h-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l04h-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l04h-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l04h-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l04h-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l04h-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l04h-badt{fill:var(--bad-text)}
-.l04h-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04h-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04h-badt{fill:var(--ink)}
+.l04h-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l04h-badge{fill:var(--accent)}
 .l04h-b-back{fill:var(--muted)}
 .l04h-b-bad{fill:var(--bad)}
@@ -174,33 +178,35 @@ Left to you: the `iat` window ("client specific"), how to detect nonce replay, c
 .l04h-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l04h-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l04h-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l04h-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l04h-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l04h-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04h-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l04h-pk.l04h-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l04h-pk.l04h-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l04h-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l04h-flow:hover .l04h-g,svg.l04h-flow:hover .l04h-pk{animation-play-state:paused}
+.l04h-wrap{margin:20px 0}
+@media (min-width:801px){.l04h-wrap{margin-left:-44px;margin-right:-44px}}
+.l04h-g rect,.l04h-g line,.l04h-g path:not(.l04h-gl){opacity:.5;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l04h-flow:hover .l04h-g rect,svg.l04h-flow:hover .l04h-g line,svg.l04h-flow:hover .l04h-g path:not(.l04h-gl),svg.l04h-flow:hover .l04h-pk{animation-play-state:paused}
 .l04h-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l04h-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l04h-btn:hover{background:var(--hover)}
 .l04h-cb:focus-visible + .l04h-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l04h-cb:checked + .l04h-btn .l04h-off,.l04h-cb:not(:checked) + .l04h-btn .l04h-on{display:none}
-.l04h-cb:checked ~ .l04h-box .l04h-g,.l04h-cb:checked ~ .l04h-box .l04h-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l04h-g{animation:none;opacity:1}.l04h-pk{animation:none;display:none}.l04h-btn{display:none}}
-@keyframes l04h-g0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:.45}}
-@keyframes l04h-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}16.667%{opacity:1;transform:translateX(-236px)}16.677%,100%{opacity:0;transform:translateX(-236px)}}
-.l04h-g0{animation-name:l04h-g0}.l04h-p0{animation-name:l04h-p0}
-@keyframes l04h-g1{0%,16.657%{opacity:.45}16.667%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-.l04h-g1{animation-name:l04h-g1}
-@keyframes l04h-g2{0%,33.323%{opacity:.45}33.333%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-.l04h-g2{animation-name:l04h-g2}
-@keyframes l04h-g3{0%,49.99%{opacity:.45}50%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-@keyframes l04h-p3{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}66.667%{opacity:1;transform:translateX(236px)}66.677%,100%{opacity:0;transform:translateX(236px)}}
-.l04h-g3{animation-name:l04h-g3}.l04h-p3{animation-name:l04h-p3}
-@keyframes l04h-g4{0%,66.657%{opacity:.45}66.667%{opacity:1}83.333%{opacity:1}83.343%,100%{opacity:.45}}
-.l04h-g4{animation-name:l04h-g4}
-@keyframes l04h-g5{0%,83.323%{opacity:.45}83.333%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l04h-g5{animation-name:l04h-g5}
+.l04h-cb:checked ~ .l04h-box .l04h-g rect,.l04h-cb:checked ~ .l04h-box .l04h-g line,.l04h-cb:checked ~ .l04h-box .l04h-g path:not(.l04h-gl),.l04h-cb:checked ~ .l04h-box .l04h-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l04h-g rect,.l04h-g line,.l04h-g path:not(.l04h-gl){animation:none;opacity:1}.l04h-pk{animation:none;display:none}.l04h-btn{display:none}}
+@keyframes l04h-g0{0%{opacity:1}21.429%{opacity:1}21.439%,100%{opacity:.5}}
+@keyframes l04h-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}17.143%{opacity:1;transform:translateX(-236px)}21.429%{opacity:1;transform:translateX(-236px)}21.439%,100%{opacity:0;transform:translateX(-236px)}}
+.l04h-g0 rect,.l04h-g0 line,.l04h-g0 path:not(.l04h-gl){animation-name:l04h-g0}.l04h-p0{animation-name:l04h-p0}
+@keyframes l04h-g1{0%,21.419%{opacity:.5}21.429%{opacity:1}35.714%{opacity:1}35.724%,100%{opacity:.5}}
+.l04h-g1 rect,.l04h-g1 line,.l04h-g1 path:not(.l04h-gl){animation-name:l04h-g1}
+@keyframes l04h-g2{0%,35.704%{opacity:.5}35.714%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
+.l04h-g2 rect,.l04h-g2 line,.l04h-g2 path:not(.l04h-gl){animation-name:l04h-g2}
+@keyframes l04h-g3{0%,49.99%{opacity:.5}50%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.5}}
+@keyframes l04h-p3{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}67.143%{opacity:1;transform:translateX(236px)}71.429%{opacity:1;transform:translateX(236px)}71.439%,100%{opacity:0;transform:translateX(236px)}}
+.l04h-g3 rect,.l04h-g3 line,.l04h-g3 path:not(.l04h-gl){animation-name:l04h-g3}.l04h-p3{animation-name:l04h-p3}
+@keyframes l04h-g4{0%,71.419%{opacity:.5}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.5}}
+.l04h-g4 rect,.l04h-g4 line,.l04h-g4 path:not(.l04h-gl){animation-name:l04h-g4}
+@keyframes l04h-g5{0%,85.704%{opacity:.5}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l04h-g5 rect,.l04h-g5 line,.l04h-g5 path:not(.l04h-gl){animation-name:l04h-g5}
 </style>
 <defs>
 <marker id="l04h-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -274,24 +280,25 @@ Core section 10.1.1: the signer publishes a JWK Set at `jwks_uri`, names the sig
 Design advice (mine, not from the specs): do not answer an unknown `kid` by trying every cached key, since a newly published key is not in the cache; treat the JWKS as a TTL cache plus a refresh-on-miss, and put a cooldown on refresh-on-miss. Without one, anyone can send tokens with random `kid` values and make you fetch the issuer's JWKS on every request. Fetch only from the configured issuer's `jwks_uri`; if a refresh fails, keep serving from the cache while it is within its TTL, and reject any token whose `kid` you cannot resolve.
 
 <!-- diagram:oidc-kid-resolution -->
-<div style="position:relative;margin:20px 0">
+<div class="l04i-wrap" style="position:relative">
 <input type="checkbox" id="l04i-pause" class="l04i-cb" /><label for="l04i-pause" class="l04i-btn"><span class="l04i-off">Pause animation</span><span class="l04i-on">Play animation</span></label>
 <div class="l04i-box" style="overflow-x:auto">
-<svg class="l04i-flow" viewBox="0 0 760 484" role="img" aria-labelledby="l04i-t l04i-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l04i-flow" viewBox="0 0 760 484" role="img" aria-labelledby="l04i-t l04i-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l04i-t">Resolving a kid: the lesson's cache design</title>
 <desc id="l04i-d">A decision tree for a token that arrives with a kid. If the kid is in the cache, verify with that key. If not, check whether the refresh-on-miss cooldown is still running; if it is, reject because the kid cannot be resolved. If the cooldown is not running, refetch from the configured issuer's jwks_uri; if the kid is now listed, verify with the new key, and if it is not listed or the refresh failed, reject. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l04i-flow{--ink:light-dark(#000000,#ffffff)}
 .l04i-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l04i-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l04i-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l04i-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04i-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04i-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l04i-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l04i-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l04i-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l04i-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l04i-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l04i-badt{fill:var(--bad-text)}
-.l04i-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04i-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04i-badt{fill:var(--ink)}
+.l04i-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l04i-badge{fill:var(--accent)}
 .l04i-b-back{fill:var(--muted)}
 .l04i-b-bad{fill:var(--bad)}
@@ -300,13 +307,13 @@ Design advice (mine, not from the specs): do not answer an unknown `kid` by tryi
 .l04i-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l04i-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l04i-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l04i-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04i-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l04i-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l04i-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l04i-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l04i-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l04i-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l04i-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l04i-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l04i-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l04i-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l04i-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l04i-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l04i-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l04i-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -314,16 +321,18 @@ Design advice (mine, not from the specs): do not answer an unknown `kid` by tryi
 .l04i-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l04i-pk.l04i-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l04i-pk.l04i-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l04i-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l04i-wrap{margin:20px 0}
+@media (min-width:801px){.l04i-wrap{margin-left:-44px;margin-right:-44px}}
+.l04i-g rect,.l04i-g line,.l04i-g path:not(.l04i-gl){opacity:.5;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l04i-h{opacity:0;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l04i-flow:hover .l04i-g,svg.l04i-flow:hover .l04i-pk,svg.l04i-flow:hover .l04i-h{animation-play-state:paused}
+svg.l04i-flow:hover .l04i-g rect,svg.l04i-flow:hover .l04i-g line,svg.l04i-flow:hover .l04i-g path:not(.l04i-gl),svg.l04i-flow:hover .l04i-pk,svg.l04i-flow:hover .l04i-h{animation-play-state:paused}
 .l04i-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l04i-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l04i-btn:hover{background:var(--hover)}
 .l04i-cb:focus-visible + .l04i-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l04i-cb:checked + .l04i-btn .l04i-off,.l04i-cb:not(:checked) + .l04i-btn .l04i-on{display:none}
-.l04i-cb:checked ~ .l04i-box .l04i-g,.l04i-cb:checked ~ .l04i-box .l04i-pk,.l04i-cb:checked ~ .l04i-box .l04i-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l04i-g{animation:none;opacity:1}.l04i-pk{animation:none;display:none}.l04i-h{animation:none;opacity:0}.l04i-btn{display:none}}
+.l04i-cb:checked ~ .l04i-box .l04i-g rect,.l04i-cb:checked ~ .l04i-box .l04i-g line,.l04i-cb:checked ~ .l04i-box .l04i-g path:not(.l04i-gl),.l04i-cb:checked ~ .l04i-box .l04i-pk,.l04i-cb:checked ~ .l04i-box .l04i-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l04i-g rect,.l04i-g line,.l04i-g path:not(.l04i-gl){animation:none;opacity:1}.l04i-pk{animation:none;display:none}.l04i-h{animation:none;opacity:0}.l04i-btn{display:none}}
 @keyframes l04i-h0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:0}}
 .l04i-h0{animation-name:l04i-h0}
 @keyframes l04i-h1{0%,24.99%{opacity:0}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}
@@ -415,24 +424,25 @@ RFC 8725 section 3.8: the application MUST validate that the keys used belong to
 Back-channel logout: the OP POSTs `logout_token` (form-encoded) to a registered URI. Validate it like an ID token (`none` forbidden), then require `events` containing `http://schemas.openid.net/event/backchannel-logout`, either `sub` or `sid`, and no `nonce`. Checking `jti` for replay is optional. With `sid`, end that session; with only `sub`, end all of that user's sessions at the app. Answer 200 on success, 400 on invalid or failed. Refresh tokens issued without `offline_access` SHOULD be revoked. The OP should not retransmit except after recoverable errors, so make the handler idempotent: a user who is already logged out counts as success. Limits: the URI must be reachable from the OP, an ID token already issued stays valid until `exp`, and Core section 16.18 notes access tokens may not be revocable. The spec describes delivery and the app's actions, and I found no list of events that make an OP send one, so whether an admin action does is OP-specific (not verified for Okta or Entra).
 
 <!-- diagram:oidc-logout-token -->
-<div style="position:relative;margin:20px 0">
+<div class="l04j-wrap" style="position:relative">
 <input type="checkbox" id="l04j-pause" class="l04j-cb" /><label for="l04j-pause" class="l04j-btn"><span class="l04j-off">Pause animation</span><span class="l04j-on">Play animation</span></label>
 <div class="l04j-box" style="overflow-x:auto">
-<svg class="l04j-flow" viewBox="0 0 760 484" role="img" aria-labelledby="l04j-t l04j-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l04j-flow" viewBox="0 0 760 484" role="img" aria-labelledby="l04j-t l04j-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l04j-t">Handling a back-channel logout token</title>
 <desc id="l04j-d">A decision tree for a logout token posted to your registered URI. If it is not valid when checked like an ID token, with alg none forbidden, answer 400. If the events claim lacks the backchannel-logout event, or it has neither sub nor sid, or it carries a nonce, answer 400. If it has a sid, end that session and answer 200; a user already logged out counts as success. If it has only a sub, end all of that user's sessions at the app and answer 200. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l04j-flow{--ink:light-dark(#000000,#ffffff)}
 .l04j-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l04j-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l04j-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l04j-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04j-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04j-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l04j-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l04j-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l04j-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l04j-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l04j-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l04j-badt{fill:var(--bad-text)}
-.l04j-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04j-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04j-badt{fill:var(--ink)}
+.l04j-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l04j-badge{fill:var(--accent)}
 .l04j-b-back{fill:var(--muted)}
 .l04j-b-bad{fill:var(--bad)}
@@ -441,13 +451,13 @@ Back-channel logout: the OP POSTs `logout_token` (form-encoded) to a registered 
 .l04j-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l04j-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l04j-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l04j-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l04j-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l04j-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l04j-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l04j-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l04j-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l04j-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l04j-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l04j-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l04j-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l04j-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l04j-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l04j-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l04j-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l04j-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -455,16 +465,18 @@ Back-channel logout: the OP POSTs `logout_token` (form-encoded) to a registered 
 .l04j-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l04j-pk.l04j-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l04j-pk.l04j-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l04j-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l04j-wrap{margin:20px 0}
+@media (min-width:801px){.l04j-wrap{margin-left:-44px;margin-right:-44px}}
+.l04j-g rect,.l04j-g line,.l04j-g path:not(.l04j-gl){opacity:.5;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l04j-h{opacity:0;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l04j-flow:hover .l04j-g,svg.l04j-flow:hover .l04j-pk,svg.l04j-flow:hover .l04j-h{animation-play-state:paused}
+svg.l04j-flow:hover .l04j-g rect,svg.l04j-flow:hover .l04j-g line,svg.l04j-flow:hover .l04j-g path:not(.l04j-gl),svg.l04j-flow:hover .l04j-pk,svg.l04j-flow:hover .l04j-h{animation-play-state:paused}
 .l04j-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l04j-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l04j-btn:hover{background:var(--hover)}
 .l04j-cb:focus-visible + .l04j-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l04j-cb:checked + .l04j-btn .l04j-off,.l04j-cb:not(:checked) + .l04j-btn .l04j-on{display:none}
-.l04j-cb:checked ~ .l04j-box .l04j-g,.l04j-cb:checked ~ .l04j-box .l04j-pk,.l04j-cb:checked ~ .l04j-box .l04j-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l04j-g{animation:none;opacity:1}.l04j-pk{animation:none;display:none}.l04j-h{animation:none;opacity:0}.l04j-btn{display:none}}
+.l04j-cb:checked ~ .l04j-box .l04j-g rect,.l04j-cb:checked ~ .l04j-box .l04j-g line,.l04j-cb:checked ~ .l04j-box .l04j-g path:not(.l04j-gl),.l04j-cb:checked ~ .l04j-box .l04j-pk,.l04j-cb:checked ~ .l04j-box .l04j-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l04j-g rect,.l04j-g line,.l04j-g path:not(.l04j-gl){animation:none;opacity:1}.l04j-pk{animation:none;display:none}.l04j-h{animation:none;opacity:0}.l04j-btn{display:none}}
 @keyframes l04j-h0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:0}}
 .l04j-h0{animation-name:l04j-h0}
 @keyframes l04j-h1{0%,24.99%{opacity:0}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}

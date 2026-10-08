@@ -17,24 +17,25 @@ At AAL2, after an inactivity timeout and before the overall timeout, the verifie
 ## How a passkey proves who you are
 
 <!-- diagram:webauthn-ceremony -->
-<div style="position:relative;margin:20px 0">
+<div class="wa-wrap" style="position:relative">
 <input type="checkbox" id="wa-pause" class="wa-cb" /><label for="wa-pause" class="wa-btn"><span class="wa-off">Pause animation</span><span class="wa-on">Play animation</span></label>
 <div class="wa-box" style="overflow-x:auto">
-<svg class="wa-flow" viewBox="0 0 760 614" role="img" aria-labelledby="wa-t wa-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="wa-flow" viewBox="0 0 760 614" role="img" aria-labelledby="wa-t wa-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="wa-t">What the RP checks in a WebAuthn authentication</title>
 <desc id="wa-d">Three parties: the authenticator, the client, and the relying party (RP). The RP sends a fresh challenge. The client asks for a signature scoped to the origin's RP ID. The authenticator returns authenticatorData and a signature. The client sends clientDataJSON, authenticatorData and the signature to the RP. The RP checks that the credential ID is in allowCredentials if one was sent, identifies the user, checks type webauthn.get, the challenge, the origin and the rpIdHash, requires the UP flag, requires UV if configured, and then verifies the signature over authenticatorData concatenated with the SHA-256 hash of clientDataJSON, using the stored public key. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.wa-flow{--ink:light-dark(#000000,#ffffff)}
 .wa-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .wa-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.wa-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.wa-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .wa-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .wa-front{stroke:var(--accent);stroke-width:2;fill:none}
 .wa-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .wa-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.wa-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.wa-badt{fill:var(--bad-text)}
-.wa-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-badt{fill:var(--ink)}
+.wa-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .wa-badge{fill:var(--accent)}
 .wa-b-back{fill:var(--muted)}
 .wa-b-bad{fill:var(--bad)}
@@ -43,33 +44,35 @@ At AAL2, after an inactivity timeout and before the overall timeout, the verifie
 .wa-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .wa-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .wa-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.wa-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.wa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.wa-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
 .wa-pk.wa-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .wa-pk.wa-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.wa-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.wa-flow:hover .wa-g,svg.wa-flow:hover .wa-pk{animation-play-state:paused}
+.wa-wrap{margin:20px 0}
+@media (min-width:801px){.wa-wrap{margin-left:-44px;margin-right:-44px}}
+.wa-g rect,.wa-g line,.wa-g path:not(.wa-gl){opacity:.5;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.wa-flow:hover .wa-g rect,svg.wa-flow:hover .wa-g line,svg.wa-flow:hover .wa-g path:not(.wa-gl),svg.wa-flow:hover .wa-pk{animation-play-state:paused}
 .wa-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .wa-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .wa-btn:hover{background:var(--hover)}
 .wa-cb:focus-visible + .wa-btn{outline:2px solid var(--accent);outline-offset:2px}
 .wa-cb:checked + .wa-btn .wa-off,.wa-cb:not(:checked) + .wa-btn .wa-on{display:none}
-.wa-cb:checked ~ .wa-box .wa-g,.wa-cb:checked ~ .wa-box .wa-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.wa-g{animation:none;opacity:1}.wa-pk{animation:none;display:none}.wa-btn{display:none}}
-@keyframes wa-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
-@keyframes wa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(-236px)}20.01%,100%{opacity:0;transform:translateX(-236px)}}
-.wa-g0{animation-name:wa-g0}.wa-p0{animation-name:wa-p0}
-@keyframes wa-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
-@keyframes wa-p1{0%,19.99%{opacity:0;transform:translateX(0)}20%{opacity:1;transform:translateX(0)}40%{opacity:1;transform:translateX(-236px)}40.01%,100%{opacity:0;transform:translateX(-236px)}}
-.wa-g1{animation-name:wa-g1}.wa-p1{animation-name:wa-p1}
-@keyframes wa-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
-@keyframes wa-p2{0%,39.99%{opacity:0;transform:translateX(0)}40%{opacity:1;transform:translateX(0)}60%{opacity:1;transform:translateX(236px)}60.01%,100%{opacity:0;transform:translateX(236px)}}
-.wa-g2{animation-name:wa-g2}.wa-p2{animation-name:wa-p2}
-@keyframes wa-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
-@keyframes wa-p3{0%,59.99%{opacity:0;transform:translateX(0)}60%{opacity:1;transform:translateX(0)}80%{opacity:1;transform:translateX(236px)}80.01%,100%{opacity:0;transform:translateX(236px)}}
-.wa-g3{animation-name:wa-g3}.wa-p3{animation-name:wa-p3}
-@keyframes wa-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.wa-g4{animation-name:wa-g4}
+.wa-cb:checked ~ .wa-box .wa-g rect,.wa-cb:checked ~ .wa-box .wa-g line,.wa-cb:checked ~ .wa-box .wa-g path:not(.wa-gl),.wa-cb:checked ~ .wa-box .wa-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.wa-g rect,.wa-g line,.wa-g path:not(.wa-gl){animation:none;opacity:1}.wa-pk{animation:none;display:none}.wa-btn{display:none}}
+@keyframes wa-g0{0%{opacity:1}21.429%{opacity:1}21.439%,100%{opacity:.5}}
+@keyframes wa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}17.143%{opacity:1;transform:translateX(-236px)}21.429%{opacity:1;transform:translateX(-236px)}21.439%,100%{opacity:0;transform:translateX(-236px)}}
+.wa-g0 rect,.wa-g0 line,.wa-g0 path:not(.wa-gl){animation-name:wa-g0}.wa-p0{animation-name:wa-p0}
+@keyframes wa-g1{0%,21.419%{opacity:.5}21.429%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.5}}
+@keyframes wa-p1{0%,21.419%{opacity:0;transform:translateX(0)}21.429%{opacity:1;transform:translateX(0)}38.571%{opacity:1;transform:translateX(-236px)}42.857%{opacity:1;transform:translateX(-236px)}42.867%,100%{opacity:0;transform:translateX(-236px)}}
+.wa-g1 rect,.wa-g1 line,.wa-g1 path:not(.wa-gl){animation-name:wa-g1}.wa-p1{animation-name:wa-p1}
+@keyframes wa-g2{0%,42.847%{opacity:.5}42.857%{opacity:1}64.286%{opacity:1}64.296%,100%{opacity:.5}}
+@keyframes wa-p2{0%,42.847%{opacity:0;transform:translateX(0)}42.857%{opacity:1;transform:translateX(0)}60%{opacity:1;transform:translateX(236px)}64.286%{opacity:1;transform:translateX(236px)}64.296%,100%{opacity:0;transform:translateX(236px)}}
+.wa-g2 rect,.wa-g2 line,.wa-g2 path:not(.wa-gl){animation-name:wa-g2}.wa-p2{animation-name:wa-p2}
+@keyframes wa-g3{0%,64.276%{opacity:.5}64.286%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.5}}
+@keyframes wa-p3{0%,64.276%{opacity:0;transform:translateX(0)}64.286%{opacity:1;transform:translateX(0)}81.429%{opacity:1;transform:translateX(236px)}85.714%{opacity:1;transform:translateX(236px)}85.724%,100%{opacity:0;transform:translateX(236px)}}
+.wa-g3 rect,.wa-g3 line,.wa-g3 path:not(.wa-gl){animation-name:wa-g3}.wa-p3{animation-name:wa-p3}
+@keyframes wa-g4{0%,85.704%{opacity:.5}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.wa-g4 rect,.wa-g4 line,.wa-g4 path:not(.wa-gl){animation-name:wa-g4}
 </style>
 <defs>
 <marker id="wa-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -136,24 +139,25 @@ R1 to R4 register a credential; A1 to A4 authenticate with it. The diagram zooms
 **Authentication (A1 to A4).** A1: the RP sends a fresh challenge. A2: the client asks for a signature scoped to the origin's RP ID. A3: the authenticator returns authenticatorData and a signature. A4: the browser sends clientDataJSON, authenticatorData and the signature, and the RP checks that the credential ID is in allowCredentials if one was sent, identifies the user, checks type webauthn.get, challenge, origin and rpIdHash, requires UP, requires UV if configured, then verifies the signature over authenticatorData concatenated with the SHA-256 hash of clientDataJSON, using the stored public key.
 
 <!-- diagram:rp-id-scope -->
-<div style="position:relative;margin:20px 0">
+<div class="l06c-wrap" style="position:relative">
 <input type="checkbox" id="l06c-pause" class="l06c-cb" /><label for="l06c-pause" class="l06c-btn"><span class="l06c-off">Pause animation</span><span class="l06c-on">Play animation</span></label>
 <div class="l06c-box" style="overflow-x:auto">
-<svg class="l06c-flow" viewBox="0 0 760 446" role="img" aria-labelledby="l06c-t l06c-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l06c-flow" viewBox="0 0 760 446" role="img" aria-labelledby="l06c-t l06c-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l06c-t">Can a page on another origin use your credential?</title>
 <desc id="l06c-d">A decision tree that starts with where the page runs. A page on another domain is stopped by the client, which scopes credentials by RP ID. A page on a subdomain may legitimately request the parent RP ID, so the question is whether the RP accepts subdomain origins: by default it should not, and its origin validation rejects the unexpected origin; if it does allow subdomains and untrusted code runs on one, that code can relay valid assertions. A page on an origin listed in the RP's related origins is the opt-in exception, where RP ID scoping does not hold, so list only origins you control. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l06c-flow{--ink:light-dark(#000000,#ffffff)}
 .l06c-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l06c-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l06c-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06c-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06c-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l06c-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l06c-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l06c-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l06c-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06c-badt{fill:var(--bad-text)}
-.l06c-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-badt{fill:var(--ink)}
+.l06c-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06c-badge{fill:var(--accent)}
 .l06c-b-back{fill:var(--muted)}
 .l06c-b-bad{fill:var(--bad)}
@@ -162,13 +166,13 @@ R1 to R4 register a credential; A1 to A4 authenticate with it. The diagram zooms
 .l06c-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l06c-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l06c-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l06c-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06c-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06c-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l06c-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l06c-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l06c-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l06c-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l06c-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l06c-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06c-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06c-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06c-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l06c-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l06c-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l06c-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -176,16 +180,18 @@ R1 to R4 register a credential; A1 to A4 authenticate with it. The diagram zooms
 .l06c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l06c-pk.l06c-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l06c-pk.l06c-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l06c-g{opacity:.45;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l06c-wrap{margin:20px 0}
+@media (min-width:801px){.l06c-wrap{margin-left:-44px;margin-right:-44px}}
+.l06c-g rect,.l06c-g line,.l06c-g path:not(.l06c-gl){opacity:.5;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l06c-h{opacity:0;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l06c-flow:hover .l06c-g,svg.l06c-flow:hover .l06c-pk,svg.l06c-flow:hover .l06c-h{animation-play-state:paused}
+svg.l06c-flow:hover .l06c-g rect,svg.l06c-flow:hover .l06c-g line,svg.l06c-flow:hover .l06c-g path:not(.l06c-gl),svg.l06c-flow:hover .l06c-pk,svg.l06c-flow:hover .l06c-h{animation-play-state:paused}
 .l06c-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l06c-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l06c-btn:hover{background:var(--hover)}
 .l06c-cb:focus-visible + .l06c-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l06c-cb:checked + .l06c-btn .l06c-off,.l06c-cb:not(:checked) + .l06c-btn .l06c-on{display:none}
-.l06c-cb:checked ~ .l06c-box .l06c-g,.l06c-cb:checked ~ .l06c-box .l06c-pk,.l06c-cb:checked ~ .l06c-box .l06c-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l06c-g{animation:none;opacity:1}.l06c-pk{animation:none;display:none}.l06c-h{animation:none;opacity:0}.l06c-btn{display:none}}
+.l06c-cb:checked ~ .l06c-box .l06c-g rect,.l06c-cb:checked ~ .l06c-box .l06c-g line,.l06c-cb:checked ~ .l06c-box .l06c-g path:not(.l06c-gl),.l06c-cb:checked ~ .l06c-box .l06c-pk,.l06c-cb:checked ~ .l06c-box .l06c-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l06c-g rect,.l06c-g line,.l06c-g path:not(.l06c-gl){animation:none;opacity:1}.l06c-pk{animation:none;display:none}.l06c-h{animation:none;opacity:0}.l06c-btn{display:none}}
 @keyframes l06c-h0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:0}}
 .l06c-h0{animation-name:l06c-h0}
 @keyframes l06c-h1{0%,24.99%{opacity:0}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}
@@ -287,24 +293,25 @@ In federation the IdP session and each RP session end independently, so an RP th
 **Device Bound Session Credentials (DBSC)** is a W3C Editor's Draft (8 September 2026) whose own introduction calls it a very early drafting. It lets a server verify that a session credential, a private key the browser protects (for example in a TPM), has not been exported from the device. Its stated non-goals: it does not prevent access while an attacker is resident on the device, because the signing capability remains available to programs running as the user, nor an attack if the attacker controls the browser at registration. NIST mentions DBSC as emerging and still requires lifetime limits to be enforced. Google says DBSC is generally available in Chrome on Windows and on by default for Google Workspace users (Google Workspace Updates, 28 May 2026); support in other browsers was not verified. Treat it as a partial control: it aims at cookie reuse on another device, not at an attacker on the device, and it does not replace session lifetime limits.
 
 <!-- diagram:dbsc -->
-<div style="position:relative;margin:20px 0">
+<div class="l06e-wrap" style="position:relative">
 <input type="checkbox" id="l06e-pause" class="l06e-cb" /><label for="l06e-pause" class="l06e-btn"><span class="l06e-off">Pause animation</span><span class="l06e-on">Play animation</span></label>
 <div class="l06e-box" style="overflow-x:auto">
-<svg class="l06e-flow" viewBox="0 0 760 397" role="img" aria-labelledby="l06e-t l06e-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l06e-flow" viewBox="0 0 760 397" role="img" aria-labelledby="l06e-t l06e-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l06e-t">What Device Bound Session Credentials do and do not cover</title>
 <desc id="l06e-d">One column for DBSC, a W3C Editor's Draft whose own introduction calls it a very early drafting, treated as a partial control. It is aimed at cookie reuse on another device: a server can verify that the session credential, a private key the browser protects, has not been exported from the device. It does not prevent access while an attacker is resident on the device, because the signing capability stays available to programs running as the user. It does not prevent an attack if the attacker controls the browser at registration. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l06e-flow{--ink:light-dark(#000000,#ffffff)}
 .l06e-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l06e-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l06e-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06e-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06e-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l06e-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l06e-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l06e-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l06e-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06e-badt{fill:var(--bad-text)}
-.l06e-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-badt{fill:var(--ink)}
+.l06e-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06e-badge{fill:var(--accent)}
 .l06e-b-back{fill:var(--muted)}
 .l06e-b-bad{fill:var(--bad)}
@@ -313,13 +320,13 @@ In federation the IdP session and each RP session end independently, so an RP th
 .l06e-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l06e-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l06e-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l06e-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06e-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06e-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l06e-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l06e-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l06e-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l06e-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l06e-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l06e-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06e-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06e-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l06e-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l06e-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l06e-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l06e-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -327,21 +334,23 @@ In federation the IdP session and each RP session end independently, so an RP th
 .l06e-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l06e-pk.l06e-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l06e-pk.l06e-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l06e-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l06e-flow:hover .l06e-g,svg.l06e-flow:hover .l06e-pk{animation-play-state:paused}
+.l06e-wrap{margin:20px 0}
+@media (min-width:801px){.l06e-wrap{margin-left:-44px;margin-right:-44px}}
+.l06e-g rect,.l06e-g line,.l06e-g path:not(.l06e-gl){opacity:.5;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l06e-flow:hover .l06e-g rect,svg.l06e-flow:hover .l06e-g line,svg.l06e-flow:hover .l06e-g path:not(.l06e-gl),svg.l06e-flow:hover .l06e-pk{animation-play-state:paused}
 .l06e-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l06e-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l06e-btn:hover{background:var(--hover)}
 .l06e-cb:focus-visible + .l06e-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l06e-cb:checked + .l06e-btn .l06e-off,.l06e-cb:not(:checked) + .l06e-btn .l06e-on{display:none}
-.l06e-cb:checked ~ .l06e-box .l06e-g,.l06e-cb:checked ~ .l06e-box .l06e-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l06e-g{animation:none;opacity:1}.l06e-pk{animation:none;display:none}.l06e-btn{display:none}}
-@keyframes l06e-g0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-.l06e-g0{animation-name:l06e-g0}
-@keyframes l06e-g1{0%,33.323%{opacity:.45}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-.l06e-g1{animation-name:l06e-g1}
-@keyframes l06e-g2{0%,66.657%{opacity:.45}66.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l06e-g2{animation-name:l06e-g2}
+.l06e-cb:checked ~ .l06e-box .l06e-g rect,.l06e-cb:checked ~ .l06e-box .l06e-g line,.l06e-cb:checked ~ .l06e-box .l06e-g path:not(.l06e-gl),.l06e-cb:checked ~ .l06e-box .l06e-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l06e-g rect,.l06e-g line,.l06e-g path:not(.l06e-gl){animation:none;opacity:1}.l06e-pk{animation:none;display:none}.l06e-btn{display:none}}
+@keyframes l06e-g0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.5}}
+.l06e-g0 rect,.l06e-g0 line,.l06e-g0 path:not(.l06e-gl){animation-name:l06e-g0}
+@keyframes l06e-g1{0%,33.323%{opacity:.5}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.5}}
+.l06e-g1 rect,.l06e-g1 line,.l06e-g1 path:not(.l06e-gl){animation-name:l06e-g1}
+@keyframes l06e-g2{0%,66.657%{opacity:.5}66.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l06e-g2 rect,.l06e-g2 line,.l06e-g2 path:not(.l06e-gl){animation-name:l06e-g2}
 </style>
 <defs>
 <marker id="l06e-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -353,7 +362,7 @@ svg.l06e-flow:hover .l06e-g,svg.l06e-flow:hover .l06e-pk{animation-play-state:pa
 <rect class="l06e-row" x="10" y="86" width="740" height="86" rx="8"/>
 <text class="l06e-ttlL" x="24" y="112">Cookie reuse</text>
 <text class="l06e-subL" x="24" y="130">on another device</text>
-<circle cx="491" cy="108" r="10" style="fill:var(--good)"/><path d="M486.8,108.0 L489.6,111.4 L495.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="108" r="10" style="fill:var(--good)"/><path class="l06e-gl" d="M486.8,108.0 L489.6,111.4 L495.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l06e-nt" x="491" y="134">a server can verify the session key</text>
 <text class="l06e-nt" x="491" y="149">has not been exported from the device</text>
 </g>
@@ -361,7 +370,7 @@ svg.l06e-flow:hover .l06e-g,svg.l06e-flow:hover .l06e-pk{animation-play-state:pa
 <rect class="l06e-row" x="10" y="180" width="740" height="86" rx="8"/>
 <text class="l06e-ttlL" x="24" y="206">Attacker on the device</text>
 <text class="l06e-subL" x="24" y="224">already resident</text>
-<circle cx="491" cy="202" r="10" style="fill:var(--bad)"/><path d="M487.6,198.6 L494.4,205.4 M494.4,198.6 L487.6,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="202" r="10" style="fill:var(--bad)"/><path class="l06e-gl" d="M487.6,198.6 L494.4,205.4 M494.4,198.6 L487.6,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l06e-nt" x="491" y="228">not prevented: the signing capability</text>
 <text class="l06e-nt" x="491" y="243">stays available to programs running as the user</text>
 </g>
@@ -369,12 +378,12 @@ svg.l06e-flow:hover .l06e-g,svg.l06e-flow:hover .l06e-pk{animation-play-state:pa
 <rect class="l06e-row" x="10" y="274" width="740" height="71" rx="8"/>
 <text class="l06e-ttlL" x="24" y="300">Attacker controls browser</text>
 <text class="l06e-subL" x="24" y="318">at registration</text>
-<circle cx="491" cy="296" r="10" style="fill:var(--bad)"/><path d="M487.6,292.6 L494.4,299.4 M494.4,292.6 L487.6,299.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="296" r="10" style="fill:var(--bad)"/><path class="l06e-gl" d="M487.6,292.6 L494.4,299.4 M494.4,292.6 L487.6,299.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l06e-nt" x="491" y="322">not prevented (a stated non-goal)</text>
 </g>
-<circle cx="48" cy="373" r="8" style="fill:var(--good)"/><path d="M44.6,373.0 L46.9,375.7 L51.4,370.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="48" cy="373" r="8" style="fill:var(--good)"/><path class="l06e-gl" d="M44.6,373.0 L46.9,375.7 L51.4,370.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l06e-dim" x="64" y="377" style="text-anchor:start">aimed at</text>
-<circle cx="157" cy="373" r="8" style="fill:var(--bad)"/><path d="M154.3,370.3 L159.7,375.7 M159.7,370.3 L154.3,375.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="157" cy="373" r="8" style="fill:var(--bad)"/><path class="l06e-gl" d="M154.3,370.3 L159.7,375.7 M159.7,370.3 L154.3,375.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l06e-dim" x="173" y="377" style="text-anchor:start">not covered</text>
 </svg>
 </div>
@@ -393,24 +402,25 @@ Each row is one threat compared with DBSC: only cookie reuse on another device i
 - **Fatigue.** Rate-limit pushes (NIST SHOULD) and use number matching, then move high-value apps to phishing-resistant methods.
 
 <!-- diagram:enrolment-race -->
-<div style="position:relative;margin:20px 0">
+<div class="l06d-wrap" style="position:relative">
 <input type="checkbox" id="l06d-pause" class="l06d-cb" /><label for="l06d-pause" class="l06d-btn"><span class="l06d-off">Pause animation</span><span class="l06d-on">Play animation</span></label>
 <div class="l06d-box" style="overflow-x:auto">
-<svg class="l06d-flow" viewBox="0 0 760 839" role="img" aria-labelledby="l06d-t l06d-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l06d-flow" viewBox="0 0 760 839" role="img" aria-labelledby="l06d-t l06d-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l06d-t">The enrolment race: binding the first authenticator</title>
 <desc id="l06d-d">Three parties: the new hire, an attacker who holds the temporary password, and the identity provider. NIST requires authentication at the lower of the account's maximum AAL and the new authenticator's AAL, so an account that currently has only AAL1 capability can be bound to an AAL2 authenticator after a password alone. The attacker enrols with the temporary password. A binding code sent to an already-authenticated endpoint does not close this, because the attacker holding the temporary password is that endpoint. NIST makes a notification mandatory; this lesson's reading of SP 800-63A is to send it through an independent channel, which makes a rogue enrolment noticeable but does not prevent one, and to bind the first authenticator only on return of a single-use code sent to contact details the hire controls. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l06d-flow{--ink:light-dark(#000000,#ffffff)}
 .l06d-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l06d-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l06d-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06d-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06d-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l06d-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l06d-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l06d-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l06d-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06d-badt{fill:var(--bad-text)}
-.l06d-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-badt{fill:var(--ink)}
+.l06d-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06d-badge{fill:var(--accent)}
 .l06d-b-back{fill:var(--muted)}
 .l06d-b-bad{fill:var(--bad)}
@@ -419,36 +429,38 @@ Each row is one threat compared with DBSC: only cookie reuse on another device i
 .l06d-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l06d-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l06d-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l06d-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06d-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l06d-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06d-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:34s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l06d-pk.l06d-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l06d-pk.l06d-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l06d-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l06d-flow:hover .l06d-g,svg.l06d-flow:hover .l06d-pk{animation-play-state:paused}
+.l06d-wrap{margin:20px 0}
+@media (min-width:801px){.l06d-wrap{margin-left:-44px;margin-right:-44px}}
+.l06d-g rect,.l06d-g line,.l06d-g path:not(.l06d-gl){opacity:.5;animation-duration:34s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l06d-flow:hover .l06d-g rect,svg.l06d-flow:hover .l06d-g line,svg.l06d-flow:hover .l06d-g path:not(.l06d-gl),svg.l06d-flow:hover .l06d-pk{animation-play-state:paused}
 .l06d-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l06d-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l06d-btn:hover{background:var(--hover)}
 .l06d-cb:focus-visible + .l06d-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l06d-cb:checked + .l06d-btn .l06d-off,.l06d-cb:not(:checked) + .l06d-btn .l06d-on{display:none}
-.l06d-cb:checked ~ .l06d-box .l06d-g,.l06d-cb:checked ~ .l06d-box .l06d-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l06d-g{animation:none;opacity:1}.l06d-pk{animation:none;display:none}.l06d-btn{display:none}}
-@keyframes l06d-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.45}}
-@keyframes l06d-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}14.286%{opacity:1;transform:translateX(236px)}14.296%,100%{opacity:0;transform:translateX(236px)}}
-.l06d-g0{animation-name:l06d-g0}.l06d-p0{animation-name:l06d-p0}
-@keyframes l06d-g1{0%,14.276%{opacity:.45}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.45}}
-.l06d-g1{animation-name:l06d-g1}
-@keyframes l06d-g2{0%,28.561%{opacity:.45}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.45}}
-@keyframes l06d-p2{0%,28.561%{opacity:0;transform:translateX(0)}28.571%{opacity:1;transform:translateX(0)}42.857%{opacity:1;transform:translateX(236px)}42.867%,100%{opacity:0;transform:translateX(236px)}}
-.l06d-g2{animation-name:l06d-g2}.l06d-p2{animation-name:l06d-p2}
-@keyframes l06d-g3{0%,42.847%{opacity:.45}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.45}}
-.l06d-g3{animation-name:l06d-g3}
-@keyframes l06d-g4{0%,57.133%{opacity:.45}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.45}}
-@keyframes l06d-p4{0%,57.133%{opacity:0;transform:translateX(0)}57.143%{opacity:1;transform:translateX(0)}71.429%{opacity:1;transform:translateX(-506px)}71.439%,100%{opacity:0;transform:translateX(-506px)}}
-.l06d-g4{animation-name:l06d-g4}.l06d-p4{animation-name:l06d-p4}
-@keyframes l06d-g5{0%,71.419%{opacity:.45}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.45}}
-.l06d-g5{animation-name:l06d-g5}
-@keyframes l06d-g6{0%,85.704%{opacity:.45}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l06d-g6{animation-name:l06d-g6}
+.l06d-cb:checked ~ .l06d-box .l06d-g rect,.l06d-cb:checked ~ .l06d-box .l06d-g line,.l06d-cb:checked ~ .l06d-box .l06d-g path:not(.l06d-gl),.l06d-cb:checked ~ .l06d-box .l06d-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l06d-g rect,.l06d-g line,.l06d-g path:not(.l06d-gl){animation:none;opacity:1}.l06d-pk{animation:none;display:none}.l06d-btn{display:none}}
+@keyframes l06d-g0{0%{opacity:1}17.647%{opacity:1}17.657%,100%{opacity:.5}}
+@keyframes l06d-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}14.118%{opacity:1;transform:translateX(236px)}17.647%{opacity:1;transform:translateX(236px)}17.657%,100%{opacity:0;transform:translateX(236px)}}
+.l06d-g0 rect,.l06d-g0 line,.l06d-g0 path:not(.l06d-gl){animation-name:l06d-g0}.l06d-p0{animation-name:l06d-p0}
+@keyframes l06d-g1{0%,17.637%{opacity:.5}17.647%{opacity:1}29.412%{opacity:1}29.422%,100%{opacity:.5}}
+.l06d-g1 rect,.l06d-g1 line,.l06d-g1 path:not(.l06d-gl){animation-name:l06d-g1}
+@keyframes l06d-g2{0%,29.402%{opacity:.5}29.412%{opacity:1}47.059%{opacity:1}47.069%,100%{opacity:.5}}
+@keyframes l06d-p2{0%,29.402%{opacity:0;transform:translateX(0)}29.412%{opacity:1;transform:translateX(0)}43.529%{opacity:1;transform:translateX(236px)}47.059%{opacity:1;transform:translateX(236px)}47.069%,100%{opacity:0;transform:translateX(236px)}}
+.l06d-g2 rect,.l06d-g2 line,.l06d-g2 path:not(.l06d-gl){animation-name:l06d-g2}.l06d-p2{animation-name:l06d-p2}
+@keyframes l06d-g3{0%,47.049%{opacity:.5}47.059%{opacity:1}58.824%{opacity:1}58.834%,100%{opacity:.5}}
+.l06d-g3 rect,.l06d-g3 line,.l06d-g3 path:not(.l06d-gl){animation-name:l06d-g3}
+@keyframes l06d-g4{0%,58.814%{opacity:.5}58.824%{opacity:1}76.471%{opacity:1}76.481%,100%{opacity:.5}}
+@keyframes l06d-p4{0%,58.814%{opacity:0;transform:translateX(0)}58.824%{opacity:1;transform:translateX(0)}72.941%{opacity:1;transform:translateX(-506px)}76.471%{opacity:1;transform:translateX(-506px)}76.481%,100%{opacity:0;transform:translateX(-506px)}}
+.l06d-g4 rect,.l06d-g4 line,.l06d-g4 path:not(.l06d-gl){animation-name:l06d-g4}.l06d-p4{animation-name:l06d-p4}
+@keyframes l06d-g5{0%,76.461%{opacity:.5}76.471%{opacity:1}88.235%{opacity:1}88.245%,100%{opacity:.5}}
+.l06d-g5 rect,.l06d-g5 line,.l06d-g5 path:not(.l06d-gl){animation-name:l06d-g5}
+@keyframes l06d-g6{0%,88.225%{opacity:.5}88.235%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l06d-g6 rect,.l06d-g6 line,.l06d-g6 path:not(.l06d-gl){animation-name:l06d-g6}
 </style>
 <defs>
 <marker id="l06d-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>

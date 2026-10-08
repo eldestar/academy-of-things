@@ -32,24 +32,25 @@ RFC 6749 also sorts clients into two types. A **confidential** client can keep a
 A few terms first. The **authorization code** is a short-lived, single-use receipt. The **redirect URI** is the address, registered in advance, where the authorization server sends the browser back. **State** is a random value the client invents so it can recognise its own request when the browser returns. **PKCE** (RFC 7636, pronounced "pixy") is a secret the client invents for each sign-in: it sends only a fingerprint of the secret at the start (the `code_challenge`, made with SHA-256, method `S256`) and reveals the secret itself (the `code_verifier`) at the end.
 
 <!-- diagram:oauth-code-pkce -->
-<div style="position:relative;margin:20px 0">
+<div class="oa-wrap" style="position:relative">
 <input type="checkbox" id="oa-pause" class="oa-cb" /><label for="oa-pause" class="oa-btn"><span class="oa-off">Pause animation</span><span class="oa-on">Play animation</span></label>
 <div class="oa-box" style="overflow-x:auto">
-<svg class="oa-flow" viewBox="0 0 760 816" role="img" aria-labelledby="oa-t oa-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="oa-flow" viewBox="0 0 760 816" role="img" aria-labelledby="oa-t oa-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="oa-t">How Plannr gets read access to Priya's calendar</title>
 <desc id="oa-d">Three parties: Plannr, the client; Example Cloud's sign-in, the authorization server; and the calendar API, the resource server. Step 1: Plannr sends Priya's browser to the authorization server, carrying its client_id, redirect URI, scope, state and code_challenge. Step 2: Priya signs in and approves, and the server remembers the fingerprint. Step 3: the browser goes back to Plannr's redirect URI with a code and the same state. Step 4: Plannr checks the state is the one it stored; RFC 9700 lets a client skip this check only if it knows the server supports PKCE. Step 5: Plannr contacts the server directly, sending the code, the code_verifier, its client_id and the same redirect URI; if the verifier matches the fingerprint, it receives an access token. Step 6: Plannr calls the calendar API, sending the access token. Step 7: the calendar API checks the token: genuine, meant for it, unexpired, and its scope covers the request. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.oa-flow{--ink:light-dark(#000000,#ffffff)}
 .oa-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .oa-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.oa-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oa-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .oa-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .oa-front{stroke:var(--accent);stroke-width:2;fill:none}
 .oa-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .oa-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.oa-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oa-badt{fill:var(--bad-text)}
-.oa-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-badt{fill:var(--ink)}
+.oa-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .oa-badge{fill:var(--accent)}
 .oa-b-back{fill:var(--muted)}
 .oa-b-bad{fill:var(--bad)}
@@ -58,37 +59,39 @@ A few terms first. The **authorization code** is a short-lived, single-use recei
 .oa-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .oa-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .oa-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.oa-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.oa-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:36s;animation-timing-function:linear;animation-iteration-count:infinite}
 .oa-pk.oa-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .oa-pk.oa-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.oa-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.oa-flow:hover .oa-g,svg.oa-flow:hover .oa-pk{animation-play-state:paused}
+.oa-wrap{margin:20px 0}
+@media (min-width:801px){.oa-wrap{margin-left:-44px;margin-right:-44px}}
+.oa-g rect,.oa-g line,.oa-g path:not(.oa-gl){opacity:.5;animation-duration:36s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.oa-flow:hover .oa-g rect,svg.oa-flow:hover .oa-g line,svg.oa-flow:hover .oa-g path:not(.oa-gl),svg.oa-flow:hover .oa-pk{animation-play-state:paused}
 .oa-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .oa-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .oa-btn:hover{background:var(--hover)}
 .oa-cb:focus-visible + .oa-btn{outline:2px solid var(--accent);outline-offset:2px}
 .oa-cb:checked + .oa-btn .oa-off,.oa-cb:not(:checked) + .oa-btn .oa-on{display:none}
-.oa-cb:checked ~ .oa-box .oa-g,.oa-cb:checked ~ .oa-box .oa-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.oa-g{animation:none;opacity:1}.oa-pk{animation:none;display:none}.oa-btn{display:none}}
-@keyframes oa-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.45}}
-@keyframes oa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}14.286%{opacity:1;transform:translateX(236px)}14.296%,100%{opacity:0;transform:translateX(236px)}}
-.oa-g0{animation-name:oa-g0}.oa-p0{animation-name:oa-p0}
-@keyframes oa-g1{0%,14.276%{opacity:.45}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.45}}
-.oa-g1{animation-name:oa-g1}
-@keyframes oa-g2{0%,28.561%{opacity:.45}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.45}}
-@keyframes oa-p2{0%,28.561%{opacity:0;transform:translateX(0)}28.571%{opacity:1;transform:translateX(0)}42.857%{opacity:1;transform:translateX(-236px)}42.867%,100%{opacity:0;transform:translateX(-236px)}}
-.oa-g2{animation-name:oa-g2}.oa-p2{animation-name:oa-p2}
-@keyframes oa-g3{0%,42.847%{opacity:.45}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.45}}
-.oa-g3{animation-name:oa-g3}
-@keyframes oa-g4{0%,57.133%{opacity:.45}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.45}}
-@keyframes oa-p4{0%,57.133%{opacity:0;transform:translateX(0)}57.143%{opacity:1;transform:translateX(0)}71.429%{opacity:1;transform:translateX(-236px)}71.439%,100%{opacity:0;transform:translateX(-236px)}}
-.oa-g4{animation-name:oa-g4}.oa-p4{animation-name:oa-p4}
-@keyframes oa-g5{0%,71.419%{opacity:.45}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.45}}
-@keyframes oa-p5{0%,71.419%{opacity:0;transform:translateX(0)}71.429%{opacity:1;transform:translateX(0)}85.714%{opacity:1;transform:translateX(506px)}85.724%,100%{opacity:0;transform:translateX(506px)}}
-.oa-g5{animation-name:oa-g5}.oa-p5{animation-name:oa-p5}
-@keyframes oa-g6{0%,85.704%{opacity:.45}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.oa-g6{animation-name:oa-g6}
+.oa-cb:checked ~ .oa-box .oa-g rect,.oa-cb:checked ~ .oa-box .oa-g line,.oa-cb:checked ~ .oa-box .oa-g path:not(.oa-gl),.oa-cb:checked ~ .oa-box .oa-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.oa-g rect,.oa-g line,.oa-g path:not(.oa-gl){animation:none;opacity:1}.oa-pk{animation:none;display:none}.oa-btn{display:none}}
+@keyframes oa-g0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:.5}}
+@keyframes oa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}13.333%{opacity:1;transform:translateX(236px)}16.667%{opacity:1;transform:translateX(236px)}16.677%,100%{opacity:0;transform:translateX(236px)}}
+.oa-g0 rect,.oa-g0 line,.oa-g0 path:not(.oa-gl){animation-name:oa-g0}.oa-p0{animation-name:oa-p0}
+@keyframes oa-g1{0%,16.657%{opacity:.5}16.667%{opacity:1}27.778%{opacity:1}27.788%,100%{opacity:.5}}
+.oa-g1 rect,.oa-g1 line,.oa-g1 path:not(.oa-gl){animation-name:oa-g1}
+@keyframes oa-g2{0%,27.768%{opacity:.5}27.778%{opacity:1}44.444%{opacity:1}44.454%,100%{opacity:.5}}
+@keyframes oa-p2{0%,27.768%{opacity:0;transform:translateX(0)}27.778%{opacity:1;transform:translateX(0)}41.111%{opacity:1;transform:translateX(-236px)}44.444%{opacity:1;transform:translateX(-236px)}44.454%,100%{opacity:0;transform:translateX(-236px)}}
+.oa-g2 rect,.oa-g2 line,.oa-g2 path:not(.oa-gl){animation-name:oa-g2}.oa-p2{animation-name:oa-p2}
+@keyframes oa-g3{0%,44.434%{opacity:.5}44.444%{opacity:1}55.556%{opacity:1}55.566%,100%{opacity:.5}}
+.oa-g3 rect,.oa-g3 line,.oa-g3 path:not(.oa-gl){animation-name:oa-g3}
+@keyframes oa-g4{0%,55.546%{opacity:.5}55.556%{opacity:1}72.222%{opacity:1}72.232%,100%{opacity:.5}}
+@keyframes oa-p4{0%,55.546%{opacity:0;transform:translateX(0)}55.556%{opacity:1;transform:translateX(0)}68.889%{opacity:1;transform:translateX(-236px)}72.222%{opacity:1;transform:translateX(-236px)}72.232%,100%{opacity:0;transform:translateX(-236px)}}
+.oa-g4 rect,.oa-g4 line,.oa-g4 path:not(.oa-gl){animation-name:oa-g4}.oa-p4{animation-name:oa-p4}
+@keyframes oa-g5{0%,72.212%{opacity:.5}72.222%{opacity:1}88.889%{opacity:1}88.899%,100%{opacity:.5}}
+@keyframes oa-p5{0%,72.212%{opacity:0;transform:translateX(0)}72.222%{opacity:1;transform:translateX(0)}85.556%{opacity:1;transform:translateX(506px)}88.889%{opacity:1;transform:translateX(506px)}88.899%,100%{opacity:0;transform:translateX(506px)}}
+.oa-g5 rect,.oa-g5 line,.oa-g5 path:not(.oa-gl){animation-name:oa-g5}.oa-p5{animation-name:oa-p5}
+@keyframes oa-g6{0%,88.879%{opacity:.5}88.889%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.oa-g6 rect,.oa-g6 line,.oa-g6 path:not(.oa-gl){animation-name:oa-g6}
 </style>
 <defs>
 <marker id="oa-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -180,24 +183,25 @@ Steps 1 and 3 pass through the browser, so anything in them can be seen by softw
 PKCE closes the remaining gap. A thief who steals the code at step 3 cannot use it at step 5, because the thief never saw the `code_verifier`. RFC 9700 says public clients must use PKCE, recommends it for confidential clients too, and notes that the advice applies to web applications as well as native apps.
 
 <!-- diagram:oauth-stolen-code -->
-<div style="position:relative;margin:20px 0">
+<div class="l03h-wrap" style="position:relative">
 <input type="checkbox" id="l03h-pause" class="l03h-cb" /><label for="l03h-pause" class="l03h-btn"><span class="l03h-off">Pause animation</span><span class="l03h-on">Play animation</span></label>
 <div class="l03h-box" style="overflow-x:auto">
-<svg class="l03h-flow" viewBox="0 0 760 654" role="img" aria-labelledby="l03h-t l03h-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l03h-flow" viewBox="0 0 760 654" role="img" aria-labelledby="l03h-t l03h-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l03h-t">Why a stolen code is no use without the code_verifier</title>
 <desc id="l03h-d">Three parties: Plannr, the authorization server and a thief. At step 1 Plannr sends the fingerprint, the code_challenge, and the server remembers it. At step 3 the server sends the code back through the browser, and the thief steals it. The thief tries step 5 without the code_verifier, because it never saw the code_verifier, so cannot use the code. At step 5 Plannr sends the code and the code_verifier, the verifier matches the fingerprint, and Plannr gets an access token. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l03h-flow{--ink:light-dark(#000000,#ffffff)}
 .l03h-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l03h-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l03h-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03h-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03h-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03h-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03h-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l03h-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l03h-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l03h-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l03h-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03h-badt{fill:var(--bad-text)}
-.l03h-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03h-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03h-badt{fill:var(--ink)}
+.l03h-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03h-badge{fill:var(--accent)}
 .l03h-b-back{fill:var(--muted)}
 .l03h-b-bad{fill:var(--bad)}
@@ -206,35 +210,37 @@ PKCE closes the remaining gap. A thief who steals the code at step 3 cannot use 
 .l03h-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l03h-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l03h-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l03h-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03h-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l03h-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03h-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:32s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l03h-pk.l03h-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l03h-pk.l03h-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l03h-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l03h-flow:hover .l03h-g,svg.l03h-flow:hover .l03h-pk{animation-play-state:paused}
+.l03h-wrap{margin:20px 0}
+@media (min-width:801px){.l03h-wrap{margin-left:-44px;margin-right:-44px}}
+.l03h-g rect,.l03h-g line,.l03h-g path:not(.l03h-gl){opacity:.5;animation-duration:32s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l03h-flow:hover .l03h-g rect,svg.l03h-flow:hover .l03h-g line,svg.l03h-flow:hover .l03h-g path:not(.l03h-gl),svg.l03h-flow:hover .l03h-pk{animation-play-state:paused}
 .l03h-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l03h-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l03h-btn:hover{background:var(--hover)}
 .l03h-cb:focus-visible + .l03h-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l03h-cb:checked + .l03h-btn .l03h-off,.l03h-cb:not(:checked) + .l03h-btn .l03h-on{display:none}
-.l03h-cb:checked ~ .l03h-box .l03h-g,.l03h-cb:checked ~ .l03h-box .l03h-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l03h-g{animation:none;opacity:1}.l03h-pk{animation:none;display:none}.l03h-btn{display:none}}
-@keyframes l03h-g0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:.45}}
-@keyframes l03h-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}16.667%{opacity:1;transform:translateX(236px)}16.677%,100%{opacity:0;transform:translateX(236px)}}
-.l03h-g0{animation-name:l03h-g0}.l03h-p0{animation-name:l03h-p0}
-@keyframes l03h-g1{0%,16.657%{opacity:.45}16.667%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-@keyframes l03h-p1{0%,16.657%{opacity:0;transform:translateX(0)}16.667%{opacity:1;transform:translateX(0)}33.333%{opacity:1;transform:translateX(-236px)}33.343%,100%{opacity:0;transform:translateX(-236px)}}
-.l03h-g1{animation-name:l03h-g1}.l03h-p1{animation-name:l03h-p1}
-@keyframes l03h-g2{0%,33.323%{opacity:.45}33.333%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-@keyframes l03h-p2{0%,33.323%{opacity:0;transform:translateX(0)}33.333%{opacity:1;transform:translateX(0)}50%{opacity:1;transform:translateX(-236px)}50.01%,100%{opacity:0;transform:translateX(-236px)}}
-.l03h-g2{animation-name:l03h-g2}.l03h-p2{animation-name:l03h-p2}
-@keyframes l03h-g3{0%,49.99%{opacity:.45}50%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-.l03h-g3{animation-name:l03h-g3}
-@keyframes l03h-g4{0%,66.657%{opacity:.45}66.667%{opacity:1}83.333%{opacity:1}83.343%,100%{opacity:.45}}
-@keyframes l03h-p4{0%,66.657%{opacity:0;transform:translateX(0)}66.667%{opacity:1;transform:translateX(0)}83.333%{opacity:1;transform:translateX(236px)}83.343%,100%{opacity:0;transform:translateX(236px)}}
-.l03h-g4{animation-name:l03h-g4}.l03h-p4{animation-name:l03h-p4}
-@keyframes l03h-g5{0%,83.323%{opacity:.45}83.333%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l03h-g5{animation-name:l03h-g5}
+.l03h-cb:checked ~ .l03h-box .l03h-g rect,.l03h-cb:checked ~ .l03h-box .l03h-g line,.l03h-cb:checked ~ .l03h-box .l03h-g path:not(.l03h-gl),.l03h-cb:checked ~ .l03h-box .l03h-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l03h-g rect,.l03h-g line,.l03h-g path:not(.l03h-gl){animation:none;opacity:1}.l03h-pk{animation:none;display:none}.l03h-btn{display:none}}
+@keyframes l03h-g0{0%{opacity:1}18.75%{opacity:1}18.76%,100%{opacity:.5}}
+@keyframes l03h-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}15%{opacity:1;transform:translateX(236px)}18.75%{opacity:1;transform:translateX(236px)}18.76%,100%{opacity:0;transform:translateX(236px)}}
+.l03h-g0 rect,.l03h-g0 line,.l03h-g0 path:not(.l03h-gl){animation-name:l03h-g0}.l03h-p0{animation-name:l03h-p0}
+@keyframes l03h-g1{0%,18.74%{opacity:.5}18.75%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.5}}
+@keyframes l03h-p1{0%,18.74%{opacity:0;transform:translateX(0)}18.75%{opacity:1;transform:translateX(0)}33.75%{opacity:1;transform:translateX(-236px)}37.5%{opacity:1;transform:translateX(-236px)}37.51%,100%{opacity:0;transform:translateX(-236px)}}
+.l03h-g1 rect,.l03h-g1 line,.l03h-g1 path:not(.l03h-gl){animation-name:l03h-g1}.l03h-p1{animation-name:l03h-p1}
+@keyframes l03h-g2{0%,37.49%{opacity:.5}37.5%{opacity:1}56.25%{opacity:1}56.26%,100%{opacity:.5}}
+@keyframes l03h-p2{0%,37.49%{opacity:0;transform:translateX(0)}37.5%{opacity:1;transform:translateX(0)}52.5%{opacity:1;transform:translateX(-236px)}56.25%{opacity:1;transform:translateX(-236px)}56.26%,100%{opacity:0;transform:translateX(-236px)}}
+.l03h-g2 rect,.l03h-g2 line,.l03h-g2 path:not(.l03h-gl){animation-name:l03h-g2}.l03h-p2{animation-name:l03h-p2}
+@keyframes l03h-g3{0%,56.24%{opacity:.5}56.25%{opacity:1}68.75%{opacity:1}68.76%,100%{opacity:.5}}
+.l03h-g3 rect,.l03h-g3 line,.l03h-g3 path:not(.l03h-gl){animation-name:l03h-g3}
+@keyframes l03h-g4{0%,68.74%{opacity:.5}68.75%{opacity:1}87.5%{opacity:1}87.51%,100%{opacity:.5}}
+@keyframes l03h-p4{0%,68.74%{opacity:0;transform:translateX(0)}68.75%{opacity:1;transform:translateX(0)}83.75%{opacity:1;transform:translateX(236px)}87.5%{opacity:1;transform:translateX(236px)}87.51%,100%{opacity:0;transform:translateX(236px)}}
+.l03h-g4 rect,.l03h-g4 line,.l03h-g4 path:not(.l03h-gl){animation-name:l03h-g4}.l03h-p4{animation-name:l03h-p4}
+@keyframes l03h-g5{0%,87.49%{opacity:.5}87.5%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l03h-g5 rect,.l03h-g5 line,.l03h-g5 path:not(.l03h-gl){animation-name:l03h-g5}
 </style>
 <defs>
 <marker id="l03h-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>

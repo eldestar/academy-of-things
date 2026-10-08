@@ -5,24 +5,25 @@ You build or review the service-provider (SP) side, or you own the architecture 
 ## The flow, step by step
 
 <!-- diagram:saml-flow -->
-<div style="position:relative;margin:20px 0">
+<div class="sm-wrap" style="position:relative">
 <input type="checkbox" id="sm-pause" class="sm-cb" /><label for="sm-pause" class="sm-btn"><span class="sm-off">Pause animation</span><span class="sm-on">Play animation</span></label>
 <div class="sm-box" style="overflow-x:auto">
-<svg class="sm-flow" viewBox="0 0 760 917" role="img" aria-labelledby="sm-t sm-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="sm-flow" viewBox="0 0 760 917" role="img" aria-labelledby="sm-t sm-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="sm-t">Inside the SP when the Response arrives</title>
 <desc id="sm-d">Four parts: the browser, the service provider's signature verifier, its assertion logic, and its ID cache. The browser posts the SAMLResponse to the ACS URL; if the message is signed, Destination must be present and equal that URL. The verifier checks the signature; the author's rule, not the spec's, is to use a key from pinned IdP metadata and never one from the message. Verification shows that some element matches a signed digest, not that the element the logic reads next is that element. A wrapping gap appears when the assertion logic then looks up the Assertion with a fresh whole-document query instead of reading the element the verified Reference points to. The control, a design recommendation and not a spec rule, is to read every security-relevant value from the verified node, use one parser, and reject a duplicate ID or an unexpected Assertion count. The logic then keeps the assertion ID in the cache. The profile requires keeping used IDs for as long as NotOnOrAfter would keep the assertion valid; the author's reasoning adds any skew allowance and one cache shared by every node. The service provider then may start its session by any mechanism it chooses. A final note says that stored AuthnRequest IDs cover only SP-initiated Responses, so the ID cache is still required. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.sm-flow{--ink:light-dark(#000000,#ffffff)}
 .sm-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .sm-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.sm-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sm-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .sm-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .sm-front{stroke:var(--accent);stroke-width:2;fill:none}
 .sm-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .sm-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.sm-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sm-badt{fill:var(--bad-text)}
-.sm-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-badt{fill:var(--ink)}
+.sm-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .sm-badge{fill:var(--accent)}
 .sm-b-back{fill:var(--muted)}
 .sm-b-bad{fill:var(--bad)}
@@ -31,41 +32,43 @@ You build or review the service-provider (SP) side, or you own the architecture 
 .sm-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .sm-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .sm-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.sm-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sm-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.sm-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:44s;animation-timing-function:linear;animation-iteration-count:infinite}
 .sm-pk.sm-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .sm-pk.sm-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.sm-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.sm-flow:hover .sm-g,svg.sm-flow:hover .sm-pk{animation-play-state:paused}
+.sm-wrap{margin:20px 0}
+@media (min-width:801px){.sm-wrap{margin-left:-44px;margin-right:-44px}}
+.sm-g rect,.sm-g line,.sm-g path:not(.sm-gl){opacity:.5;animation-duration:44s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.sm-flow:hover .sm-g rect,svg.sm-flow:hover .sm-g line,svg.sm-flow:hover .sm-g path:not(.sm-gl),svg.sm-flow:hover .sm-pk{animation-play-state:paused}
 .sm-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .sm-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .sm-btn:hover{background:var(--hover)}
 .sm-cb:focus-visible + .sm-btn{outline:2px solid var(--accent);outline-offset:2px}
 .sm-cb:checked + .sm-btn .sm-off,.sm-cb:not(:checked) + .sm-btn .sm-on{display:none}
-.sm-cb:checked ~ .sm-box .sm-g,.sm-cb:checked ~ .sm-box .sm-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.sm-g{animation:none;opacity:1}.sm-pk{animation:none;display:none}.sm-btn{display:none}}
-@keyframes sm-g0{0%{opacity:1}11.111%{opacity:1}11.121%,100%{opacity:.45}}
-@keyframes sm-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}11.111%{opacity:1;transform:translateX(146px)}11.121%,100%{opacity:0;transform:translateX(146px)}}
-.sm-g0{animation-name:sm-g0}.sm-p0{animation-name:sm-p0}
-@keyframes sm-g1{0%,11.101%{opacity:.45}11.111%{opacity:1}22.222%{opacity:1}22.232%,100%{opacity:.45}}
-.sm-g1{animation-name:sm-g1}
-@keyframes sm-g2{0%,22.212%{opacity:.45}22.222%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-@keyframes sm-p2{0%,22.212%{opacity:0;transform:translateX(0)}22.222%{opacity:1;transform:translateX(0)}33.333%{opacity:1;transform:translateX(146px)}33.343%,100%{opacity:0;transform:translateX(146px)}}
-.sm-g2{animation-name:sm-g2}.sm-p2{animation-name:sm-p2}
-@keyframes sm-g3{0%,33.323%{opacity:.45}33.333%{opacity:1}44.444%{opacity:1}44.454%,100%{opacity:.45}}
-.sm-g3{animation-name:sm-g3}
-@keyframes sm-g4{0%,44.434%{opacity:.45}44.444%{opacity:1}55.556%{opacity:1}55.566%,100%{opacity:.45}}
-.sm-g4{animation-name:sm-g4}
-@keyframes sm-g5{0%,55.546%{opacity:.45}55.556%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-@keyframes sm-p5{0%,55.546%{opacity:0;transform:translateX(0)}55.556%{opacity:1;transform:translateX(0)}66.667%{opacity:1;transform:translateX(146px)}66.677%,100%{opacity:0;transform:translateX(146px)}}
-.sm-g5{animation-name:sm-g5}.sm-p5{animation-name:sm-p5}
-@keyframes sm-g6{0%,66.657%{opacity:.45}66.667%{opacity:1}77.778%{opacity:1}77.788%,100%{opacity:.45}}
-.sm-g6{animation-name:sm-g6}
-@keyframes sm-g7{0%,77.768%{opacity:.45}77.778%{opacity:1}88.889%{opacity:1}88.899%,100%{opacity:.45}}
-@keyframes sm-p7{0%,77.768%{opacity:0;transform:translateX(0)}77.778%{opacity:1;transform:translateX(0)}88.889%{opacity:1;transform:translateX(-326px)}88.899%,100%{opacity:0;transform:translateX(-326px)}}
-.sm-g7{animation-name:sm-g7}.sm-p7{animation-name:sm-p7}
-@keyframes sm-g8{0%,88.879%{opacity:.45}88.889%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.sm-g8{animation-name:sm-g8}
+.sm-cb:checked ~ .sm-box .sm-g rect,.sm-cb:checked ~ .sm-box .sm-g line,.sm-cb:checked ~ .sm-box .sm-g path:not(.sm-gl),.sm-cb:checked ~ .sm-box .sm-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.sm-g rect,.sm-g line,.sm-g path:not(.sm-gl){animation:none;opacity:1}.sm-pk{animation:none;display:none}.sm-btn{display:none}}
+@keyframes sm-g0{0%{opacity:1}13.636%{opacity:1}13.646%,100%{opacity:.5}}
+@keyframes sm-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}10.909%{opacity:1;transform:translateX(146px)}13.636%{opacity:1;transform:translateX(146px)}13.646%,100%{opacity:0;transform:translateX(146px)}}
+.sm-g0 rect,.sm-g0 line,.sm-g0 path:not(.sm-gl){animation-name:sm-g0}.sm-p0{animation-name:sm-p0}
+@keyframes sm-g1{0%,13.626%{opacity:.5}13.636%{opacity:1}22.727%{opacity:1}22.737%,100%{opacity:.5}}
+.sm-g1 rect,.sm-g1 line,.sm-g1 path:not(.sm-gl){animation-name:sm-g1}
+@keyframes sm-g2{0%,22.717%{opacity:.5}22.727%{opacity:1}36.364%{opacity:1}36.374%,100%{opacity:.5}}
+@keyframes sm-p2{0%,22.717%{opacity:0;transform:translateX(0)}22.727%{opacity:1;transform:translateX(0)}33.636%{opacity:1;transform:translateX(146px)}36.364%{opacity:1;transform:translateX(146px)}36.374%,100%{opacity:0;transform:translateX(146px)}}
+.sm-g2 rect,.sm-g2 line,.sm-g2 path:not(.sm-gl){animation-name:sm-g2}.sm-p2{animation-name:sm-p2}
+@keyframes sm-g3{0%,36.354%{opacity:.5}36.364%{opacity:1}45.455%{opacity:1}45.465%,100%{opacity:.5}}
+.sm-g3 rect,.sm-g3 line,.sm-g3 path:not(.sm-gl){animation-name:sm-g3}
+@keyframes sm-g4{0%,45.445%{opacity:.5}45.455%{opacity:1}54.545%{opacity:1}54.555%,100%{opacity:.5}}
+.sm-g4 rect,.sm-g4 line,.sm-g4 path:not(.sm-gl){animation-name:sm-g4}
+@keyframes sm-g5{0%,54.535%{opacity:.5}54.545%{opacity:1}68.182%{opacity:1}68.192%,100%{opacity:.5}}
+@keyframes sm-p5{0%,54.535%{opacity:0;transform:translateX(0)}54.545%{opacity:1;transform:translateX(0)}65.455%{opacity:1;transform:translateX(146px)}68.182%{opacity:1;transform:translateX(146px)}68.192%,100%{opacity:0;transform:translateX(146px)}}
+.sm-g5 rect,.sm-g5 line,.sm-g5 path:not(.sm-gl){animation-name:sm-g5}.sm-p5{animation-name:sm-p5}
+@keyframes sm-g6{0%,68.172%{opacity:.5}68.182%{opacity:1}77.273%{opacity:1}77.283%,100%{opacity:.5}}
+.sm-g6 rect,.sm-g6 line,.sm-g6 path:not(.sm-gl){animation-name:sm-g6}
+@keyframes sm-g7{0%,77.263%{opacity:.5}77.273%{opacity:1}90.909%{opacity:1}90.919%,100%{opacity:.5}}
+@keyframes sm-p7{0%,77.263%{opacity:0;transform:translateX(0)}77.273%{opacity:1;transform:translateX(0)}88.182%{opacity:1;transform:translateX(-326px)}90.909%{opacity:1;transform:translateX(-326px)}90.919%,100%{opacity:0;transform:translateX(-326px)}}
+.sm-g7 rect,.sm-g7 line,.sm-g7 path:not(.sm-gl){animation-name:sm-g7}.sm-p7{animation-name:sm-p7}
+@keyframes sm-g8{0%,90.899%{opacity:.5}90.909%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.sm-g8 rect,.sm-g8 line,.sm-g8 path:not(.sm-gl){animation-name:sm-g8}
 </style>
 <defs>
 <marker id="sm-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -163,24 +166,25 @@ Every hop of the end-to-end flow crosses the user agent.
 What the profile obliges the SP to do (4.1.4.3, 4.1.4.5): verify signatures on the assertions or response; verify `Recipient` in the bearer `SubjectConfirmationData` equals the ACS URL the message reached; verify its `NotOnOrAfter` has not passed, "subject to allowable clock skew"; verify `InResponseTo` equals the request's ID unless the response is unsolicited, in which case it MUST be absent; verify that any assertion it relies on is valid in other respects (the `AudienceRestriction` naming the SP is one such respect; 4.1.4.2 requires the IdP to include it). An assertion that fails any check SHOULD be discarded and SHOULD NOT establish a security context; that one is a SHOULD, not a MUST. With the POST binding the SP also MUST NOT accept a bearer assertion twice, by keeping used IDs for as long as `NotOnOrAfter` would keep the assertion valid (4.1.4.5). If the `AuthnStatement` carries `SessionNotOnOrAfter`, the security context SHOULD be discarded then.
 
 <!-- diagram:saml-response-anatomy -->
-<div style="position:relative;margin:20px 0">
+<div class="smr-wrap" style="position:relative">
 <input type="checkbox" id="smr-pause" class="smr-cb" /><label for="smr-pause" class="smr-btn"><span class="smr-off">Pause animation</span><span class="smr-on">Play animation</span></label>
 <div class="smr-box" style="overflow-x:auto">
-<svg class="smr-flow" viewBox="0 0 760 549" role="img" aria-labelledby="smr-t smr-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="smr-flow" viewBox="0 0 760 549" role="img" aria-labelledby="smr-t smr-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="smr-t">What the SP must check, part by part (profile and signature profile)</title>
 <desc id="smr-d">A nested diagram of a Response and its Assertion, with callouts for what the profile requires. On the Response, if the message is signed Destination must be present and must equal the receiving URL; InResponseTo must equal the request's ID, or be absent when the response is unsolicited. The Assertion must be signed with the POST binding, and with POST the SP must not accept a bearer assertion twice, keeping used IDs for as long as NotOnOrAfter would keep it valid. The signature is enveloped with a single same-document Reference of the form URI equals hash ID, and should use exclusive canonicalization and not contain transforms beyond that and enveloped-signature. The bearer SubjectConfirmationData Recipient must equal the ACS URL the message reached and its NotOnOrAfter must not have passed, subject to allowable clock skew. The Conditions AudienceRestriction is one respect in which the assertion must be valid; the IdP must include it. A SessionNotOnOrAfter in the AuthnStatement means the SP should discard its security context at that time. The diagram highlights each part in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.smr-flow{--ink:light-dark(#000000,#ffffff)}
 .smr-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .smr-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.smr-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.smr-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .smr-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .smr-front{stroke:var(--accent);stroke-width:2;fill:none}
 .smr-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .smr-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.smr-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.smr-badt{fill:var(--bad-text)}
-.smr-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-badt{fill:var(--ink)}
+.smr-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .smr-badge{fill:var(--accent)}
 .smr-b-back{fill:var(--muted)}
 .smr-b-bad{fill:var(--bad)}
@@ -189,51 +193,53 @@ What the profile obliges the SP to do (4.1.4.3, 4.1.4.5): verify signatures on t
 .smr-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .smr-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .smr-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.smr-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .smr-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .smr-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.smr-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.smr-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.smr-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.smr-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.smr-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.smr-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.smr-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.smr-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .smr-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .smr-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .smr-hl{fill:none;stroke:var(--accent);stroke-width:3}
 .smr-hle{stroke:var(--accent);stroke-width:3;fill:none}
-.smr-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:26s;animation-timing-function:linear;animation-iteration-count:infinite}
+.smr-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
 .smr-pk.smr-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .smr-pk.smr-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.smr-g{opacity:.45;animation-duration:26s;animation-timing-function:linear;animation-iteration-count:infinite}
-.smr-h{opacity:0;animation-duration:26s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.smr-flow:hover .smr-g,svg.smr-flow:hover .smr-pk,svg.smr-flow:hover .smr-h{animation-play-state:paused}
+.smr-wrap{margin:20px 0}
+@media (min-width:801px){.smr-wrap{margin-left:-44px;margin-right:-44px}}
+.smr-g rect,.smr-g line,.smr-g path:not(.smr-gl){opacity:.5;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+.smr-h{opacity:0;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.smr-flow:hover .smr-g rect,svg.smr-flow:hover .smr-g line,svg.smr-flow:hover .smr-g path:not(.smr-gl),svg.smr-flow:hover .smr-pk,svg.smr-flow:hover .smr-h{animation-play-state:paused}
 .smr-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .smr-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .smr-btn:hover{background:var(--hover)}
 .smr-cb:focus-visible + .smr-btn{outline:2px solid var(--accent);outline-offset:2px}
 .smr-cb:checked + .smr-btn .smr-off,.smr-cb:not(:checked) + .smr-btn .smr-on{display:none}
-.smr-cb:checked ~ .smr-box .smr-g,.smr-cb:checked ~ .smr-box .smr-pk,.smr-cb:checked ~ .smr-box .smr-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.smr-g{animation:none;opacity:1}.smr-pk{animation:none;display:none}.smr-h{animation:none;opacity:0}.smr-btn{display:none}}
-@keyframes smr-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.45}}
+.smr-cb:checked ~ .smr-box .smr-g rect,.smr-cb:checked ~ .smr-box .smr-g line,.smr-cb:checked ~ .smr-box .smr-g path:not(.smr-gl),.smr-cb:checked ~ .smr-box .smr-pk,.smr-cb:checked ~ .smr-box .smr-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.smr-g rect,.smr-g line,.smr-g path:not(.smr-gl){animation:none;opacity:1}.smr-pk{animation:none;display:none}.smr-h{animation:none;opacity:0}.smr-btn{display:none}}
+@keyframes smr-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.5}}
 @keyframes smr-h0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:0}}
-.smr-g0{animation-name:smr-g0}.smr-h0{animation-name:smr-h0}
-@keyframes smr-g1{0%,14.276%{opacity:.45}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.45}}
+.smr-g0 rect,.smr-g0 line,.smr-g0 path:not(.smr-gl){animation-name:smr-g0}.smr-h0{animation-name:smr-h0}
+@keyframes smr-g1{0%,14.276%{opacity:.5}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.5}}
 @keyframes smr-h1{0%,14.276%{opacity:0}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:0}}
-.smr-g1{animation-name:smr-g1}.smr-h1{animation-name:smr-h1}
-@keyframes smr-g2{0%,28.561%{opacity:.45}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.45}}
+.smr-g1 rect,.smr-g1 line,.smr-g1 path:not(.smr-gl){animation-name:smr-g1}.smr-h1{animation-name:smr-h1}
+@keyframes smr-g2{0%,28.561%{opacity:.5}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.5}}
 @keyframes smr-h2{0%,28.561%{opacity:0}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:0}}
-.smr-g2{animation-name:smr-g2}.smr-h2{animation-name:smr-h2}
-@keyframes smr-g3{0%,42.847%{opacity:.45}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.45}}
+.smr-g2 rect,.smr-g2 line,.smr-g2 path:not(.smr-gl){animation-name:smr-g2}.smr-h2{animation-name:smr-h2}
+@keyframes smr-g3{0%,42.847%{opacity:.5}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.5}}
 @keyframes smr-h3{0%,42.847%{opacity:0}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:0}}
-.smr-g3{animation-name:smr-g3}.smr-h3{animation-name:smr-h3}
-@keyframes smr-g4{0%,57.133%{opacity:.45}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.45}}
+.smr-g3 rect,.smr-g3 line,.smr-g3 path:not(.smr-gl){animation-name:smr-g3}.smr-h3{animation-name:smr-h3}
+@keyframes smr-g4{0%,57.133%{opacity:.5}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.5}}
 @keyframes smr-h4{0%,57.133%{opacity:0}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:0}}
-.smr-g4{animation-name:smr-g4}.smr-h4{animation-name:smr-h4}
-@keyframes smr-g5{0%,71.419%{opacity:.45}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.45}}
+.smr-g4 rect,.smr-g4 line,.smr-g4 path:not(.smr-gl){animation-name:smr-g4}.smr-h4{animation-name:smr-h4}
+@keyframes smr-g5{0%,71.419%{opacity:.5}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.5}}
 @keyframes smr-h5{0%,71.419%{opacity:0}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:0}}
-.smr-g5{animation-name:smr-g5}.smr-h5{animation-name:smr-h5}
-@keyframes smr-g6{0%,85.704%{opacity:.45}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.smr-g5 rect,.smr-g5 line,.smr-g5 path:not(.smr-gl){animation-name:smr-g5}.smr-h5{animation-name:smr-h5}
+@keyframes smr-g6{0%,85.704%{opacity:.5}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
 @keyframes smr-h6{0%,85.704%{opacity:0}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
-.smr-g6{animation-name:smr-g6}.smr-h6{animation-name:smr-h6}
+.smr-g6 rect,.smr-g6 line,.smr-g6 path:not(.smr-gl){animation-name:smr-g6}.smr-h6{animation-name:smr-h6}
 </style>
 <defs>
 <marker id="smr-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -346,24 +352,25 @@ Encryption: an `EncryptedAssertion` is "a confidentiality protection mechanism w
 Core validation shows that some element still matches a signed digest. It does not show that the element your code reads next is that element. XML Signature 1.1 makes the related point in its own terms: a consumer "should operate over the data that was transformed (including canonicalization) and signed, not the original pre-transformed data" (8.1.3; 8.1.1 adds, about transforms, "only what is signed is secure"). Signature wrapping (XSW) lives in that gap. My summary of the class: the validly signed element stays where the verifier finds it by ID, and a forged element is placed where the application's own lookup finds it first. The verifier and the business logic read different nodes.
 
 <!-- diagram:saml-xsw -->
-<div style="position:relative;margin:20px 0">
+<div class="l02d-wrap" style="position:relative">
 <input type="checkbox" id="l02d-pause" class="l02d-cb" /><label for="l02d-pause" class="l02d-btn"><span class="l02d-off">Pause animation</span><span class="l02d-on">Play animation</span></label>
 <div class="l02d-box" style="overflow-x:auto">
-<svg class="l02d-flow" viewBox="0 0 760 365" role="img" aria-labelledby="l02d-t l02d-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l02d-flow" viewBox="0 0 760 365" role="img" aria-labelledby="l02d-t l02d-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l02d-t">A wrapped Response: what the signature proves and what the code reads</title>
 <desc id="l02d-d">A nested diagram of the wrapped copy of the sample Response, which holds two Assertions. The first, ID _evil, is unsigned and carries a forged NameID, admin@example.com; a naive first-assertion lookup reads it. The second, ID _assert1, is the genuine one the signature's Reference points at; the verifier finds it by the Reference ID. Inside it the Signature has a Reference with URI _assert1, which shows that some element still matches a signed digest but not that the element the code reads next is that element. Its NameID, u-7f3a9c21, is the value the control reads, by resolving the verified Reference and reading every security-relevant value from that node. The Response callout adds the control of rejecting a document whose Assertion count is not what you expect. The diagram highlights each part in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l02d-flow{--ink:light-dark(#000000,#ffffff)}
 .l02d-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l02d-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l02d-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02d-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02d-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02d-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02d-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l02d-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l02d-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l02d-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l02d-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02d-badt{fill:var(--bad-text)}
-.l02d-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02d-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02d-badt{fill:var(--ink)}
+.l02d-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02d-badge{fill:var(--accent)}
 .l02d-b-back{fill:var(--muted)}
 .l02d-b-bad{fill:var(--bad)}
@@ -372,13 +379,13 @@ Core validation shows that some element still matches a signed digest. It does n
 .l02d-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l02d-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l02d-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l02d-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02d-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02d-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l02d-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l02d-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02d-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02d-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02d-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l02d-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02d-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02d-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02d-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l02d-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l02d-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l02d-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -386,31 +393,33 @@ Core validation shows that some element still matches a signed digest. It does n
 .l02d-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l02d-pk.l02d-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l02d-pk.l02d-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l02d-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l02d-wrap{margin:20px 0}
+@media (min-width:801px){.l02d-wrap{margin-left:-44px;margin-right:-44px}}
+.l02d-g rect,.l02d-g line,.l02d-g path:not(.l02d-gl){opacity:.5;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l02d-h{opacity:0;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l02d-flow:hover .l02d-g,svg.l02d-flow:hover .l02d-pk,svg.l02d-flow:hover .l02d-h{animation-play-state:paused}
+svg.l02d-flow:hover .l02d-g rect,svg.l02d-flow:hover .l02d-g line,svg.l02d-flow:hover .l02d-g path:not(.l02d-gl),svg.l02d-flow:hover .l02d-pk,svg.l02d-flow:hover .l02d-h{animation-play-state:paused}
 .l02d-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l02d-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l02d-btn:hover{background:var(--hover)}
 .l02d-cb:focus-visible + .l02d-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l02d-cb:checked + .l02d-btn .l02d-off,.l02d-cb:not(:checked) + .l02d-btn .l02d-on{display:none}
-.l02d-cb:checked ~ .l02d-box .l02d-g,.l02d-cb:checked ~ .l02d-box .l02d-pk,.l02d-cb:checked ~ .l02d-box .l02d-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l02d-g{animation:none;opacity:1}.l02d-pk{animation:none;display:none}.l02d-h{animation:none;opacity:0}.l02d-btn{display:none}}
-@keyframes l02d-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
+.l02d-cb:checked ~ .l02d-box .l02d-g rect,.l02d-cb:checked ~ .l02d-box .l02d-g line,.l02d-cb:checked ~ .l02d-box .l02d-g path:not(.l02d-gl),.l02d-cb:checked ~ .l02d-box .l02d-pk,.l02d-cb:checked ~ .l02d-box .l02d-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l02d-g rect,.l02d-g line,.l02d-g path:not(.l02d-gl){animation:none;opacity:1}.l02d-pk{animation:none;display:none}.l02d-h{animation:none;opacity:0}.l02d-btn{display:none}}
+@keyframes l02d-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.5}}
 @keyframes l02d-h0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:0}}
-.l02d-g0{animation-name:l02d-g0}.l02d-h0{animation-name:l02d-h0}
-@keyframes l02d-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
+.l02d-g0 rect,.l02d-g0 line,.l02d-g0 path:not(.l02d-gl){animation-name:l02d-g0}.l02d-h0{animation-name:l02d-h0}
+@keyframes l02d-g1{0%,19.99%{opacity:.5}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.5}}
 @keyframes l02d-h1{0%,19.99%{opacity:0}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:0}}
-.l02d-g1{animation-name:l02d-g1}.l02d-h1{animation-name:l02d-h1}
-@keyframes l02d-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
+.l02d-g1 rect,.l02d-g1 line,.l02d-g1 path:not(.l02d-gl){animation-name:l02d-g1}.l02d-h1{animation-name:l02d-h1}
+@keyframes l02d-g2{0%,39.99%{opacity:.5}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.5}}
 @keyframes l02d-h2{0%,39.99%{opacity:0}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:0}}
-.l02d-g2{animation-name:l02d-g2}.l02d-h2{animation-name:l02d-h2}
-@keyframes l02d-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
+.l02d-g2 rect,.l02d-g2 line,.l02d-g2 path:not(.l02d-gl){animation-name:l02d-g2}.l02d-h2{animation-name:l02d-h2}
+@keyframes l02d-g3{0%,59.99%{opacity:.5}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.5}}
 @keyframes l02d-h3{0%,59.99%{opacity:0}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:0}}
-.l02d-g3{animation-name:l02d-g3}.l02d-h3{animation-name:l02d-h3}
-@keyframes l02d-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l02d-g3 rect,.l02d-g3 line,.l02d-g3 path:not(.l02d-gl){animation-name:l02d-g3}.l02d-h3{animation-name:l02d-h3}
+@keyframes l02d-g4{0%,79.99%{opacity:.5}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
 @keyframes l02d-h4{0%,79.99%{opacity:0}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
-.l02d-g4{animation-name:l02d-g4}.l02d-h4{animation-name:l02d-h4}
+.l02d-g4 rect,.l02d-g4 line,.l02d-g4 path:not(.l02d-gl){animation-name:l02d-g4}.l02d-h4{animation-name:l02d-h4}
 </style>
 <defs>
 <marker id="l02d-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -498,24 +507,25 @@ Controls (design recommendations drawn from the class, not spec rules): verify a
 **Replay.** Bearer means possession is enough. The mandated defence is the ID cache (4.1.4.5). IDs make sound keys because randomly generated ones must collide with probability at most 2^-128 (core 1.3.4). My reasoning on sizing: if you accept responses a few minutes past `NotOnOrAfter` for skew, hold each ID until `NotOnOrAfter` plus that allowance, or the leniency window becomes a replay window; and the cache must be shared by every node behind the load balancer, with an atomic check-and-insert: per-node caches, even with sticky sessions, fail because the attacker replaying a Response, not the SP, chooses which node receives it. `InResponseTo` is the second control: store each outstanding `AuthnRequest` ID with an expiry and consume it on first use. That covers only SP-initiated Responses (an unsolicited one carries none), so it does not remove the ID-cache requirement. A `OneTimeUse` condition adds an expectation that the relying party keeps its own cache (core 2.5.1.5).
 
 <!-- diagram:saml-replay -->
-<div style="position:relative;margin:20px 0">
+<div class="l02e-wrap" style="position:relative">
 <input type="checkbox" id="l02e-pause" class="l02e-cb" /><label for="l02e-pause" class="l02e-btn"><span class="l02e-off">Pause animation</span><span class="l02e-on">Play animation</span></label>
 <div class="l02e-box" style="overflow-x:auto">
-<svg class="l02e-flow" viewBox="0 0 760 731" role="img" aria-labelledby="l02e-t l02e-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l02e-flow" viewBox="0 0 760 731" role="img" aria-labelledby="l02e-t l02e-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l02e-t">Replay: why the ID cache should be shared by every node (my reasoning)</title>
 <desc id="l02e-d">The shared, atomic cache shown here is the lesson's reasoning, not a profile requirement. Four parts: the client, SP node A, SP node B, and the ID cache. The client POSTs a Response to node A, which does an atomic check-and-insert of the assertion ID in the shared cache; the ID is new, so it is accepted and held for as long as NotOnOrAfter would keep the assertion valid. An attacker then replays the same Response to node B, which does the same check-and-insert; the ID is already stored, so the replay is not accepted. A per-node cache would fail here, even with sticky sessions, because the attacker, not the SP, chooses which node receives the Response. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l02e-flow{--ink:light-dark(#000000,#ffffff)}
 .l02e-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l02e-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l02e-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02e-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02e-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02e-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02e-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l02e-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l02e-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l02e-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l02e-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02e-badt{fill:var(--bad-text)}
-.l02e-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02e-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02e-badt{fill:var(--ink)}
+.l02e-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02e-badge{fill:var(--accent)}
 .l02e-b-back{fill:var(--muted)}
 .l02e-b-bad{fill:var(--bad)}
@@ -524,37 +534,39 @@ Controls (design recommendations drawn from the class, not spec rules): verify a
 .l02e-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l02e-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l02e-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l02e-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02e-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l02e-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02e-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:36s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l02e-pk.l02e-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l02e-pk.l02e-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l02e-g{opacity:.45;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l02e-flow:hover .l02e-g,svg.l02e-flow:hover .l02e-pk{animation-play-state:paused}
+.l02e-wrap{margin:20px 0}
+@media (min-width:801px){.l02e-wrap{margin-left:-44px;margin-right:-44px}}
+.l02e-g rect,.l02e-g line,.l02e-g path:not(.l02e-gl){opacity:.5;animation-duration:36s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l02e-flow:hover .l02e-g rect,svg.l02e-flow:hover .l02e-g line,svg.l02e-flow:hover .l02e-g path:not(.l02e-gl),svg.l02e-flow:hover .l02e-pk{animation-play-state:paused}
 .l02e-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l02e-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l02e-btn:hover{background:var(--hover)}
 .l02e-cb:focus-visible + .l02e-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l02e-cb:checked + .l02e-btn .l02e-off,.l02e-cb:not(:checked) + .l02e-btn .l02e-on{display:none}
-.l02e-cb:checked ~ .l02e-box .l02e-g,.l02e-cb:checked ~ .l02e-box .l02e-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l02e-g{animation:none;opacity:1}.l02e-pk{animation:none;display:none}.l02e-btn{display:none}}
-@keyframes l02e-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.45}}
-@keyframes l02e-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}14.286%{opacity:1;transform:translateX(146px)}14.296%,100%{opacity:0;transform:translateX(146px)}}
-.l02e-g0{animation-name:l02e-g0}.l02e-p0{animation-name:l02e-p0}
-@keyframes l02e-g1{0%,14.276%{opacity:.45}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.45}}
-@keyframes l02e-p1{0%,14.276%{opacity:0;transform:translateX(0)}14.286%{opacity:1;transform:translateX(0)}28.571%{opacity:1;transform:translateX(326px)}28.581%,100%{opacity:0;transform:translateX(326px)}}
-.l02e-g1{animation-name:l02e-g1}.l02e-p1{animation-name:l02e-p1}
-@keyframes l02e-g2{0%,28.561%{opacity:.45}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.45}}
-.l02e-g2{animation-name:l02e-g2}
-@keyframes l02e-g3{0%,42.847%{opacity:.45}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.45}}
-@keyframes l02e-p3{0%,42.847%{opacity:0;transform:translateX(0)}42.857%{opacity:1;transform:translateX(0)}57.143%{opacity:1;transform:translateX(326px)}57.153%,100%{opacity:0;transform:translateX(326px)}}
-.l02e-g3{animation-name:l02e-g3}.l02e-p3{animation-name:l02e-p3}
-@keyframes l02e-g4{0%,57.133%{opacity:.45}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.45}}
-@keyframes l02e-p4{0%,57.133%{opacity:0;transform:translateX(0)}57.143%{opacity:1;transform:translateX(0)}71.429%{opacity:1;transform:translateX(146px)}71.439%,100%{opacity:0;transform:translateX(146px)}}
-.l02e-g4{animation-name:l02e-g4}.l02e-p4{animation-name:l02e-p4}
-@keyframes l02e-g5{0%,71.419%{opacity:.45}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.45}}
-.l02e-g5{animation-name:l02e-g5}
-@keyframes l02e-g6{0%,85.704%{opacity:.45}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l02e-g6{animation-name:l02e-g6}
+.l02e-cb:checked ~ .l02e-box .l02e-g rect,.l02e-cb:checked ~ .l02e-box .l02e-g line,.l02e-cb:checked ~ .l02e-box .l02e-g path:not(.l02e-gl),.l02e-cb:checked ~ .l02e-box .l02e-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l02e-g rect,.l02e-g line,.l02e-g path:not(.l02e-gl){animation:none;opacity:1}.l02e-pk{animation:none;display:none}.l02e-btn{display:none}}
+@keyframes l02e-g0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:.5}}
+@keyframes l02e-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}13.333%{opacity:1;transform:translateX(146px)}16.667%{opacity:1;transform:translateX(146px)}16.677%,100%{opacity:0;transform:translateX(146px)}}
+.l02e-g0 rect,.l02e-g0 line,.l02e-g0 path:not(.l02e-gl){animation-name:l02e-g0}.l02e-p0{animation-name:l02e-p0}
+@keyframes l02e-g1{0%,16.657%{opacity:.5}16.667%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.5}}
+@keyframes l02e-p1{0%,16.657%{opacity:0;transform:translateX(0)}16.667%{opacity:1;transform:translateX(0)}30%{opacity:1;transform:translateX(326px)}33.333%{opacity:1;transform:translateX(326px)}33.343%,100%{opacity:0;transform:translateX(326px)}}
+.l02e-g1 rect,.l02e-g1 line,.l02e-g1 path:not(.l02e-gl){animation-name:l02e-g1}.l02e-p1{animation-name:l02e-p1}
+@keyframes l02e-g2{0%,33.323%{opacity:.5}33.333%{opacity:1}44.444%{opacity:1}44.454%,100%{opacity:.5}}
+.l02e-g2 rect,.l02e-g2 line,.l02e-g2 path:not(.l02e-gl){animation-name:l02e-g2}
+@keyframes l02e-g3{0%,44.434%{opacity:.5}44.444%{opacity:1}61.111%{opacity:1}61.121%,100%{opacity:.5}}
+@keyframes l02e-p3{0%,44.434%{opacity:0;transform:translateX(0)}44.444%{opacity:1;transform:translateX(0)}57.778%{opacity:1;transform:translateX(326px)}61.111%{opacity:1;transform:translateX(326px)}61.121%,100%{opacity:0;transform:translateX(326px)}}
+.l02e-g3 rect,.l02e-g3 line,.l02e-g3 path:not(.l02e-gl){animation-name:l02e-g3}.l02e-p3{animation-name:l02e-p3}
+@keyframes l02e-g4{0%,61.101%{opacity:.5}61.111%{opacity:1}77.778%{opacity:1}77.788%,100%{opacity:.5}}
+@keyframes l02e-p4{0%,61.101%{opacity:0;transform:translateX(0)}61.111%{opacity:1;transform:translateX(0)}74.444%{opacity:1;transform:translateX(146px)}77.778%{opacity:1;transform:translateX(146px)}77.788%,100%{opacity:0;transform:translateX(146px)}}
+.l02e-g4 rect,.l02e-g4 line,.l02e-g4 path:not(.l02e-gl){animation-name:l02e-g4}.l02e-p4{animation-name:l02e-p4}
+@keyframes l02e-g5{0%,77.768%{opacity:.5}77.778%{opacity:1}88.889%{opacity:1}88.899%,100%{opacity:.5}}
+.l02e-g5 rect,.l02e-g5 line,.l02e-g5 path:not(.l02e-gl){animation-name:l02e-g5}
+@keyframes l02e-g6{0%,88.879%{opacity:.5}88.889%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l02e-g6 rect,.l02e-g6 line,.l02e-g6 path:not(.l02e-gl){animation-name:l02e-g6}
 </style>
 <defs>
 <marker id="l02e-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -631,24 +643,25 @@ Badges number this diagram's own four hops. The first POST is stored in the shar
 **Unsolicited responses.** IdP-initiated SSO has no `AuthnRequest`, so `InResponseTo` MUST be absent (4.1.5) and the request-binding control is gone. The response goes to the default ACS and `RelayState` is interpreted by prior agreement; the SP SHOULD designate a default landing location. If an integration needs it, compensate: replay cache, short validity, only the registered IdP and ACS, a `RelayState` allowlist, and off by default. Okta's "Single sign-on URL" is the ACS "always used" for IdP-initiated requests.
 
 <!-- diagram:saml-ways-in -->
-<div style="position:relative;margin:20px 0">
+<div class="l02a-wrap" style="position:relative">
 <input type="checkbox" id="l02a-pause" class="l02a-cb" /><label for="l02a-pause" class="l02a-btn"><span class="l02a-off">Pause animation</span><span class="l02a-on">Play animation</span></label>
 <div class="l02a-box" style="overflow-x:auto">
-<svg class="l02a-flow" viewBox="0 0 760 502" role="img" aria-labelledby="l02a-t l02a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l02a-flow" viewBox="0 0 760 502" role="img" aria-labelledby="l02a-t l02a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l02a-t">What InResponseTo decides: bound to a request, or unsolicited</title>
 <desc id="l02a-d">A decision tree that starts with whether the Response carries InResponseTo. If it does, ask whether it matches an outstanding AuthnRequest ID. If it matches, consume the stored ID on first use; the ID cache is still required. If it matches nothing, the check fails and the assertion should be discarded. If it carries none, the Response is unsolicited, as with IdP-initiated SSO, and the request-binding control is gone. Ask whether the integration needs it. If so, compensate with a replay cache, short validity, only the registered IdP and ACS, and a RelayState allowlist; if not, the leaf says off by default, which the text also lists with the compensations. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l02a-flow{--ink:light-dark(#000000,#ffffff)}
 .l02a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l02a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l02a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l02a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l02a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l02a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l02a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02a-badt{fill:var(--bad-text)}
-.l02a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-badt{fill:var(--ink)}
+.l02a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02a-badge{fill:var(--accent)}
 .l02a-b-back{fill:var(--muted)}
 .l02a-b-bad{fill:var(--bad)}
@@ -657,13 +670,13 @@ Badges number this diagram's own four hops. The first POST is stored in the shar
 .l02a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l02a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l02a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l02a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l02a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l02a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l02a-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02a-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02a-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02a-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l02a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l02a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l02a-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -671,16 +684,18 @@ Badges number this diagram's own four hops. The first POST is stored in the shar
 .l02a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l02a-pk.l02a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l02a-pk.l02a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l02a-g{opacity:.45;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l02a-wrap{margin:20px 0}
+@media (min-width:801px){.l02a-wrap{margin-left:-44px;margin-right:-44px}}
+.l02a-g rect,.l02a-g line,.l02a-g path:not(.l02a-gl){opacity:.5;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l02a-h{opacity:0;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l02a-flow:hover .l02a-g,svg.l02a-flow:hover .l02a-pk,svg.l02a-flow:hover .l02a-h{animation-play-state:paused}
+svg.l02a-flow:hover .l02a-g rect,svg.l02a-flow:hover .l02a-g line,svg.l02a-flow:hover .l02a-g path:not(.l02a-gl),svg.l02a-flow:hover .l02a-pk,svg.l02a-flow:hover .l02a-h{animation-play-state:paused}
 .l02a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l02a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l02a-btn:hover{background:var(--hover)}
 .l02a-cb:focus-visible + .l02a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l02a-cb:checked + .l02a-btn .l02a-off,.l02a-cb:not(:checked) + .l02a-btn .l02a-on{display:none}
-.l02a-cb:checked ~ .l02a-box .l02a-g,.l02a-cb:checked ~ .l02a-box .l02a-pk,.l02a-cb:checked ~ .l02a-box .l02a-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l02a-g{animation:none;opacity:1}.l02a-pk{animation:none;display:none}.l02a-h{animation:none;opacity:0}.l02a-btn{display:none}}
+.l02a-cb:checked ~ .l02a-box .l02a-g rect,.l02a-cb:checked ~ .l02a-box .l02a-g line,.l02a-cb:checked ~ .l02a-box .l02a-g path:not(.l02a-gl),.l02a-cb:checked ~ .l02a-box .l02a-pk,.l02a-cb:checked ~ .l02a-box .l02a-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l02a-g rect,.l02a-g line,.l02a-g path:not(.l02a-gl){animation:none;opacity:1}.l02a-pk{animation:none;display:none}.l02a-h{animation:none;opacity:0}.l02a-btn{display:none}}
 @keyframes l02a-h0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:0}}
 .l02a-h0{animation-name:l02a-h0}
 @keyframes l02a-h1{0%,24.99%{opacity:0}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}

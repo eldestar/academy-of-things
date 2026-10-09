@@ -7,24 +7,25 @@ You have configured SAML and OIDC apps in Okta for years. This lesson is the oth
 The first surprise: the vendor's app is not the SAML service provider. WorkOS is. The SP Entity ID, the ACS URL and the SP metadata you paste into Okta belong to WorkOS (the docs call them "Service Provider Details" on the connection). The vendor's app is an OAuth 2.0 client of WorkOS, which the docs describe as abstracting the IdP handshakes for SAML and OIDC alike.
 
 <!-- diagram:saml-sp-initiated -->
-<div style="position:relative;margin:20px 0">
+<div class="aot-wrap" style="position:relative">
 <input type="checkbox" id="aot-pause" class="aot-cb" /><label for="aot-pause" class="aot-btn"><span class="aot-off">Pause animation</span><span class="aot-on">Play animation</span></label>
 <div class="aot-box" style="overflow-x:auto">
-<svg class="aot-flow" viewBox="0 0 760 695" role="img" aria-labelledby="aot-t aot-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="aot-flow" viewBox="0 0 760 695" role="img" aria-labelledby="aot-t aot-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="aot-t">SP-initiated SAML sign-in through WorkOS</title>
 <desc id="aot-d">Three parties: the vendor app, WorkOS, and the identity provider. The app redirects the browser to WorkOS, WorkOS redirects to the IdP with a SAML request, the IdP posts a signed assertion to WorkOS, WorkOS redirects back to the app with a code, and the app exchanges the code for a profile server to server. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.aot-flow{--ink:light-dark(#000000,#ffffff)}
 .aot-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .aot-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.aot-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.aot-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .aot-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .aot-front{stroke:var(--accent);stroke-width:2;fill:none}
 .aot-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .aot-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.aot-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.aot-badt{fill:var(--bad-text)}
-.aot-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-badt{fill:var(--ink)}
+.aot-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .aot-badge{fill:var(--accent)}
 .aot-b-back{fill:var(--muted)}
 .aot-b-bad{fill:var(--bad)}
@@ -33,38 +34,40 @@ The first surprise: the vendor's app is not the SAML service provider. WorkOS is
 .aot-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .aot-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .aot-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.aot-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.aot-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+.aot-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.aot-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:38s;animation-timing-function:linear;animation-iteration-count:infinite}
 .aot-pk.aot-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .aot-pk.aot-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.aot-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.aot-flow:hover .aot-g,svg.aot-flow:hover .aot-pk{animation-play-state:paused}
+.aot-wrap{margin:20px 0}
+@media (min-width:801px){.aot-wrap{margin-left:-44px;margin-right:-44px}}
+.aot-g rect,.aot-g line,.aot-g path:not(.aot-gl){opacity:.5;animation-duration:38s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.aot-flow:hover .aot-g rect,svg.aot-flow:hover .aot-g line,svg.aot-flow:hover .aot-g path:not(.aot-gl),svg.aot-flow:hover .aot-pk{animation-play-state:paused}
 .aot-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .aot-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .aot-btn:hover{background:var(--hover)}
 .aot-cb:focus-visible + .aot-btn{outline:2px solid var(--accent);outline-offset:2px}
 .aot-cb:checked + .aot-btn .aot-off,.aot-cb:not(:checked) + .aot-btn .aot-on{display:none}
-.aot-cb:checked ~ .aot-box .aot-g,.aot-cb:checked ~ .aot-box .aot-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.aot-g{animation:none;opacity:1}.aot-pk{animation:none;display:none}.aot-btn{display:none}}
-@keyframes aot-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.45}}
-@keyframes aot-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}14.286%{opacity:1;transform:translateX(236px)}14.296%,100%{opacity:0;transform:translateX(236px)}}
-.aot-g0{animation-name:aot-g0}.aot-p0{animation-name:aot-p0}
-@keyframes aot-g1{0%,14.276%{opacity:.45}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.45}}
-@keyframes aot-p1{0%,14.276%{opacity:0;transform:translateX(0)}14.286%{opacity:1;transform:translateX(0)}28.571%{opacity:1;transform:translateX(236px)}28.581%,100%{opacity:0;transform:translateX(236px)}}
-.aot-g1{animation-name:aot-g1}.aot-p1{animation-name:aot-p1}
-@keyframes aot-g2{0%,28.561%{opacity:.45}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.45}}
-.aot-g2{animation-name:aot-g2}
-@keyframes aot-g3{0%,42.847%{opacity:.45}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.45}}
-@keyframes aot-p3{0%,42.847%{opacity:0;transform:translateX(0)}42.857%{opacity:1;transform:translateX(0)}57.143%{opacity:1;transform:translateX(-236px)}57.153%,100%{opacity:0;transform:translateX(-236px)}}
-.aot-g3{animation-name:aot-g3}.aot-p3{animation-name:aot-p3}
-@keyframes aot-g4{0%,57.133%{opacity:.45}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.45}}
-.aot-g4{animation-name:aot-g4}
-@keyframes aot-g5{0%,71.419%{opacity:.45}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.45}}
-@keyframes aot-p5{0%,71.419%{opacity:0;transform:translateX(0)}71.429%{opacity:1;transform:translateX(0)}85.714%{opacity:1;transform:translateX(-236px)}85.724%,100%{opacity:0;transform:translateX(-236px)}}
-.aot-g5{animation-name:aot-g5}.aot-p5{animation-name:aot-p5}
-@keyframes aot-g6{0%,85.704%{opacity:.45}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-@keyframes aot-p6{0%,85.704%{opacity:0;transform:translateX(0)}85.714%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(-236px)}100.01%,100%{opacity:0;transform:translateX(-236px)}}
-.aot-g6{animation-name:aot-g6}.aot-p6{animation-name:aot-p6}
+.aot-cb:checked ~ .aot-box .aot-g rect,.aot-cb:checked ~ .aot-box .aot-g line,.aot-cb:checked ~ .aot-box .aot-g path:not(.aot-gl),.aot-cb:checked ~ .aot-box .aot-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.aot-g rect,.aot-g line,.aot-g path:not(.aot-gl){animation:none;opacity:1}.aot-pk{animation:none;display:none}.aot-btn{display:none}}
+@keyframes aot-g0{0%{opacity:1}15.789%{opacity:1}15.799%,100%{opacity:.5}}
+@keyframes aot-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12.632%{opacity:1;transform:translateX(236px)}15.789%{opacity:1;transform:translateX(236px)}15.799%,100%{opacity:0;transform:translateX(236px)}}
+.aot-g0 rect,.aot-g0 line,.aot-g0 path:not(.aot-gl){animation-name:aot-g0}.aot-p0{animation-name:aot-p0}
+@keyframes aot-g1{0%,15.779%{opacity:.5}15.789%{opacity:1}31.579%{opacity:1}31.589%,100%{opacity:.5}}
+@keyframes aot-p1{0%,15.779%{opacity:0;transform:translateX(0)}15.789%{opacity:1;transform:translateX(0)}28.421%{opacity:1;transform:translateX(236px)}31.579%{opacity:1;transform:translateX(236px)}31.589%,100%{opacity:0;transform:translateX(236px)}}
+.aot-g1 rect,.aot-g1 line,.aot-g1 path:not(.aot-gl){animation-name:aot-g1}.aot-p1{animation-name:aot-p1}
+@keyframes aot-g2{0%,31.569%{opacity:.5}31.579%{opacity:1}42.105%{opacity:1}42.115%,100%{opacity:.5}}
+.aot-g2 rect,.aot-g2 line,.aot-g2 path:not(.aot-gl){animation-name:aot-g2}
+@keyframes aot-g3{0%,42.095%{opacity:.5}42.105%{opacity:1}57.895%{opacity:1}57.905%,100%{opacity:.5}}
+@keyframes aot-p3{0%,42.095%{opacity:0;transform:translateX(0)}42.105%{opacity:1;transform:translateX(0)}54.737%{opacity:1;transform:translateX(-236px)}57.895%{opacity:1;transform:translateX(-236px)}57.905%,100%{opacity:0;transform:translateX(-236px)}}
+.aot-g3 rect,.aot-g3 line,.aot-g3 path:not(.aot-gl){animation-name:aot-g3}.aot-p3{animation-name:aot-p3}
+@keyframes aot-g4{0%,57.885%{opacity:.5}57.895%{opacity:1}68.421%{opacity:1}68.431%,100%{opacity:.5}}
+.aot-g4 rect,.aot-g4 line,.aot-g4 path:not(.aot-gl){animation-name:aot-g4}
+@keyframes aot-g5{0%,68.411%{opacity:.5}68.421%{opacity:1}84.211%{opacity:1}84.221%,100%{opacity:.5}}
+@keyframes aot-p5{0%,68.411%{opacity:0;transform:translateX(0)}68.421%{opacity:1;transform:translateX(0)}81.053%{opacity:1;transform:translateX(-236px)}84.211%{opacity:1;transform:translateX(-236px)}84.221%,100%{opacity:0;transform:translateX(-236px)}}
+.aot-g5 rect,.aot-g5 line,.aot-g5 path:not(.aot-gl){animation-name:aot-g5}.aot-p5{animation-name:aot-p5}
+@keyframes aot-g6{0%,84.201%{opacity:.5}84.211%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+@keyframes aot-p6{0%,84.201%{opacity:0;transform:translateX(0)}84.211%{opacity:1;transform:translateX(0)}96.842%{opacity:1;transform:translateX(-236px)}100%{opacity:1;transform:translateX(-236px)}100.01%,100%{opacity:0;transform:translateX(-236px)}}
+.aot-g6 rect,.aot-g6 line,.aot-g6 path:not(.aot-gl){animation-name:aot-g6}.aot-p6{animation-name:aot-p6}
 </style>
 <defs>
 <marker id="aot-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>

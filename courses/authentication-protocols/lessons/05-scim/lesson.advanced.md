@@ -12,24 +12,25 @@ You are building or reviewing the service-provider (server) side of SCIM and nee
 - **Groups** (§4.2): `members[].value` holds the member's `id`; the `groups` attribute on a User is `readOnly`, so membership changes go through the Group resource. The extension URN `urn:ietf:params:scim:schemas:extension:enterprise:2.0:User` joins `schemas` when an extension attribute is addressed by its fully qualified name (RFC 7644 §3.5.2). Entra requires unique group `displayName`, which the RFC does not.
 
 <!-- diagram:scim-identifiers -->
-<div style="position:relative;margin:20px 0">
+<div class="l05a-wrap" style="position:relative">
 <input type="checkbox" id="l05a-pause" class="l05a-cb" /><label for="l05a-pause" class="l05a-btn"><span class="l05a-off">Pause animation</span><span class="l05a-on">Play animation</span></label>
 <div class="l05a-box" style="overflow-x:auto">
-<svg class="l05a-flow" viewBox="0 0 760 486" role="img" aria-labelledby="l05a-t l05a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l05a-flow" viewBox="0 0 760 486" role="img" aria-labelledby="l05a-t l05a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l05a-t">Identifier and membership rules in the SCIM User resource</title>
 <desc id="l05a-d">A User resource and the rules the RFCs set for each part. id (RFC 7643 section 3.1) is issued by the server, unique across all its resources, stable, non-reassignable and never set by the client. externalId is issued by the client and the server does not enforce uniqueness. userName (section 4.1.1) is required, unique across all Users, case-insensitive and readWrite, so a rename keeps the id; before comparing for uniqueness a provider MUST apply the PRECIS rules of RFC 7613. active (section 4.1.1) is a boolean administrative status whose definitive meaning the provider decides. The groups attribute on a User is readOnly, so membership changes go through the Group resource, where members[].value holds the member's id. The diagram highlights each part in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l05a-flow{--ink:light-dark(#000000,#ffffff)}
 .l05a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l05a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l05a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l05a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l05a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l05a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l05a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05a-badt{fill:var(--bad-text)}
-.l05a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-badt{fill:var(--ink)}
+.l05a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05a-badge{fill:var(--accent)}
 .l05a-b-back{fill:var(--muted)}
 .l05a-b-bad{fill:var(--bad)}
@@ -38,13 +39,13 @@ You are building or reviewing the service-provider (server) side of SCIM and nee
 .l05a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l05a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l05a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l05a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l05a-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05a-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05a-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05a-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l05a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l05a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l05a-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -52,31 +53,33 @@ You are building or reviewing the service-provider (server) side of SCIM and nee
 .l05a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05a-pk.l05a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l05a-pk.l05a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l05a-g{opacity:.45;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l05a-wrap{margin:20px 0}
+@media (min-width:801px){.l05a-wrap{margin-left:-44px;margin-right:-44px}}
+.l05a-g rect,.l05a-g line,.l05a-g path:not(.l05a-gl){opacity:.5;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05a-h{opacity:0;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l05a-flow:hover .l05a-g,svg.l05a-flow:hover .l05a-pk,svg.l05a-flow:hover .l05a-h{animation-play-state:paused}
+svg.l05a-flow:hover .l05a-g rect,svg.l05a-flow:hover .l05a-g line,svg.l05a-flow:hover .l05a-g path:not(.l05a-gl),svg.l05a-flow:hover .l05a-pk,svg.l05a-flow:hover .l05a-h{animation-play-state:paused}
 .l05a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l05a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l05a-btn:hover{background:var(--hover)}
 .l05a-cb:focus-visible + .l05a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l05a-cb:checked + .l05a-btn .l05a-off,.l05a-cb:not(:checked) + .l05a-btn .l05a-on{display:none}
-.l05a-cb:checked ~ .l05a-box .l05a-g,.l05a-cb:checked ~ .l05a-box .l05a-pk,.l05a-cb:checked ~ .l05a-box .l05a-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l05a-g{animation:none;opacity:1}.l05a-pk{animation:none;display:none}.l05a-h{animation:none;opacity:0}.l05a-btn{display:none}}
-@keyframes l05a-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
+.l05a-cb:checked ~ .l05a-box .l05a-g rect,.l05a-cb:checked ~ .l05a-box .l05a-g line,.l05a-cb:checked ~ .l05a-box .l05a-g path:not(.l05a-gl),.l05a-cb:checked ~ .l05a-box .l05a-pk,.l05a-cb:checked ~ .l05a-box .l05a-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l05a-g rect,.l05a-g line,.l05a-g path:not(.l05a-gl){animation:none;opacity:1}.l05a-pk{animation:none;display:none}.l05a-h{animation:none;opacity:0}.l05a-btn{display:none}}
+@keyframes l05a-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.5}}
 @keyframes l05a-h0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:0}}
-.l05a-g0{animation-name:l05a-g0}.l05a-h0{animation-name:l05a-h0}
-@keyframes l05a-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
+.l05a-g0 rect,.l05a-g0 line,.l05a-g0 path:not(.l05a-gl){animation-name:l05a-g0}.l05a-h0{animation-name:l05a-h0}
+@keyframes l05a-g1{0%,19.99%{opacity:.5}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.5}}
 @keyframes l05a-h1{0%,19.99%{opacity:0}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:0}}
-.l05a-g1{animation-name:l05a-g1}.l05a-h1{animation-name:l05a-h1}
-@keyframes l05a-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
+.l05a-g1 rect,.l05a-g1 line,.l05a-g1 path:not(.l05a-gl){animation-name:l05a-g1}.l05a-h1{animation-name:l05a-h1}
+@keyframes l05a-g2{0%,39.99%{opacity:.5}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.5}}
 @keyframes l05a-h2{0%,39.99%{opacity:0}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:0}}
-.l05a-g2{animation-name:l05a-g2}.l05a-h2{animation-name:l05a-h2}
-@keyframes l05a-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
+.l05a-g2 rect,.l05a-g2 line,.l05a-g2 path:not(.l05a-gl){animation-name:l05a-g2}.l05a-h2{animation-name:l05a-h2}
+@keyframes l05a-g3{0%,59.99%{opacity:.5}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.5}}
 @keyframes l05a-h3{0%,59.99%{opacity:0}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:0}}
-.l05a-g3{animation-name:l05a-g3}.l05a-h3{animation-name:l05a-h3}
-@keyframes l05a-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l05a-g3 rect,.l05a-g3 line,.l05a-g3 path:not(.l05a-gl){animation-name:l05a-g3}.l05a-h3{animation-name:l05a-h3}
+@keyframes l05a-g4{0%,79.99%{opacity:.5}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
 @keyframes l05a-h4{0%,79.99%{opacity:0}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
-.l05a-g4{animation-name:l05a-g4}.l05a-h4{animation-name:l05a-h4}
+.l05a-g4 rect,.l05a-g4 line,.l05a-g4 path:not(.l05a-gl){animation-name:l05a-g4}.l05a-h4{animation-name:l05a-h4}
 </style>
 <defs>
 <marker id="l05a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -157,24 +160,25 @@ svg.l05a-flow:hover .l05a-g,svg.l05a-flow:hover .l05a-pk,svg.l05a-flow:hover .l0
 The five numbered notes mark which rules the RFCs set and which they leave to the provider. In this picture only `active` is marked as left to the provider, which decides what it definitively means. Membership is changed on the Group resource, because `groups` on a User is read-only.
 
 <!-- diagram:scim-create-conflict -->
-<div style="position:relative;margin:20px 0">
+<div class="l05e-wrap" style="position:relative">
 <input type="checkbox" id="l05e-pause" class="l05e-cb" /><label for="l05e-pause" class="l05e-btn"><span class="l05e-off">Pause animation</span><span class="l05e-on">Play animation</span></label>
 <div class="l05e-box" style="overflow-x:auto">
-<svg class="l05e-flow" viewBox="0 0 760 378" role="img" aria-labelledby="l05e-t l05e-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l05e-flow" viewBox="0 0 760 378" role="img" aria-labelledby="l05e-t l05e-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l05e-t">What a POST /Users with an existing userName should get</title>
 <desc id="l05e-d">A decision for a create request. userName is unique across all Users and case-insensitive. If no record matches the userName, the create succeeds with 201 and a Location header. If a record matches but it was deleted, a POST with the deleted userName SHOULD NOT get 409, because a deleted resource should not count in conflict calculation. If a record matches and it is still there, the create MUST get 409 with the uniqueness rule; a replayed create after a lost 201 lands here. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l05e-flow{--ink:light-dark(#000000,#ffffff)}
 .l05e-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l05e-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l05e-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05e-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05e-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05e-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05e-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l05e-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l05e-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l05e-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l05e-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05e-badt{fill:var(--bad-text)}
-.l05e-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05e-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05e-badt{fill:var(--ink)}
+.l05e-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05e-badge{fill:var(--accent)}
 .l05e-b-back{fill:var(--muted)}
 .l05e-b-bad{fill:var(--bad)}
@@ -183,13 +187,13 @@ The five numbered notes mark which rules the RFCs set and which they leave to th
 .l05e-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05e-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l05e-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l05e-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05e-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05e-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05e-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l05e-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05e-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05e-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05e-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l05e-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05e-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05e-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05e-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l05e-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l05e-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l05e-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -197,16 +201,18 @@ The five numbered notes mark which rules the RFCs set and which they leave to th
 .l05e-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05e-pk.l05e-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l05e-pk.l05e-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l05e-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l05e-wrap{margin:20px 0}
+@media (min-width:801px){.l05e-wrap{margin-left:-44px;margin-right:-44px}}
+.l05e-g rect,.l05e-g line,.l05e-g path:not(.l05e-gl){opacity:.5;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05e-h{opacity:0;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l05e-flow:hover .l05e-g,svg.l05e-flow:hover .l05e-pk,svg.l05e-flow:hover .l05e-h{animation-play-state:paused}
+svg.l05e-flow:hover .l05e-g rect,svg.l05e-flow:hover .l05e-g line,svg.l05e-flow:hover .l05e-g path:not(.l05e-gl),svg.l05e-flow:hover .l05e-pk,svg.l05e-flow:hover .l05e-h{animation-play-state:paused}
 .l05e-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l05e-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l05e-btn:hover{background:var(--hover)}
 .l05e-cb:focus-visible + .l05e-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l05e-cb:checked + .l05e-btn .l05e-off,.l05e-cb:not(:checked) + .l05e-btn .l05e-on{display:none}
-.l05e-cb:checked ~ .l05e-box .l05e-g,.l05e-cb:checked ~ .l05e-box .l05e-pk,.l05e-cb:checked ~ .l05e-box .l05e-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l05e-g{animation:none;opacity:1}.l05e-pk{animation:none;display:none}.l05e-h{animation:none;opacity:0}.l05e-btn{display:none}}
+.l05e-cb:checked ~ .l05e-box .l05e-g rect,.l05e-cb:checked ~ .l05e-box .l05e-g line,.l05e-cb:checked ~ .l05e-box .l05e-g path:not(.l05e-gl),.l05e-cb:checked ~ .l05e-box .l05e-pk,.l05e-cb:checked ~ .l05e-box .l05e-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l05e-g rect,.l05e-g line,.l05e-g path:not(.l05e-gl){animation:none;opacity:1}.l05e-pk{animation:none;display:none}.l05e-h{animation:none;opacity:0}.l05e-btn{display:none}}
 @keyframes l05e-h0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:0}}
 .l05e-h0{animation-name:l05e-h0}
 @keyframes l05e-h1{0%,33.323%{opacity:0}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:0}}
@@ -269,24 +275,25 @@ Three outcomes for a create whose `userName` may already exist. The middle quest
 Okta and Entra differ most at steps 3 and 4.
 
 <!-- diagram:scim-protocol -->
-<div style="position:relative;margin:20px 0">
+<div class="sc-wrap" style="position:relative">
 <input type="checkbox" id="sc-pause" class="sc-cb" /><label for="sc-pause" class="sc-btn"><span class="sc-off">Pause animation</span><span class="sc-on">Play animation</span></label>
 <div class="sc-box" style="overflow-x:auto">
-<svg class="sc-flow" viewBox="0 0 760 803" role="img" aria-labelledby="sc-t sc-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="sc-flow" viewBox="0 0 760 803" role="img" aria-labelledby="sc-t sc-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="sc-t">SCIM lifecycle on the server: where Okta and Entra differ</title>
 <desc id="sc-d">Eight steps between an identity provider and your SCIM server, with a session or token issued before the update as a third lane. Step 1: Okta first runs a GET with a filter on userName, then POSTs the profile. Step 2: the server answers 201 with Location and meta.location, both SHALL, and the id comes back in that 201; Entra caches it. Step 3, group change: Okta PATCHes either a remove plus an add on members or a replace of the whole members list, or PUTs the group for Wizard apps, while Entra sends Add and Remove on members with the ids in value. Step 4, leaver: Okta sends a path-less replace of an object holding active false by PATCH, or a full PUT for Wizard apps; Entra sends op Replace with path active. Step 5, a failure mode: the PATCH succeeds but a session or token issued before it still validates. Step 6: no operation or endpoint in RFC 7644 ends a session, so revoke sessions, refresh tokens and API tokens when the update lands, or check active on every authenticated use. Step 7: Okta never sends DELETE for users; by default Entra sends DELETE only for a hard delete, 30 days after a soft delete. Step 8: return 204 for the DELETE, then 404 with the Error schema for every later request on that id. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.sc-flow{--ink:light-dark(#000000,#ffffff)}
 .sc-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .sc-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.sc-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sc-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .sc-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .sc-front{stroke:var(--accent);stroke-width:2;fill:none}
 .sc-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .sc-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.sc-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sc-badt{fill:var(--bad-text)}
-.sc-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-badt{fill:var(--ink)}
+.sc-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .sc-badge{fill:var(--accent)}
 .sc-b-back{fill:var(--muted)}
 .sc-b-bad{fill:var(--bad)}
@@ -295,42 +302,44 @@ Okta and Entra differ most at steps 3 and 4.
 .sc-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .sc-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .sc-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.sc-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sc-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:26s;animation-timing-function:linear;animation-iteration-count:infinite}
+.sc-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:46s;animation-timing-function:linear;animation-iteration-count:infinite}
 .sc-pk.sc-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .sc-pk.sc-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.sc-g{opacity:.45;animation-duration:26s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.sc-flow:hover .sc-g,svg.sc-flow:hover .sc-pk{animation-play-state:paused}
+.sc-wrap{margin:20px 0}
+@media (min-width:801px){.sc-wrap{margin-left:-44px;margin-right:-44px}}
+.sc-g rect,.sc-g line,.sc-g path:not(.sc-gl){opacity:.5;animation-duration:46s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.sc-flow:hover .sc-g rect,svg.sc-flow:hover .sc-g line,svg.sc-flow:hover .sc-g path:not(.sc-gl),svg.sc-flow:hover .sc-pk{animation-play-state:paused}
 .sc-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .sc-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .sc-btn:hover{background:var(--hover)}
 .sc-cb:focus-visible + .sc-btn{outline:2px solid var(--accent);outline-offset:2px}
 .sc-cb:checked + .sc-btn .sc-off,.sc-cb:not(:checked) + .sc-btn .sc-on{display:none}
-.sc-cb:checked ~ .sc-box .sc-g,.sc-cb:checked ~ .sc-box .sc-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.sc-g{animation:none;opacity:1}.sc-pk{animation:none;display:none}.sc-btn{display:none}}
-@keyframes sc-g0{0%{opacity:1}12.5%{opacity:1}12.51%,100%{opacity:.45}}
-@keyframes sc-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12.5%{opacity:1;transform:translateX(236px)}12.51%,100%{opacity:0;transform:translateX(236px)}}
-.sc-g0{animation-name:sc-g0}.sc-p0{animation-name:sc-p0}
-@keyframes sc-g1{0%,12.49%{opacity:.45}12.5%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-@keyframes sc-p1{0%,12.49%{opacity:0;transform:translateX(0)}12.5%{opacity:1;transform:translateX(0)}25%{opacity:1;transform:translateX(-236px)}25.01%,100%{opacity:0;transform:translateX(-236px)}}
-.sc-g1{animation-name:sc-g1}.sc-p1{animation-name:sc-p1}
-@keyframes sc-g2{0%,24.99%{opacity:.45}25%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.45}}
-@keyframes sc-p2{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}37.5%{opacity:1;transform:translateX(236px)}37.51%,100%{opacity:0;transform:translateX(236px)}}
-.sc-g2{animation-name:sc-g2}.sc-p2{animation-name:sc-p2}
-@keyframes sc-g3{0%,37.49%{opacity:.45}37.5%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-@keyframes sc-p3{0%,37.49%{opacity:0;transform:translateX(0)}37.5%{opacity:1;transform:translateX(0)}50%{opacity:1;transform:translateX(236px)}50.01%,100%{opacity:0;transform:translateX(236px)}}
-.sc-g3{animation-name:sc-g3}.sc-p3{animation-name:sc-p3}
-@keyframes sc-g4{0%,49.99%{opacity:.45}50%{opacity:1}62.5%{opacity:1}62.51%,100%{opacity:.45}}
-@keyframes sc-p4{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}62.5%{opacity:1;transform:translateX(-236px)}62.51%,100%{opacity:0;transform:translateX(-236px)}}
-.sc-g4{animation-name:sc-g4}.sc-p4{animation-name:sc-p4}
-@keyframes sc-g5{0%,62.49%{opacity:.45}62.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-.sc-g5{animation-name:sc-g5}
-@keyframes sc-g6{0%,74.99%{opacity:.45}75%{opacity:1}87.5%{opacity:1}87.51%,100%{opacity:.45}}
-@keyframes sc-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87.5%{opacity:1;transform:translateX(236px)}87.51%,100%{opacity:0;transform:translateX(236px)}}
-.sc-g6{animation-name:sc-g6}.sc-p6{animation-name:sc-p6}
-@keyframes sc-g7{0%,87.49%{opacity:.45}87.5%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-@keyframes sc-p7{0%,87.49%{opacity:0;transform:translateX(0)}87.5%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(-236px)}100.01%,100%{opacity:0;transform:translateX(-236px)}}
-.sc-g7{animation-name:sc-g7}.sc-p7{animation-name:sc-p7}
+.sc-cb:checked ~ .sc-box .sc-g rect,.sc-cb:checked ~ .sc-box .sc-g line,.sc-cb:checked ~ .sc-box .sc-g path:not(.sc-gl),.sc-cb:checked ~ .sc-box .sc-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.sc-g rect,.sc-g line,.sc-g path:not(.sc-gl){animation:none;opacity:1}.sc-pk{animation:none;display:none}.sc-btn{display:none}}
+@keyframes sc-g0{0%{opacity:1}13.043%{opacity:1}13.053%,100%{opacity:.5}}
+@keyframes sc-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}10.435%{opacity:1;transform:translateX(236px)}13.043%{opacity:1;transform:translateX(236px)}13.053%,100%{opacity:0;transform:translateX(236px)}}
+.sc-g0 rect,.sc-g0 line,.sc-g0 path:not(.sc-gl){animation-name:sc-g0}.sc-p0{animation-name:sc-p0}
+@keyframes sc-g1{0%,13.033%{opacity:.5}13.043%{opacity:1}26.087%{opacity:1}26.097%,100%{opacity:.5}}
+@keyframes sc-p1{0%,13.033%{opacity:0;transform:translateX(0)}13.043%{opacity:1;transform:translateX(0)}23.478%{opacity:1;transform:translateX(-236px)}26.087%{opacity:1;transform:translateX(-236px)}26.097%,100%{opacity:0;transform:translateX(-236px)}}
+.sc-g1 rect,.sc-g1 line,.sc-g1 path:not(.sc-gl){animation-name:sc-g1}.sc-p1{animation-name:sc-p1}
+@keyframes sc-g2{0%,26.077%{opacity:.5}26.087%{opacity:1}39.13%{opacity:1}39.14%,100%{opacity:.5}}
+@keyframes sc-p2{0%,26.077%{opacity:0;transform:translateX(0)}26.087%{opacity:1;transform:translateX(0)}36.522%{opacity:1;transform:translateX(236px)}39.13%{opacity:1;transform:translateX(236px)}39.14%,100%{opacity:0;transform:translateX(236px)}}
+.sc-g2 rect,.sc-g2 line,.sc-g2 path:not(.sc-gl){animation-name:sc-g2}.sc-p2{animation-name:sc-p2}
+@keyframes sc-g3{0%,39.12%{opacity:.5}39.13%{opacity:1}52.174%{opacity:1}52.184%,100%{opacity:.5}}
+@keyframes sc-p3{0%,39.12%{opacity:0;transform:translateX(0)}39.13%{opacity:1;transform:translateX(0)}49.565%{opacity:1;transform:translateX(236px)}52.174%{opacity:1;transform:translateX(236px)}52.184%,100%{opacity:0;transform:translateX(236px)}}
+.sc-g3 rect,.sc-g3 line,.sc-g3 path:not(.sc-gl){animation-name:sc-g3}.sc-p3{animation-name:sc-p3}
+@keyframes sc-g4{0%,52.164%{opacity:.5}52.174%{opacity:1}65.217%{opacity:1}65.227%,100%{opacity:.5}}
+@keyframes sc-p4{0%,52.164%{opacity:0;transform:translateX(0)}52.174%{opacity:1;transform:translateX(0)}62.609%{opacity:1;transform:translateX(-236px)}65.217%{opacity:1;transform:translateX(-236px)}65.227%,100%{opacity:0;transform:translateX(-236px)}}
+.sc-g4 rect,.sc-g4 line,.sc-g4 path:not(.sc-gl){animation-name:sc-g4}.sc-p4{animation-name:sc-p4}
+@keyframes sc-g5{0%,65.207%{opacity:.5}65.217%{opacity:1}73.913%{opacity:1}73.923%,100%{opacity:.5}}
+.sc-g5 rect,.sc-g5 line,.sc-g5 path:not(.sc-gl){animation-name:sc-g5}
+@keyframes sc-g6{0%,73.903%{opacity:.5}73.913%{opacity:1}86.957%{opacity:1}86.967%,100%{opacity:.5}}
+@keyframes sc-p6{0%,73.903%{opacity:0;transform:translateX(0)}73.913%{opacity:1;transform:translateX(0)}84.348%{opacity:1;transform:translateX(236px)}86.957%{opacity:1;transform:translateX(236px)}86.967%,100%{opacity:0;transform:translateX(236px)}}
+.sc-g6 rect,.sc-g6 line,.sc-g6 path:not(.sc-gl){animation-name:sc-g6}.sc-p6{animation-name:sc-p6}
+@keyframes sc-g7{0%,86.947%{opacity:.5}86.957%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+@keyframes sc-p7{0%,86.947%{opacity:0;transform:translateX(0)}86.957%{opacity:1;transform:translateX(0)}97.391%{opacity:1;transform:translateX(-236px)}100%{opacity:1;transform:translateX(-236px)}100.01%,100%{opacity:0;transform:translateX(-236px)}}
+.sc-g7 rect,.sc-g7 line,.sc-g7 path:not(.sc-gl){animation-name:sc-g7}.sc-p7{animation-name:sc-p7}
 </style>
 <defs>
 <marker id="sc-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -436,24 +445,25 @@ The numbers 1 to 8 match the list below. Step 5 is the failure mode. Steps 3 and
 - **Bulk** (§3.7) is optional: `failOnErrors`, client `bulkId`, and `maxOperations` and `maxPayloadSize` in `ServiceProviderConfig`. Entra's page says it does not support `/Bulk`; the Okta pages I read do not mention it.
 
 <!-- diagram:scim-patch-remove -->
-<div style="position:relative;margin:20px 0">
+<div class="l05d-wrap" style="position:relative">
 <input type="checkbox" id="l05d-pause" class="l05d-cb" /><label for="l05d-pause" class="l05d-btn"><span class="l05d-off">Pause animation</span><span class="l05d-on">Play animation</span></label>
 <div class="l05d-box" style="overflow-x:auto">
-<svg class="l05d-flow" viewBox="0 0 760 272" role="img" aria-labelledby="l05d-t l05d-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l05d-flow" viewBox="0 0 760 272" role="img" aria-labelledby="l05d-t l05d-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l05d-t">Handling a remove operation on a Group</title>
 <desc id="l05d-d">A decision on what a PATCH remove carries, matching the op without regard to case because Entra sends Remove. A remove with no path is a 400 noTarget. A remove whose path is members with a filter on one value, the form Okta sends, removes that member. A remove whose path is members with the ids in a value list, Entra's form, is outside what RFC 7644 specifies: honour the ids in value. A remove whose path is members with no value is the RFC's path-only rule and empties the group, so decide which clients may reach it. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l05d-flow{--ink:light-dark(#000000,#ffffff)}
 .l05d-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l05d-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l05d-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05d-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05d-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05d-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05d-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l05d-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l05d-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l05d-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l05d-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05d-badt{fill:var(--bad-text)}
-.l05d-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05d-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05d-badt{fill:var(--ink)}
+.l05d-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05d-badge{fill:var(--accent)}
 .l05d-b-back{fill:var(--muted)}
 .l05d-b-bad{fill:var(--bad)}
@@ -462,13 +472,13 @@ The numbers 1 to 8 match the list below. Step 5 is the failure mode. Steps 3 and
 .l05d-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05d-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l05d-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l05d-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05d-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05d-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05d-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l05d-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05d-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05d-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05d-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l05d-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05d-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05d-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05d-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l05d-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l05d-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l05d-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -476,16 +486,18 @@ The numbers 1 to 8 match the list below. Step 5 is the failure mode. Steps 3 and
 .l05d-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05d-pk.l05d-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l05d-pk.l05d-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l05d-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l05d-wrap{margin:20px 0}
+@media (min-width:801px){.l05d-wrap{margin-left:-44px;margin-right:-44px}}
+.l05d-g rect,.l05d-g line,.l05d-g path:not(.l05d-gl){opacity:.5;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05d-h{opacity:0;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l05d-flow:hover .l05d-g,svg.l05d-flow:hover .l05d-pk,svg.l05d-flow:hover .l05d-h{animation-play-state:paused}
+svg.l05d-flow:hover .l05d-g rect,svg.l05d-flow:hover .l05d-g line,svg.l05d-flow:hover .l05d-g path:not(.l05d-gl),svg.l05d-flow:hover .l05d-pk,svg.l05d-flow:hover .l05d-h{animation-play-state:paused}
 .l05d-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l05d-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l05d-btn:hover{background:var(--hover)}
 .l05d-cb:focus-visible + .l05d-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l05d-cb:checked + .l05d-btn .l05d-off,.l05d-cb:not(:checked) + .l05d-btn .l05d-on{display:none}
-.l05d-cb:checked ~ .l05d-box .l05d-g,.l05d-cb:checked ~ .l05d-box .l05d-pk,.l05d-cb:checked ~ .l05d-box .l05d-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l05d-g{animation:none;opacity:1}.l05d-pk{animation:none;display:none}.l05d-h{animation:none;opacity:0}.l05d-btn{display:none}}
+.l05d-cb:checked ~ .l05d-box .l05d-g rect,.l05d-cb:checked ~ .l05d-box .l05d-g line,.l05d-cb:checked ~ .l05d-box .l05d-g path:not(.l05d-gl),.l05d-cb:checked ~ .l05d-box .l05d-pk,.l05d-cb:checked ~ .l05d-box .l05d-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l05d-g rect,.l05d-g line,.l05d-g path:not(.l05d-gl){animation:none;opacity:1}.l05d-pk{animation:none;display:none}.l05d-h{animation:none;opacity:0}.l05d-btn{display:none}}
 @keyframes l05d-h0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:0}}
 .l05d-h0{animation-name:l05d-h0}
 @keyframes l05d-h1{0%,24.99%{opacity:0}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}

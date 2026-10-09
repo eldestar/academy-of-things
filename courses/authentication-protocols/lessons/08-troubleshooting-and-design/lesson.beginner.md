@@ -13,24 +13,25 @@ You are on the help desk. This lesson answers two questions you will hear every 
 ## Which tool for which job
 
 <!-- diagram:which-tool -->
-<div style="position:relative;margin:20px 0">
+<div class="l08a-wrap" style="position:relative">
 <input type="checkbox" id="l08a-pause" class="l08a-cb" /><label for="l08a-pause" class="l08a-btn"><span class="l08a-off">Pause animation</span><span class="l08a-on">Play animation</span></label>
 <div class="l08a-box" style="overflow-x:auto">
-<svg class="l08a-flow" viewBox="0 0 760 397" role="img" aria-labelledby="l08a-t l08a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l08a-flow" viewBox="0 0 760 397" role="img" aria-labelledby="l08a-t l08a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l08a-t">Signing in is not the same as managing accounts</title>
 <desc id="l08a-d">A table of three tools against three jobs. SAML or OIDC signs Priya in but cannot create or remove her account. SCIM signs nobody in, creates accounts automatically, and sets them inactive by setting the active field to false, though what the app does with that is up to the app. JIT provisioning creates the account from the details sent at sign-in but cannot delete or deactivate it. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l08a-flow{--ink:light-dark(#000000,#ffffff)}
 .l08a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l08a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l08a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l08a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l08a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l08a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l08a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08a-badt{fill:var(--bad-text)}
-.l08a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-badt{fill:var(--ink)}
+.l08a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08a-badge{fill:var(--accent)}
 .l08a-b-back{fill:var(--muted)}
 .l08a-b-bad{fill:var(--bad)}
@@ -39,13 +40,13 @@ You are on the help desk. This lesson answers two questions you will hear every 
 .l08a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l08a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l08a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l08a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l08a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l08a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l08a-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l08a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l08a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l08a-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -53,21 +54,23 @@ You are on the help desk. This lesson answers two questions you will hear every 
 .l08a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l08a-pk.l08a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l08a-pk.l08a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l08a-g{opacity:.45;animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l08a-flow:hover .l08a-g,svg.l08a-flow:hover .l08a-pk{animation-play-state:paused}
+.l08a-wrap{margin:20px 0}
+@media (min-width:801px){.l08a-wrap{margin-left:-44px;margin-right:-44px}}
+.l08a-g rect,.l08a-g line,.l08a-g path:not(.l08a-gl){opacity:.5;animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l08a-flow:hover .l08a-g rect,svg.l08a-flow:hover .l08a-g line,svg.l08a-flow:hover .l08a-g path:not(.l08a-gl),svg.l08a-flow:hover .l08a-pk{animation-play-state:paused}
 .l08a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l08a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l08a-btn:hover{background:var(--hover)}
 .l08a-cb:focus-visible + .l08a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l08a-cb:checked + .l08a-btn .l08a-off,.l08a-cb:not(:checked) + .l08a-btn .l08a-on{display:none}
-.l08a-cb:checked ~ .l08a-box .l08a-g,.l08a-cb:checked ~ .l08a-box .l08a-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l08a-g{animation:none;opacity:1}.l08a-pk{animation:none;display:none}.l08a-btn{display:none}}
-@keyframes l08a-g0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-.l08a-g0{animation-name:l08a-g0}
-@keyframes l08a-g1{0%,33.323%{opacity:.45}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-.l08a-g1{animation-name:l08a-g1}
-@keyframes l08a-g2{0%,66.657%{opacity:.45}66.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l08a-g2{animation-name:l08a-g2}
+.l08a-cb:checked ~ .l08a-box .l08a-g rect,.l08a-cb:checked ~ .l08a-box .l08a-g line,.l08a-cb:checked ~ .l08a-box .l08a-g path:not(.l08a-gl),.l08a-cb:checked ~ .l08a-box .l08a-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08a-g rect,.l08a-g line,.l08a-g path:not(.l08a-gl){animation:none;opacity:1}.l08a-pk{animation:none;display:none}.l08a-btn{display:none}}
+@keyframes l08a-g0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.5}}
+.l08a-g0 rect,.l08a-g0 line,.l08a-g0 path:not(.l08a-gl){animation-name:l08a-g0}
+@keyframes l08a-g1{0%,33.323%{opacity:.5}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.5}}
+.l08a-g1 rect,.l08a-g1 line,.l08a-g1 path:not(.l08a-gl){animation-name:l08a-g1}
+@keyframes l08a-g2{0%,66.657%{opacity:.5}66.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l08a-g2 rect,.l08a-g2 line,.l08a-g2 path:not(.l08a-gl){animation-name:l08a-g2}
 </style>
 <defs>
 <marker id="l08a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -80,18 +83,18 @@ svg.l08a-flow:hover .l08a-g,svg.l08a-flow:hover .l08a-pk{animation-play-state:pa
 <g class="l08a-g l08a-g0">
 <rect class="l08a-row" x="10" y="86" width="740" height="71" rx="8"/>
 <text class="l08a-ttlL" x="24" y="112">SAML or OIDC</text>
-<circle cx="321" cy="108" r="10" style="fill:var(--good)"/><path d="M316.8,108.0 L319.6,111.4 L325.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="321" cy="108" r="10" style="fill:var(--good)"/><path class="l08a-gl" d="M316.8,108.0 L319.6,111.4 L325.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="321" y="134">opens the app</text>
-<circle cx="491" cy="108" r="10" style="fill:var(--bad)"/><path d="M487.6,104.6 L494.4,111.4 M494.4,104.6 L487.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
-<circle cx="661" cy="108" r="10" style="fill:var(--bad)"/><path d="M657.6,104.6 L664.4,111.4 M664.4,104.6 L657.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="108" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M487.6,104.6 L494.4,111.4 M494.4,104.6 L487.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="661" cy="108" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M657.6,104.6 L664.4,111.4 M664.4,104.6 L657.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 </g>
 <g class="l08a-g l08a-g1">
 <rect class="l08a-row" x="10" y="165" width="740" height="86" rx="8"/>
 <text class="l08a-ttlL" x="24" y="191">SCIM</text>
-<circle cx="321" cy="187" r="10" style="fill:var(--bad)"/><path d="M317.6,183.6 L324.4,190.4 M324.4,183.6 L317.6,190.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
-<circle cx="491" cy="187" r="10" style="fill:var(--good)"/><path d="M486.8,187.0 L489.6,190.4 L495.2,183.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="321" cy="187" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M317.6,183.6 L324.4,190.4 M324.4,183.6 L317.6,190.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="187" r="10" style="fill:var(--good)"/><path class="l08a-gl" d="M486.8,187.0 L489.6,190.4 L495.2,183.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="491" y="213">automatically</text>
-<circle cx="661" cy="187" r="10" style="fill:var(--muted)"/><path d="M656.8,187.0 L665.2,187.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="661" cy="187" r="10" style="fill:var(--muted)"/><path class="l08a-gl" d="M656.8,187.0 L665.2,187.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="661" y="213">sets active to false;</text>
 <text class="l08a-nt" x="661" y="228">the app decides the rest</text>
 </g>
@@ -99,18 +102,18 @@ svg.l08a-flow:hover .l08a-g,svg.l08a-flow:hover .l08a-pk{animation-play-state:pa
 <rect class="l08a-row" x="10" y="259" width="740" height="86" rx="8"/>
 <text class="l08a-ttlL" x="24" y="285">First sign-in</text>
 <text class="l08a-subL" x="24" y="303">JIT provisioning</text>
-<circle cx="491" cy="281" r="10" style="fill:var(--good)"/><path d="M486.8,281.0 L489.6,284.4 L495.2,277.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="281" r="10" style="fill:var(--good)"/><path class="l08a-gl" d="M486.8,281.0 L489.6,284.4 L495.2,277.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="491" y="307">from the details sent</text>
 <text class="l08a-nt" x="491" y="322">at sign-in</text>
-<circle cx="661" cy="281" r="10" style="fill:var(--bad)"/><path d="M657.6,277.6 L664.4,284.4 M664.4,277.6 L657.6,284.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="661" cy="281" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M657.6,277.6 L664.4,284.4 M664.4,277.6 L657.6,284.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="661" y="307">cannot delete or</text>
 <text class="l08a-nt" x="661" y="322">deactivate</text>
 </g>
-<circle cx="48" cy="373" r="8" style="fill:var(--good)"/><path d="M44.6,373.0 L46.9,375.7 L51.4,370.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="48" cy="373" r="8" style="fill:var(--good)"/><path class="l08a-gl" d="M44.6,373.0 L46.9,375.7 L51.4,370.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-dim" x="64" y="377" style="text-anchor:start">does this</text>
-<circle cx="163" cy="373" r="8" style="fill:var(--muted)"/><path d="M159.6,373.0 L166.4,373.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="163" cy="373" r="8" style="fill:var(--muted)"/><path class="l08a-gl" d="M159.6,373.0 L166.4,373.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-dim" x="179" y="377" style="text-anchor:start">does this, with a catch</text>
-<circle cx="368" cy="373" r="8" style="fill:var(--bad)"/><path d="M365.3,370.3 L370.7,375.7 M370.7,370.3 L365.3,375.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="368" cy="373" r="8" style="fill:var(--bad)"/><path class="l08a-gl" d="M365.3,370.3 L370.7,375.7 M370.7,370.3 L365.3,375.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-dim" x="384" y="377" style="text-anchor:start">cannot do this</text>
 </svg>
 </div>
@@ -171,24 +174,25 @@ Tools you will meet:
 Ticket 4821: "Priya clicks the Expense tile and gets: audience not valid. Two other finance users see it too; Marcus in Sales is fine in his own app."
 
 <!-- diagram:priya-ticket -->
-<div style="position:relative;margin:20px 0">
+<div class="l08b-wrap" style="position:relative">
 <input type="checkbox" id="l08b-pause" class="l08b-cb" /><label for="l08b-pause" class="l08b-btn"><span class="l08b-off">Pause animation</span><span class="l08b-on">Play animation</span></label>
 <div class="l08b-box" style="overflow-x:auto">
-<svg class="l08b-flow" viewBox="0 0 760 654" role="img" aria-labelledby="l08b-t l08b-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l08b-flow" viewBox="0 0 760 654" role="img" aria-labelledby="l08b-t l08b-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l08b-t">Ticket 4821, step by step</title>
 <desc id="l08b-d">Five numbered steps for Priya's ticket. One: Priya retries in a private window and gets the same error, so it is not her browser. Two: three users and one app point at the app's setup, not at people. Three: you capture the login and decode it, and the Audience is https://app.example.com/saml/metadata. Four: the app's setup says its entity ID is https://app.example.com/saml, and the two differ. Five: you change nothing and hand the identity admin the decoded Audience, the entity ID and the time, with personal details removed; the admin changes one setting and retests. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l08b-flow{--ink:light-dark(#000000,#ffffff)}
 .l08b-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l08b-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l08b-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08b-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08b-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l08b-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l08b-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l08b-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l08b-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08b-badt{fill:var(--bad-text)}
-.l08b-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-badt{fill:var(--ink)}
+.l08b-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08b-badge{fill:var(--accent)}
 .l08b-b-back{fill:var(--muted)}
 .l08b-b-bad{fill:var(--bad)}
@@ -197,32 +201,34 @@ Ticket 4821: "Priya clicks the Expense tile and gets: audience not valid. Two ot
 .l08b-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l08b-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l08b-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l08b-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l08b-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:26s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l08b-pk.l08b-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l08b-pk.l08b-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l08b-g{opacity:.45;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l08b-flow:hover .l08b-g,svg.l08b-flow:hover .l08b-pk{animation-play-state:paused}
+.l08b-wrap{margin:20px 0}
+@media (min-width:801px){.l08b-wrap{margin-left:-44px;margin-right:-44px}}
+.l08b-g rect,.l08b-g line,.l08b-g path:not(.l08b-gl){opacity:.5;animation-duration:26s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l08b-flow:hover .l08b-g rect,svg.l08b-flow:hover .l08b-g line,svg.l08b-flow:hover .l08b-g path:not(.l08b-gl),svg.l08b-flow:hover .l08b-pk{animation-play-state:paused}
 .l08b-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l08b-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l08b-btn:hover{background:var(--hover)}
 .l08b-cb:focus-visible + .l08b-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l08b-cb:checked + .l08b-btn .l08b-off,.l08b-cb:not(:checked) + .l08b-btn .l08b-on{display:none}
-.l08b-cb:checked ~ .l08b-box .l08b-g,.l08b-cb:checked ~ .l08b-box .l08b-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l08b-g{animation:none;opacity:1}.l08b-pk{animation:none;display:none}.l08b-btn{display:none}}
-@keyframes l08b-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
-@keyframes l08b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(146px)}20.01%,100%{opacity:0;transform:translateX(146px)}}
-.l08b-g0{animation-name:l08b-g0}.l08b-p0{animation-name:l08b-p0}
-@keyframes l08b-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
-.l08b-g1{animation-name:l08b-g1}
-@keyframes l08b-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
-.l08b-g2{animation-name:l08b-g2}
-@keyframes l08b-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
-@keyframes l08b-p3{0%,59.99%{opacity:0;transform:translateX(0)}60%{opacity:1;transform:translateX(0)}80%{opacity:1;transform:translateX(-146px)}80.01%,100%{opacity:0;transform:translateX(-146px)}}
-.l08b-g3{animation-name:l08b-g3}.l08b-p3{animation-name:l08b-p3}
-@keyframes l08b-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-@keyframes l08b-p4{0%,79.99%{opacity:0;transform:translateX(0)}80%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(326px)}100.01%,100%{opacity:0;transform:translateX(326px)}}
-.l08b-g4{animation-name:l08b-g4}.l08b-p4{animation-name:l08b-p4}
+.l08b-cb:checked ~ .l08b-box .l08b-g rect,.l08b-cb:checked ~ .l08b-box .l08b-g line,.l08b-cb:checked ~ .l08b-box .l08b-g path:not(.l08b-gl),.l08b-cb:checked ~ .l08b-box .l08b-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08b-g rect,.l08b-g line,.l08b-g path:not(.l08b-gl){animation:none;opacity:1}.l08b-pk{animation:none;display:none}.l08b-btn{display:none}}
+@keyframes l08b-g0{0%{opacity:1}23.077%{opacity:1}23.087%,100%{opacity:.5}}
+@keyframes l08b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}18.462%{opacity:1;transform:translateX(146px)}23.077%{opacity:1;transform:translateX(146px)}23.087%,100%{opacity:0;transform:translateX(146px)}}
+.l08b-g0 rect,.l08b-g0 line,.l08b-g0 path:not(.l08b-gl){animation-name:l08b-g0}.l08b-p0{animation-name:l08b-p0}
+@keyframes l08b-g1{0%,23.067%{opacity:.5}23.077%{opacity:1}38.462%{opacity:1}38.472%,100%{opacity:.5}}
+.l08b-g1 rect,.l08b-g1 line,.l08b-g1 path:not(.l08b-gl){animation-name:l08b-g1}
+@keyframes l08b-g2{0%,38.452%{opacity:.5}38.462%{opacity:1}53.846%{opacity:1}53.856%,100%{opacity:.5}}
+.l08b-g2 rect,.l08b-g2 line,.l08b-g2 path:not(.l08b-gl){animation-name:l08b-g2}
+@keyframes l08b-g3{0%,53.836%{opacity:.5}53.846%{opacity:1}76.923%{opacity:1}76.933%,100%{opacity:.5}}
+@keyframes l08b-p3{0%,53.836%{opacity:0;transform:translateX(0)}53.846%{opacity:1;transform:translateX(0)}72.308%{opacity:1;transform:translateX(-146px)}76.923%{opacity:1;transform:translateX(-146px)}76.933%,100%{opacity:0;transform:translateX(-146px)}}
+.l08b-g3 rect,.l08b-g3 line,.l08b-g3 path:not(.l08b-gl){animation-name:l08b-g3}.l08b-p3{animation-name:l08b-p3}
+@keyframes l08b-g4{0%,76.913%{opacity:.5}76.923%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+@keyframes l08b-p4{0%,76.913%{opacity:0;transform:translateX(0)}76.923%{opacity:1;transform:translateX(0)}95.385%{opacity:1;transform:translateX(326px)}100%{opacity:1;transform:translateX(326px)}100.01%,100%{opacity:0;transform:translateX(326px)}}
+.l08b-g4 rect,.l08b-g4 line,.l08b-g4 path:not(.l08b-gl){animation-name:l08b-g4}.l08b-p4{animation-name:l08b-p4}
 </style>
 <defs>
 <marker id="l08b-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>

@@ -14,24 +14,25 @@ Our running example: **Sam** is a new hire at Example Co. who needs the customer
 - **ReBAC (relationship-based access control):** access follows relationships, such as "Sam is a member of the team that owns this folder". Good for sharing and folders inside folders. The weakness is that relationships multiply quietly, like ACL names (our own inference, not a NIST or vendor claim).
 
 <!-- diagram:authz-models -->
-<div style="position:relative;margin:20px 0">
+<div class="l07a-wrap" style="position:relative">
 <input type="checkbox" id="l07a-pause" class="l07a-cb" /><label for="l07a-pause" class="l07a-btn"><span class="l07a-off">Pause animation</span><span class="l07a-on">Play animation</span></label>
 <div class="l07a-box" style="overflow-x:auto">
-<svg class="l07a-flow" viewBox="0 0 760 551" role="img" aria-labelledby="l07a-t l07a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l07a-flow" viewBox="0 0 760 551" role="img" aria-labelledby="l07a-t l07a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l07a-t">Four ways to decide what a person may do</title>
 <desc id="l07a-d">A table with one row per way of deciding and three columns: what it decides on, what speaks for it, and how it goes wrong. ACL decides on a list of names on each thing; it is easy to understand, but names are rarely removed so people pile up access. RBAC decides on a role such as Support agent; it is good when jobs are stable, and goes wrong by role explosion, hundreds of roles with a handful of people each. ABAC decides on attributes such as department, device or location; it handles rules like Sales staff on a managed laptop, and goes wrong by attribute drift when the HR department field is wrong or late. ReBAC decides on relationships, such as being a member of the team that owns a folder; it is good for sharing and folders inside folders, and goes wrong because relationships multiply quietly. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l07a-flow{--ink:light-dark(#000000,#ffffff)}
 .l07a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l07a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l07a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l07a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l07a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l07a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l07a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07a-badt{fill:var(--bad-text)}
-.l07a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07a-badt{fill:var(--ink)}
+.l07a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07a-badge{fill:var(--accent)}
 .l07a-b-back{fill:var(--muted)}
 .l07a-b-bad{fill:var(--bad)}
@@ -40,13 +41,13 @@ Our running example: **Sam** is a new hire at Example Co. who needs the customer
 .l07a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l07a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l07a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l07a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l07a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l07a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l07a-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07a-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07a-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07a-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l07a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l07a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l07a-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -54,23 +55,25 @@ Our running example: **Sam** is a new hire at Example Co. who needs the customer
 .l07a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l07a-pk.l07a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l07a-pk.l07a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l07a-g{opacity:.45;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l07a-flow:hover .l07a-g,svg.l07a-flow:hover .l07a-pk{animation-play-state:paused}
+.l07a-wrap{margin:20px 0}
+@media (min-width:801px){.l07a-wrap{margin-left:-44px;margin-right:-44px}}
+.l07a-g rect,.l07a-g line,.l07a-g path:not(.l07a-gl){opacity:.5;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l07a-flow:hover .l07a-g rect,svg.l07a-flow:hover .l07a-g line,svg.l07a-flow:hover .l07a-g path:not(.l07a-gl),svg.l07a-flow:hover .l07a-pk{animation-play-state:paused}
 .l07a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l07a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l07a-btn:hover{background:var(--hover)}
 .l07a-cb:focus-visible + .l07a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l07a-cb:checked + .l07a-btn .l07a-off,.l07a-cb:not(:checked) + .l07a-btn .l07a-on{display:none}
-.l07a-cb:checked ~ .l07a-box .l07a-g,.l07a-cb:checked ~ .l07a-box .l07a-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l07a-g{animation:none;opacity:1}.l07a-pk{animation:none;display:none}.l07a-btn{display:none}}
-@keyframes l07a-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-.l07a-g0{animation-name:l07a-g0}
-@keyframes l07a-g1{0%,24.99%{opacity:.45}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-.l07a-g1{animation-name:l07a-g1}
-@keyframes l07a-g2{0%,49.99%{opacity:.45}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-.l07a-g2{animation-name:l07a-g2}
-@keyframes l07a-g3{0%,74.99%{opacity:.45}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l07a-g3{animation-name:l07a-g3}
+.l07a-cb:checked ~ .l07a-box .l07a-g rect,.l07a-cb:checked ~ .l07a-box .l07a-g line,.l07a-cb:checked ~ .l07a-box .l07a-g path:not(.l07a-gl),.l07a-cb:checked ~ .l07a-box .l07a-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l07a-g rect,.l07a-g line,.l07a-g path:not(.l07a-gl){animation:none;opacity:1}.l07a-pk{animation:none;display:none}.l07a-btn{display:none}}
+@keyframes l07a-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.5}}
+.l07a-g0 rect,.l07a-g0 line,.l07a-g0 path:not(.l07a-gl){animation-name:l07a-g0}
+@keyframes l07a-g1{0%,24.99%{opacity:.5}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
+.l07a-g1 rect,.l07a-g1 line,.l07a-g1 path:not(.l07a-gl){animation-name:l07a-g1}
+@keyframes l07a-g2{0%,49.99%{opacity:.5}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.5}}
+.l07a-g2 rect,.l07a-g2 line,.l07a-g2 path:not(.l07a-gl){animation-name:l07a-g2}
+@keyframes l07a-g3{0%,74.99%{opacity:.5}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l07a-g3 rect,.l07a-g3 line,.l07a-g3 path:not(.l07a-gl){animation-name:l07a-g3}
 </style>
 <defs>
 <marker id="l07a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -147,24 +150,25 @@ Groups go wrong in two ways:
 - **Rules are only as good as the data.** If HR enters the wrong department, a group rule faithfully gives the wrong access.
 
 <!-- diagram:authz-groups -->
-<div style="position:relative;margin:20px 0">
+<div class="l07b-wrap" style="position:relative">
 <input type="checkbox" id="l07b-pause" class="l07b-cb" /><label for="l07b-pause" class="l07b-btn"><span class="l07b-off">Pause animation</span><span class="l07b-on">Play animation</span></label>
 <div class="l07b-box" style="overflow-x:auto">
-<svg class="l07b-flow" viewBox="0 0 760 307" role="img" aria-labelledby="l07b-t l07b-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l07b-flow" viewBox="0 0 760 307" role="img" aria-labelledby="l07b-t l07b-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l07b-t">What a group is made of, and why its name can mislead</title>
 <desc id="l07b-d">A nested diagram. A group, such as Finance-Readers, is a named set of people: Sam is added once instead of to each app one by one. Inside it are the members, who can be added directly or by a group rule that works from an attribute such as department; if HR enters the wrong department, the rule gives the wrong access. The group is also assigned to an app with a role in that app. If that role is administrator, every member gets administrator rights, however harmless the group name sounds, so you look at what the group is assigned to and with which role, not at the name. The diagram highlights each part in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l07b-flow{--ink:light-dark(#000000,#ffffff)}
 .l07b-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l07b-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l07b-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07b-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07b-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07b-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07b-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l07b-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l07b-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l07b-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l07b-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07b-badt{fill:var(--bad-text)}
-.l07b-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07b-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07b-badt{fill:var(--ink)}
+.l07b-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07b-badge{fill:var(--accent)}
 .l07b-b-back{fill:var(--muted)}
 .l07b-b-bad{fill:var(--bad)}
@@ -173,13 +177,13 @@ Groups go wrong in two ways:
 .l07b-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l07b-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l07b-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l07b-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07b-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07b-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l07b-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l07b-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07b-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07b-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07b-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l07b-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07b-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07b-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07b-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l07b-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l07b-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l07b-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -187,28 +191,30 @@ Groups go wrong in two ways:
 .l07b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l07b-pk.l07b-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l07b-pk.l07b-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l07b-g{opacity:.45;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l07b-wrap{margin:20px 0}
+@media (min-width:801px){.l07b-wrap{margin-left:-44px;margin-right:-44px}}
+.l07b-g rect,.l07b-g line,.l07b-g path:not(.l07b-gl){opacity:.5;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l07b-h{opacity:0;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l07b-flow:hover .l07b-g,svg.l07b-flow:hover .l07b-pk,svg.l07b-flow:hover .l07b-h{animation-play-state:paused}
+svg.l07b-flow:hover .l07b-g rect,svg.l07b-flow:hover .l07b-g line,svg.l07b-flow:hover .l07b-g path:not(.l07b-gl),svg.l07b-flow:hover .l07b-pk,svg.l07b-flow:hover .l07b-h{animation-play-state:paused}
 .l07b-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l07b-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l07b-btn:hover{background:var(--hover)}
 .l07b-cb:focus-visible + .l07b-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l07b-cb:checked + .l07b-btn .l07b-off,.l07b-cb:not(:checked) + .l07b-btn .l07b-on{display:none}
-.l07b-cb:checked ~ .l07b-box .l07b-g,.l07b-cb:checked ~ .l07b-box .l07b-pk,.l07b-cb:checked ~ .l07b-box .l07b-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l07b-g{animation:none;opacity:1}.l07b-pk{animation:none;display:none}.l07b-h{animation:none;opacity:0}.l07b-btn{display:none}}
-@keyframes l07b-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
+.l07b-cb:checked ~ .l07b-box .l07b-g rect,.l07b-cb:checked ~ .l07b-box .l07b-g line,.l07b-cb:checked ~ .l07b-box .l07b-g path:not(.l07b-gl),.l07b-cb:checked ~ .l07b-box .l07b-pk,.l07b-cb:checked ~ .l07b-box .l07b-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l07b-g rect,.l07b-g line,.l07b-g path:not(.l07b-gl){animation:none;opacity:1}.l07b-pk{animation:none;display:none}.l07b-h{animation:none;opacity:0}.l07b-btn{display:none}}
+@keyframes l07b-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.5}}
 @keyframes l07b-h0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:0}}
-.l07b-g0{animation-name:l07b-g0}.l07b-h0{animation-name:l07b-h0}
-@keyframes l07b-g1{0%,24.99%{opacity:.45}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
+.l07b-g0 rect,.l07b-g0 line,.l07b-g0 path:not(.l07b-gl){animation-name:l07b-g0}.l07b-h0{animation-name:l07b-h0}
+@keyframes l07b-g1{0%,24.99%{opacity:.5}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
 @keyframes l07b-h1{0%,24.99%{opacity:0}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}
-.l07b-g1{animation-name:l07b-g1}.l07b-h1{animation-name:l07b-h1}
-@keyframes l07b-g2{0%,49.99%{opacity:.45}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
+.l07b-g1 rect,.l07b-g1 line,.l07b-g1 path:not(.l07b-gl){animation-name:l07b-g1}.l07b-h1{animation-name:l07b-h1}
+@keyframes l07b-g2{0%,49.99%{opacity:.5}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.5}}
 @keyframes l07b-h2{0%,49.99%{opacity:0}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:0}}
-.l07b-g2{animation-name:l07b-g2}.l07b-h2{animation-name:l07b-h2}
-@keyframes l07b-g3{0%,74.99%{opacity:.45}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l07b-g2 rect,.l07b-g2 line,.l07b-g2 path:not(.l07b-gl){animation-name:l07b-g2}.l07b-h2{animation-name:l07b-h2}
+@keyframes l07b-g3{0%,74.99%{opacity:.5}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
 @keyframes l07b-h3{0%,74.99%{opacity:0}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
-.l07b-g3{animation-name:l07b-g3}.l07b-h3{animation-name:l07b-h3}
+.l07b-g3 rect,.l07b-g3 line,.l07b-g3 path:not(.l07b-gl){animation-name:l07b-g3}.l07b-h3{animation-name:l07b-h3}
 </style>
 <defs>
 <marker id="l07b-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -280,24 +286,25 @@ When Sam signs in through single sign-on, the identity provider hands the app a 
 So if Sam is removed from a group at 10:00, an app using a note issued at 09:30 can keep treating Sam as a member until the note expires, the app's session ends, or a new note is issued. We call this the **snapshot problem** and the out-of-date group list a **stale claim**; both are our informal names, not standard terms. When access must end sooner, apps can check live, or an admin can revoke the user's sessions.
 
 <!-- diagram:authz-snapshot -->
-<div style="position:relative;margin:20px 0">
+<div class="l07c-wrap" style="position:relative">
 <input type="checkbox" id="l07c-pause" class="l07c-cb" /><label for="l07c-pause" class="l07c-btn"><span class="l07c-off">Pause animation</span><span class="l07c-on">Play animation</span></label>
 <div class="l07c-box" style="overflow-x:auto">
-<svg class="l07c-flow" viewBox="0 0 760 563" role="img" aria-labelledby="l07c-t l07c-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l07c-flow" viewBox="0 0 760 563" role="img" aria-labelledby="l07c-t l07c-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l07c-t">The snapshot problem: a signed note goes stale</title>
 <desc id="l07c-d">Two parties: the identity provider and the app. When Sam signs in, the identity provider hands the app a signed note issued at 09:30 that can include Sam's groups. The app trusts the note and often keeps its own session built from it. At 10:00 Sam is removed from a group. The app can keep treating Sam as a member, a stale claim, until the note expires, the app's session ends, or a new note is issued. To end access sooner, the app can check live, or an admin can revoke the user's sessions. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l07c-flow{--ink:light-dark(#000000,#ffffff)}
 .l07c-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l07c-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l07c-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07c-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07c-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07c-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07c-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l07c-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l07c-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l07c-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l07c-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07c-badt{fill:var(--bad-text)}
-.l07c-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07c-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07c-badt{fill:var(--ink)}
+.l07c-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07c-badge{fill:var(--accent)}
 .l07c-b-back{fill:var(--muted)}
 .l07c-b-bad{fill:var(--bad)}
@@ -306,30 +313,32 @@ So if Sam is removed from a group at 10:00, an app using a note issued at 09:30 
 .l07c-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l07c-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l07c-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l07c-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l07c-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l07c-pk.l07c-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l07c-pk.l07c-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l07c-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l07c-flow:hover .l07c-g,svg.l07c-flow:hover .l07c-pk{animation-play-state:paused}
+.l07c-wrap{margin:20px 0}
+@media (min-width:801px){.l07c-wrap{margin-left:-44px;margin-right:-44px}}
+.l07c-g rect,.l07c-g line,.l07c-g path:not(.l07c-gl){opacity:.5;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l07c-flow:hover .l07c-g rect,svg.l07c-flow:hover .l07c-g line,svg.l07c-flow:hover .l07c-g path:not(.l07c-gl),svg.l07c-flow:hover .l07c-pk{animation-play-state:paused}
 .l07c-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l07c-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l07c-btn:hover{background:var(--hover)}
 .l07c-cb:focus-visible + .l07c-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l07c-cb:checked + .l07c-btn .l07c-off,.l07c-cb:not(:checked) + .l07c-btn .l07c-on{display:none}
-.l07c-cb:checked ~ .l07c-box .l07c-g,.l07c-cb:checked ~ .l07c-box .l07c-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l07c-g{animation:none;opacity:1}.l07c-pk{animation:none;display:none}.l07c-btn{display:none}}
-@keyframes l07c-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
-@keyframes l07c-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(506px)}20.01%,100%{opacity:0;transform:translateX(506px)}}
-.l07c-g0{animation-name:l07c-g0}.l07c-p0{animation-name:l07c-p0}
-@keyframes l07c-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
-.l07c-g1{animation-name:l07c-g1}
-@keyframes l07c-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
-.l07c-g2{animation-name:l07c-g2}
-@keyframes l07c-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
-.l07c-g3{animation-name:l07c-g3}
-@keyframes l07c-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l07c-g4{animation-name:l07c-g4}
+.l07c-cb:checked ~ .l07c-box .l07c-g rect,.l07c-cb:checked ~ .l07c-box .l07c-g line,.l07c-cb:checked ~ .l07c-box .l07c-g path:not(.l07c-gl),.l07c-cb:checked ~ .l07c-box .l07c-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l07c-g rect,.l07c-g line,.l07c-g path:not(.l07c-gl){animation:none;opacity:1}.l07c-pk{animation:none;display:none}.l07c-btn{display:none}}
+@keyframes l07c-g0{0%{opacity:1}27.273%{opacity:1}27.283%,100%{opacity:.5}}
+@keyframes l07c-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}21.818%{opacity:1;transform:translateX(506px)}27.273%{opacity:1;transform:translateX(506px)}27.283%,100%{opacity:0;transform:translateX(506px)}}
+.l07c-g0 rect,.l07c-g0 line,.l07c-g0 path:not(.l07c-gl){animation-name:l07c-g0}.l07c-p0{animation-name:l07c-p0}
+@keyframes l07c-g1{0%,27.263%{opacity:.5}27.273%{opacity:1}45.455%{opacity:1}45.465%,100%{opacity:.5}}
+.l07c-g1 rect,.l07c-g1 line,.l07c-g1 path:not(.l07c-gl){animation-name:l07c-g1}
+@keyframes l07c-g2{0%,45.445%{opacity:.5}45.455%{opacity:1}63.636%{opacity:1}63.646%,100%{opacity:.5}}
+.l07c-g2 rect,.l07c-g2 line,.l07c-g2 path:not(.l07c-gl){animation-name:l07c-g2}
+@keyframes l07c-g3{0%,63.626%{opacity:.5}63.636%{opacity:1}81.818%{opacity:1}81.828%,100%{opacity:.5}}
+.l07c-g3 rect,.l07c-g3 line,.l07c-g3 path:not(.l07c-gl){animation-name:l07c-g3}
+@keyframes l07c-g4{0%,81.808%{opacity:.5}81.818%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l07c-g4 rect,.l07c-g4 line,.l07c-g4 path:not(.l07c-gl){animation-name:l07c-g4}
 </style>
 <defs>
 <marker id="l07c-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -395,24 +404,25 @@ Microsoft's identity lifecycle page says many organizations model the **identity
 - **Leaver:** CIS Safeguard 6.2 asks for revoking access "through disabling accounts immediately upon termination, rights revocation, or role change".
 
 <!-- diagram:identity-lifecycle -->
-<div style="position:relative;margin:20px 0">
+<div class="l07d-wrap" style="position:relative">
 <input type="checkbox" id="l07d-pause" class="l07d-cb" /><label for="l07d-pause" class="l07d-btn"><span class="l07d-off">Pause animation</span><span class="l07d-on">Play animation</span></label>
 <div class="l07d-box" style="overflow-x:auto">
-<svg class="l07d-flow" viewBox="0 0 760 227" role="img" aria-labelledby="l07d-t l07d-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l07d-flow" viewBox="0 0 760 227" role="img" aria-labelledby="l07d-t l07d-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l07d-t">Joiner, mover, leaver: one person's access over time</title>
 <desc id="l07d-d">Three phases in order. Joiner: Sam is hired and receives birthright access, the baseline everyone in that job gets from day one. Mover: Sam goes from Sales to Support; the risk is privilege accumulation, because Sam keeps the Sales access, so you review and confirm that the old access is still needed. Leaver: disabling the main account is not the whole job. The diagram highlights each stage in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l07d-flow{--ink:light-dark(#000000,#ffffff)}
 .l07d-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l07d-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l07d-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07d-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07d-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07d-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07d-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l07d-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l07d-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l07d-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l07d-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l07d-badt{fill:var(--bad-text)}
-.l07d-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07d-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07d-badt{fill:var(--ink)}
+.l07d-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07d-badge{fill:var(--accent)}
 .l07d-b-back{fill:var(--muted)}
 .l07d-b-bad{fill:var(--bad)}
@@ -421,37 +431,39 @@ Microsoft's identity lifecycle page says many organizations model the **identity
 .l07d-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l07d-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l07d-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l07d-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l07d-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l07d-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l07d-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l07d-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07d-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07d-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l07d-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l07d-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07d-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07d-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l07d-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l07d-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l07d-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l07d-hl{fill:none;stroke:var(--accent);stroke-width:3}
 .l07d-hle{stroke:var(--accent);stroke-width:3;fill:none}
-.l07d-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l07d-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l07d-pk.l07d-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l07d-pk.l07d-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l07d-g{opacity:.45;animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l07d-flow:hover .l07d-g,svg.l07d-flow:hover .l07d-pk{animation-play-state:paused}
+.l07d-wrap{margin:20px 0}
+@media (min-width:801px){.l07d-wrap{margin-left:-44px;margin-right:-44px}}
+.l07d-g rect,.l07d-g line,.l07d-g path:not(.l07d-gl){opacity:.5;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l07d-flow:hover .l07d-g rect,svg.l07d-flow:hover .l07d-g line,svg.l07d-flow:hover .l07d-g path:not(.l07d-gl),svg.l07d-flow:hover .l07d-pk{animation-play-state:paused}
 .l07d-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l07d-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l07d-btn:hover{background:var(--hover)}
 .l07d-cb:focus-visible + .l07d-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l07d-cb:checked + .l07d-btn .l07d-off,.l07d-cb:not(:checked) + .l07d-btn .l07d-on{display:none}
-.l07d-cb:checked ~ .l07d-box .l07d-g,.l07d-cb:checked ~ .l07d-box .l07d-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l07d-g{animation:none;opacity:1}.l07d-pk{animation:none;display:none}.l07d-btn{display:none}}
-@keyframes l07d-g0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-@keyframes l07d-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}33.333%{opacity:1;transform:translateX(88px)}33.343%,100%{opacity:0;transform:translateX(88px)}}
-.l07d-g0{animation-name:l07d-g0}.l07d-p0{animation-name:l07d-p0}
-@keyframes l07d-g1{0%,33.323%{opacity:.45}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-@keyframes l07d-p1{0%,33.323%{opacity:0;transform:translateX(0)}33.333%{opacity:1;transform:translateX(0)}66.667%{opacity:1;transform:translateX(88px)}66.677%,100%{opacity:0;transform:translateX(88px)}}
-.l07d-g1{animation-name:l07d-g1}.l07d-p1{animation-name:l07d-p1}
-@keyframes l07d-g2{0%,66.657%{opacity:.45}66.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l07d-g2{animation-name:l07d-g2}
+.l07d-cb:checked ~ .l07d-box .l07d-g rect,.l07d-cb:checked ~ .l07d-box .l07d-g line,.l07d-cb:checked ~ .l07d-box .l07d-g path:not(.l07d-gl),.l07d-cb:checked ~ .l07d-box .l07d-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l07d-g rect,.l07d-g line,.l07d-g path:not(.l07d-gl){animation:none;opacity:1}.l07d-pk{animation:none;display:none}.l07d-btn{display:none}}
+@keyframes l07d-g0{0%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.5}}
+@keyframes l07d-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}30%{opacity:1;transform:translateX(88px)}37.5%{opacity:1;transform:translateX(88px)}37.51%,100%{opacity:0;transform:translateX(88px)}}
+.l07d-g0 rect,.l07d-g0 line,.l07d-g0 path:not(.l07d-gl){animation-name:l07d-g0}.l07d-p0{animation-name:l07d-p0}
+@keyframes l07d-g1{0%,37.49%{opacity:.5}37.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.5}}
+@keyframes l07d-p1{0%,37.49%{opacity:0;transform:translateX(0)}37.5%{opacity:1;transform:translateX(0)}67.5%{opacity:1;transform:translateX(88px)}75%{opacity:1;transform:translateX(88px)}75.01%,100%{opacity:0;transform:translateX(88px)}}
+.l07d-g1 rect,.l07d-g1 line,.l07d-g1 path:not(.l07d-gl){animation-name:l07d-g1}.l07d-p1{animation-name:l07d-p1}
+@keyframes l07d-g2{0%,74.99%{opacity:.5}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l07d-g2 rect,.l07d-g2 line,.l07d-g2 path:not(.l07d-gl){animation-name:l07d-g2}
 </style>
 <defs>
 <marker id="l07d-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>

@@ -15,24 +15,25 @@ Consent has its own attack. In a **consent phishing** attack (the draft, section
 ## The authorization code flow with PKCE
 
 <!-- diagram:oauth-code-pkce -->
-<div style="position:relative;margin:20px 0">
+<div class="oa-wrap" style="position:relative">
 <input type="checkbox" id="oa-pause" class="oa-cb" /><label for="oa-pause" class="oa-btn"><span class="oa-off">Pause animation</span><span class="oa-on">Play animation</span></label>
 <div class="oa-box" style="overflow-x:auto">
-<svg class="oa-flow" viewBox="0 0 760 864" role="img" aria-labelledby="oa-t oa-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="oa-flow" viewBox="0 0 760 864" role="img" aria-labelledby="oa-t oa-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="oa-t">OAuth 2.0 authorization code flow with PKCE</title>
 <desc id="oa-d">Three parties: the client app, the authorization server (AS) and the resource server (RS). Step 1: the client redirects the user's browser to the AS with client_id, redirect_uri, scope, state and a code_challenge using method S256. Step 2: the AS authenticates the user, obtains consent and binds the challenge to the code. Step 3: the AS redirects the browser to the redirect_uri with a code and state. Step 4: the client checks the state against the stored one, or relies on PKCE for CSRF protection if it knows the AS supports PKCE. Step 5: as a direct request rather than a browser redirect, the client posts the code, the code_verifier, the client_id (or client authentication) and the redirect_uri if it was sent at step 1 to the token endpoint, and receives an access token. If the recomputed challenge does not match, the AS returns invalid_grant. Step 6: the client calls the RS with Authorization: Bearer and the token. Step 7: the RS validates the token, by JWT checks or by introspection. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.oa-flow{--ink:light-dark(#000000,#ffffff)}
 .oa-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .oa-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.oa-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oa-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .oa-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .oa-front{stroke:var(--accent);stroke-width:2;fill:none}
 .oa-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .oa-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.oa-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oa-badt{fill:var(--bad-text)}
-.oa-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-badt{fill:var(--ink)}
+.oa-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .oa-badge{fill:var(--accent)}
 .oa-b-back{fill:var(--muted)}
 .oa-b-bad{fill:var(--bad)}
@@ -41,39 +42,41 @@ Consent has its own attack. In a **consent phishing** attack (the draft, section
 .oa-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .oa-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .oa-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.oa-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.oa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.oa-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.oa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:40s;animation-timing-function:linear;animation-iteration-count:infinite}
 .oa-pk.oa-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .oa-pk.oa-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.oa-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.oa-flow:hover .oa-g,svg.oa-flow:hover .oa-pk{animation-play-state:paused}
+.oa-wrap{margin:20px 0}
+@media (min-width:801px){.oa-wrap{margin-left:-44px;margin-right:-44px}}
+.oa-g rect,.oa-g line,.oa-g path:not(.oa-gl){opacity:.5;animation-duration:40s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.oa-flow:hover .oa-g rect,svg.oa-flow:hover .oa-g line,svg.oa-flow:hover .oa-g path:not(.oa-gl),svg.oa-flow:hover .oa-pk{animation-play-state:paused}
 .oa-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .oa-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .oa-btn:hover{background:var(--hover)}
 .oa-cb:focus-visible + .oa-btn{outline:2px solid var(--accent);outline-offset:2px}
 .oa-cb:checked + .oa-btn .oa-off,.oa-cb:not(:checked) + .oa-btn .oa-on{display:none}
-.oa-cb:checked ~ .oa-box .oa-g,.oa-cb:checked ~ .oa-box .oa-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.oa-g{animation:none;opacity:1}.oa-pk{animation:none;display:none}.oa-btn{display:none}}
-@keyframes oa-g0{0%{opacity:1}12.5%{opacity:1}12.51%,100%{opacity:.45}}
-@keyframes oa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12.5%{opacity:1;transform:translateX(236px)}12.51%,100%{opacity:0;transform:translateX(236px)}}
-.oa-g0{animation-name:oa-g0}.oa-p0{animation-name:oa-p0}
-@keyframes oa-g1{0%,12.49%{opacity:.45}12.5%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-.oa-g1{animation-name:oa-g1}
-@keyframes oa-g2{0%,24.99%{opacity:.45}25%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.45}}
-@keyframes oa-p2{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}37.5%{opacity:1;transform:translateX(-236px)}37.51%,100%{opacity:0;transform:translateX(-236px)}}
-.oa-g2{animation-name:oa-g2}.oa-p2{animation-name:oa-p2}
-@keyframes oa-g3{0%,37.49%{opacity:.45}37.5%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-.oa-g3{animation-name:oa-g3}
-@keyframes oa-g4{0%,49.99%{opacity:.45}50%{opacity:1}62.5%{opacity:1}62.51%,100%{opacity:.45}}
-@keyframes oa-p4{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}62.5%{opacity:1;transform:translateX(-236px)}62.51%,100%{opacity:0;transform:translateX(-236px)}}
-.oa-g4{animation-name:oa-g4}.oa-p4{animation-name:oa-p4}
-@keyframes oa-g5{0%,62.49%{opacity:.45}62.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-.oa-g5{animation-name:oa-g5}
-@keyframes oa-g6{0%,74.99%{opacity:.45}75%{opacity:1}87.5%{opacity:1}87.51%,100%{opacity:.45}}
-@keyframes oa-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87.5%{opacity:1;transform:translateX(506px)}87.51%,100%{opacity:0;transform:translateX(506px)}}
-.oa-g6{animation-name:oa-g6}.oa-p6{animation-name:oa-p6}
-@keyframes oa-g7{0%,87.49%{opacity:.45}87.5%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.oa-g7{animation-name:oa-g7}
+.oa-cb:checked ~ .oa-box .oa-g rect,.oa-cb:checked ~ .oa-box .oa-g line,.oa-cb:checked ~ .oa-box .oa-g path:not(.oa-gl),.oa-cb:checked ~ .oa-box .oa-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.oa-g rect,.oa-g line,.oa-g path:not(.oa-gl){animation:none;opacity:1}.oa-pk{animation:none;display:none}.oa-btn{display:none}}
+@keyframes oa-g0{0%{opacity:1}15%{opacity:1}15.01%,100%{opacity:.5}}
+@keyframes oa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12%{opacity:1;transform:translateX(236px)}15%{opacity:1;transform:translateX(236px)}15.01%,100%{opacity:0;transform:translateX(236px)}}
+.oa-g0 rect,.oa-g0 line,.oa-g0 path:not(.oa-gl){animation-name:oa-g0}.oa-p0{animation-name:oa-p0}
+@keyframes oa-g1{0%,14.99%{opacity:.5}15%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.5}}
+.oa-g1 rect,.oa-g1 line,.oa-g1 path:not(.oa-gl){animation-name:oa-g1}
+@keyframes oa-g2{0%,24.99%{opacity:.5}25%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.5}}
+@keyframes oa-p2{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}37%{opacity:1;transform:translateX(-236px)}40%{opacity:1;transform:translateX(-236px)}40.01%,100%{opacity:0;transform:translateX(-236px)}}
+.oa-g2 rect,.oa-g2 line,.oa-g2 path:not(.oa-gl){animation-name:oa-g2}.oa-p2{animation-name:oa-p2}
+@keyframes oa-g3{0%,39.99%{opacity:.5}40%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
+.oa-g3 rect,.oa-g3 line,.oa-g3 path:not(.oa-gl){animation-name:oa-g3}
+@keyframes oa-g4{0%,49.99%{opacity:.5}50%{opacity:1}65%{opacity:1}65.01%,100%{opacity:.5}}
+@keyframes oa-p4{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}62%{opacity:1;transform:translateX(-236px)}65%{opacity:1;transform:translateX(-236px)}65.01%,100%{opacity:0;transform:translateX(-236px)}}
+.oa-g4 rect,.oa-g4 line,.oa-g4 path:not(.oa-gl){animation-name:oa-g4}.oa-p4{animation-name:oa-p4}
+@keyframes oa-g5{0%,64.99%{opacity:.5}65%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.5}}
+.oa-g5 rect,.oa-g5 line,.oa-g5 path:not(.oa-gl){animation-name:oa-g5}
+@keyframes oa-g6{0%,74.99%{opacity:.5}75%{opacity:1}90%{opacity:1}90.01%,100%{opacity:.5}}
+@keyframes oa-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87%{opacity:1;transform:translateX(506px)}90%{opacity:1;transform:translateX(506px)}90.01%,100%{opacity:0;transform:translateX(506px)}}
+.oa-g6 rect,.oa-g6 line,.oa-g6 path:not(.oa-gl){animation-name:oa-g6}.oa-p6{animation-name:oa-p6}
+@keyframes oa-g7{0%,89.99%{opacity:.5}90%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.oa-g7 rect,.oa-g7 line,.oa-g7 path:not(.oa-gl){animation-name:oa-g7}
 </style>
 <defs>
 <marker id="oa-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -180,24 +183,25 @@ The details that decide whether it is safe:
 - **Device authorization** (RFC 8628): the device gets `device_code`, `user_code` and `verification_uri`, shows the code, and polls the token endpoint. The default poll `interval` is 5 seconds. `authorization_pending` means keep polling. `slow_down` means add 5 seconds to the interval for this and all later requests. `expired_token` and `access_denied` end the session. A device should start only when the user asks. Attackers can email a victim a code to enter, so the AS should show what is being authorized and ask the user to confirm the device is in their hands.
 
 <!-- diagram:oauth-device-grant -->
-<div style="position:relative;margin:20px 0">
+<div class="l03c-wrap" style="position:relative">
 <input type="checkbox" id="l03c-pause" class="l03c-cb" /><label for="l03c-pause" class="l03c-btn"><span class="l03c-off">Pause animation</span><span class="l03c-on">Play animation</span></label>
 <div class="l03c-box" style="overflow-x:auto">
-<svg class="l03c-flow" viewBox="0 0 760 744" role="img" aria-labelledby="l03c-t l03c-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l03c-flow" viewBox="0 0 760 744" role="img" aria-labelledby="l03c-t l03c-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l03c-t">Device authorization grant (RFC 8628)</title>
 <desc id="l03c-d">Three parties: the device, the authorization server and the user. Step 1: the device starts, which it should do only when the user asks, and receives device_code, user_code and verification_uri. Step 2: the device shows the code. Step 3: the user enters the code; the AS should show what is being authorized and ask the user to confirm the device is in their hands. Step 4: the device polls the token endpoint, by default every 5 seconds, and authorization_pending means keep polling. Step 5: slow_down means add 5 seconds to the interval for this and all later requests. Step 6: expired_token and access_denied end the session. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l03c-flow{--ink:light-dark(#000000,#ffffff)}
 .l03c-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l03c-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l03c-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03c-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03c-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03c-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03c-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l03c-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l03c-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l03c-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l03c-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03c-badt{fill:var(--bad-text)}
-.l03c-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03c-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03c-badt{fill:var(--ink)}
+.l03c-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03c-badge{fill:var(--accent)}
 .l03c-b-back{fill:var(--muted)}
 .l03c-b-bad{fill:var(--bad)}
@@ -206,33 +210,35 @@ The details that decide whether it is safe:
 .l03c-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l03c-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l03c-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l03c-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l03c-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l03c-pk.l03c-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l03c-pk.l03c-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l03c-g{opacity:.45;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l03c-flow:hover .l03c-g,svg.l03c-flow:hover .l03c-pk{animation-play-state:paused}
+.l03c-wrap{margin:20px 0}
+@media (min-width:801px){.l03c-wrap{margin-left:-44px;margin-right:-44px}}
+.l03c-g rect,.l03c-g line,.l03c-g path:not(.l03c-gl){opacity:.5;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l03c-flow:hover .l03c-g rect,svg.l03c-flow:hover .l03c-g line,svg.l03c-flow:hover .l03c-g path:not(.l03c-gl),svg.l03c-flow:hover .l03c-pk{animation-play-state:paused}
 .l03c-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l03c-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l03c-btn:hover{background:var(--hover)}
 .l03c-cb:focus-visible + .l03c-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l03c-cb:checked + .l03c-btn .l03c-off,.l03c-cb:not(:checked) + .l03c-btn .l03c-on{display:none}
-.l03c-cb:checked ~ .l03c-box .l03c-g,.l03c-cb:checked ~ .l03c-box .l03c-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l03c-g{animation:none;opacity:1}.l03c-pk{animation:none;display:none}.l03c-btn{display:none}}
-@keyframes l03c-g0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:.45}}
-@keyframes l03c-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}16.667%{opacity:1;transform:translateX(-236px)}16.677%,100%{opacity:0;transform:translateX(-236px)}}
-.l03c-g0{animation-name:l03c-g0}.l03c-p0{animation-name:l03c-p0}
-@keyframes l03c-g1{0%,16.657%{opacity:.45}16.667%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-.l03c-g1{animation-name:l03c-g1}
-@keyframes l03c-g2{0%,33.323%{opacity:.45}33.333%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-.l03c-g2{animation-name:l03c-g2}
-@keyframes l03c-g3{0%,49.99%{opacity:.45}50%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-@keyframes l03c-p3{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}66.667%{opacity:1;transform:translateX(-236px)}66.677%,100%{opacity:0;transform:translateX(-236px)}}
-.l03c-g3{animation-name:l03c-g3}.l03c-p3{animation-name:l03c-p3}
-@keyframes l03c-g4{0%,66.657%{opacity:.45}66.667%{opacity:1}83.333%{opacity:1}83.343%,100%{opacity:.45}}
-.l03c-g4{animation-name:l03c-g4}
-@keyframes l03c-g5{0%,83.323%{opacity:.45}83.333%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l03c-g5{animation-name:l03c-g5}
+.l03c-cb:checked ~ .l03c-box .l03c-g rect,.l03c-cb:checked ~ .l03c-box .l03c-g line,.l03c-cb:checked ~ .l03c-box .l03c-g path:not(.l03c-gl),.l03c-cb:checked ~ .l03c-box .l03c-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l03c-g rect,.l03c-g line,.l03c-g path:not(.l03c-gl){animation:none;opacity:1}.l03c-pk{animation:none;display:none}.l03c-btn{display:none}}
+@keyframes l03c-g0{0%{opacity:1}21.429%{opacity:1}21.439%,100%{opacity:.5}}
+@keyframes l03c-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}17.143%{opacity:1;transform:translateX(-236px)}21.429%{opacity:1;transform:translateX(-236px)}21.439%,100%{opacity:0;transform:translateX(-236px)}}
+.l03c-g0 rect,.l03c-g0 line,.l03c-g0 path:not(.l03c-gl){animation-name:l03c-g0}.l03c-p0{animation-name:l03c-p0}
+@keyframes l03c-g1{0%,21.419%{opacity:.5}21.429%{opacity:1}35.714%{opacity:1}35.724%,100%{opacity:.5}}
+.l03c-g1 rect,.l03c-g1 line,.l03c-g1 path:not(.l03c-gl){animation-name:l03c-g1}
+@keyframes l03c-g2{0%,35.704%{opacity:.5}35.714%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
+.l03c-g2 rect,.l03c-g2 line,.l03c-g2 path:not(.l03c-gl){animation-name:l03c-g2}
+@keyframes l03c-g3{0%,49.99%{opacity:.5}50%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.5}}
+@keyframes l03c-p3{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}67.143%{opacity:1;transform:translateX(-236px)}71.429%{opacity:1;transform:translateX(-236px)}71.439%,100%{opacity:0;transform:translateX(-236px)}}
+.l03c-g3 rect,.l03c-g3 line,.l03c-g3 path:not(.l03c-gl){animation-name:l03c-g3}.l03c-p3{animation-name:l03c-p3}
+@keyframes l03c-g4{0%,71.419%{opacity:.5}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.5}}
+.l03c-g4 rect,.l03c-g4 line,.l03c-g4 path:not(.l03c-gl){animation-name:l03c-g4}
+@keyframes l03c-g5{0%,85.704%{opacity:.5}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l03c-g5 rect,.l03c-g5 line,.l03c-g5 path:not(.l03c-gl){animation-name:l03c-g5}
 </style>
 <defs>
 <marker id="l03c-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -314,24 +320,25 @@ The OAuth 2.1 draft drops both grants and `plain`, makes PKCE part of the code g
 ## Tokens: who has to understand what
 
 <!-- diagram:oauth-tokens -->
-<div style="position:relative;margin:20px 0">
+<div class="l03a-wrap" style="position:relative">
 <input type="checkbox" id="l03a-pause" class="l03a-cb" /><label for="l03a-pause" class="l03a-btn"><span class="l03a-off">Pause animation</span><span class="l03a-on">Play animation</span></label>
 <div class="l03a-box" style="overflow-x:auto">
-<svg class="l03a-flow" viewBox="0 0 760 482" role="img" aria-labelledby="l03a-t l03a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l03a-flow" viewBox="0 0 760 482" role="img" aria-labelledby="l03a-t l03a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l03a-t">Who has to understand an access token</title>
 <desc id="l03a-d">A nested diagram. The access token is opaque to the client, which must not inspect it because the AS or RS may change its format. The resource server must understand it in one of two ways. In the JWT form (RFC 9068) it checks that typ is at+jwt, which marks an access token rather than an ID token; the signature, never alg none; iss and exp; and that aud names this resource server, the only claim that says which API a token is for. In the introspection form (RFC 7662) it POSTs the token to an endpoint that must itself require authorization, and the JSON answer has a required boolean active; answers may be cached at the cost of freshness. The diagram highlights each part in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l03a-flow{--ink:light-dark(#000000,#ffffff)}
 .l03a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l03a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l03a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l03a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l03a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l03a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l03a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03a-badt{fill:var(--bad-text)}
-.l03a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03a-badt{fill:var(--ink)}
+.l03a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03a-badge{fill:var(--accent)}
 .l03a-b-back{fill:var(--muted)}
 .l03a-b-bad{fill:var(--bad)}
@@ -340,51 +347,53 @@ The OAuth 2.1 draft drops both grants and `plain`, makes PKCE part of the code g
 .l03a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l03a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l03a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l03a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l03a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l03a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l03a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l03a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l03a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l03a-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l03a-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l03a-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l03a-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l03a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l03a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l03a-hl{fill:none;stroke:var(--accent);stroke-width:3}
 .l03a-hle{stroke:var(--accent);stroke-width:3;fill:none}
-.l03a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l03a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l03a-pk.l03a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l03a-pk.l03a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l03a-g{opacity:.45;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
-.l03a-h{opacity:0;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l03a-flow:hover .l03a-g,svg.l03a-flow:hover .l03a-pk,svg.l03a-flow:hover .l03a-h{animation-play-state:paused}
+.l03a-wrap{margin:20px 0}
+@media (min-width:801px){.l03a-wrap{margin-left:-44px;margin-right:-44px}}
+.l03a-g rect,.l03a-g line,.l03a-g path:not(.l03a-gl){opacity:.5;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l03a-h{opacity:0;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l03a-flow:hover .l03a-g rect,svg.l03a-flow:hover .l03a-g line,svg.l03a-flow:hover .l03a-g path:not(.l03a-gl),svg.l03a-flow:hover .l03a-pk,svg.l03a-flow:hover .l03a-h{animation-play-state:paused}
 .l03a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l03a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l03a-btn:hover{background:var(--hover)}
 .l03a-cb:focus-visible + .l03a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l03a-cb:checked + .l03a-btn .l03a-off,.l03a-cb:not(:checked) + .l03a-btn .l03a-on{display:none}
-.l03a-cb:checked ~ .l03a-box .l03a-g,.l03a-cb:checked ~ .l03a-box .l03a-pk,.l03a-cb:checked ~ .l03a-box .l03a-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l03a-g{animation:none;opacity:1}.l03a-pk{animation:none;display:none}.l03a-h{animation:none;opacity:0}.l03a-btn{display:none}}
-@keyframes l03a-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.45}}
+.l03a-cb:checked ~ .l03a-box .l03a-g rect,.l03a-cb:checked ~ .l03a-box .l03a-g line,.l03a-cb:checked ~ .l03a-box .l03a-g path:not(.l03a-gl),.l03a-cb:checked ~ .l03a-box .l03a-pk,.l03a-cb:checked ~ .l03a-box .l03a-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l03a-g rect,.l03a-g line,.l03a-g path:not(.l03a-gl){animation:none;opacity:1}.l03a-pk{animation:none;display:none}.l03a-h{animation:none;opacity:0}.l03a-btn{display:none}}
+@keyframes l03a-g0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:.5}}
 @keyframes l03a-h0{0%{opacity:1}14.286%{opacity:1}14.296%,100%{opacity:0}}
-.l03a-g0{animation-name:l03a-g0}.l03a-h0{animation-name:l03a-h0}
-@keyframes l03a-g1{0%,14.276%{opacity:.45}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.45}}
+.l03a-g0 rect,.l03a-g0 line,.l03a-g0 path:not(.l03a-gl){animation-name:l03a-g0}.l03a-h0{animation-name:l03a-h0}
+@keyframes l03a-g1{0%,14.276%{opacity:.5}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:.5}}
 @keyframes l03a-h1{0%,14.276%{opacity:0}14.286%{opacity:1}28.571%{opacity:1}28.581%,100%{opacity:0}}
-.l03a-g1{animation-name:l03a-g1}.l03a-h1{animation-name:l03a-h1}
-@keyframes l03a-g2{0%,28.561%{opacity:.45}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.45}}
+.l03a-g1 rect,.l03a-g1 line,.l03a-g1 path:not(.l03a-gl){animation-name:l03a-g1}.l03a-h1{animation-name:l03a-h1}
+@keyframes l03a-g2{0%,28.561%{opacity:.5}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.5}}
 @keyframes l03a-h2{0%,28.561%{opacity:0}28.571%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:0}}
-.l03a-g2{animation-name:l03a-g2}.l03a-h2{animation-name:l03a-h2}
-@keyframes l03a-g3{0%,42.847%{opacity:.45}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.45}}
+.l03a-g2 rect,.l03a-g2 line,.l03a-g2 path:not(.l03a-gl){animation-name:l03a-g2}.l03a-h2{animation-name:l03a-h2}
+@keyframes l03a-g3{0%,42.847%{opacity:.5}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.5}}
 @keyframes l03a-h3{0%,42.847%{opacity:0}42.857%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:0}}
-.l03a-g3{animation-name:l03a-g3}.l03a-h3{animation-name:l03a-h3}
-@keyframes l03a-g4{0%,57.133%{opacity:.45}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.45}}
+.l03a-g3 rect,.l03a-g3 line,.l03a-g3 path:not(.l03a-gl){animation-name:l03a-g3}.l03a-h3{animation-name:l03a-h3}
+@keyframes l03a-g4{0%,57.133%{opacity:.5}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.5}}
 @keyframes l03a-h4{0%,57.133%{opacity:0}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:0}}
-.l03a-g4{animation-name:l03a-g4}.l03a-h4{animation-name:l03a-h4}
-@keyframes l03a-g5{0%,71.419%{opacity:.45}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.45}}
+.l03a-g4 rect,.l03a-g4 line,.l03a-g4 path:not(.l03a-gl){animation-name:l03a-g4}.l03a-h4{animation-name:l03a-h4}
+@keyframes l03a-g5{0%,71.419%{opacity:.5}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.5}}
 @keyframes l03a-h5{0%,71.419%{opacity:0}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:0}}
-.l03a-g5{animation-name:l03a-g5}.l03a-h5{animation-name:l03a-h5}
-@keyframes l03a-g6{0%,85.704%{opacity:.45}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l03a-g5 rect,.l03a-g5 line,.l03a-g5 path:not(.l03a-gl){animation-name:l03a-g5}.l03a-h5{animation-name:l03a-h5}
+@keyframes l03a-g6{0%,85.704%{opacity:.5}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
 @keyframes l03a-h6{0%,85.704%{opacity:0}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
-.l03a-g6{animation-name:l03a-g6}.l03a-h6{animation-name:l03a-h6}
+.l03a-g6 rect,.l03a-g6 line,.l03a-g6 path:not(.l03a-gl){animation-name:l03a-g6}.l03a-h6{animation-name:l03a-h6}
 </style>
 <defs>
 <marker id="l03a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -489,24 +498,25 @@ Read it from the top down. The first callout is the client's rule for the whole 
 A refresh token carries the full granted scope and is not tied to one resource, so theft lets the attacker mint access tokens. RFC 9700 says refresh tokens for public clients must be sender-constrained or rotated. In RFC 9700's **rotation** every refresh returns a new refresh token and invalidates the old one, remembering the relationship. If the old token is presented again, either the thief or the real client has it. The AS cannot tell which, so it revokes the active token and the client must obtain a new grant. Refresh tokens should also expire after inactivity.
 
 <!-- diagram:oauth-refresh-rotation -->
-<div style="position:relative;margin:20px 0">
+<div class="l03b-wrap" style="position:relative">
 <input type="checkbox" id="l03b-pause" class="l03b-cb" /><label for="l03b-pause" class="l03b-btn"><span class="l03b-off">Pause animation</span><span class="l03b-on">Play animation</span></label>
 <div class="l03b-box" style="overflow-x:auto">
-<svg class="l03b-flow" viewBox="0 0 760 669" role="img" aria-labelledby="l03b-t l03b-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l03b-flow" viewBox="0 0 760 669" role="img" aria-labelledby="l03b-t l03b-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l03b-t">Refresh token rotation (RFC 9700) and reuse detection</title>
 <desc id="l03b-d">Three parties: the client, the authorization server and whoever presents an old refresh token, who may be a thief or the real client. This is RFC 9700's rotation. Step 1: the client sends its refresh token with grant_type=refresh_token and the AS returns a new access token and a new refresh token. Step 2: the AS invalidates the old refresh token and remembers the relationship. Step 3: the old refresh token is presented again. Step 4: the AS cannot tell the thief from the real client, so it revokes the active token. Step 5: the client must obtain a new grant. In Okta the log event for reuse is app.oauth2.as.token.detect_reuse for a custom authorization server. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l03b-flow{--ink:light-dark(#000000,#ffffff)}
 .l03b-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l03b-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l03b-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03b-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03b-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03b-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03b-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l03b-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l03b-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l03b-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l03b-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03b-badt{fill:var(--bad-text)}
-.l03b-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03b-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03b-badt{fill:var(--ink)}
+.l03b-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l03b-badge{fill:var(--accent)}
 .l03b-b-back{fill:var(--muted)}
 .l03b-b-bad{fill:var(--bad)}
@@ -515,33 +525,35 @@ A refresh token carries the full granted scope and is not tied to one resource, 
 .l03b-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l03b-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l03b-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l03b-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l03b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l03b-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l03b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l03b-pk.l03b-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l03b-pk.l03b-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l03b-g{opacity:.45;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l03b-flow:hover .l03b-g,svg.l03b-flow:hover .l03b-pk{animation-play-state:paused}
+.l03b-wrap{margin:20px 0}
+@media (min-width:801px){.l03b-wrap{margin-left:-44px;margin-right:-44px}}
+.l03b-g rect,.l03b-g line,.l03b-g path:not(.l03b-gl){opacity:.5;animation-duration:28s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l03b-flow:hover .l03b-g rect,svg.l03b-flow:hover .l03b-g line,svg.l03b-flow:hover .l03b-g path:not(.l03b-gl),svg.l03b-flow:hover .l03b-pk{animation-play-state:paused}
 .l03b-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l03b-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l03b-btn:hover{background:var(--hover)}
 .l03b-cb:focus-visible + .l03b-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l03b-cb:checked + .l03b-btn .l03b-off,.l03b-cb:not(:checked) + .l03b-btn .l03b-on{display:none}
-.l03b-cb:checked ~ .l03b-box .l03b-g,.l03b-cb:checked ~ .l03b-box .l03b-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l03b-g{animation:none;opacity:1}.l03b-pk{animation:none;display:none}.l03b-btn{display:none}}
-@keyframes l03b-g0{0%{opacity:1}16.667%{opacity:1}16.677%,100%{opacity:.45}}
-@keyframes l03b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}16.667%{opacity:1;transform:translateX(-236px)}16.677%,100%{opacity:0;transform:translateX(-236px)}}
-.l03b-g0{animation-name:l03b-g0}.l03b-p0{animation-name:l03b-p0}
-@keyframes l03b-g1{0%,16.657%{opacity:.45}16.667%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-.l03b-g1{animation-name:l03b-g1}
-@keyframes l03b-g2{0%,33.323%{opacity:.45}33.333%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-@keyframes l03b-p2{0%,33.323%{opacity:0;transform:translateX(0)}33.333%{opacity:1;transform:translateX(0)}50%{opacity:1;transform:translateX(-236px)}50.01%,100%{opacity:0;transform:translateX(-236px)}}
-.l03b-g2{animation-name:l03b-g2}.l03b-p2{animation-name:l03b-p2}
-@keyframes l03b-g3{0%,49.99%{opacity:.45}50%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-.l03b-g3{animation-name:l03b-g3}
-@keyframes l03b-g4{0%,66.657%{opacity:.45}66.667%{opacity:1}83.333%{opacity:1}83.343%,100%{opacity:.45}}
-.l03b-g4{animation-name:l03b-g4}
-@keyframes l03b-g5{0%,83.323%{opacity:.45}83.333%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l03b-g5{animation-name:l03b-g5}
+.l03b-cb:checked ~ .l03b-box .l03b-g rect,.l03b-cb:checked ~ .l03b-box .l03b-g line,.l03b-cb:checked ~ .l03b-box .l03b-g path:not(.l03b-gl),.l03b-cb:checked ~ .l03b-box .l03b-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l03b-g rect,.l03b-g line,.l03b-g path:not(.l03b-gl){animation:none;opacity:1}.l03b-pk{animation:none;display:none}.l03b-btn{display:none}}
+@keyframes l03b-g0{0%{opacity:1}21.429%{opacity:1}21.439%,100%{opacity:.5}}
+@keyframes l03b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}17.143%{opacity:1;transform:translateX(-236px)}21.429%{opacity:1;transform:translateX(-236px)}21.439%,100%{opacity:0;transform:translateX(-236px)}}
+.l03b-g0 rect,.l03b-g0 line,.l03b-g0 path:not(.l03b-gl){animation-name:l03b-g0}.l03b-p0{animation-name:l03b-p0}
+@keyframes l03b-g1{0%,21.419%{opacity:.5}21.429%{opacity:1}35.714%{opacity:1}35.724%,100%{opacity:.5}}
+.l03b-g1 rect,.l03b-g1 line,.l03b-g1 path:not(.l03b-gl){animation-name:l03b-g1}
+@keyframes l03b-g2{0%,35.704%{opacity:.5}35.714%{opacity:1}57.143%{opacity:1}57.153%,100%{opacity:.5}}
+@keyframes l03b-p2{0%,35.704%{opacity:0;transform:translateX(0)}35.714%{opacity:1;transform:translateX(0)}52.857%{opacity:1;transform:translateX(-236px)}57.143%{opacity:1;transform:translateX(-236px)}57.153%,100%{opacity:0;transform:translateX(-236px)}}
+.l03b-g2 rect,.l03b-g2 line,.l03b-g2 path:not(.l03b-gl){animation-name:l03b-g2}.l03b-p2{animation-name:l03b-p2}
+@keyframes l03b-g3{0%,57.133%{opacity:.5}57.143%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.5}}
+.l03b-g3 rect,.l03b-g3 line,.l03b-g3 path:not(.l03b-gl){animation-name:l03b-g3}
+@keyframes l03b-g4{0%,71.419%{opacity:.5}71.429%{opacity:1}85.714%{opacity:1}85.724%,100%{opacity:.5}}
+.l03b-g4 rect,.l03b-g4 line,.l03b-g4 path:not(.l03b-gl){animation-name:l03b-g4}
+@keyframes l03b-g5{0%,85.704%{opacity:.5}85.714%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l03b-g5 rect,.l03b-g5 line,.l03b-g5 path:not(.l03b-gl){animation-name:l03b-g5}
 </style>
 <defs>
 <marker id="l03b-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>

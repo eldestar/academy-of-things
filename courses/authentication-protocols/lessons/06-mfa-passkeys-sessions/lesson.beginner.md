@@ -27,24 +27,25 @@ An *authentication factor* is a kind of proof that you are who you claim to be. 
 *Phishing* is tricking someone into using a fake site. A clever fake sits in the middle (an *adversary-in-the-middle*, or AitM, relay). Sam types the password and the six-digit code into the fake page, and the fake page instantly passes both to the real site, which accepts them. The attacker is signed in as Sam.
 
 <!-- diagram:aitm-relay -->
-<div style="position:relative;margin:20px 0">
+<div class="l06a-wrap" style="position:relative">
 <input type="checkbox" id="l06a-pause" class="l06a-cb" /><label for="l06a-pause" class="l06a-btn"><span class="l06a-off">Pause animation</span><span class="l06a-on">Play animation</span></label>
 <div class="l06a-box" style="overflow-x:auto">
-<svg class="l06a-flow" viewBox="0 0 760 540" role="img" aria-labelledby="l06a-t l06a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l06a-flow" viewBox="0 0 760 540" role="img" aria-labelledby="l06a-t l06a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l06a-t">A fake page passes Sam's code to the real site</title>
 <desc id="l06a-d">Three parties: Sam, a fake sign-in page that sits in the middle, and the real site. Sam types the password and the six-digit code into the fake page. The fake page instantly passes both to the real site, which accepts them. The attacker is signed in as Sam. A final note says that typing a code does not tie it to the one site it was meant for. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l06a-flow{--ink:light-dark(#000000,#ffffff)}
 .l06a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l06a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l06a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l06a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l06a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l06a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l06a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06a-badt{fill:var(--bad-text)}
-.l06a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06a-badt{fill:var(--ink)}
+.l06a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06a-badge{fill:var(--accent)}
 .l06a-b-back{fill:var(--muted)}
 .l06a-b-bad{fill:var(--bad)}
@@ -53,31 +54,33 @@ An *authentication factor* is a kind of proof that you are who you claim to be. 
 .l06a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l06a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l06a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l06a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l06a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l06a-pk.l06a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l06a-pk.l06a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l06a-g{opacity:.45;animation-duration:14s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l06a-flow:hover .l06a-g,svg.l06a-flow:hover .l06a-pk{animation-play-state:paused}
+.l06a-wrap{margin:20px 0}
+@media (min-width:801px){.l06a-wrap{margin-left:-44px;margin-right:-44px}}
+.l06a-g rect,.l06a-g line,.l06a-g path:not(.l06a-gl){opacity:.5;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l06a-flow:hover .l06a-g rect,svg.l06a-flow:hover .l06a-g line,svg.l06a-flow:hover .l06a-g path:not(.l06a-gl),svg.l06a-flow:hover .l06a-pk{animation-play-state:paused}
 .l06a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l06a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l06a-btn:hover{background:var(--hover)}
 .l06a-cb:focus-visible + .l06a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l06a-cb:checked + .l06a-btn .l06a-off,.l06a-cb:not(:checked) + .l06a-btn .l06a-on{display:none}
-.l06a-cb:checked ~ .l06a-box .l06a-g,.l06a-cb:checked ~ .l06a-box .l06a-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l06a-g{animation:none;opacity:1}.l06a-pk{animation:none;display:none}.l06a-btn{display:none}}
-@keyframes l06a-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
-@keyframes l06a-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(236px)}20.01%,100%{opacity:0;transform:translateX(236px)}}
-.l06a-g0{animation-name:l06a-g0}.l06a-p0{animation-name:l06a-p0}
-@keyframes l06a-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
-@keyframes l06a-p1{0%,19.99%{opacity:0;transform:translateX(0)}20%{opacity:1;transform:translateX(0)}40%{opacity:1;transform:translateX(236px)}40.01%,100%{opacity:0;transform:translateX(236px)}}
-.l06a-g1{animation-name:l06a-g1}.l06a-p1{animation-name:l06a-p1}
-@keyframes l06a-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
-.l06a-g2{animation-name:l06a-g2}
-@keyframes l06a-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
-.l06a-g3{animation-name:l06a-g3}
-@keyframes l06a-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l06a-g4{animation-name:l06a-g4}
+.l06a-cb:checked ~ .l06a-box .l06a-g rect,.l06a-cb:checked ~ .l06a-box .l06a-g line,.l06a-cb:checked ~ .l06a-box .l06a-g path:not(.l06a-gl),.l06a-cb:checked ~ .l06a-box .l06a-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l06a-g rect,.l06a-g line,.l06a-g path:not(.l06a-gl){animation:none;opacity:1}.l06a-pk{animation:none;display:none}.l06a-btn{display:none}}
+@keyframes l06a-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.5}}
+@keyframes l06a-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(236px)}25%{opacity:1;transform:translateX(236px)}25.01%,100%{opacity:0;transform:translateX(236px)}}
+.l06a-g0 rect,.l06a-g0 line,.l06a-g0 path:not(.l06a-gl){animation-name:l06a-g0}.l06a-p0{animation-name:l06a-p0}
+@keyframes l06a-g1{0%,24.99%{opacity:.5}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
+@keyframes l06a-p1{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}45%{opacity:1;transform:translateX(236px)}50%{opacity:1;transform:translateX(236px)}50.01%,100%{opacity:0;transform:translateX(236px)}}
+.l06a-g1 rect,.l06a-g1 line,.l06a-g1 path:not(.l06a-gl){animation-name:l06a-g1}.l06a-p1{animation-name:l06a-p1}
+@keyframes l06a-g2{0%,49.99%{opacity:.5}50%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.5}}
+.l06a-g2 rect,.l06a-g2 line,.l06a-g2 path:not(.l06a-gl){animation-name:l06a-g2}
+@keyframes l06a-g3{0%,66.657%{opacity:.5}66.667%{opacity:1}83.333%{opacity:1}83.343%,100%{opacity:.5}}
+.l06a-g3 rect,.l06a-g3 line,.l06a-g3 path:not(.l06a-gl){animation-name:l06a-g3}
+@keyframes l06a-g4{0%,83.323%{opacity:.5}83.333%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l06a-g4 rect,.l06a-g4 line,.l06a-g4 path:not(.l06a-gl){animation-name:l06a-g4}
 </style>
 <defs>
 <marker id="l06a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -141,24 +144,25 @@ A passkey is a sign-in credential built on FIDO standards that you can keep on a
 The key is tied to the website's domain name, called the *RP ID* (the relying party is the website). The browser knows which domain the page is really on. On a look-alike domain the browser cannot ask for the real RP ID, so there is nothing to sign, and Sam never has to notice the fake. Sam unlocks the key with a PIN, fingerprint or face on the device, and the website only learns that the check succeeded, not the fingerprint.
 
 <!-- diagram:webauthn-ceremony -->
-<div style="position:relative;margin:20px 0">
+<div class="wa-wrap" style="position:relative">
 <input type="checkbox" id="wa-pause" class="wa-cb" /><label for="wa-pause" class="wa-btn"><span class="wa-off">Pause animation</span><span class="wa-on">Play animation</span></label>
 <div class="wa-box" style="overflow-x:auto">
-<svg class="wa-flow" viewBox="0 0 760 876" role="img" aria-labelledby="wa-t wa-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="wa-flow" viewBox="0 0 760 876" role="img" aria-labelledby="wa-t wa-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="wa-t">Creating a passkey and signing in with it</title>
 <desc id="wa-d">Three parties: the authenticator that holds the private key, the browser, and the site. Creating the passkey, R1 to R4: the site sends a challenge and its RP ID, the browser asks the authenticator to create a key pair and Sam approves with a PIN or fingerprint, the authenticator returns the public key and an ID for the credential, and the browser sends these to the site, which checks them and stores the public key. Using the passkey later, A1 to A4: the site sends a new challenge, the browser asks the authenticator to sign it for the real RP ID, the authenticator returns a signature plus supporting data, and the browser sends these to the site, which checks the signature with the stored public key. On a look-alike domain the browser cannot ask for the real RP ID, so there is nothing to sign. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.wa-flow{--ink:light-dark(#000000,#ffffff)}
 .wa-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .wa-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.wa-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.wa-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .wa-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .wa-front{stroke:var(--accent);stroke-width:2;fill:none}
 .wa-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .wa-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.wa-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.wa-badt{fill:var(--bad-text)}
-.wa-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-badt{fill:var(--ink)}
+.wa-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .wa-badge{fill:var(--accent)}
 .wa-b-back{fill:var(--muted)}
 .wa-b-bad{fill:var(--bad)}
@@ -167,47 +171,49 @@ The key is tied to the website's domain name, called the *RP ID* (the relying pa
 .wa-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .wa-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .wa-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.wa-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.wa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:32s;animation-timing-function:linear;animation-iteration-count:infinite}
+.wa-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.wa-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:56s;animation-timing-function:linear;animation-iteration-count:infinite}
 .wa-pk.wa-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .wa-pk.wa-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.wa-g{opacity:.45;animation-duration:32s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.wa-flow:hover .wa-g,svg.wa-flow:hover .wa-pk{animation-play-state:paused}
+.wa-wrap{margin:20px 0}
+@media (min-width:801px){.wa-wrap{margin-left:-44px;margin-right:-44px}}
+.wa-g rect,.wa-g line,.wa-g path:not(.wa-gl){opacity:.5;animation-duration:56s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.wa-flow:hover .wa-g rect,svg.wa-flow:hover .wa-g line,svg.wa-flow:hover .wa-g path:not(.wa-gl),svg.wa-flow:hover .wa-pk{animation-play-state:paused}
 .wa-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .wa-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .wa-btn:hover{background:var(--hover)}
 .wa-cb:focus-visible + .wa-btn{outline:2px solid var(--accent);outline-offset:2px}
 .wa-cb:checked + .wa-btn .wa-off,.wa-cb:not(:checked) + .wa-btn .wa-on{display:none}
-.wa-cb:checked ~ .wa-box .wa-g,.wa-cb:checked ~ .wa-box .wa-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.wa-g{animation:none;opacity:1}.wa-pk{animation:none;display:none}.wa-btn{display:none}}
-@keyframes wa-g0{0%{opacity:1}10%{opacity:1}10.01%,100%{opacity:.45}}
-@keyframes wa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}10%{opacity:1;transform:translateX(-236px)}10.01%,100%{opacity:0;transform:translateX(-236px)}}
-.wa-g0{animation-name:wa-g0}.wa-p0{animation-name:wa-p0}
-@keyframes wa-g1{0%,9.99%{opacity:.45}10%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
-@keyframes wa-p1{0%,9.99%{opacity:0;transform:translateX(0)}10%{opacity:1;transform:translateX(0)}20%{opacity:1;transform:translateX(-236px)}20.01%,100%{opacity:0;transform:translateX(-236px)}}
-.wa-g1{animation-name:wa-g1}.wa-p1{animation-name:wa-p1}
-@keyframes wa-g2{0%,19.99%{opacity:.45}20%{opacity:1}30%{opacity:1}30.01%,100%{opacity:.45}}
-@keyframes wa-p2{0%,19.99%{opacity:0;transform:translateX(0)}20%{opacity:1;transform:translateX(0)}30%{opacity:1;transform:translateX(236px)}30.01%,100%{opacity:0;transform:translateX(236px)}}
-.wa-g2{animation-name:wa-g2}.wa-p2{animation-name:wa-p2}
-@keyframes wa-g3{0%,29.99%{opacity:.45}30%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
-@keyframes wa-p3{0%,29.99%{opacity:0;transform:translateX(0)}30%{opacity:1;transform:translateX(0)}40%{opacity:1;transform:translateX(236px)}40.01%,100%{opacity:0;transform:translateX(236px)}}
-.wa-g3{animation-name:wa-g3}.wa-p3{animation-name:wa-p3}
-@keyframes wa-g4{0%,39.99%{opacity:.45}40%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-.wa-g4{animation-name:wa-g4}
-@keyframes wa-g5{0%,49.99%{opacity:.45}50%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
-@keyframes wa-p5{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}60%{opacity:1;transform:translateX(-236px)}60.01%,100%{opacity:0;transform:translateX(-236px)}}
-.wa-g5{animation-name:wa-g5}.wa-p5{animation-name:wa-p5}
-@keyframes wa-g6{0%,59.99%{opacity:.45}60%{opacity:1}70%{opacity:1}70.01%,100%{opacity:.45}}
-@keyframes wa-p6{0%,59.99%{opacity:0;transform:translateX(0)}60%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(-236px)}70.01%,100%{opacity:0;transform:translateX(-236px)}}
-.wa-g6{animation-name:wa-g6}.wa-p6{animation-name:wa-p6}
-@keyframes wa-g7{0%,69.99%{opacity:.45}70%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
-@keyframes wa-p7{0%,69.99%{opacity:0;transform:translateX(0)}70%{opacity:1;transform:translateX(0)}80%{opacity:1;transform:translateX(236px)}80.01%,100%{opacity:0;transform:translateX(236px)}}
-.wa-g7{animation-name:wa-g7}.wa-p7{animation-name:wa-p7}
-@keyframes wa-g8{0%,79.99%{opacity:.45}80%{opacity:1}90%{opacity:1}90.01%,100%{opacity:.45}}
-@keyframes wa-p8{0%,79.99%{opacity:0;transform:translateX(0)}80%{opacity:1;transform:translateX(0)}90%{opacity:1;transform:translateX(236px)}90.01%,100%{opacity:0;transform:translateX(236px)}}
-.wa-g8{animation-name:wa-g8}.wa-p8{animation-name:wa-p8}
-@keyframes wa-g9{0%,89.99%{opacity:.45}90%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.wa-g9{animation-name:wa-g9}
+.wa-cb:checked ~ .wa-box .wa-g rect,.wa-cb:checked ~ .wa-box .wa-g line,.wa-cb:checked ~ .wa-box .wa-g path:not(.wa-gl),.wa-cb:checked ~ .wa-box .wa-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.wa-g rect,.wa-g line,.wa-g path:not(.wa-gl){animation:none;opacity:1}.wa-pk{animation:none;display:none}.wa-btn{display:none}}
+@keyframes wa-g0{0%{opacity:1}10.714%{opacity:1}10.724%,100%{opacity:.5}}
+@keyframes wa-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}8.571%{opacity:1;transform:translateX(-236px)}10.714%{opacity:1;transform:translateX(-236px)}10.724%,100%{opacity:0;transform:translateX(-236px)}}
+.wa-g0 rect,.wa-g0 line,.wa-g0 path:not(.wa-gl){animation-name:wa-g0}.wa-p0{animation-name:wa-p0}
+@keyframes wa-g1{0%,10.704%{opacity:.5}10.714%{opacity:1}21.429%{opacity:1}21.439%,100%{opacity:.5}}
+@keyframes wa-p1{0%,10.704%{opacity:0;transform:translateX(0)}10.714%{opacity:1;transform:translateX(0)}19.286%{opacity:1;transform:translateX(-236px)}21.429%{opacity:1;transform:translateX(-236px)}21.439%,100%{opacity:0;transform:translateX(-236px)}}
+.wa-g1 rect,.wa-g1 line,.wa-g1 path:not(.wa-gl){animation-name:wa-g1}.wa-p1{animation-name:wa-p1}
+@keyframes wa-g2{0%,21.419%{opacity:.5}21.429%{opacity:1}32.143%{opacity:1}32.153%,100%{opacity:.5}}
+@keyframes wa-p2{0%,21.419%{opacity:0;transform:translateX(0)}21.429%{opacity:1;transform:translateX(0)}30%{opacity:1;transform:translateX(236px)}32.143%{opacity:1;transform:translateX(236px)}32.153%,100%{opacity:0;transform:translateX(236px)}}
+.wa-g2 rect,.wa-g2 line,.wa-g2 path:not(.wa-gl){animation-name:wa-g2}.wa-p2{animation-name:wa-p2}
+@keyframes wa-g3{0%,32.133%{opacity:.5}32.143%{opacity:1}42.857%{opacity:1}42.867%,100%{opacity:.5}}
+@keyframes wa-p3{0%,32.133%{opacity:0;transform:translateX(0)}32.143%{opacity:1;transform:translateX(0)}40.714%{opacity:1;transform:translateX(236px)}42.857%{opacity:1;transform:translateX(236px)}42.867%,100%{opacity:0;transform:translateX(236px)}}
+.wa-g3 rect,.wa-g3 line,.wa-g3 path:not(.wa-gl){animation-name:wa-g3}.wa-p3{animation-name:wa-p3}
+@keyframes wa-g4{0%,42.847%{opacity:.5}42.857%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
+.wa-g4 rect,.wa-g4 line,.wa-g4 path:not(.wa-gl){animation-name:wa-g4}
+@keyframes wa-g5{0%,49.99%{opacity:.5}50%{opacity:1}60.714%{opacity:1}60.724%,100%{opacity:.5}}
+@keyframes wa-p5{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}58.571%{opacity:1;transform:translateX(-236px)}60.714%{opacity:1;transform:translateX(-236px)}60.724%,100%{opacity:0;transform:translateX(-236px)}}
+.wa-g5 rect,.wa-g5 line,.wa-g5 path:not(.wa-gl){animation-name:wa-g5}.wa-p5{animation-name:wa-p5}
+@keyframes wa-g6{0%,60.704%{opacity:.5}60.714%{opacity:1}71.429%{opacity:1}71.439%,100%{opacity:.5}}
+@keyframes wa-p6{0%,60.704%{opacity:0;transform:translateX(0)}60.714%{opacity:1;transform:translateX(0)}69.286%{opacity:1;transform:translateX(-236px)}71.429%{opacity:1;transform:translateX(-236px)}71.439%,100%{opacity:0;transform:translateX(-236px)}}
+.wa-g6 rect,.wa-g6 line,.wa-g6 path:not(.wa-gl){animation-name:wa-g6}.wa-p6{animation-name:wa-p6}
+@keyframes wa-g7{0%,71.419%{opacity:.5}71.429%{opacity:1}82.143%{opacity:1}82.153%,100%{opacity:.5}}
+@keyframes wa-p7{0%,71.419%{opacity:0;transform:translateX(0)}71.429%{opacity:1;transform:translateX(0)}80%{opacity:1;transform:translateX(236px)}82.143%{opacity:1;transform:translateX(236px)}82.153%,100%{opacity:0;transform:translateX(236px)}}
+.wa-g7 rect,.wa-g7 line,.wa-g7 path:not(.wa-gl){animation-name:wa-g7}.wa-p7{animation-name:wa-p7}
+@keyframes wa-g8{0%,82.133%{opacity:.5}82.143%{opacity:1}92.857%{opacity:1}92.867%,100%{opacity:.5}}
+@keyframes wa-p8{0%,82.133%{opacity:0;transform:translateX(0)}82.143%{opacity:1;transform:translateX(0)}90.714%{opacity:1;transform:translateX(236px)}92.857%{opacity:1;transform:translateX(236px)}92.867%,100%{opacity:0;transform:translateX(236px)}}
+.wa-g8 rect,.wa-g8 line,.wa-g8 path:not(.wa-gl){animation-name:wa-g8}.wa-p8{animation-name:wa-p8}
+@keyframes wa-g9{0%,92.847%{opacity:.5}92.857%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.wa-g9 rect,.wa-g9 line,.wa-g9 path:not(.wa-gl){animation-name:wa-g9}
 </style>
 <defs>
 <marker id="wa-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -324,24 +330,25 @@ FIDO describes two kinds. A **synced passkey** is copied between a person's devi
 After a successful sign-in the site gives the browser a *session cookie*, a random value the browser sends with every request. The site checks only this cookie, so Sam is not asked for a password and MFA on every click. Two timers limit it. The *idle timeout* ends the session after a period with no activity. The *absolute timeout* (NIST calls it the overall timeout) ends it a fixed time after sign-in even if Sam is busy. In Okta these are the Maximum Okta global session idle time and Maximum Okta global session lifetime settings. Cookie flags help too: *Secure* means the browser sends the cookie only over HTTPS, and *HttpOnly* means scripts on the page cannot read it.
 
 <!-- diagram:session-cookie -->
-<div style="position:relative;margin:20px 0">
+<div class="l06b-wrap" style="position:relative">
 <input type="checkbox" id="l06b-pause" class="l06b-cb" /><label for="l06b-pause" class="l06b-btn"><span class="l06b-off">Pause animation</span><span class="l06b-on">Play animation</span></label>
 <div class="l06b-box" style="overflow-x:auto">
-<svg class="l06b-flow" viewBox="0 0 760 756" role="img" aria-labelledby="l06b-t l06b-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l06b-flow" viewBox="0 0 760 756" role="img" aria-labelledby="l06b-t l06b-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l06b-t">A session cookie works like a bearer ticket</title>
 <desc id="l06b-d">Three parties: Sam's browser, the expense app, and an attacker's computer. Sam signs in, and MFA happens at sign-in. The app gives the browser a session cookie, and the browser sends the cookie with every request. The app checks only the cookie, so Sam is not asked for a password and MFA on every click. An idle timeout and an absolute timeout end the session. If malware copies the cookie, or an AitM relay captures it, the attacker sends the same cookie from another computer. The cookie works like a bearer ticket, so the attacker is treated as signed in and is not asked for MFA again. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l06b-flow{--ink:light-dark(#000000,#ffffff)}
 .l06b-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l06b-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l06b-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06b-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06b-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06b-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06b-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l06b-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l06b-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l06b-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l06b-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06b-badt{fill:var(--bad-text)}
-.l06b-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06b-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06b-badt{fill:var(--ink)}
+.l06b-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l06b-badge{fill:var(--accent)}
 .l06b-b-back{fill:var(--muted)}
 .l06b-b-bad{fill:var(--bad)}
@@ -350,39 +357,41 @@ After a successful sign-in the site gives the browser a *session cookie*, a rand
 .l06b-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l06b-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l06b-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l06b-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l06b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l06b-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l06b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:40s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l06b-pk.l06b-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l06b-pk.l06b-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l06b-g{opacity:.45;animation-duration:22s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l06b-flow:hover .l06b-g,svg.l06b-flow:hover .l06b-pk{animation-play-state:paused}
+.l06b-wrap{margin:20px 0}
+@media (min-width:801px){.l06b-wrap{margin-left:-44px;margin-right:-44px}}
+.l06b-g rect,.l06b-g line,.l06b-g path:not(.l06b-gl){opacity:.5;animation-duration:40s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l06b-flow:hover .l06b-g rect,svg.l06b-flow:hover .l06b-g line,svg.l06b-flow:hover .l06b-g path:not(.l06b-gl),svg.l06b-flow:hover .l06b-pk{animation-play-state:paused}
 .l06b-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l06b-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l06b-btn:hover{background:var(--hover)}
 .l06b-cb:focus-visible + .l06b-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l06b-cb:checked + .l06b-btn .l06b-off,.l06b-cb:not(:checked) + .l06b-btn .l06b-on{display:none}
-.l06b-cb:checked ~ .l06b-box .l06b-g,.l06b-cb:checked ~ .l06b-box .l06b-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l06b-g{animation:none;opacity:1}.l06b-pk{animation:none;display:none}.l06b-btn{display:none}}
-@keyframes l06b-g0{0%{opacity:1}12.5%{opacity:1}12.51%,100%{opacity:.45}}
-@keyframes l06b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12.5%{opacity:1;transform:translateX(236px)}12.51%,100%{opacity:0;transform:translateX(236px)}}
-.l06b-g0{animation-name:l06b-g0}.l06b-p0{animation-name:l06b-p0}
-@keyframes l06b-g1{0%,12.49%{opacity:.45}12.5%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-@keyframes l06b-p1{0%,12.49%{opacity:0;transform:translateX(0)}12.5%{opacity:1;transform:translateX(0)}25%{opacity:1;transform:translateX(-236px)}25.01%,100%{opacity:0;transform:translateX(-236px)}}
-.l06b-g1{animation-name:l06b-g1}.l06b-p1{animation-name:l06b-p1}
-@keyframes l06b-g2{0%,24.99%{opacity:.45}25%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.45}}
-@keyframes l06b-p2{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}37.5%{opacity:1;transform:translateX(236px)}37.51%,100%{opacity:0;transform:translateX(236px)}}
-.l06b-g2{animation-name:l06b-g2}.l06b-p2{animation-name:l06b-p2}
-@keyframes l06b-g3{0%,37.49%{opacity:.45}37.5%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-.l06b-g3{animation-name:l06b-g3}
-@keyframes l06b-g4{0%,49.99%{opacity:.45}50%{opacity:1}62.5%{opacity:1}62.51%,100%{opacity:.45}}
-.l06b-g4{animation-name:l06b-g4}
-@keyframes l06b-g5{0%,62.49%{opacity:.45}62.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-.l06b-g5{animation-name:l06b-g5}
-@keyframes l06b-g6{0%,74.99%{opacity:.45}75%{opacity:1}87.5%{opacity:1}87.51%,100%{opacity:.45}}
-@keyframes l06b-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87.5%{opacity:1;transform:translateX(-236px)}87.51%,100%{opacity:0;transform:translateX(-236px)}}
-.l06b-g6{animation-name:l06b-g6}.l06b-p6{animation-name:l06b-p6}
-@keyframes l06b-g7{0%,87.49%{opacity:.45}87.5%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l06b-g7{animation-name:l06b-g7}
+.l06b-cb:checked ~ .l06b-box .l06b-g rect,.l06b-cb:checked ~ .l06b-box .l06b-g line,.l06b-cb:checked ~ .l06b-box .l06b-g path:not(.l06b-gl),.l06b-cb:checked ~ .l06b-box .l06b-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l06b-g rect,.l06b-g line,.l06b-g path:not(.l06b-gl){animation:none;opacity:1}.l06b-pk{animation:none;display:none}.l06b-btn{display:none}}
+@keyframes l06b-g0{0%{opacity:1}15%{opacity:1}15.01%,100%{opacity:.5}}
+@keyframes l06b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12%{opacity:1;transform:translateX(236px)}15%{opacity:1;transform:translateX(236px)}15.01%,100%{opacity:0;transform:translateX(236px)}}
+.l06b-g0 rect,.l06b-g0 line,.l06b-g0 path:not(.l06b-gl){animation-name:l06b-g0}.l06b-p0{animation-name:l06b-p0}
+@keyframes l06b-g1{0%,14.99%{opacity:.5}15%{opacity:1}30%{opacity:1}30.01%,100%{opacity:.5}}
+@keyframes l06b-p1{0%,14.99%{opacity:0;transform:translateX(0)}15%{opacity:1;transform:translateX(0)}27%{opacity:1;transform:translateX(-236px)}30%{opacity:1;transform:translateX(-236px)}30.01%,100%{opacity:0;transform:translateX(-236px)}}
+.l06b-g1 rect,.l06b-g1 line,.l06b-g1 path:not(.l06b-gl){animation-name:l06b-g1}.l06b-p1{animation-name:l06b-p1}
+@keyframes l06b-g2{0%,29.99%{opacity:.5}30%{opacity:1}45%{opacity:1}45.01%,100%{opacity:.5}}
+@keyframes l06b-p2{0%,29.99%{opacity:0;transform:translateX(0)}30%{opacity:1;transform:translateX(0)}42%{opacity:1;transform:translateX(236px)}45%{opacity:1;transform:translateX(236px)}45.01%,100%{opacity:0;transform:translateX(236px)}}
+.l06b-g2 rect,.l06b-g2 line,.l06b-g2 path:not(.l06b-gl){animation-name:l06b-g2}.l06b-p2{animation-name:l06b-p2}
+@keyframes l06b-g3{0%,44.99%{opacity:.5}45%{opacity:1}55%{opacity:1}55.01%,100%{opacity:.5}}
+.l06b-g3 rect,.l06b-g3 line,.l06b-g3 path:not(.l06b-gl){animation-name:l06b-g3}
+@keyframes l06b-g4{0%,54.99%{opacity:.5}55%{opacity:1}65%{opacity:1}65.01%,100%{opacity:.5}}
+.l06b-g4 rect,.l06b-g4 line,.l06b-g4 path:not(.l06b-gl){animation-name:l06b-g4}
+@keyframes l06b-g5{0%,64.99%{opacity:.5}65%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.5}}
+.l06b-g5 rect,.l06b-g5 line,.l06b-g5 path:not(.l06b-gl){animation-name:l06b-g5}
+@keyframes l06b-g6{0%,74.99%{opacity:.5}75%{opacity:1}90%{opacity:1}90.01%,100%{opacity:.5}}
+@keyframes l06b-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87%{opacity:1;transform:translateX(-236px)}90%{opacity:1;transform:translateX(-236px)}90.01%,100%{opacity:0;transform:translateX(-236px)}}
+.l06b-g6 rect,.l06b-g6 line,.l06b-g6 path:not(.l06b-gl){animation-name:l06b-g6}.l06b-p6{animation-name:l06b-p6}
+@keyframes l06b-g7{0%,89.99%{opacity:.5}90%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l06b-g7 rect,.l06b-g7 line,.l06b-g7 path:not(.l06b-gl){animation-name:l06b-g7}
 </style>
 <defs>
 <marker id="l06b-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>

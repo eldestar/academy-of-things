@@ -119,6 +119,7 @@ The output uses the engine's CSS variables (light and dark mode), tours its step
 - Write a caption under each diagram saying what to look at. If the diagram numbers its own hops rather than the list below it, say so; a sentence like "the numbers match the diagram" must be true at every level.
 - Diagrams do not replace the text. The paragraph still has to carry the facts a quiz needs, because a reader on a screen reader, with reduced motion, or skimming past it must not lose them.
 - Check it rendered: view each level in dark and light, at a narrow width, confirm the steps advance in order and hover pauses, check for overlapping or clipped text, and check the browser console is clean. State in your report anything you could not test, for example the real reduced-motion setting.
+- Legibility is a rule, not a polish step. Never fade text: a spotlight dims shapes and leaves labels at full opacity, and label colour is `--text` or `--body` (never `--muted`), so every label keeps at least WCAG AA contrast (4.5:1) at every step, in light and dark. The frame sits at 1:1 where the column allows; shrink only when it must.
 - A shape none of the five kinds can draw may be hand-written in the same style (inline SVG, theme variables, a title and desc, no scripts); keep it small and say in the report that it is hand-built. If it recurs, add a kind to the generator instead.
 
 ### Quiz coverage: the lesson must contain the answers

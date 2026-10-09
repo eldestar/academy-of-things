@@ -27,24 +27,25 @@ The browser carries every message. In this flow the IdP and the app never talk t
 6. The app checks the Response, creates its own session for her, and sends her to the page she wanted.
 
 <!-- diagram:saml-flow -->
-<div style="position:relative;margin:20px 0">
+<div class="sm-wrap" style="position:relative">
 <input type="checkbox" id="sm-pause" class="sm-cb" /><label for="sm-pause" class="sm-btn"><span class="sm-off">Pause animation</span><span class="sm-on">Play animation</span></label>
 <div class="sm-box" style="overflow-x:auto">
-<svg class="sm-flow" viewBox="0 0 760 837" role="img" aria-labelledby="sm-t sm-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="sm-flow" viewBox="0 0 760 837" role="img" aria-labelledby="sm-t sm-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="sm-t">One SAML sign-in, one click at a time</title>
 <desc id="sm-d">Three parties: the app (Acme Tracker), Priya's browser, and the identity provider. Priya opens the app and it finds no session. The app tells her browser to go and sign in at the identity provider, passing a sign-in request and a RelayState note. The browser follows that instruction. The identity provider signs her in, or sees she is already signed in. It sends back a signed assertion inside a web form, and the browser submits that form to the app's ACS URL. The app checks the signature, the audience, the address, the time window and that the response has not been used before, then creates its own session and sends her to the page. A final note says that when sign-in starts at the identity provider there is no sign-in request, so the app loses one check. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.sm-flow{--ink:light-dark(#000000,#ffffff)}
 .sm-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .sm-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.sm-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sm-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .sm-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .sm-front{stroke:var(--accent);stroke-width:2;fill:none}
 .sm-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .sm-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.sm-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sm-badt{fill:var(--bad-text)}
-.sm-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-badt{fill:var(--ink)}
+.sm-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .sm-badge{fill:var(--accent)}
 .sm-b-back{fill:var(--muted)}
 .sm-b-bad{fill:var(--bad)}
@@ -53,43 +54,45 @@ The browser carries every message. In this flow the IdP and the app never talk t
 .sm-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .sm-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .sm-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.sm-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sm-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+.sm-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sm-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:48s;animation-timing-function:linear;animation-iteration-count:infinite}
 .sm-pk.sm-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .sm-pk.sm-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.sm-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.sm-flow:hover .sm-g,svg.sm-flow:hover .sm-pk{animation-play-state:paused}
+.sm-wrap{margin:20px 0}
+@media (min-width:801px){.sm-wrap{margin-left:-44px;margin-right:-44px}}
+.sm-g rect,.sm-g line,.sm-g path:not(.sm-gl){opacity:.5;animation-duration:48s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.sm-flow:hover .sm-g rect,svg.sm-flow:hover .sm-g line,svg.sm-flow:hover .sm-g path:not(.sm-gl),svg.sm-flow:hover .sm-pk{animation-play-state:paused}
 .sm-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .sm-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .sm-btn:hover{background:var(--hover)}
 .sm-cb:focus-visible + .sm-btn{outline:2px solid var(--accent);outline-offset:2px}
 .sm-cb:checked + .sm-btn .sm-off,.sm-cb:not(:checked) + .sm-btn .sm-on{display:none}
-.sm-cb:checked ~ .sm-box .sm-g,.sm-cb:checked ~ .sm-box .sm-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.sm-g{animation:none;opacity:1}.sm-pk{animation:none;display:none}.sm-btn{display:none}}
-@keyframes sm-g0{0%{opacity:1}11.111%{opacity:1}11.121%,100%{opacity:.45}}
-@keyframes sm-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}11.111%{opacity:1;transform:translateX(-236px)}11.121%,100%{opacity:0;transform:translateX(-236px)}}
-.sm-g0{animation-name:sm-g0}.sm-p0{animation-name:sm-p0}
-@keyframes sm-g1{0%,11.101%{opacity:.45}11.111%{opacity:1}22.222%{opacity:1}22.232%,100%{opacity:.45}}
-@keyframes sm-p1{0%,11.101%{opacity:0;transform:translateX(0)}11.111%{opacity:1;transform:translateX(0)}22.222%{opacity:1;transform:translateX(236px)}22.232%,100%{opacity:0;transform:translateX(236px)}}
-.sm-g1{animation-name:sm-g1}.sm-p1{animation-name:sm-p1}
-@keyframes sm-g2{0%,22.212%{opacity:.45}22.222%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-@keyframes sm-p2{0%,22.212%{opacity:0;transform:translateX(0)}22.222%{opacity:1;transform:translateX(0)}33.333%{opacity:1;transform:translateX(236px)}33.343%,100%{opacity:0;transform:translateX(236px)}}
-.sm-g2{animation-name:sm-g2}.sm-p2{animation-name:sm-p2}
-@keyframes sm-g3{0%,33.323%{opacity:.45}33.333%{opacity:1}44.444%{opacity:1}44.454%,100%{opacity:.45}}
-.sm-g3{animation-name:sm-g3}
-@keyframes sm-g4{0%,44.434%{opacity:.45}44.444%{opacity:1}55.556%{opacity:1}55.566%,100%{opacity:.45}}
-@keyframes sm-p4{0%,44.434%{opacity:0;transform:translateX(0)}44.444%{opacity:1;transform:translateX(0)}55.556%{opacity:1;transform:translateX(-236px)}55.566%,100%{opacity:0;transform:translateX(-236px)}}
-.sm-g4{animation-name:sm-g4}.sm-p4{animation-name:sm-p4}
-@keyframes sm-g5{0%,55.546%{opacity:.45}55.556%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-@keyframes sm-p5{0%,55.546%{opacity:0;transform:translateX(0)}55.556%{opacity:1;transform:translateX(0)}66.667%{opacity:1;transform:translateX(-236px)}66.677%,100%{opacity:0;transform:translateX(-236px)}}
-.sm-g5{animation-name:sm-g5}.sm-p5{animation-name:sm-p5}
-@keyframes sm-g6{0%,66.657%{opacity:.45}66.667%{opacity:1}77.778%{opacity:1}77.788%,100%{opacity:.45}}
-.sm-g6{animation-name:sm-g6}
-@keyframes sm-g7{0%,77.768%{opacity:.45}77.778%{opacity:1}88.889%{opacity:1}88.899%,100%{opacity:.45}}
-@keyframes sm-p7{0%,77.768%{opacity:0;transform:translateX(0)}77.778%{opacity:1;transform:translateX(0)}88.889%{opacity:1;transform:translateX(236px)}88.899%,100%{opacity:0;transform:translateX(236px)}}
-.sm-g7{animation-name:sm-g7}.sm-p7{animation-name:sm-p7}
-@keyframes sm-g8{0%,88.879%{opacity:.45}88.889%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.sm-g8{animation-name:sm-g8}
+.sm-cb:checked ~ .sm-box .sm-g rect,.sm-cb:checked ~ .sm-box .sm-g line,.sm-cb:checked ~ .sm-box .sm-g path:not(.sm-gl),.sm-cb:checked ~ .sm-box .sm-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.sm-g rect,.sm-g line,.sm-g path:not(.sm-gl){animation:none;opacity:1}.sm-pk{animation:none;display:none}.sm-btn{display:none}}
+@keyframes sm-g0{0%{opacity:1}12.5%{opacity:1}12.51%,100%{opacity:.5}}
+@keyframes sm-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}10%{opacity:1;transform:translateX(-236px)}12.5%{opacity:1;transform:translateX(-236px)}12.51%,100%{opacity:0;transform:translateX(-236px)}}
+.sm-g0 rect,.sm-g0 line,.sm-g0 path:not(.sm-gl){animation-name:sm-g0}.sm-p0{animation-name:sm-p0}
+@keyframes sm-g1{0%,12.49%{opacity:.5}12.5%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.5}}
+@keyframes sm-p1{0%,12.49%{opacity:0;transform:translateX(0)}12.5%{opacity:1;transform:translateX(0)}22.5%{opacity:1;transform:translateX(236px)}25%{opacity:1;transform:translateX(236px)}25.01%,100%{opacity:0;transform:translateX(236px)}}
+.sm-g1 rect,.sm-g1 line,.sm-g1 path:not(.sm-gl){animation-name:sm-g1}.sm-p1{animation-name:sm-p1}
+@keyframes sm-g2{0%,24.99%{opacity:.5}25%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.5}}
+@keyframes sm-p2{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}35%{opacity:1;transform:translateX(236px)}37.5%{opacity:1;transform:translateX(236px)}37.51%,100%{opacity:0;transform:translateX(236px)}}
+.sm-g2 rect,.sm-g2 line,.sm-g2 path:not(.sm-gl){animation-name:sm-g2}.sm-p2{animation-name:sm-p2}
+@keyframes sm-g3{0%,37.49%{opacity:.5}37.5%{opacity:1}45.833%{opacity:1}45.843%,100%{opacity:.5}}
+.sm-g3 rect,.sm-g3 line,.sm-g3 path:not(.sm-gl){animation-name:sm-g3}
+@keyframes sm-g4{0%,45.823%{opacity:.5}45.833%{opacity:1}58.333%{opacity:1}58.343%,100%{opacity:.5}}
+@keyframes sm-p4{0%,45.823%{opacity:0;transform:translateX(0)}45.833%{opacity:1;transform:translateX(0)}55.833%{opacity:1;transform:translateX(-236px)}58.333%{opacity:1;transform:translateX(-236px)}58.343%,100%{opacity:0;transform:translateX(-236px)}}
+.sm-g4 rect,.sm-g4 line,.sm-g4 path:not(.sm-gl){animation-name:sm-g4}.sm-p4{animation-name:sm-p4}
+@keyframes sm-g5{0%,58.323%{opacity:.5}58.333%{opacity:1}70.833%{opacity:1}70.843%,100%{opacity:.5}}
+@keyframes sm-p5{0%,58.323%{opacity:0;transform:translateX(0)}58.333%{opacity:1;transform:translateX(0)}68.333%{opacity:1;transform:translateX(-236px)}70.833%{opacity:1;transform:translateX(-236px)}70.843%,100%{opacity:0;transform:translateX(-236px)}}
+.sm-g5 rect,.sm-g5 line,.sm-g5 path:not(.sm-gl){animation-name:sm-g5}.sm-p5{animation-name:sm-p5}
+@keyframes sm-g6{0%,70.823%{opacity:.5}70.833%{opacity:1}79.167%{opacity:1}79.177%,100%{opacity:.5}}
+.sm-g6 rect,.sm-g6 line,.sm-g6 path:not(.sm-gl){animation-name:sm-g6}
+@keyframes sm-g7{0%,79.157%{opacity:.5}79.167%{opacity:1}91.667%{opacity:1}91.677%,100%{opacity:.5}}
+@keyframes sm-p7{0%,79.157%{opacity:0;transform:translateX(0)}79.167%{opacity:1;transform:translateX(0)}89.167%{opacity:1;transform:translateX(236px)}91.667%{opacity:1;transform:translateX(236px)}91.677%,100%{opacity:0;transform:translateX(236px)}}
+.sm-g7 rect,.sm-g7 line,.sm-g7 path:not(.sm-gl){animation-name:sm-g7}.sm-p7{animation-name:sm-p7}
+@keyframes sm-g8{0%,91.657%{opacity:.5}91.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.sm-g8 rect,.sm-g8 line,.sm-g8 path:not(.sm-gl){animation-name:sm-g8}
 </style>
 <defs>
 <marker id="sm-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -182,24 +185,25 @@ The browser is only a courier, so the app trusts the signature, not the courier.
 - the Response answers the request the app sent (`InResponseTo`) and has **not been used before**. The standard requires the app to remember the IDs of assertions it has accepted, because an assertion works for whoever presents it.
 
 <!-- diagram:saml-response-anatomy -->
-<div style="position:relative;margin:20px 0">
+<div class="smr-wrap" style="position:relative">
 <input type="checkbox" id="smr-pause" class="smr-cb" /><label for="smr-pause" class="smr-btn"><span class="smr-off">Pause animation</span><span class="smr-on">Play animation</span></label>
 <div class="smr-box" style="overflow-x:auto">
-<svg class="smr-flow" viewBox="0 0 760 344" role="img" aria-labelledby="smr-t smr-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="smr-flow" viewBox="0 0 760 344" role="img" aria-labelledby="smr-t smr-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="smr-t">The envelope and the letter: what the app checks in each part</title>
 <desc id="smr-d">A nested diagram. The Response is the envelope and the Assertion inside it is the letter. Numbered callouts say what the app checks in each part. On the envelope, the Response must arrive at the right address and must answer the request the app sent. On the Assertion, the app checks it has not been used before. Inside the Assertion: the signature must be valid for the certificate the app holds for this IdP; the audience must equal the app's own entity ID; and the time now must be inside the valid window, allowing a small tolerance for clocks. The diagram highlights each part in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.smr-flow{--ink:light-dark(#000000,#ffffff)}
 .smr-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .smr-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.smr-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.smr-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .smr-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .smr-front{stroke:var(--accent);stroke-width:2;fill:none}
 .smr-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .smr-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.smr-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.smr-badt{fill:var(--bad-text)}
-.smr-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-badt{fill:var(--ink)}
+.smr-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .smr-badge{fill:var(--accent)}
 .smr-b-back{fill:var(--muted)}
 .smr-b-bad{fill:var(--bad)}
@@ -208,45 +212,47 @@ The browser is only a courier, so the app trusts the signature, not the courier.
 .smr-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .smr-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .smr-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.smr-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.smr-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .smr-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .smr-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.smr-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.smr-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.smr-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.smr-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.smr-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.smr-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.smr-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.smr-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .smr-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .smr-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .smr-hl{fill:none;stroke:var(--accent);stroke-width:3}
 .smr-hle{stroke:var(--accent);stroke-width:3;fill:none}
-.smr-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.smr-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .smr-pk.smr-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .smr-pk.smr-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.smr-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-.smr-h{opacity:0;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.smr-flow:hover .smr-g,svg.smr-flow:hover .smr-pk,svg.smr-flow:hover .smr-h{animation-play-state:paused}
+.smr-wrap{margin:20px 0}
+@media (min-width:801px){.smr-wrap{margin-left:-44px;margin-right:-44px}}
+.smr-g rect,.smr-g line,.smr-g path:not(.smr-gl){opacity:.5;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.smr-h{opacity:0;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.smr-flow:hover .smr-g rect,svg.smr-flow:hover .smr-g line,svg.smr-flow:hover .smr-g path:not(.smr-gl),svg.smr-flow:hover .smr-pk,svg.smr-flow:hover .smr-h{animation-play-state:paused}
 .smr-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .smr-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .smr-btn:hover{background:var(--hover)}
 .smr-cb:focus-visible + .smr-btn{outline:2px solid var(--accent);outline-offset:2px}
 .smr-cb:checked + .smr-btn .smr-off,.smr-cb:not(:checked) + .smr-btn .smr-on{display:none}
-.smr-cb:checked ~ .smr-box .smr-g,.smr-cb:checked ~ .smr-box .smr-pk,.smr-cb:checked ~ .smr-box .smr-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.smr-g{animation:none;opacity:1}.smr-pk{animation:none;display:none}.smr-h{animation:none;opacity:0}.smr-btn{display:none}}
-@keyframes smr-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
+.smr-cb:checked ~ .smr-box .smr-g rect,.smr-cb:checked ~ .smr-box .smr-g line,.smr-cb:checked ~ .smr-box .smr-g path:not(.smr-gl),.smr-cb:checked ~ .smr-box .smr-pk,.smr-cb:checked ~ .smr-box .smr-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.smr-g rect,.smr-g line,.smr-g path:not(.smr-gl){animation:none;opacity:1}.smr-pk{animation:none;display:none}.smr-h{animation:none;opacity:0}.smr-btn{display:none}}
+@keyframes smr-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.5}}
 @keyframes smr-h0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:0}}
-.smr-g0{animation-name:smr-g0}.smr-h0{animation-name:smr-h0}
-@keyframes smr-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
+.smr-g0 rect,.smr-g0 line,.smr-g0 path:not(.smr-gl){animation-name:smr-g0}.smr-h0{animation-name:smr-h0}
+@keyframes smr-g1{0%,19.99%{opacity:.5}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.5}}
 @keyframes smr-h1{0%,19.99%{opacity:0}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:0}}
-.smr-g1{animation-name:smr-g1}.smr-h1{animation-name:smr-h1}
-@keyframes smr-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
+.smr-g1 rect,.smr-g1 line,.smr-g1 path:not(.smr-gl){animation-name:smr-g1}.smr-h1{animation-name:smr-h1}
+@keyframes smr-g2{0%,39.99%{opacity:.5}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.5}}
 @keyframes smr-h2{0%,39.99%{opacity:0}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:0}}
-.smr-g2{animation-name:smr-g2}.smr-h2{animation-name:smr-h2}
-@keyframes smr-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
+.smr-g2 rect,.smr-g2 line,.smr-g2 path:not(.smr-gl){animation-name:smr-g2}.smr-h2{animation-name:smr-h2}
+@keyframes smr-g3{0%,59.99%{opacity:.5}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.5}}
 @keyframes smr-h3{0%,59.99%{opacity:0}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:0}}
-.smr-g3{animation-name:smr-g3}.smr-h3{animation-name:smr-h3}
-@keyframes smr-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.smr-g3 rect,.smr-g3 line,.smr-g3 path:not(.smr-gl){animation-name:smr-g3}.smr-h3{animation-name:smr-h3}
+@keyframes smr-g4{0%,79.99%{opacity:.5}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
 @keyframes smr-h4{0%,79.99%{opacity:0}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
-.smr-g4{animation-name:smr-g4}.smr-h4{animation-name:smr-h4}
+.smr-g4 rect,.smr-g4 line,.smr-g4 path:not(.smr-gl){animation-name:smr-g4}.smr-h4{animation-name:smr-h4}
 </style>
 <defs>
 <marker id="smr-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -325,24 +331,25 @@ Inside the assertion, the **NameID** is the label the IdP uses for Priya, and **
 **SP-initiated** (above) starts at the app. **IdP-initiated** starts at the IdP, for example Priya clicking an app tile in the Okta dashboard: there is no sign-in request, so the Response cannot answer one. That is a weaker position, because the app cannot match the Response to a request it made, so it loses one of its checks. Whether to allow this way in is a design decision.
 
 <!-- diagram:saml-ways-in -->
-<div style="position:relative;margin:20px 0">
+<div class="l02a-wrap" style="position:relative">
 <input type="checkbox" id="l02a-pause" class="l02a-cb" /><label for="l02a-pause" class="l02a-btn"><span class="l02a-off">Pause animation</span><span class="l02a-on">Play animation</span></label>
 <div class="l02a-box" style="overflow-x:auto">
-<svg class="l02a-flow" viewBox="0 0 760 461" role="img" aria-labelledby="l02a-t l02a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l02a-flow" viewBox="0 0 760 461" role="img" aria-labelledby="l02a-t l02a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l02a-t">Two ways in: starting at the app or at the IdP</title>
 <desc id="l02a-d">A comparison of SP-initiated and IdP-initiated sign-in in four rows. Where Priya starts: at the app, or at the IdP, for example an app tile in the Okta dashboard. The sign-in request: the app creates one when sign-in starts at the app, and there is none when it starts at the IdP. Matching the Response to a request: the app can match it when it sent a request, and has nothing to match it to when it did not. The app's checks: all the checks above when sign-in starts at the app, and one fewer, a weaker position, when it starts at the IdP. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l02a-flow{--ink:light-dark(#000000,#ffffff)}
 .l02a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l02a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l02a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l02a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l02a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l02a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l02a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l02a-badt{fill:var(--bad-text)}
-.l02a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-badt{fill:var(--ink)}
+.l02a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02a-badge{fill:var(--accent)}
 .l02a-b-back{fill:var(--muted)}
 .l02a-b-bad{fill:var(--bad)}
@@ -351,13 +358,13 @@ Inside the assertion, the **NameID** is the label the IdP uses for Priya, and **
 .l02a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l02a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l02a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l02a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l02a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l02a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l02a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l02a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l02a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l02a-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02a-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02a-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l02a-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l02a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l02a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l02a-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -365,23 +372,25 @@ Inside the assertion, the **NameID** is the label the IdP uses for Priya, and **
 .l02a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l02a-pk.l02a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l02a-pk.l02a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l02a-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l02a-flow:hover .l02a-g,svg.l02a-flow:hover .l02a-pk{animation-play-state:paused}
+.l02a-wrap{margin:20px 0}
+@media (min-width:801px){.l02a-wrap{margin-left:-44px;margin-right:-44px}}
+.l02a-g rect,.l02a-g line,.l02a-g path:not(.l02a-gl){opacity:.5;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l02a-flow:hover .l02a-g rect,svg.l02a-flow:hover .l02a-g line,svg.l02a-flow:hover .l02a-g path:not(.l02a-gl),svg.l02a-flow:hover .l02a-pk{animation-play-state:paused}
 .l02a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l02a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l02a-btn:hover{background:var(--hover)}
 .l02a-cb:focus-visible + .l02a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l02a-cb:checked + .l02a-btn .l02a-off,.l02a-cb:not(:checked) + .l02a-btn .l02a-on{display:none}
-.l02a-cb:checked ~ .l02a-box .l02a-g,.l02a-cb:checked ~ .l02a-box .l02a-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l02a-g{animation:none;opacity:1}.l02a-pk{animation:none;display:none}.l02a-btn{display:none}}
-@keyframes l02a-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-.l02a-g0{animation-name:l02a-g0}
-@keyframes l02a-g1{0%,24.99%{opacity:.45}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-.l02a-g1{animation-name:l02a-g1}
-@keyframes l02a-g2{0%,49.99%{opacity:.45}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-.l02a-g2{animation-name:l02a-g2}
-@keyframes l02a-g3{0%,74.99%{opacity:.45}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l02a-g3{animation-name:l02a-g3}
+.l02a-cb:checked ~ .l02a-box .l02a-g rect,.l02a-cb:checked ~ .l02a-box .l02a-g line,.l02a-cb:checked ~ .l02a-box .l02a-g path:not(.l02a-gl),.l02a-cb:checked ~ .l02a-box .l02a-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l02a-g rect,.l02a-g line,.l02a-g path:not(.l02a-gl){animation:none;opacity:1}.l02a-pk{animation:none;display:none}.l02a-btn{display:none}}
+@keyframes l02a-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.5}}
+.l02a-g0 rect,.l02a-g0 line,.l02a-g0 path:not(.l02a-gl){animation-name:l02a-g0}
+@keyframes l02a-g1{0%,24.99%{opacity:.5}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
+.l02a-g1 rect,.l02a-g1 line,.l02a-g1 path:not(.l02a-gl){animation-name:l02a-g1}
+@keyframes l02a-g2{0%,49.99%{opacity:.5}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.5}}
+.l02a-g2 rect,.l02a-g2 line,.l02a-g2 path:not(.l02a-gl){animation-name:l02a-g2}
+@keyframes l02a-g3{0%,74.99%{opacity:.5}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l02a-g3 rect,.l02a-g3 line,.l02a-g3 path:not(.l02a-gl){animation-name:l02a-g3}
 </style>
 <defs>
 <marker id="l02a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -400,33 +409,33 @@ svg.l02a-flow:hover .l02a-g,svg.l02a-flow:hover .l02a-pk{animation-play-state:pa
 <g class="l02a-g l02a-g1">
 <rect class="l02a-row" x="10" y="180" width="740" height="71" rx="8"/>
 <text class="l02a-ttlL" x="24" y="206">The sign-in request</text>
-<circle cx="364" cy="202" r="10" style="fill:var(--good)"/><path d="M359.3,202.0 L362.1,205.4 L367.7,198.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="364" cy="202" r="10" style="fill:var(--good)"/><path class="l02a-gl" d="M359.3,202.0 L362.1,205.4 L367.7,198.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-nt" x="364" y="228">The app creates one</text>
-<circle cx="618" cy="202" r="10" style="fill:var(--bad)"/><path d="M615.1,198.6 L621.9,205.4 M621.9,198.6 L615.1,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="618" cy="202" r="10" style="fill:var(--bad)"/><path class="l02a-gl" d="M615.1,198.6 L621.9,205.4 M621.9,198.6 L615.1,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-nt" x="618" y="228">There is none</text>
 </g>
 <g class="l02a-g l02a-g2">
 <rect class="l02a-row" x="10" y="259" width="740" height="71" rx="8"/>
 <text class="l02a-ttlL" x="24" y="285">Response matches a request</text>
 <text class="l02a-subL" x="24" y="303">the InResponseTo check</text>
-<circle cx="364" cy="281" r="10" style="fill:var(--good)"/><path d="M359.3,281.0 L362.1,284.4 L367.7,277.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="364" cy="281" r="10" style="fill:var(--good)"/><path class="l02a-gl" d="M359.3,281.0 L362.1,284.4 L367.7,277.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-nt" x="364" y="307">The app can match it</text>
-<circle cx="618" cy="281" r="10" style="fill:var(--bad)"/><path d="M615.1,277.6 L621.9,284.4 M621.9,277.6 L615.1,284.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="618" cy="281" r="10" style="fill:var(--bad)"/><path class="l02a-gl" d="M615.1,277.6 L621.9,284.4 M621.9,277.6 L615.1,284.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-nt" x="618" y="307">Nothing to match it to</text>
 </g>
 <g class="l02a-g l02a-g3">
 <rect class="l02a-row" x="10" y="338" width="740" height="71" rx="8"/>
 <text class="l02a-ttlL" x="24" y="364">The app's checks</text>
-<circle cx="364" cy="360" r="10" style="fill:var(--good)"/><path d="M359.3,360.0 L362.1,363.4 L367.7,356.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="364" cy="360" r="10" style="fill:var(--good)"/><path class="l02a-gl" d="M359.3,360.0 L362.1,363.4 L367.7,356.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-nt" x="364" y="386">All of the checks above</text>
-<circle cx="618" cy="360" r="10" style="fill:var(--muted)"/><path d="M614.3,360.0 L622.7,360.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="618" cy="360" r="10" style="fill:var(--muted)"/><path class="l02a-gl" d="M614.3,360.0 L622.7,360.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-nt" x="618" y="386">One fewer: a weaker position</text>
 </g>
-<circle cx="48" cy="437" r="8" style="fill:var(--good)"/><path d="M44.6,437.0 L46.9,439.7 L51.4,434.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="48" cy="437" r="8" style="fill:var(--good)"/><path class="l02a-gl" d="M44.6,437.0 L46.9,439.7 L51.4,434.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-dim" x="64" y="441" style="text-anchor:start">present</text>
-<circle cx="150" cy="437" r="8" style="fill:var(--muted)"/><path d="M146.6,437.0 L153.4,437.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="150" cy="437" r="8" style="fill:var(--muted)"/><path class="l02a-gl" d="M146.6,437.0 L153.4,437.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-dim" x="166" y="441" style="text-anchor:start">weaker</text>
-<circle cx="246" cy="437" r="8" style="fill:var(--bad)"/><path d="M243.3,434.3 L248.7,439.7 M248.7,434.3 L243.3,439.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="246" cy="437" r="8" style="fill:var(--bad)"/><path class="l02a-gl" d="M243.3,434.3 L248.7,439.7 M248.7,434.3 L243.3,439.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l02a-dim" x="262" y="441" style="text-anchor:start">missing</text>
 </svg>
 </div>

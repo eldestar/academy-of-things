@@ -17,24 +17,25 @@ You have configured SAML and OIDC apps and clicked through an app's **Provisioni
 - The SCIM match attribute (`userName` or `externalId`) and the SSO account key are separate things. The key is a persistent NameID in SAML, `iss` plus `sub` in OIDC, and in Entra, where `sub` is pairwise per application, Microsoft's guidance is `tid` plus `oid` (lesson 1). The app must link the two explicitly, and must never link a sign-in to an account on the email claim or attribute. A `userName` that happens to look like an email address is only the SCIM match attribute, not the SSO account key.
 
 <!-- diagram:scim-identifiers -->
-<div style="position:relative;margin:20px 0">
+<div class="l05a-wrap" style="position:relative">
 <input type="checkbox" id="l05a-pause" class="l05a-cb" /><label for="l05a-pause" class="l05a-btn"><span class="l05a-off">Pause animation</span><span class="l05a-on">Play animation</span></label>
 <div class="l05a-box" style="overflow-x:auto">
-<svg class="l05a-flow" viewBox="0 0 760 490" role="img" aria-labelledby="l05a-t l05a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l05a-flow" viewBox="0 0 760 490" role="img" aria-labelledby="l05a-t l05a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l05a-t">Identifiers on a SCIM user, and how they differ from the SSO account key</title>
 <desc id="l05a-d">A User resource at /Users carries three identifiers. id is issued by the server, must be stable and never reassigned, and the client must not set it. userName is required, unique across the server's users and case-insensitive. externalId is issued by the client and the server does not enforce uniqueness. Separate from the resource, the match attribute is userName or externalId and is where mapping matters: Okta's Profile Editor maps attributes, and in Entra the setting Match objects using this attribute picks the matching property. The SSO account key is a different thing: a persistent NameID in SAML, iss plus sub in OIDC, and tid plus oid in Entra. The app must link the SCIM account and the SSO key explicitly and never link a sign-in to an account on the email claim or attribute. The diagram highlights each part in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l05a-flow{--ink:light-dark(#000000,#ffffff)}
 .l05a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l05a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l05a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l05a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l05a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l05a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l05a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05a-badt{fill:var(--bad-text)}
-.l05a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-badt{fill:var(--ink)}
+.l05a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05a-badge{fill:var(--accent)}
 .l05a-b-back{fill:var(--muted)}
 .l05a-b-bad{fill:var(--bad)}
@@ -43,13 +44,13 @@ You have configured SAML and OIDC apps and clicked through an app's **Provisioni
 .l05a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l05a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l05a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l05a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l05a-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05a-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05a-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05a-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l05a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l05a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l05a-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -57,31 +58,33 @@ You have configured SAML and OIDC apps and clicked through an app's **Provisioni
 .l05a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05a-pk.l05a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l05a-pk.l05a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l05a-g{opacity:.45;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l05a-wrap{margin:20px 0}
+@media (min-width:801px){.l05a-wrap{margin-left:-44px;margin-right:-44px}}
+.l05a-g rect,.l05a-g line,.l05a-g path:not(.l05a-gl){opacity:.5;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05a-h{opacity:0;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l05a-flow:hover .l05a-g,svg.l05a-flow:hover .l05a-pk,svg.l05a-flow:hover .l05a-h{animation-play-state:paused}
+svg.l05a-flow:hover .l05a-g rect,svg.l05a-flow:hover .l05a-g line,svg.l05a-flow:hover .l05a-g path:not(.l05a-gl),svg.l05a-flow:hover .l05a-pk,svg.l05a-flow:hover .l05a-h{animation-play-state:paused}
 .l05a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l05a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l05a-btn:hover{background:var(--hover)}
 .l05a-cb:focus-visible + .l05a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l05a-cb:checked + .l05a-btn .l05a-off,.l05a-cb:not(:checked) + .l05a-btn .l05a-on{display:none}
-.l05a-cb:checked ~ .l05a-box .l05a-g,.l05a-cb:checked ~ .l05a-box .l05a-pk,.l05a-cb:checked ~ .l05a-box .l05a-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l05a-g{animation:none;opacity:1}.l05a-pk{animation:none;display:none}.l05a-h{animation:none;opacity:0}.l05a-btn{display:none}}
-@keyframes l05a-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.45}}
+.l05a-cb:checked ~ .l05a-box .l05a-g rect,.l05a-cb:checked ~ .l05a-box .l05a-g line,.l05a-cb:checked ~ .l05a-box .l05a-g path:not(.l05a-gl),.l05a-cb:checked ~ .l05a-box .l05a-pk,.l05a-cb:checked ~ .l05a-box .l05a-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l05a-g rect,.l05a-g line,.l05a-g path:not(.l05a-gl){animation:none;opacity:1}.l05a-pk{animation:none;display:none}.l05a-h{animation:none;opacity:0}.l05a-btn{display:none}}
+@keyframes l05a-g0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:.5}}
 @keyframes l05a-h0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:0}}
-.l05a-g0{animation-name:l05a-g0}.l05a-h0{animation-name:l05a-h0}
-@keyframes l05a-g1{0%,19.99%{opacity:.45}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.45}}
+.l05a-g0 rect,.l05a-g0 line,.l05a-g0 path:not(.l05a-gl){animation-name:l05a-g0}.l05a-h0{animation-name:l05a-h0}
+@keyframes l05a-g1{0%,19.99%{opacity:.5}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:.5}}
 @keyframes l05a-h1{0%,19.99%{opacity:0}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:0}}
-.l05a-g1{animation-name:l05a-g1}.l05a-h1{animation-name:l05a-h1}
-@keyframes l05a-g2{0%,39.99%{opacity:.45}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.45}}
+.l05a-g1 rect,.l05a-g1 line,.l05a-g1 path:not(.l05a-gl){animation-name:l05a-g1}.l05a-h1{animation-name:l05a-h1}
+@keyframes l05a-g2{0%,39.99%{opacity:.5}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:.5}}
 @keyframes l05a-h2{0%,39.99%{opacity:0}40%{opacity:1}60%{opacity:1}60.01%,100%{opacity:0}}
-.l05a-g2{animation-name:l05a-g2}.l05a-h2{animation-name:l05a-h2}
-@keyframes l05a-g3{0%,59.99%{opacity:.45}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.45}}
+.l05a-g2 rect,.l05a-g2 line,.l05a-g2 path:not(.l05a-gl){animation-name:l05a-g2}.l05a-h2{animation-name:l05a-h2}
+@keyframes l05a-g3{0%,59.99%{opacity:.5}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:.5}}
 @keyframes l05a-h3{0%,59.99%{opacity:0}60%{opacity:1}80%{opacity:1}80.01%,100%{opacity:0}}
-.l05a-g3{animation-name:l05a-g3}.l05a-h3{animation-name:l05a-h3}
-@keyframes l05a-g4{0%,79.99%{opacity:.45}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
+.l05a-g3 rect,.l05a-g3 line,.l05a-g3 path:not(.l05a-gl){animation-name:l05a-g3}.l05a-h3{animation-name:l05a-h3}
+@keyframes l05a-g4{0%,79.99%{opacity:.5}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
 @keyframes l05a-h4{0%,79.99%{opacity:0}80%{opacity:1}100%{opacity:1}100.01%,100%{opacity:0}}
-.l05a-g4{animation-name:l05a-g4}.l05a-h4{animation-name:l05a-h4}
+.l05a-g4 rect,.l05a-g4 line,.l05a-g4 path:not(.l05a-gl){animation-name:l05a-g4}.l05a-h4{animation-name:l05a-h4}
 </style>
 <defs>
 <marker id="l05a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -164,24 +167,25 @@ The five numbered notes run top to bottom: the three identifiers on the User res
 Okta's flow is below; Entra's is close. `{id}` is the server-issued id.
 
 <!-- diagram:scim-protocol -->
-<div style="position:relative;margin:20px 0">
+<div class="sc-wrap" style="position:relative">
 <input type="checkbox" id="sc-pause" class="sc-cb" /><label for="sc-pause" class="sc-btn"><span class="sc-off">Pause animation</span><span class="sc-on">Play animation</span></label>
 <div class="sc-box" style="overflow-x:auto">
-<svg class="sc-flow" viewBox="0 0 760 824" role="img" aria-labelledby="sc-t sc-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="sc-flow" viewBox="0 0 760 824" role="img" aria-labelledby="sc-t sc-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="sc-t">SCIM lifecycle: create, group change, deactivate, delete</title>
 <desc id="sc-d">Eight steps between an identity provider acting as SCIM client and your app acting as SCIM server, with a browser session opened earlier as a third lane. Step 1: on assignment Okta runs GET /Users with a filter on userName, and with no match sends POST /Users with userName, emails and active true. Step 2: the server answers 201 Created with the id, and the IdP keeps it. Step 3: for groups, PATCH /Groups/{id}, for example with a remove members and an add members in one request; Wizard apps send a PUT of the whole group. Step 4, leaver: active false by PATCH for OIN apps and by PUT for Wizard apps. Step 5, a failure mode: the server saves active false but the browser session opened earlier still works. Step 6: none of the operations in RFC 7644 ends a session or revokes a token, so your app must do it when it sees active false. Step 7: by default Entra sends DELETE /Users/{id} on a hard delete at the source and Okta never sends DELETE for users. Step 8: after DELETE the server must return 404 for that id. The diagram highlights each step in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.sc-flow{--ink:light-dark(#000000,#ffffff)}
 .sc-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .sc-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.sc-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sc-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .sc-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .sc-front{stroke:var(--accent);stroke-width:2;fill:none}
 .sc-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .sc-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.sc-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sc-badt{fill:var(--bad-text)}
-.sc-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-badt{fill:var(--ink)}
+.sc-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .sc-badge{fill:var(--accent)}
 .sc-b-back{fill:var(--muted)}
 .sc-b-bad{fill:var(--bad)}
@@ -190,42 +194,44 @@ Okta's flow is below; Entra's is close. `{id}` is the server-issued id.
 .sc-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .sc-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .sc-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.sc-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.sc-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
+.sc-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.sc-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:46s;animation-timing-function:linear;animation-iteration-count:infinite}
 .sc-pk.sc-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .sc-pk.sc-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.sc-g{opacity:.45;animation-duration:24s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.sc-flow:hover .sc-g,svg.sc-flow:hover .sc-pk{animation-play-state:paused}
+.sc-wrap{margin:20px 0}
+@media (min-width:801px){.sc-wrap{margin-left:-44px;margin-right:-44px}}
+.sc-g rect,.sc-g line,.sc-g path:not(.sc-gl){opacity:.5;animation-duration:46s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.sc-flow:hover .sc-g rect,svg.sc-flow:hover .sc-g line,svg.sc-flow:hover .sc-g path:not(.sc-gl),svg.sc-flow:hover .sc-pk{animation-play-state:paused}
 .sc-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .sc-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .sc-btn:hover{background:var(--hover)}
 .sc-cb:focus-visible + .sc-btn{outline:2px solid var(--accent);outline-offset:2px}
 .sc-cb:checked + .sc-btn .sc-off,.sc-cb:not(:checked) + .sc-btn .sc-on{display:none}
-.sc-cb:checked ~ .sc-box .sc-g,.sc-cb:checked ~ .sc-box .sc-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.sc-g{animation:none;opacity:1}.sc-pk{animation:none;display:none}.sc-btn{display:none}}
-@keyframes sc-g0{0%{opacity:1}12.5%{opacity:1}12.51%,100%{opacity:.45}}
-@keyframes sc-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}12.5%{opacity:1;transform:translateX(236px)}12.51%,100%{opacity:0;transform:translateX(236px)}}
-.sc-g0{animation-name:sc-g0}.sc-p0{animation-name:sc-p0}
-@keyframes sc-g1{0%,12.49%{opacity:.45}12.5%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-@keyframes sc-p1{0%,12.49%{opacity:0;transform:translateX(0)}12.5%{opacity:1;transform:translateX(0)}25%{opacity:1;transform:translateX(-236px)}25.01%,100%{opacity:0;transform:translateX(-236px)}}
-.sc-g1{animation-name:sc-g1}.sc-p1{animation-name:sc-p1}
-@keyframes sc-g2{0%,24.99%{opacity:.45}25%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.45}}
-@keyframes sc-p2{0%,24.99%{opacity:0;transform:translateX(0)}25%{opacity:1;transform:translateX(0)}37.5%{opacity:1;transform:translateX(236px)}37.51%,100%{opacity:0;transform:translateX(236px)}}
-.sc-g2{animation-name:sc-g2}.sc-p2{animation-name:sc-p2}
-@keyframes sc-g3{0%,37.49%{opacity:.45}37.5%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-@keyframes sc-p3{0%,37.49%{opacity:0;transform:translateX(0)}37.5%{opacity:1;transform:translateX(0)}50%{opacity:1;transform:translateX(236px)}50.01%,100%{opacity:0;transform:translateX(236px)}}
-.sc-g3{animation-name:sc-g3}.sc-p3{animation-name:sc-p3}
-@keyframes sc-g4{0%,49.99%{opacity:.45}50%{opacity:1}62.5%{opacity:1}62.51%,100%{opacity:.45}}
-@keyframes sc-p4{0%,49.99%{opacity:0;transform:translateX(0)}50%{opacity:1;transform:translateX(0)}62.5%{opacity:1;transform:translateX(-236px)}62.51%,100%{opacity:0;transform:translateX(-236px)}}
-.sc-g4{animation-name:sc-g4}.sc-p4{animation-name:sc-p4}
-@keyframes sc-g5{0%,62.49%{opacity:.45}62.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-.sc-g5{animation-name:sc-g5}
-@keyframes sc-g6{0%,74.99%{opacity:.45}75%{opacity:1}87.5%{opacity:1}87.51%,100%{opacity:.45}}
-@keyframes sc-p6{0%,74.99%{opacity:0;transform:translateX(0)}75%{opacity:1;transform:translateX(0)}87.5%{opacity:1;transform:translateX(236px)}87.51%,100%{opacity:0;transform:translateX(236px)}}
-.sc-g6{animation-name:sc-g6}.sc-p6{animation-name:sc-p6}
-@keyframes sc-g7{0%,87.49%{opacity:.45}87.5%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-@keyframes sc-p7{0%,87.49%{opacity:0;transform:translateX(0)}87.5%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(-236px)}100.01%,100%{opacity:0;transform:translateX(-236px)}}
-.sc-g7{animation-name:sc-g7}.sc-p7{animation-name:sc-p7}
+.sc-cb:checked ~ .sc-box .sc-g rect,.sc-cb:checked ~ .sc-box .sc-g line,.sc-cb:checked ~ .sc-box .sc-g path:not(.sc-gl),.sc-cb:checked ~ .sc-box .sc-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.sc-g rect,.sc-g line,.sc-g path:not(.sc-gl){animation:none;opacity:1}.sc-pk{animation:none;display:none}.sc-btn{display:none}}
+@keyframes sc-g0{0%{opacity:1}13.043%{opacity:1}13.053%,100%{opacity:.5}}
+@keyframes sc-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}10.435%{opacity:1;transform:translateX(236px)}13.043%{opacity:1;transform:translateX(236px)}13.053%,100%{opacity:0;transform:translateX(236px)}}
+.sc-g0 rect,.sc-g0 line,.sc-g0 path:not(.sc-gl){animation-name:sc-g0}.sc-p0{animation-name:sc-p0}
+@keyframes sc-g1{0%,13.033%{opacity:.5}13.043%{opacity:1}26.087%{opacity:1}26.097%,100%{opacity:.5}}
+@keyframes sc-p1{0%,13.033%{opacity:0;transform:translateX(0)}13.043%{opacity:1;transform:translateX(0)}23.478%{opacity:1;transform:translateX(-236px)}26.087%{opacity:1;transform:translateX(-236px)}26.097%,100%{opacity:0;transform:translateX(-236px)}}
+.sc-g1 rect,.sc-g1 line,.sc-g1 path:not(.sc-gl){animation-name:sc-g1}.sc-p1{animation-name:sc-p1}
+@keyframes sc-g2{0%,26.077%{opacity:.5}26.087%{opacity:1}39.13%{opacity:1}39.14%,100%{opacity:.5}}
+@keyframes sc-p2{0%,26.077%{opacity:0;transform:translateX(0)}26.087%{opacity:1;transform:translateX(0)}36.522%{opacity:1;transform:translateX(236px)}39.13%{opacity:1;transform:translateX(236px)}39.14%,100%{opacity:0;transform:translateX(236px)}}
+.sc-g2 rect,.sc-g2 line,.sc-g2 path:not(.sc-gl){animation-name:sc-g2}.sc-p2{animation-name:sc-p2}
+@keyframes sc-g3{0%,39.12%{opacity:.5}39.13%{opacity:1}52.174%{opacity:1}52.184%,100%{opacity:.5}}
+@keyframes sc-p3{0%,39.12%{opacity:0;transform:translateX(0)}39.13%{opacity:1;transform:translateX(0)}49.565%{opacity:1;transform:translateX(236px)}52.174%{opacity:1;transform:translateX(236px)}52.184%,100%{opacity:0;transform:translateX(236px)}}
+.sc-g3 rect,.sc-g3 line,.sc-g3 path:not(.sc-gl){animation-name:sc-g3}.sc-p3{animation-name:sc-p3}
+@keyframes sc-g4{0%,52.164%{opacity:.5}52.174%{opacity:1}65.217%{opacity:1}65.227%,100%{opacity:.5}}
+@keyframes sc-p4{0%,52.164%{opacity:0;transform:translateX(0)}52.174%{opacity:1;transform:translateX(0)}62.609%{opacity:1;transform:translateX(-236px)}65.217%{opacity:1;transform:translateX(-236px)}65.227%,100%{opacity:0;transform:translateX(-236px)}}
+.sc-g4 rect,.sc-g4 line,.sc-g4 path:not(.sc-gl){animation-name:sc-g4}.sc-p4{animation-name:sc-p4}
+@keyframes sc-g5{0%,65.207%{opacity:.5}65.217%{opacity:1}73.913%{opacity:1}73.923%,100%{opacity:.5}}
+.sc-g5 rect,.sc-g5 line,.sc-g5 path:not(.sc-gl){animation-name:sc-g5}
+@keyframes sc-g6{0%,73.903%{opacity:.5}73.913%{opacity:1}86.957%{opacity:1}86.967%,100%{opacity:.5}}
+@keyframes sc-p6{0%,73.903%{opacity:0;transform:translateX(0)}73.913%{opacity:1;transform:translateX(0)}84.348%{opacity:1;transform:translateX(236px)}86.957%{opacity:1;transform:translateX(236px)}86.967%,100%{opacity:0;transform:translateX(236px)}}
+.sc-g6 rect,.sc-g6 line,.sc-g6 path:not(.sc-gl){animation-name:sc-g6}.sc-p6{animation-name:sc-p6}
+@keyframes sc-g7{0%,86.947%{opacity:.5}86.957%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+@keyframes sc-p7{0%,86.947%{opacity:0;transform:translateX(0)}86.957%{opacity:1;transform:translateX(0)}97.391%{opacity:1;transform:translateX(-236px)}100%{opacity:1;transform:translateX(-236px)}100.01%,100%{opacity:0;transform:translateX(-236px)}}
+.sc-g7 rect,.sc-g7 line,.sc-g7 path:not(.sc-gl){animation-name:sc-g7}.sc-p7{animation-name:sc-p7}
 </style>
 <defs>
 <marker id="sc-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -330,24 +336,25 @@ The numbers 1 to 8 match the list below. Step 1 is two requests, the lookup and 
 - **Entra scope** most commonly comes from assignments. It cannot read nested groups, only immediate members of an assigned group, and it provisions group objects only if the app supports them (which needs PATCH).
 
 <!-- diagram:scim-account-states -->
-<div style="position:relative;margin:20px 0">
+<div class="l05b-wrap" style="position:relative">
 <input type="checkbox" id="l05b-pause" class="l05b-cb" /><label for="l05b-pause" class="l05b-btn"><span class="l05b-off">Pause animation</span><span class="l05b-on">Play animation</span></label>
 <div class="l05b-box" style="overflow-x:auto">
-<svg class="l05b-flow" viewBox="0 0 760 227" role="img" aria-labelledby="l05b-t l05b-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l05b-flow" viewBox="0 0 760 227" role="img" aria-labelledby="l05b-t l05b-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l05b-t">The app-side account: active, deactivated, deleted</title>
 <desc id="l05b-d">Three states of the account in the app, not the user in the IdP. Active: active is true, which typically means the user can sign in. Deactivated: active is false, which typically means suspended; Okta flips it back to true on reprovisioning, and Entra expects an inactive user to still be returned. Deleted: the provider may keep the data but must return 404 for the old id and omit it from queries; Okta sends no DELETE for users, and Entra by default sends DELETE only when the user is hard-deleted. Setting active false moves the account to deactivated, reprovisioning returns it to active, and DELETE moves it to deleted. The diagram highlights each stage in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l05b-flow{--ink:light-dark(#000000,#ffffff)}
 .l05b-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l05b-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l05b-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05b-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05b-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05b-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05b-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l05b-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l05b-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l05b-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l05b-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05b-badt{fill:var(--bad-text)}
-.l05b-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05b-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05b-badt{fill:var(--ink)}
+.l05b-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05b-badge{fill:var(--accent)}
 .l05b-b-back{fill:var(--muted)}
 .l05b-b-bad{fill:var(--bad)}
@@ -356,13 +363,13 @@ The numbers 1 to 8 match the list below. Step 1 is two requests, the lookup and 
 .l05b-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05b-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l05b-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l05b-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05b-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05b-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05b-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l05b-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05b-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05b-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05b-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l05b-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05b-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05b-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05b-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l05b-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l05b-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l05b-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -370,23 +377,25 @@ The numbers 1 to 8 match the list below. Step 1 is two requests, the lookup and 
 .l05b-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05b-pk.l05b-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l05b-pk.l05b-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l05b-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l05b-flow:hover .l05b-g,svg.l05b-flow:hover .l05b-pk{animation-play-state:paused}
+.l05b-wrap{margin:20px 0}
+@media (min-width:801px){.l05b-wrap{margin-left:-44px;margin-right:-44px}}
+.l05b-g rect,.l05b-g line,.l05b-g path:not(.l05b-gl){opacity:.5;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l05b-flow:hover .l05b-g rect,svg.l05b-flow:hover .l05b-g line,svg.l05b-flow:hover .l05b-g path:not(.l05b-gl),svg.l05b-flow:hover .l05b-pk{animation-play-state:paused}
 .l05b-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l05b-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l05b-btn:hover{background:var(--hover)}
 .l05b-cb:focus-visible + .l05b-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l05b-cb:checked + .l05b-btn .l05b-off,.l05b-cb:not(:checked) + .l05b-btn .l05b-on{display:none}
-.l05b-cb:checked ~ .l05b-box .l05b-g,.l05b-cb:checked ~ .l05b-box .l05b-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l05b-g{animation:none;opacity:1}.l05b-pk{animation:none;display:none}.l05b-btn{display:none}}
-@keyframes l05b-g0{0%{opacity:1}33.333%{opacity:1}33.343%,100%{opacity:.45}}
-@keyframes l05b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}33.333%{opacity:1;transform:translateX(88px)}33.343%,100%{opacity:0;transform:translateX(88px)}}
-.l05b-g0{animation-name:l05b-g0}.l05b-p0{animation-name:l05b-p0}
-@keyframes l05b-g1{0%,33.323%{opacity:.45}33.333%{opacity:1}66.667%{opacity:1}66.677%,100%{opacity:.45}}
-@keyframes l05b-p1{0%,33.323%{opacity:0;transform:translateX(0)}33.333%{opacity:1;transform:translateX(0)}66.667%{opacity:1;transform:translateX(88px)}66.677%,100%{opacity:0;transform:translateX(88px)}}
-.l05b-g1{animation-name:l05b-g1}.l05b-p1{animation-name:l05b-p1}
-@keyframes l05b-g2{0%,66.657%{opacity:.45}66.667%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l05b-g2{animation-name:l05b-g2}
+.l05b-cb:checked ~ .l05b-box .l05b-g rect,.l05b-cb:checked ~ .l05b-box .l05b-g line,.l05b-cb:checked ~ .l05b-box .l05b-g path:not(.l05b-gl),.l05b-cb:checked ~ .l05b-box .l05b-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l05b-g rect,.l05b-g line,.l05b-g path:not(.l05b-gl){animation:none;opacity:1}.l05b-pk{animation:none;display:none}.l05b-btn{display:none}}
+@keyframes l05b-g0{0%{opacity:1}37.5%{opacity:1}37.51%,100%{opacity:.5}}
+@keyframes l05b-p0{0%,-0.01%{opacity:0;transform:translateX(0)}0%{opacity:1;transform:translateX(0)}30%{opacity:1;transform:translateX(88px)}37.5%{opacity:1;transform:translateX(88px)}37.51%,100%{opacity:0;transform:translateX(88px)}}
+.l05b-g0 rect,.l05b-g0 line,.l05b-g0 path:not(.l05b-gl){animation-name:l05b-g0}.l05b-p0{animation-name:l05b-p0}
+@keyframes l05b-g1{0%,37.49%{opacity:.5}37.5%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.5}}
+@keyframes l05b-p1{0%,37.49%{opacity:0;transform:translateX(0)}37.5%{opacity:1;transform:translateX(0)}67.5%{opacity:1;transform:translateX(88px)}75%{opacity:1;transform:translateX(88px)}75.01%,100%{opacity:0;transform:translateX(88px)}}
+.l05b-g1 rect,.l05b-g1 line,.l05b-g1 path:not(.l05b-gl){animation-name:l05b-g1}.l05b-p1{animation-name:l05b-p1}
+@keyframes l05b-g2{0%,74.99%{opacity:.5}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l05b-g2 rect,.l05b-g2 line,.l05b-g2 path:not(.l05b-gl){animation-name:l05b-g2}
 </style>
 <defs>
 <marker id="l05b-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -439,24 +448,25 @@ svg.l05b-flow:hover .l05b-g,svg.l05b-flow:hover .l05b-pk{animation-play-state:pa
 This is the account in the app, not the user in the IdP. Look at what each IdP sends to move it between states: `active=false` goes to the middle state, and by default Entra sends a DELETE for the right-hand state only on a hard delete, while Okta never sends DELETE for users.
 
 <!-- diagram:scim-group-push -->
-<div style="position:relative;margin:20px 0">
+<div class="l05c-wrap" style="position:relative">
 <input type="checkbox" id="l05c-pause" class="l05c-cb" /><label for="l05c-pause" class="l05c-btn"><span class="l05c-off">Pause animation</span><span class="l05c-on">Play animation</span></label>
 <div class="l05c-box" style="overflow-x:auto">
-<svg class="l05c-flow" viewBox="0 0 760 624" role="img" aria-labelledby="l05c-t l05c-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l05c-flow" viewBox="0 0 760 624" role="img" aria-labelledby="l05c-t l05c-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l05c-t">Okta group membership: the three conditions and the shared-group trap</title>
 <desc id="l05c-d">A chain of checks for an Okta group change that does not arrive. Okta group membership needs all three: the user is in the Okta group, is assigned to the app, and the group is pushed. If the user is not in the group, not assigned, or the group is not pushed, no membership change is sent. If all three hold but the same group is used for both assignment and Group Push, that is not supported, so make a separate push group. If all three hold and the groups are separate, Okta can send the change. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l05c-flow{--ink:light-dark(#000000,#ffffff)}
 .l05c-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l05c-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l05c-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05c-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05c-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05c-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05c-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l05c-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l05c-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l05c-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l05c-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l05c-badt{fill:var(--bad-text)}
-.l05c-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05c-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05c-badt{fill:var(--ink)}
+.l05c-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05c-badge{fill:var(--accent)}
 .l05c-b-back{fill:var(--muted)}
 .l05c-b-bad{fill:var(--bad)}
@@ -465,30 +475,32 @@ This is the account in the app, not the user in the IdP. Look at what each IdP s
 .l05c-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05c-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l05c-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l05c-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l05c-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l05c-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l05c-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l05c-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05c-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05c-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l05c-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l05c-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05c-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05c-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l05c-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l05c-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l05c-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l05c-hl{fill:none;stroke:var(--accent);stroke-width:3}
 .l05c-hle{stroke:var(--accent);stroke-width:3;fill:none}
-.l05c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l05c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l05c-pk.l05c-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l05c-pk.l05c-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l05c-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-.l05c-h{opacity:0;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l05c-flow:hover .l05c-g,svg.l05c-flow:hover .l05c-pk,svg.l05c-flow:hover .l05c-h{animation-play-state:paused}
+.l05c-wrap{margin:20px 0}
+@media (min-width:801px){.l05c-wrap{margin-left:-44px;margin-right:-44px}}
+.l05c-g rect,.l05c-g line,.l05c-g path:not(.l05c-gl){opacity:.5;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l05c-h{opacity:0;animation-duration:20s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l05c-flow:hover .l05c-g rect,svg.l05c-flow:hover .l05c-g line,svg.l05c-flow:hover .l05c-g path:not(.l05c-gl),svg.l05c-flow:hover .l05c-pk,svg.l05c-flow:hover .l05c-h{animation-play-state:paused}
 .l05c-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l05c-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l05c-btn:hover{background:var(--hover)}
 .l05c-cb:focus-visible + .l05c-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l05c-cb:checked + .l05c-btn .l05c-off,.l05c-cb:not(:checked) + .l05c-btn .l05c-on{display:none}
-.l05c-cb:checked ~ .l05c-box .l05c-g,.l05c-cb:checked ~ .l05c-box .l05c-pk,.l05c-cb:checked ~ .l05c-box .l05c-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l05c-g{animation:none;opacity:1}.l05c-pk{animation:none;display:none}.l05c-h{animation:none;opacity:0}.l05c-btn{display:none}}
+.l05c-cb:checked ~ .l05c-box .l05c-g rect,.l05c-cb:checked ~ .l05c-box .l05c-g line,.l05c-cb:checked ~ .l05c-box .l05c-g path:not(.l05c-gl),.l05c-cb:checked ~ .l05c-box .l05c-pk,.l05c-cb:checked ~ .l05c-box .l05c-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l05c-g rect,.l05c-g line,.l05c-g path:not(.l05c-gl){animation:none;opacity:1}.l05c-pk{animation:none;display:none}.l05c-h{animation:none;opacity:0}.l05c-btn{display:none}}
 @keyframes l05c-h0{0%{opacity:1}20%{opacity:1}20.01%,100%{opacity:0}}
 .l05c-h0{animation-name:l05c-h0}
 @keyframes l05c-h1{0%,19.99%{opacity:0}20%{opacity:1}40%{opacity:1}40.01%,100%{opacity:0}}

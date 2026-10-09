@@ -5,24 +5,25 @@ You have configured SAML and OIDC apps in Okta. This capstone turns that into a 
 ## Which tool for which job
 
 <!-- diagram:which-tool -->
-<div style="position:relative;margin:20px 0">
+<div class="l08a-wrap" style="position:relative">
 <input type="checkbox" id="l08a-pause" class="l08a-cb" /><label for="l08a-pause" class="l08a-btn"><span class="l08a-off">Pause animation</span><span class="l08a-on">Play animation</span></label>
 <div class="l08a-box" style="overflow-x:auto">
-<svg class="l08a-flow" viewBox="0 0 760 521" role="img" aria-labelledby="l08a-t l08a-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l08a-flow" viewBox="0 0 760 521" role="img" aria-labelledby="l08a-t l08a-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l08a-t">SSO and lifecycle are separate problems</title>
 <desc id="l08a-d">Four tools against three jobs. SAML 2.0 signs a user in and cannot manage the account lifecycle. OIDC signs a user in through an ID token and cannot create or remove accounts. SCIM 2.0 signs no one in, provisions accounts over HTTP and JSON, and deactivates by setting active to false, though the service provider decides what that means. JIT provisioning creates the user from the claims in the SAML token but cannot delete or deactivate. The diagram highlights each row in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l08a-flow{--ink:light-dark(#000000,#ffffff)}
 .l08a-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l08a-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l08a-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08a-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08a-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l08a-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l08a-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l08a-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l08a-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08a-badt{fill:var(--bad-text)}
-.l08a-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-badt{fill:var(--ink)}
+.l08a-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08a-badge{fill:var(--accent)}
 .l08a-b-back{fill:var(--muted)}
 .l08a-b-bad{fill:var(--bad)}
@@ -31,13 +32,13 @@ You have configured SAML and OIDC apps in Okta. This capstone turns that into a 
 .l08a-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l08a-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l08a-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l08a-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08a-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08a-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l08a-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l08a-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08a-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08a-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08a-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l08a-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08a-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l08a-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l08a-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l08a-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -45,23 +46,25 @@ You have configured SAML and OIDC apps in Okta. This capstone turns that into a 
 .l08a-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l08a-pk.l08a-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l08a-pk.l08a-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l08a-g{opacity:.45;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l08a-flow:hover .l08a-g,svg.l08a-flow:hover .l08a-pk{animation-play-state:paused}
+.l08a-wrap{margin:20px 0}
+@media (min-width:801px){.l08a-wrap{margin-left:-44px;margin-right:-44px}}
+.l08a-g rect,.l08a-g line,.l08a-g path:not(.l08a-gl){opacity:.5;animation-duration:16s;animation-timing-function:linear;animation-iteration-count:infinite}
+svg.l08a-flow:hover .l08a-g rect,svg.l08a-flow:hover .l08a-g line,svg.l08a-flow:hover .l08a-g path:not(.l08a-gl),svg.l08a-flow:hover .l08a-pk{animation-play-state:paused}
 .l08a-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l08a-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l08a-btn:hover{background:var(--hover)}
 .l08a-cb:focus-visible + .l08a-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l08a-cb:checked + .l08a-btn .l08a-off,.l08a-cb:not(:checked) + .l08a-btn .l08a-on{display:none}
-.l08a-cb:checked ~ .l08a-box .l08a-g,.l08a-cb:checked ~ .l08a-box .l08a-pk{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l08a-g{animation:none;opacity:1}.l08a-pk{animation:none;display:none}.l08a-btn{display:none}}
-@keyframes l08a-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.45}}
-.l08a-g0{animation-name:l08a-g0}
-@keyframes l08a-g1{0%,24.99%{opacity:.45}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.45}}
-.l08a-g1{animation-name:l08a-g1}
-@keyframes l08a-g2{0%,49.99%{opacity:.45}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.45}}
-.l08a-g2{animation-name:l08a-g2}
-@keyframes l08a-g3{0%,74.99%{opacity:.45}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.45}}
-.l08a-g3{animation-name:l08a-g3}
+.l08a-cb:checked ~ .l08a-box .l08a-g rect,.l08a-cb:checked ~ .l08a-box .l08a-g line,.l08a-cb:checked ~ .l08a-box .l08a-g path:not(.l08a-gl),.l08a-cb:checked ~ .l08a-box .l08a-pk{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08a-g rect,.l08a-g line,.l08a-g path:not(.l08a-gl){animation:none;opacity:1}.l08a-pk{animation:none;display:none}.l08a-btn{display:none}}
+@keyframes l08a-g0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:.5}}
+.l08a-g0 rect,.l08a-g0 line,.l08a-g0 path:not(.l08a-gl){animation-name:l08a-g0}
+@keyframes l08a-g1{0%,24.99%{opacity:.5}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:.5}}
+.l08a-g1 rect,.l08a-g1 line,.l08a-g1 path:not(.l08a-gl){animation-name:l08a-g1}
+@keyframes l08a-g2{0%,49.99%{opacity:.5}50%{opacity:1}75%{opacity:1}75.01%,100%{opacity:.5}}
+.l08a-g2 rect,.l08a-g2 line,.l08a-g2 path:not(.l08a-gl){animation-name:l08a-g2}
+@keyframes l08a-g3{0%,74.99%{opacity:.5}75%{opacity:1}100%{opacity:1}100.01%,100%{opacity:.5}}
+.l08a-g3 rect,.l08a-g3 line,.l08a-g3 path:not(.l08a-gl){animation-name:l08a-g3}
 </style>
 <defs>
 <marker id="l08a-m-front" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent)"/></marker>
@@ -74,36 +77,36 @@ svg.l08a-flow:hover .l08a-g,svg.l08a-flow:hover .l08a-pk{animation-play-state:pa
 <g class="l08a-g l08a-g0">
 <rect class="l08a-row" x="10" y="86" width="740" height="86" rx="8"/>
 <text class="l08a-ttlL" x="24" y="112">SAML 2.0</text>
-<circle cx="321" cy="108" r="10" style="fill:var(--good)"/><path d="M316.8,108.0 L319.6,111.4 L325.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="321" cy="108" r="10" style="fill:var(--good)"/><path class="l08a-gl" d="M316.8,108.0 L319.6,111.4 L325.2,104.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="321" y="134">POST binding: the</text>
 <text class="l08a-nt" x="321" y="149">assertion must be signed</text>
-<circle cx="491" cy="108" r="10" style="fill:var(--bad)"/><path d="M487.6,104.6 L494.4,111.4 M494.4,104.6 L487.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="108" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M487.6,104.6 L494.4,111.4 M494.4,104.6 L487.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="491" y="134">cannot manage the</text>
 <text class="l08a-nt" x="491" y="149">account lifecycle</text>
-<circle cx="661" cy="108" r="10" style="fill:var(--bad)"/><path d="M657.6,104.6 L664.4,111.4 M664.4,104.6 L657.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="661" cy="108" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M657.6,104.6 L664.4,111.4 M664.4,104.6 L657.6,111.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 </g>
 <g class="l08a-g l08a-g1">
 <rect class="l08a-row" x="10" y="180" width="740" height="86" rx="8"/>
 <text class="l08a-ttlL" x="24" y="206">OIDC</text>
-<circle cx="321" cy="202" r="10" style="fill:var(--good)"/><path d="M316.8,202.0 L319.6,205.4 L325.2,198.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="321" cy="202" r="10" style="fill:var(--good)"/><path class="l08a-gl" d="M316.8,202.0 L319.6,205.4 L325.2,198.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="321" y="228">the app validates an</text>
 <text class="l08a-nt" x="321" y="243">ID token (a JWT)</text>
-<circle cx="491" cy="202" r="10" style="fill:var(--bad)"/><path d="M487.6,198.6 L494.4,205.4 M494.4,198.6 L487.6,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="202" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M487.6,198.6 L494.4,205.4 M494.4,198.6 L487.6,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="491" y="228">cannot create or</text>
 <text class="l08a-nt" x="491" y="243">remove accounts</text>
-<circle cx="661" cy="202" r="10" style="fill:var(--bad)"/><path d="M657.6,198.6 L664.4,205.4 M664.4,198.6 L657.6,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="661" cy="202" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M657.6,198.6 L664.4,205.4 M664.4,198.6 L657.6,205.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="661" y="228">cannot remove</text>
 <text class="l08a-nt" x="661" y="243">accounts</text>
 </g>
 <g class="l08a-g l08a-g2">
 <rect class="l08a-row" x="10" y="274" width="740" height="101" rx="8"/>
 <text class="l08a-ttlL" x="24" y="300">SCIM 2.0</text>
-<circle cx="321" cy="296" r="10" style="fill:var(--bad)"/><path d="M317.6,292.6 L324.4,299.4 M324.4,292.6 L317.6,299.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="321" cy="296" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M317.6,292.6 L324.4,299.4 M324.4,292.6 L317.6,299.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="321" y="322">signs no one in</text>
-<circle cx="491" cy="296" r="10" style="fill:var(--good)"/><path d="M486.8,296.0 L489.6,299.4 L495.2,292.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="296" r="10" style="fill:var(--good)"/><path class="l08a-gl" d="M486.8,296.0 L489.6,299.4 L495.2,292.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="491" y="322">HTTP/JSON</text>
 <text class="l08a-nt" x="491" y="337">provisioning</text>
-<circle cx="661" cy="296" r="10" style="fill:var(--muted)"/><path d="M656.8,296.0 L665.2,296.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="661" cy="296" r="10" style="fill:var(--muted)"/><path class="l08a-gl" d="M656.8,296.0 L665.2,296.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="661" y="322">sets active to false;</text>
 <text class="l08a-nt" x="661" y="337">the SP defines what</text>
 <text class="l08a-nt" x="661" y="352">that means</text>
@@ -111,18 +114,18 @@ svg.l08a-flow:hover .l08a-g,svg.l08a-flow:hover .l08a-pk{animation-play-state:pa
 <g class="l08a-g l08a-g3">
 <rect class="l08a-row" x="10" y="383" width="740" height="86" rx="8"/>
 <text class="l08a-ttlL" x="24" y="409">JIT provisioning</text>
-<circle cx="491" cy="405" r="10" style="fill:var(--good)"/><path d="M486.8,405.0 L489.6,408.4 L495.2,401.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="491" cy="405" r="10" style="fill:var(--good)"/><path class="l08a-gl" d="M486.8,405.0 L489.6,408.4 L495.2,401.6" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="491" y="431">from the claims in</text>
 <text class="l08a-nt" x="491" y="446">the SAML token</text>
-<circle cx="661" cy="405" r="10" style="fill:var(--bad)"/><path d="M657.6,401.6 L664.4,408.4 M664.4,401.6 L657.6,408.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="661" cy="405" r="10" style="fill:var(--bad)"/><path class="l08a-gl" d="M657.6,401.6 L664.4,408.4 M664.4,401.6 L657.6,408.4" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-nt" x="661" y="431">cannot delete or</text>
 <text class="l08a-nt" x="661" y="446">deactivate</text>
 </g>
-<circle cx="48" cy="497" r="8" style="fill:var(--good)"/><path d="M44.6,497.0 L46.9,499.7 L51.4,494.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="48" cy="497" r="8" style="fill:var(--good)"/><path class="l08a-gl" d="M44.6,497.0 L46.9,499.7 L51.4,494.3" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-dim" x="64" y="501" style="text-anchor:start">does this</text>
-<circle cx="163" cy="497" r="8" style="fill:var(--muted)"/><path d="M159.6,497.0 L166.4,497.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="163" cy="497" r="8" style="fill:var(--muted)"/><path class="l08a-gl" d="M159.6,497.0 L166.4,497.0" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-dim" x="179" y="501" style="text-anchor:start">does this, with a catch</text>
-<circle cx="368" cy="497" r="8" style="fill:var(--bad)"/><path d="M365.3,494.3 L370.7,499.7 M370.7,494.3 L365.3,499.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
+<circle cx="368" cy="497" r="8" style="fill:var(--bad)"/><path class="l08a-gl" d="M365.3,494.3 L370.7,499.7 M370.7,494.3 L365.3,499.7" style="fill:none;stroke:var(--on-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round"/>
 <text class="l08a-dim" x="384" y="501" style="text-anchor:start">cannot do this</text>
 </svg>
 </div>
@@ -177,24 +180,25 @@ SSO and lifecycle are separate problems. SAML or OIDC prove who signed in now; S
 Incident: after editing a SAML app, thirty users get an audience error. Written from the docs, not run against a live tenant.
 
 <!-- diagram:audience-error-checklist -->
-<div style="position:relative;margin:20px 0">
+<div class="l08c-wrap" style="position:relative">
 <input type="checkbox" id="l08c-pause" class="l08c-cb" /><label for="l08c-pause" class="l08c-btn"><span class="l08c-off">Pause animation</span><span class="l08c-on">Play animation</span></label>
 <div class="l08c-box" style="overflow-x:auto">
-<svg class="l08c-flow" viewBox="0 0 760 395" role="img" aria-labelledby="l08c-t l08c-d" style="width:100%;min-width:640px;max-width:800px;height:auto;display:block;margin:0 auto">
+<svg class="l08c-flow" viewBox="0 0 760 395" role="img" aria-labelledby="l08c-t l08c-d" style="width:760px;max-width:100%;min-width:699px;height:auto;display:block;margin:0 auto">
 <title id="l08c-t">The Okta admin's first two checks after an audience error</title>
 <desc id="l08c-d">A decision tree for the incident in the lesson, where thirty users get an audience error after a SAML app is edited. Start with the System Log and read outcome.result and outcome.reason. If Okta issued the assertion successfully, the SP raised the audience error, so ask the SP owner for the SP's log. Otherwise, compare the decoded response with the app's fields, using one failing login captured with SAML-tracer: Destination and Recipient against the Single sign-on URL, Audience against the Audience URI (SP Entity ID), and NameID against the Name ID format. Written from the docs, not run against a live tenant. The diagram highlights each path in turn. It pauses when you hover over it, and the Pause animation control above it also pauses it.</desc>
 <style>
+svg.l08c-flow{--ink:light-dark(#000000,#ffffff)}
 .l08c-box{fill:var(--panel);stroke:var(--border-strong);stroke-width:1.5}
 .l08c-hot{fill:var(--panel);stroke:var(--accent);stroke-width:2.5}
-.l08c-ttl{fill:var(--text);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08c-sub{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08c-ttl{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08c-sub{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08c-life{stroke:var(--border-strong);stroke-width:1.5;stroke-dasharray:4 5}
 .l08c-front{stroke:var(--accent);stroke-width:2;fill:none}
 .l08c-back{stroke:var(--muted);stroke-width:2;stroke-dasharray:7 5;fill:none}
 .l08c-bad{stroke:var(--bad);stroke-width:2;fill:none}
-.l08c-main{fill:var(--text);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
-.l08c-badt{fill:var(--bad-text)}
-.l08c-dim{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08c-main{fill:var(--ink);font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08c-badt{fill:var(--ink)}
+.l08c-dim{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08c-badge{fill:var(--accent)}
 .l08c-b-back{fill:var(--muted)}
 .l08c-b-bad{fill:var(--bad)}
@@ -203,13 +207,13 @@ Incident: after editing a SAML app, thirty users get an audience error. Written 
 .l08c-note{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l08c-note-good{fill:var(--good-bg);stroke:var(--good);stroke-width:1.5}
 .l08c-note-bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
-.l08c-nt{fill:var(--body);font:12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
+.l08c-nt{fill:var(--ink);font:500 12.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:middle}
 .l08c-nest{fill:var(--raised);stroke:var(--border-strong);stroke-width:1.5}
 .l08c-row{fill:var(--raised);stroke:var(--border-strong);stroke-width:1}
-.l08c-ttlL{fill:var(--text);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08c-subL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08c-dimL{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
-.l08c-dimR{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
+.l08c-ttlL{fill:var(--ink);font:600 14px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08c-subL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08c-dimL{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:start}
+.l08c-dimR{fill:var(--ink);font:500 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;text-anchor:end}
 .l08c-conn{stroke:var(--accent);stroke-width:1.5;fill:none}
 .l08c-edge{stroke:var(--border-strong);stroke-width:1.75;fill:none}
 .l08c-hl{fill:none;stroke:var(--accent);stroke-width:3}
@@ -217,16 +221,18 @@ Incident: after editing a SAML app, thirty users get an audience error. Written 
 .l08c-pk{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent));animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l08c-pk.l08c-pkback{fill:var(--muted);filter:drop-shadow(0 0 5px var(--muted))}
 .l08c-pk.l08c-pkbad{fill:var(--bad);filter:drop-shadow(0 0 5px var(--bad))}
-.l08c-g{opacity:.45;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+.l08c-wrap{margin:20px 0}
+@media (min-width:801px){.l08c-wrap{margin-left:-44px;margin-right:-44px}}
+.l08c-g rect,.l08c-g line,.l08c-g path:not(.l08c-gl){opacity:.5;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
 .l08c-h{opacity:0;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
-svg.l08c-flow:hover .l08c-g,svg.l08c-flow:hover .l08c-pk,svg.l08c-flow:hover .l08c-h{animation-play-state:paused}
+svg.l08c-flow:hover .l08c-g rect,svg.l08c-flow:hover .l08c-g line,svg.l08c-flow:hover .l08c-g path:not(.l08c-gl),svg.l08c-flow:hover .l08c-pk,svg.l08c-flow:hover .l08c-h{animation-play-state:paused}
 .l08c-cb{position:absolute;opacity:0;width:1px;height:1px;margin:0}
 .l08c-btn{display:inline-block;margin:0 0 8px;padding:4px 12px;border:1px solid var(--border-strong);border-radius:6px;background:var(--panel);color:var(--text);font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;cursor:pointer;user-select:none}
 .l08c-btn:hover{background:var(--hover)}
 .l08c-cb:focus-visible + .l08c-btn{outline:2px solid var(--accent);outline-offset:2px}
 .l08c-cb:checked + .l08c-btn .l08c-off,.l08c-cb:not(:checked) + .l08c-btn .l08c-on{display:none}
-.l08c-cb:checked ~ .l08c-box .l08c-g,.l08c-cb:checked ~ .l08c-box .l08c-pk,.l08c-cb:checked ~ .l08c-box .l08c-h{animation-play-state:paused}
-@media (prefers-reduced-motion:reduce){.l08c-g{animation:none;opacity:1}.l08c-pk{animation:none;display:none}.l08c-h{animation:none;opacity:0}.l08c-btn{display:none}}
+.l08c-cb:checked ~ .l08c-box .l08c-g rect,.l08c-cb:checked ~ .l08c-box .l08c-g line,.l08c-cb:checked ~ .l08c-box .l08c-g path:not(.l08c-gl),.l08c-cb:checked ~ .l08c-box .l08c-pk,.l08c-cb:checked ~ .l08c-box .l08c-h{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.l08c-g rect,.l08c-g line,.l08c-g path:not(.l08c-gl){animation:none;opacity:1}.l08c-pk{animation:none;display:none}.l08c-h{animation:none;opacity:0}.l08c-btn{display:none}}
 @keyframes l08c-h0{0%{opacity:1}25%{opacity:1}25.01%,100%{opacity:0}}
 .l08c-h0{animation-name:l08c-h0}
 @keyframes l08c-h1{0%,24.99%{opacity:0}25%{opacity:1}50%{opacity:1}50.01%,100%{opacity:0}}

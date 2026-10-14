@@ -1,0 +1,21 @@
+{
+  "kind": "anatomy",
+  "id": "course-folder",
+  "prefix": "l01a",
+  "title": "A course is a folder",
+  "desc": "The files in a course folder: index.html, manifest.json, and a lessons folder with one folder per lesson, each holding lesson.md and an optional quiz.json.",
+  "root": {
+    "title": "example-course/",
+    "sub": "one folder per course",
+    "children": [
+      {"title": "index.html", "sub": "the page shell", "check": ["Same in every course", "You never edit it"]},
+      {"title": "manifest.json", "sub": "table of contents", "check": ["Course title and lesson list", "Lessons appear in this order"]},
+      {"title": "lessons/", "sub": "one folder per lesson", "children": [
+        {"title": "01-anatomy-of-a-course/", "sub": "folder name is the lesson id", "children": [
+          {"title": "lesson.md", "sub": "the text", "check": ["Written in Markdown"]},
+          {"title": "quiz.json", "sub": "the questions", "check": ["Optional", "No file means no quiz"]}
+        ]}
+      ]}
+    ]
+  }
+}

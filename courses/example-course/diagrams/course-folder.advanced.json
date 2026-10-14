@@ -1,0 +1,17 @@
+{
+  "kind": "flow",
+  "id": "course-folder",
+  "prefix": "l01a",
+  "title": "How a level picks its lesson file",
+  "desc": "For the selected level the engine tries lesson.level.md first. If that is not found it tries lesson.md, and if that is also missing it shows the title and the path that failed to load. The quiz resolves the same way, independently.",
+  "root": {
+    "lines": ["Reader selects a level", "Text and quiz resolve", "independently"],
+    "children": [
+      {"edge": "lesson.<level>.md found", "node": {"lines": ["Render it"], "tone": "good"}},
+      {"edge": "not found", "node": {"lines": ["Try lesson.md"], "children": [
+        {"edge": "found", "node": {"lines": ["Render lesson.md"], "tone": "good"}},
+        {"edge": "not found", "node": {"lines": ["Show the title and", "the path that failed"], "tone": "bad"}}
+      ]}}
+    ]
+  }
+}

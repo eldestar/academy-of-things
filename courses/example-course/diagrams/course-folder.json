@@ -1,0 +1,19 @@
+{
+  "kind": "sequence",
+  "id": "course-folder",
+  "prefix": "l01a",
+  "title": "What the engine fetches for one lesson",
+  "desc": "The browser loads index.html, which loads engine/app.js. The engine then fetches manifest.json, the lesson's lesson.md, and its quiz.json from the course folder. A 404 on quiz.json means the lesson has no quiz.",
+  "lanes": [
+    {"id": "b", "title": "Browser", "sub": "index.html"},
+    {"id": "e", "title": "Engine", "sub": "engine/app.js"},
+    {"id": "c", "title": "Course folder", "sub": "served as files"}
+  ],
+  "steps": [
+    {"type": "arrow", "from": "b", "to": "e", "label": ["index.html loads", "../../engine/app.js"], "badge": "1"},
+    {"type": "arrow", "from": "e", "to": "c", "label": ["fetch manifest.json"], "badge": "2"},
+    {"type": "arrow", "from": "e", "to": "c", "label": ["fetch lessons/<id>/lesson.md"], "badge": "3"},
+    {"type": "arrow", "from": "e", "to": "c", "label": ["fetch lessons/<id>/quiz.json"], "badge": "4"},
+    {"type": "note", "under": "c", "lines": ["A 404 on quiz.json", "means no quiz"], "tone": "plain"}
+  ]
+}

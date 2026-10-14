@@ -2,7 +2,7 @@
 """Check that every diagram in a lesson matches its spec.
 
     python3 scripts/check-diagrams.py                          # every course
-    python3 scripts/check-diagrams.py authentication-protocols # one course
+    python3 scripts/check-diagrams.py example-course            # one course
     python3 scripts/check-diagrams.py --fix                    # also rewrite drifted blocks from their specs
 
 For each lesson file (lesson.md, lesson.beginner.md, lesson.advanced.md) and each
